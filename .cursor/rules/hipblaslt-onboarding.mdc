@@ -23,6 +23,9 @@ prior context; explanations must build up from the basics.
 - Define each project-specific or domain term the first time it appears.
 - Keep explanations self-contained: a reader should not need prior chats, PRs, or unstated assumptions.
 - Be evidence-based and avoid overstated conclusions.
+- Avoid long multi-fact `>` blockquotes; they read poorly. Reserve `>` for a single short
+  callout idea. When a point carries multiple facts, use a plain lead sentence followed by a
+  bullet list instead of a multi-line blockquote.
 
 # Code reference rule
 

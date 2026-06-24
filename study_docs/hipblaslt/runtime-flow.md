@@ -36,9 +36,31 @@ flowchart TD
 ### 關卡 1：公開 API 入口
 
 `hipblasLtMatmul` 是你直接呼叫的函式，做的事很單純：把外部不透明的 handle 轉成內部型別，
-再轉呼叫內部的 `rocblaslt_matmul`。
+再**原樣**轉呼叫內部的 `rocblaslt_matmul`（這層不做計算，只轉型別與轉手）。
 
 - 程式碼：[hipblasLtMatmul](../../projects/hipblaslt/library/src/amd_detail/hipblaslt.cpp#L521)
+
+這支 API 的 16 個參數，正是你描述一個 GEMM 所需要的全部資訊：
+
+| 參數 | 型別 / 來源 | 功能（白話） |
+|------|-------------|--------------|
+| `handle` | `hipblasLtHandle_t` | 函式庫 handle：綁定裝置與環境（哪張 GPU、設定）。 |
+| `matmul_descr` | `hipblasLtMatmulDesc_t` | 運算描述：轉置與否（transA/B）、compute type、bias、activation、scale 等**收尾與精度設定**都掛在這。 |
+| `alpha` | `const void*` | 公式裡的 `alpha`，縮放 `op(A)*op(B)`。指標型別依 compute type。 |
+| `A` / `B` | `const void*` | 左/右輸入矩陣的 device 資料指標。 |
+| `matA` / `matB` | `hipblasLtMatrixLayout_t` | A/B 的 layout：資料型別、列數/行數、leading dimension（ld）、batch 數與 batch stride、儲存 order。 |
+| `beta` | `const void*` | 公式裡的 `beta`，縮放 `op(C)`。`beta=0` 時可略過讀 C。 |
+| `C` | `const void*` | 加項矩陣 C 的資料指標（常與 D 同 buffer）。 |
+| `matC` | `hipblasLtMatrixLayout_t` | C 的 layout（同上）。 |
+| `D` | `void*` | 輸出矩陣 D 的資料指標（結果寫這）。 |
+| `matD` | `hipblasLtMatrixLayout_t` | D 的 layout（同上）。 |
+| `algo` | `const hipblasLtMatmulAlgo_t*` | **可選**：指定要用哪個 solution（內含 solution index）。傳 `nullptr` 代表「請幫我用 heuristic 選」。 |
+| `workspace` | `void*` | 給 kernel 用的暫存 device 記憶體（某些 solution 需要）。 |
+| `workspaceSizeInBytes` | `size_t` | 上述 workspace 的大小；也用來**過濾**掉需要更多 workspace 的 solution。 |
+| `stream` | `hipStream_t` | 要在哪條 HIP stream 上非同步執行。 |
+
+> 名詞：**ld（leading dimension）** = 矩陣在記憶體中相鄰兩欄（或列）起點的間距，用來支援 sub-matrix。
+> **order** = 資料是 column-major / row-major 等排列方式。
 
 ### 關卡 2：進入 rocBLASLt 層，整理成「訂單」
 
@@ -48,7 +70,27 @@ flowchart TD
 - 對外 wrapper：[rocblaslt_matmul](../../projects/hipblaslt/library/src/amd_detail/rocblaslt/src/rocblaslt_mat.cpp#L713)
 - 核心實作：[rocblaslt_matmul_impl](../../projects/hipblaslt/library/src/amd_detail/rocblaslt/src/rocblaslt_mat.cpp#L44)
 
+`rocblaslt_matmul` 的參數**和關卡 1 一模一樣**（`handle, alpha, A, matA, B, matB, beta, C, matC, D, matD, algo, workspace, workspaceSizeInBytes, stream` 與 `matmul_descr`），
+只是型別從對外的 `hipblasLt*` 換成內部的 `rocblaslt_*`。它先做指標/handle 合法性檢查，再轉呼叫 `rocblaslt_matmul_impl`。
+
+重點在 `rocblaslt_matmul_impl`：它透過 `rocblaslt_matmul_valid_args` **從 `matmul_descr` 與各 layout 抽出/推導**一組「問題欄位」，
+這些欄位就是下一關「訂單」`RocblasltContractionProblem` 的內容：
+
+| 推導出的欄位 | 來源 | 功能（白話） |
+|--------------|------|--------------|
+| `m, n, k` | matA/matB/matD + transA/B | 矩陣乘法的三個維度（結果 `m×n`，內積長度 `k`）。 |
+| `lda, ldb, ldc, ldd, lde` | 各 layout | 各矩陣的 leading dimension（記憶體跨距）；`lde` 給輔助輸出 E。 |
+| `batch_stride_a/b/c/d/e` | 各 layout | batched GEMM 時，相鄰兩個 batch 的資料間距。 |
+| `type_a, type_b, type_c, type_d` | 各 layout | A/B/C/D 的資料型別（如 bf16、fp16、fp8）。 |
+| `compute_type` | `matmul_descr` | 累加/計算精度（如 f32）。 |
+| `trans_a, trans_b` | `matmul_descr` | A/B 是否轉置（決定 `op(A)`、`op(B)`）。 |
+| `bias, bias_type` | `matmul_descr` | epilogue 的 bias 向量指標與型別（沒有則為 null）。 |
+| `scaleAlphaVec` | `matmul_descr` | per-channel/per-token 的 alpha 縮放向量（量化常用）。 |
+| `E, aux_type` | `matmul_descr` | 輔助輸出（例如保存 activation 前的中間值，給反傳用）。 |
+| `gradient` | `matmul_descr` | 是否為反向（梯度）模式，影響 epilogue 行為。 |
+
 > 名詞：**contraction**（張量縮併）是 GEMM 的數學一般化講法；這裡當成「矩陣乘法問題」理解即可。
+> **batched GEMM** = 一次算很多個同形狀的小矩陣乘法。
 
 ### 關卡 3：派工總管
 
@@ -58,7 +100,24 @@ flowchart TD
 - 派工總管：[runContractionProblem](../../projects/hipblaslt/library/src/amd_detail/rocblaslt/src/tensile_host.cpp#L3235)
 - 更新 problem：[updateTensileProblem](../../projects/hipblaslt/library/src/amd_detail/rocblaslt/src/tensile_host.cpp#L2086)
 
+`runContractionProblem` 的參數：
+
+| 參數 | 型別 / 來源 | 功能（白話） |
+|------|-------------|--------------|
+| `handle` | `rocblaslt_handle` | 取得對應裝置的 library（食譜本）與 adapter（負責載入/launch 的人）。 |
+| `algo` | `const rocblaslt_matmul_algo*` | 使用者指定的 solution；**`nullptr` 代表沒指定 → 走 heuristic**（`getBestSolutions`）。 |
+| `prob` | `const RocblasltContractionProblem&` | 上一關組好的「訂單」（M/N/K、型別、stride、epilogue 等）。 |
+| `gemmData` | `std::shared_ptr<void>` | host 端包裹（實際是 `TensileDataGemm`），把 Tensile 的 problem / inputs / 選到的 kernel 綁在一起，跨呼叫重用。 |
+
+`updateTensileProblem(prob, tensileProblem)` 則是把上面的「訂單」翻譯成 Tensile 自己的 problem 物件：
+
+| 參數 | 型別 / 來源 | 功能（白話） |
+|------|-------------|--------------|
+| `prob` | `const RocblasltContractionProblem&` | 來源訂單。 |
+| `tensileProblem` | `TensileLite::ContractionProblemGemm&` | 目標物件：把 M/N/K、各型別、stride、free/batch/bound index、epilogue（bias/activation）等寫進去，供查表與 `solve()` 使用。 |
+
 > 名詞：**epilogue** = GEMM 主乘法之後的收尾運算（加 bias、套 activation 等）。
+> **adapter** = 負責把 kernel 的 `.co` 載入 GPU 並 launch 的執行者。
 
 ### 關卡 4：依矩陣大小選 kernel
 
@@ -69,7 +128,33 @@ flowchart TD
 - 條件樹比對：[ExactLogicLibrary::findTopSolutions](../../projects/hipblaslt/tensilelite/include/Tensile/ExactLogicLibrary.hpp#L264)
 - 依 index 取 solution：[MasterSolutionLibrary getSolutionByIndex](../../projects/hipblaslt/tensilelite/include/Tensile/MasterSolutionLibrary.hpp#L210)
 
+`getBestSolutions`（沒指定 algo 時跑）參數：
+
+| 參數 | 型別 / 來源 | 功能（白話） |
+|------|-------------|--------------|
+| `prob` | `RocblasltContractionProblem const&` | 訂單；查表的依據（M/N/K、型別等）。 |
+| `handle` | `rocblaslt_handle` | 取得 library 與裝置硬體資訊。 |
+| `gemmData` | `std::shared_ptr<void>` | host 端包裹（`TensileDataGemm`），內含已更新的 Tensile problem。 |
+| `requestedAlgoCount` | `int` | **輸入**：希望回傳幾個候選 solution。 |
+| `heuristicResultsArray[]` | `rocblaslt_matmul_heuristic_result[]` | **輸出**：選出的候選（含各自的 `algo` / solution index）寫進這個陣列。 |
+| `returnAlgoCount` | `int*` | **輸出**：實際填了幾個（可能少於 requested）。 |
+| `maxWorkSpaceBytes` | `size_t` | workspace 上限：**過濾掉**需要更多暫存記憶體的 solution。 |
+
+選定（或由 algo 指定）一個 index 後，用 `getSolutionByIndex(problem, hardware, index)` 從表取出實際 solution：
+
+| 參數 | 型別 / 來源 | 功能（白話） |
+|------|-------------|--------------|
+| `problem` | `MyProblem const&` | Tensile problem；必要時用來補算該 solution 的 host workspace 大小。 |
+| `hardware` | `Hardware const&` | 目標 GPU 屬性。 |
+| `index` | `const int` | 要取出的 solution 索引（lazy load 時可能觸發載入它所在的 shard）。 |
+
 > 名詞：**heuristic** = 不用實際跑就猜哪個 solution 最快的規則。
+> **solution index** = 選擇表裡每個候選 kernel 的唯一編號，貫穿「選 → 取 → launch」。
+
+沒被 tune 過的矩陣大小怎麼辦？選擇表是「最近鄰」設計，所以任意 M/N/K 都查得到一個 solution：
+
+- tuning 只在**有限的代表 size** 上 benchmark；遇到沒測過的 size，就用距離函數找「最接近的 benchmark 點」，套用那個點選出的贏家。見 [ProblemMatchingLibrary](../../projects/hipblaslt/tensilelite/include/Tensile/MatchingLibrary.hpp#L44-L47)（"find the benchmarked size that is closest to the size asked for"）。
+- kernel 本身用 tiling 寫成，對任意大小通用，所以「能不能算」不受 size 限制；離 tuning 點越遠只是可能選到非最佳 kernel，而非算不出來。完整說明見 [tensilelite-pipeline.md](tensilelite-pipeline.md) 的〈有限的 kernel 如何涵蓋無限大的 problem size〉。
 
 ### 關卡 5：lazy 載入 `.co` 並 launch
 
@@ -82,7 +167,27 @@ flowchart TD
 - lazy 載入實作：[FindCodeObject](../../projects/hipblaslt/tensilelite/src/hip/HipSolutionAdapter.cpp#L279)
 - `hipModuleLoad` 載入 module：[loadCodeObjectFile](../../projects/hipblaslt/tensilelite/src/hip/HipSolutionAdapter.cpp#L100)
 
+`ContractionSolution::solve(problem, inputs, hardware)` 把抽象的 solution 展開成一次或多次具體的 kernel 呼叫：
+
+| 參數 | 型別 / 來源 | 功能（白話） |
+|------|-------------|--------------|
+| `problem` | `ContractionSolution::Problem const&` | 這次要算的 problem（M/N/K、型別、epilogue），用來算 grid 大小與選分支。 |
+| `inputs` | `ContractionSolution::Inputs const&` | 實際的資料：A/B/C/D 指標、alpha/beta 值、bias/scale 等指標。 |
+| `hardware` | `Hardware const&` | 目標 GPU 屬性（影響 workgroup、佔用率等決策）。 |
+
+回傳一組 `KernelInvocation`（kernel 名、要用哪個 `.co`、grid/workgroup 大小、引數）。接著交給 adapter：
+
+`SolutionAdapter::launchKernel(kernel, stream, startEvent, stopEvent, isKernelLoaded)`：
+
+| 參數 | 型別 / 來源 | 功能（白話） |
+|------|-------------|--------------|
+| `kernel` | `KernelInvocation const&` | 一次 kernel 呼叫的完整描述（含 `codeObjectFile`、`kernelName`、grid、args）。 |
+| `stream` | `hipStream_t` | 在哪條 HIP stream 上 launch。 |
+| `startEvent` / `stopEvent` | `hipEvent_t` | 可選的計時 event（量測 kernel 時間用）。 |
+| `isKernelLoaded` | `bool` | 該 kernel 的 `.co` 是否已載入；**`false` 且有 `codeObjectFile` 時才呼叫 `FindCodeObject` 觸發 lazy load**。 |
+
 > 名詞：**.co** = code object，編譯好的 GPU 機器碼檔，等同那位師傅要用的工具。
+> **KernelInvocation** = 「這一刀怎麼切」的完整指示：用哪支 kernel、哪個 `.co`、開多少 thread、傳什麼引數。
 
 ## 關鍵資料結構
 

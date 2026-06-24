@@ -159,6 +159,7 @@ flowchart TD
 - Guessing line numbers without verifying them against the current code.
 - Re-explaining build / PR rules already covered by the official `AGENTS.md`.
 - Run-on bullets that pack many facts into one line.
+- Multi-fact `>` blockquotes; reserve `>` for one short callout idea and split anything longer into a lead line + bullets.
 
 ## Self-audit before delivery
 

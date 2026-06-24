@@ -68,6 +68,37 @@ flowchart LR
 
 > 名詞：**rocisa** = 專門「組裝 AMDGPU 指令」的 C++ 工具庫；`KernelWriter.py` 像在用它寫組合語言。
 
+## 一次 build 涵蓋什麼？候選 vs 出貨、size 範圍、何時要重跑
+
+這節回答三個常見但文件易略過的疑問：build 出來的 `.co` 是不是一大堆、有限的 kernel 怎麼涵蓋無限大的矩陣、以及什麼時候需要重跑。
+
+### 候選 `.co` 很多，但「出貨」的只留贏家
+
+「一大堆 `.co`」其實分兩種，數量天差地別，別混在一起：
+
+- **候選（大量、暫時）**：階段 1 把參數 fork 成很多組合，每組編成一個候選 `.co` 拿去 benchmark；大多數最後都用不到。它們是 `1_BenchmarkProblems/` 裡的**離線中間產物**，benchmark 完即可清掉。
+- **出貨（精簡、被 runtime 用）**：階段 2 對每個 size 只挑最快的 solution，階段 3 只把**被選中的** solution 打包進最終 library。所以出貨那批 `.co` 是挑選後的集合，不是全部候選。
+
+### 有限的 kernel 如何涵蓋無限大的 problem size
+
+關鍵設計是把「能不能算」和「算得快不快」拆開：
+
+- **kernel 對 size 通用**：solution 用 **tiling**（把輸出切成固定大小的 tile 分塊掃過）寫成，同一個 `.co` 算 `512×512` 或 `8192×8192` 只是 tile 數不同。能不能用由 kernel 的 predicate / assertion（如「K 要是某數的倍數」「需要多少 workspace」）決定，**不是 size 上限**。
+- **tuning 只挑代表性 size**：要 benchmark 哪些 size 是在 tuning config（YAML）裡**人工列出**的有限清單，通常對齊真實負載（例如常見的 LLM GEMM shape），不窮舉。測得越廣，對那些 size 越準。
+- **沒測過的 size 用最近鄰補**：runtime 對沒 tune 過的 M/N/K，用距離函數找「最接近的 benchmark 點」，套用那個點的贏家。見 [ProblemMatchingLibrary](../../projects/hipblaslt/tensilelite/include/Tensile/MatchingLibrary.hpp#L44-L47)（"find the benchmarked size that is closest to the size asked for"）與 [ProblemFreeSizeLibrary](../../projects/hipblaslt/tensilelite/include/Tensile/FreeSizeLibrary.hpp#L46-L49)。
+
+> 名詞：**tiling** = 把大矩陣切成固定大小的小塊（tile），kernel 用迴圈逐塊計算，因此同一支 kernel 不綁定特定矩陣大小。
+
+結論：size 可以無限大但 `.co` 數量有限——代價只是離 tuning 點越遠的 size，選到的 kernel 可能不是絕對最佳，而**不是算不出來**。
+
+### 什麼時候要重跑 build、什麼時候不用
+
+- **不用重跑**：使用既有 kernel，包含「為不同矩陣大小換用不同 kernel」。runtime 只是查表 + lazy load，**全程不編譯**，同一份 build 產物可重複用無數次。
+- **需要重跑 TensileLite**：
+  - 換 GPU 架構（`.co` 是 per-arch，例如 `gfx942` 的檔不能給別的架構用）。
+  - 想要目前沒有的新調校點或新功能（為某個 shape 追求更快、支援新型別/epilogue）→ 改 config 重跑三階段。
+  - 改了 kernel 產生邏輯或參數（`KernelWriter.py`、`rocisa`、tile 設定）→ 重跑才會反映到新的 `.co`。
+
 ## 關鍵資料結構 / 輸出目錄
 
 | 目錄 | 內容（白話） | 定義 |
