@@ -54,6 +54,15 @@ which hipcc || ls /opt/rocm*/bin/hipcc
 
 ## 階段 A：寫獨立 HIP kernel → 反組譯看 ISA
 
+> **對應可跑範例**：主管整理的 [`asm/`](../../asm)（在 repo 外的同層 `/data1/perlee/asm`，容器內 `/src/asm`）
+> 已有四個完整可編譯、重注解的 gfx942 範例，是本階段最好的對照教材：
+> [example01_reduce_sum](../../asm/example01_reduce_sum)（手寫 AMDGCN baseline）、
+> [example02_reduce_sum](../../asm/example02_reduce_sum)（rocprof-compute 找瓶頸 → `dwordx4` 向量化，1.9×；
+> **優化/profiling 概念最佳單篇教材**）、
+> [example03_mfma](../../asm/example03_mfma)（MFMA GEMM + LDS tiling，最接近最終工作）、
+> [example04_global_mem_oob](../../asm/example04_global_mem_oob)（buffer descriptor / 邊界檢查）。
+> 各範例容器內 `cmake -S . -B build && cmake --build build` 即可跑。整體時程見 [learning-roadmap.md](learning-roadmap.md)。
+
 ### A-1：最小 kernel（vector add），先看基本指令
 
 寫一支最小 kernel（例如 `vadd.hip`）：
@@ -106,6 +115,8 @@ llvm-objdump -d --mcpu=gfx942 vadd.o      # 或對最終 .co / 可執行檔反�
 這對應 GEMM 的核心手法：先把 A/B 的小塊搬進 LDS 重用，減少 global memory 流量。
 
 > 名詞：**LDS** = Local Data Share，workgroup 共用的高速 shared memory。
+> 對照範例：[example03_mfma](../../asm/example03_mfma) 用 LDS staging 一個 `32×32` 的 GEMM tile，
+> 是 `ds_read`/`ds_write`/`s_barrier` 與 reuse 手法的完整實例。
 
 ### A-3：召喚 MFMA 指令
 
@@ -120,6 +131,8 @@ GEMM 算力來自 MFMA（矩陣乘加）。可用 compiler builtin 直接產生�
 編譯後在組語裡找 `v_mfma_*`（如 `v_mfma_f32_16x16x16_f16`）。認得它，就能在階段 B 讀懂 GEMM kernel 的主迴圈在做什麼。
 
 > 名詞：**MFMA** = Matrix Fused Multiply-Add，AMD CDNA 的矩陣乘加指令，是 GEMM 的核心算力來源。
+> 對照範例：[example03_mfma](../../asm/example03_mfma) 直接用 `v_mfma_f32_16x16x4_f32` 手寫 GEMM，
+> README 詳列 MFMA register layout（哪個 lane 持有哪個 A/B/C 元素），是讀懂主迴圈的關鍵。
 
 ## 階段 B：橋接 TensileLite / rocisa 產出的 GEMM 組語
 

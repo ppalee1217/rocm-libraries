@@ -10,6 +10,9 @@
 > 路徑說明：本檔在 repo 內的 `study_docs/`（最上層）。連到子主題文件用相對路徑（如 `hipblaslt/runtime-flow.md`）；
 > 連到原始碼用 `../projects/...`（往上一層回到 repo root 再進 `projects/`）。行號可能隨 commit 漂移，對不上時以符號名稱為準。
 
+> **想知道「每天該做什麼、整個實習怎麼排」** → 看八週學習進度表 [learning-roadmap.md](learning-roadmap.md)
+> （canonical 版本，每日提醒也讀它）。本檔是「地圖」，roadmap 是「時程」。
+
 ## 30 秒總覽
 
 hipBLASLt 算的是一條 GEMM 公式：`D = Activation(alpha * op(A) * op(B) + beta * op(C) + bias)`。
@@ -62,7 +65,11 @@ flowchart TD
 
 - **階段 A（先打底）** — 自己寫最小 HIP kernel（vector add → tiled matmul → MFMA intrinsic），
   用 `hipcc --save-temps` 或 `llvm-objdump -d` 反組譯，對照 source 與 gfx942 組語。迴圈最短、相依最少，
-  是從零熟悉指令最有效率的方式。
+  是從零熟悉指令最有效率的方式。**可跑範例**（主管整理、在 repo 外的同層 `../../asm/`）：
+  [example01_reduce_sum](../../asm/example01_reduce_sum)（手寫 AMDGCN baseline）、
+  [example02_reduce_sum](../../asm/example02_reduce_sum)（profiling 驅動優化，`dwordx4` 向量化）、
+  [example03_mfma](../../asm/example03_mfma)（MFMA GEMM + LDS tiling）、
+  [example04_global_mem_oob](../../asm/example04_global_mem_oob)（buffer descriptor / 邊界檢查）。
 - **階段 B（再橋接）** — TensileLite **不走 hipcc 編 C++**，而是由 `KernelWriter.py` 透過 `rocisa`
   **程式化產生組合語言**。把階段 A 學到的指令知識（`global_load`、`ds_read`、`s_waitcnt`、`v_mfma_*`）
   對應回 TensileLite 產出的 GEMM kernel 組語，理解 prefetch / double buffer / MFMA 排程。
@@ -96,10 +103,26 @@ flowchart LR
 
 ## 交叉連結
 
+- 八週學習進度表（每天做什麼）：[learning-roadmap.md](learning-roadmap.md)
 - 整個 repo 架構地圖：[architecture/README.md](architecture/README.md)
 - Track 1 主題入口：[hipblaslt/README.md](hipblaslt/README.md)
 - Track 2 動手細節：[amd-isa-kernel.md](amd-isa-kernel.md)
+- Track 2 可跑範例：[asm/](../../asm)（example01~04，gfx942 手寫組語 + HIP launcher）
 - build / PR 規範以官方文件為準：[hipblaslt/AGENTS.md](../projects/hipblaslt/AGENTS.md)、[tensilelite/AGENTS.md](../projects/hipblaslt/tensilelite/AGENTS.md)（本文件組不重複）。
+
+## 規劃中文件（待擴充）
+
+現有教材還不夠完整，以下為已規劃、目前是 outline/template 的 stub（檔內標「待擴充」）。roadmap
+的每日「📚 參考資源」會以「（待擴充：<doc>）」指向它們，隨學習推進補齊：
+
+- [cuda-to-hip.md](cuda-to-hip.md)（P0；CUDA↔HIP 對照）
+- [glossary.md](glossary.md)（P0；跨文件名詞彙總）
+- [isa/gfx942-isa-reference.md](isa/gfx942-isa-reference.md)（P1；opcode 速查）
+- [isa/mfma-deep-dive.md](isa/mfma-deep-dive.md)（P1；MFMA 變體/latency）
+- [isa/lds-bank-conflicts.md](isa/lds-bank-conflicts.md)（P0；LDS 32-bank 與 padding，最高優先 gap）
+- [hipblaslt/tuning-config-reference.md](hipblaslt/tuning-config-reference.md)（P1；fork 參數表）
+- [hipblaslt/components-codegen-map.md](hipblaslt/components-codegen-map.md)（P1；Components/ 地圖）
+- 另：[hipblaslt/profiling-rocprof.md](hipblaslt/profiling-rocprof.md) 末尾有「bench+rocprof cookbook」待擴充區段
 
 ## 一句話總結
 

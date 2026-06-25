@@ -141,6 +141,17 @@ TensileLite 三階段與輸出位置見 [tensilelite-pipeline.md](tensilelite-pi
 - benchmark 數據怎麼產生：[tensilelite-pipeline.md](tensilelite-pipeline.md)
 - build / PR 規範見官方 [AGENTS.md](../../projects/hipblaslt/AGENTS.md)（本文件不重複）。
 
+## 待擴充：bench + rocprof cookbook（roofline 數字）
+
+> **狀態：outline，待擴充。** 對應 roadmap：**P0 / 06-30** 與 **P3**。以下為大綱，內容會補上。
+
+- 可直接貼的 metrics 清單：`VALUUtilization`、`VALUBusy`、`MemUnitBusy`、`MemUnitStalled`、
+  `LDSBankConflict`、`Wavefronts`（每個一句：看什麼瓶頸）
+- MI300X roofline 數字：FP16/BF16 峰值 FLOP/s、HBM 峰值頻寬、ridge point
+- 從 GEMM 維度算 arithmetic intensity，判斷落在 roofline 哪一側（compute- vs memory-bound 界線）
+- 常見診斷 recipe：memory-bound 怎麼救（向量化載入 / coalescing）、compute-bound 怎麼救
+  （MFMA 利用率 / occupancy）
+
 ## 一句話總結
 
 > bench 回答「快多少」，rocprof 回答「為什麼」，TensileLite benchmark 在 tuning 階段就能比候選 kernel。
