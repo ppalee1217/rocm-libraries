@@ -48,3 +48,15 @@ prior context; explanations must build up from the basics.
 When writing, editing, reviewing, or restructuring an onboarding or code-trace report
 (a user guide that helps a reader quickly understand the repo), use the
 `hipblaslt-code-trace` skill for the report structure and conventions.
+
+# Learning roadmap: canonical + mirrors (keep in sync)
+
+The 8-week internship learning roadmap lives in three places. The **canonical**
+(only-edit) copy is `study_docs/learning-roadmap.md`. The other two are **read-only
+mirrors**: `.cursor/learning-roadmap.md` and the Claude Code plan file
+(`~/.claude/plans/rocm-libraries-repo-familiar-starry-aurora.md`).
+
+- Always edit `study_docs/learning-roadmap.md`, never a mirror.
+- When you edit the roadmap here in Cursor, the Claude Code auto-sync hook does NOT
+  run. You must manually sync afterwards: copy `study_docs/learning-roadmap.md` over
+  both mirrors (`.cursor/learning-roadmap.md` and the Claude Code plan file).
