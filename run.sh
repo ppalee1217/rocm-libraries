@@ -61,11 +61,12 @@ if [ "${provision}" = "1" ]; then
   docker exec "${NAME}" bash /src/rocm-libraries/container-setup.sh
 fi
 
-# Refresh the Anthropic gateway auth every run (cheap). These live in the host
-# ~/.bashrc (not mounted) and contain a subscription-key secret, so we copy them
-# into the container fs (/etc/profile.d, NOT the mounted /src). Keeping it on
-# every run means rotating the host key just needs a re-run.
-AUTH_ENV="$(grep -E '^export ANTHROPIC_' /home/perlee/.bashrc || true)"
+# Refresh the Anthropic gateway auth + Claude Code tuning every run (cheap).
+# These live in the host ~/.bashrc (not mounted) and contain a subscription-key
+# secret, so we copy them into the container fs (/etc/profile.d, NOT the mounted
+# /src). Includes CLAUDE_CODE_* (e.g. MAX_CONTEXT_TOKENS=1M) so the container
+# matches the host. Re-run after editing ~/.bashrc to propagate.
+AUTH_ENV="$(grep -E '^export (ANTHROPIC_|CLAUDE_CODE_)' /home/perlee/.bashrc || true)"
 if [ -n "${AUTH_ENV}" ]; then
   printf '%s\n' "${AUTH_ENV}" | \
     docker exec -i "${NAME}" bash -c 'cat > /etc/profile.d/agent-auth.sh && chmod 644 /etc/profile.d/agent-auth.sh'

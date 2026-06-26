@@ -151,6 +151,9 @@ TensileLite 三階段與輸出位置見 [tensilelite-pipeline.md](tensilelite-pi
 - 從 GEMM 維度算 arithmetic intensity，判斷落在 roofline 哪一側（compute- vs memory-bound 界線）
 - 常見診斷 recipe：memory-bound 怎麼救（向量化載入 / coalescing）、compute-bound 怎麼救
   （MFMA 利用率 / occupancy）
+- hipBLASLt 端的 bench / 除錯旋鈕（內部參考 [`internal_docs/hipblaslt-tensilelite-reference.md`](../internal_docs/hipblaslt-tensilelite-reference.md)
+  Module A.5/B.4）：`--print_kernel_info`、`HIPBLASLT_LOG_MASK=64` + `HIPBLASLT_LOG_FILE`、`HIPBLASLT_BENCH_FREQ`；
+  以及內部「hipBLASlt Startup Guide into Profiling, Debugging and Optimization」(pageId `1179073633`，可經 MCP 抓)
 
 ## 一句話總結
 

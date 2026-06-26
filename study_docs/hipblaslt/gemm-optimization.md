@@ -3,6 +3,10 @@
 > 路徑說明：本檔在 repo 內的 `study_docs/hipblaslt/`，code 連結為相對路徑（`../../projects/...`，先回到 repo root 再進 `projects/`）。
 > 行號可能隨 commit 漂移，對不上時以符號名稱為準。建議先讀 [runtime-flow.md](runtime-flow.md)
 > 與 [tensilelite-pipeline.md](tensilelite-pipeline.md)。
+>
+> **權威內部來源**：solution selection（兩層）、調參工具生態（GEKO / bench-driven swap）、codegen
+> 重構（snippet / StinkyTofu）見 [`internal_docs/hipblaslt-tensilelite-reference.md`](../internal_docs/hipblaslt-tensilelite-reference.md)
+> Module B/C；參數速查見 [tuning-config-reference.md](tuning-config-reference.md)。
 
 ## 白話總覽
 

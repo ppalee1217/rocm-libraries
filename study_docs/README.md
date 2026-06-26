@@ -109,6 +109,9 @@ flowchart LR
 - Track 2 動手細節：[amd-isa-kernel.md](amd-isa-kernel.md)
 - Track 2 可跑範例：[asm/](../../asm)（example01~04，gfx942 手寫組語 + HIP launcher）
 - build / PR 規範以官方文件為準：[hipblaslt/AGENTS.md](../projects/hipblaslt/AGENTS.md)、[tensilelite/AGENTS.md](../projects/hipblaslt/tensilelite/AGENTS.md)（本文件組不重複）。
+- **公司內部文件（Confluence 全文 + 分類 URL 索引）**：[internal_docs/README.md](internal_docs/README.md)
+  — GCN 架構 talk、HIP 課程（100~300）、hipBLASLt/TensileLite 內部總參考；已抓成 markdown 供 agent 直接讀，
+  重點已嵌入 [learning-roadmap.md](learning-roadmap.md) 各階段。
 
 ## 規劃中文件（待擴充）
 

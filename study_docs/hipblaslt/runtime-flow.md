@@ -2,6 +2,10 @@
 
 > 路徑說明：本檔在 repo 內的 `study_docs/hipblaslt/`，code 連結為相對路徑（`../../projects/...`，先回到 repo root 再進 `projects/`）。
 > 行號可能隨 commit 漂移，對不上時以符號名稱為準。先看 [README.md](README.md) 了解全局。
+>
+> **權威內部來源**：第 4 關「選師傅」的 solution selection 權威定義＝**兩層**（先 equality 查精確
+> M,N,K 命中就用；查不到走 grid 取最近代表點），見
+> [`internal_docs/hipblaslt-tensilelite-reference.md`](../internal_docs/hipblaslt-tensilelite-reference.md) Module B。
 
 ## 白話總覽
 

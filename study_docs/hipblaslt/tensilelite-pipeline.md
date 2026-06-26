@@ -2,6 +2,10 @@
 
 > 路徑說明：本檔在 repo 內的 `study_docs/hipblaslt/`，code 連結為相對路徑（`../../projects/...`，先回到 repo root 再進 `projects/`）。
 > 行號可能隨 commit 漂移，對不上時以符號名稱為準。建議先讀 [runtime-flow.md](runtime-flow.md)。
+>
+> **權威內部來源**：tune→merge→rebuild→verify 完整流程與輸出目錄（`1_`~`3_`）見
+> [`internal_docs/tensilelite-kernel-generator.md`](../internal_docs/tensilelite-kernel-generator.md)；
+> 架構脈絡見 [`internal_docs/hipblaslt-tensilelite-reference.md`](../internal_docs/hipblaslt-tensilelite-reference.md) Module C.2。
 
 ## 白話總覽
 

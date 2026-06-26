@@ -19,5 +19,9 @@
 
 ## 目前可先看的替代資源
 
+- `study_docs/gpu_knowledge/cuda-hip-terminology.md`：CUDA↔HIP/ROCm **完整對照大表**（含硬體與 library 生態系），本文未補齊前先看它
 - `study_docs/amd-isa-kernel.md`「階段 A-1」：第一支 HIP kernel 與反組譯
-- AMD 官方 HIP 課程 HIP 101「Part A」、HIP 202「HIPify - CUDA to HIP」（見 roadmap 檔末資源表）
+- AMD 官方 HIP 課程（延伸閱讀）：[HIP 101 Part A](internal_docs/hip-training-at-amd.md#hip-101-hip-programming-part-a)、
+  [HIP 202 HIPify - CUDA to HIP](internal_docs/hip-training-at-amd.md#hip-202-hipify-and-cuda-to-hip)；
+  library 類比另見 [`internal_docs/hipblaslt-tensilelite-reference.md`](internal_docs/hipblaslt-tensilelite-reference.md)
+  Module A.1（cuBLASLt ↔ hipBLASLt 對照）
