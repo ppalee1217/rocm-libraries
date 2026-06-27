@@ -3,8 +3,7 @@
 這份文件組幫你快速看懂 hipBLASLt（AMD GPU 的 GEMM library）與它內建的 kernel 產生器
 TensileLite，並一路走到「最佳化 GEMM kernel → 用 profiling 驗證」。
 
-> 路徑說明：本文件在 repo 內的 `study_docs/hipblaslt/`，所有 code 連結是相對於本檔的相對路徑
-> （`../../` 回到 repo root，再進入 `projects/`）。行號可能隨 commit 漂移，對不上時以符號名稱為準。
+路徑說明：本文件在 repo 內的 `study_docs/hipblaslt/`，所有 code 連結是相對於本檔的相對路徑（`../../` 回到 repo root，再進入 `projects/`）。行號可能隨 commit 漂移，對不上時以符號名稱為準。
 
 ## 30 秒看懂這個 repo
 
@@ -30,7 +29,9 @@ benchmark 後挑出每種矩陣大小的最佳解，包成一個查表用的 lib
 
 下面〈建置產出什麼〉與〈runtime 怎麼用〉兩節把這個接點講具體。
 
-> 名詞：**GEMM** = 一般化矩陣乘法（General Matrix Multiply）。**kernel** = 在 GPU 上實際執行的運算程式。
+名詞：
+- **GEMM** = 一般化矩陣乘法（General Matrix Multiply）。
+- **kernel** = 在 GPU 上實際執行的運算程式。
 
 ## 全局架構
 
@@ -145,7 +146,7 @@ flowchart LR
 3. [gemm-optimization.md](gemm-optimization.md) — 想動手最佳化時，參數與 codegen 在哪裡改。
 4. [profiling-rocprof.md](profiling-rocprof.md) — 改完怎麼用 rocprof + TensileLite benchmark 證明變快。
 
-> 本頁負責「build→runtime 的交接（產物、放哪、怎麼被載入）」這層；**實際載入的逐行呼叫鏈在 [runtime-flow.md](runtime-flow.md)，產物如何生成在 [tensilelite-pipeline.md](tensilelite-pipeline.md)**，兩者不在本頁重述。
+本頁負責「build→runtime 的交接（產物、放哪、怎麼被載入）」這層；**實際載入的逐行呼叫鏈在 [runtime-flow.md](runtime-flow.md)，產物如何生成在 [tensilelite-pipeline.md](tensilelite-pipeline.md)**，兩者不在本頁重述。
 
 ## Terminology（全域共用名詞）
 
@@ -167,5 +168,4 @@ flowchart LR
 
 ## 一句話總結
 
-> 這個 repo = 「建置時做食譜（TensileLite）＋ 執行時查食譜出菜（hipBLASLt runtime）」。
-> 先看 [runtime-flow.md](runtime-flow.md)。
+這個 repo = 「建置時做食譜（TensileLite）＋ 執行時查食譜出菜（hipBLASLt runtime）」。先看 [runtime-flow.md](runtime-flow.md)。

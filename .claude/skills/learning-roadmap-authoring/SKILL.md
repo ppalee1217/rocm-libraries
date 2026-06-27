@@ -72,6 +72,40 @@ Rules:
   to a planned-but-stub doc, append **（待擴充：<path>）** so the reader knows it will be filled in.
 - Sub-items target **learning outcomes**, not memorizing current doc wording.
 
+## 可讀性與排版（hard rule）
+
+讀者最怕一行塞滿、一段到底。每個段落都要為「掃讀」優化。
+
+- **一個 bullet 一個重點**：一條 bullet 若含 ~2 個以上獨立事實，必須拆成 **nested 子 bullet**
+  （每個子項一個事實），不要用頓號/分號把多個事實串成一行。
+- **清單優先於長句**：並列的多個項目（工具、參數、步驟、產物）一律用 bullet / nested bullet 或
+  表格呈現，不要塞進同一句。
+- **長 paragraph 要斷點分段**：只有「需要連貫敘述的說明性段落」才用完整 paragraph；即使如此，
+  超過 ~3 行就要在語意斷點換段，或改成「一句 lead 句 + bullet list」。
+- **`>` callout 要短**：一個 `>` blockquote 只放**一個**短重點；更長的內容改成 lead 句 + bullets，
+  不要做多事實 blockquote。
+- 階段總覽、風險、策略提醒這類「散文密集」的段落最容易違規，撰寫/重整時優先檢查。
+
+## 檔案/文件引用必連 link（hard rule）
+
+讓讀者在 Cursor 直接點 link 開檔，不必自己找路徑。
+
+- 文中**每一個指向 repo 內實際檔案或目錄的引用**，都要寫成 markdown link，路徑相對本檔
+  （roadmap 在 `study_docs/`，故 `projects/` 用 `../projects/...`、`asm/` 用 `../../asm/...`、
+  `study_docs/` 內文件用相對檔名）。link 文字用符號/檔名：
+  ```md
+  入口無邏輯：`hipblasLtMatmul`（[hipblaslt.cpp](../projects/hipblaslt/library/src/amd_detail/hipblaslt.cpp)）只做型別轉換
+  ```
+- **link 文字不要包 backtick**：`` [`name`](url) `` 在多數 Markdown preview 會渲染成純文字、
+  點不開，要寫成 `[name](url)`。backtick 只留給**非 link** 的 inline code。
+- **適用對象**：`.py`/`.cpp`/`.s`/`.yaml` 等原始檔、實際產物檔、目錄路徑、`study_docs/` 內其他文件。
+- **只連已存在的檔案**：補 link 前先確認檔案存在（`test -e` / `ls`）。**尚未建立的檔案**
+  （如多數 `study_docs/notes/MMDD-*.md`）維持純文字或 inline code，待檔案建立後再連，避免死連結。
+- **不適用（維持 inline code，不要連）**：副檔名當名詞（載入 `.co`）、env var
+  （`HIPBLASLT_TENSILE_LIBPATH`）、CLI flag（`--print_kernel_info`）、指令片段、執行期產物目錄
+  （`out/`、`3_LibraryLogic/`）。這些不是可導航的原始檔。
+- 行號會漂移：引用前查證，不確定就連檔不加 `#Lx-Ly`（見下方 fact-checking rule）。
+
 ## Fact-checking rule (hard rule)
 
 Section names, line numbers, file paths, and CLI flags must be **verified against the current
@@ -133,3 +167,6 @@ before detail.
 4. Cited `.s` line ranges fall within the real file length; section names exist; commands run.
 5. Stub-doc references use（待擴充：<path>）and every stub is listed in README.
 6. Nested checkboxes and `<details>` render correctly in Markdown.
+7. 可讀性：無 run-on bullet（多事實已拆 nested 子 bullet）、長段已斷點或改 list、`>` 只放單一短重點。
+8. 每個指向**已存在**檔案/目錄的引用都是相對路徑 markdown link；env var / flag / 副檔名名詞 /
+   執行期產物目錄 / 尚未建立的檔維持 inline code，未誤連。

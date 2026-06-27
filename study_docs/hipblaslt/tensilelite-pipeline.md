@@ -1,11 +1,10 @@
 # TensileLite 三階段：kernel 是怎麼產生與挑選的
 
-> 路徑說明：本檔在 repo 內的 `study_docs/hipblaslt/`，code 連結為相對路徑（`../../projects/...`，先回到 repo root 再進 `projects/`）。
-> 行號可能隨 commit 漂移，對不上時以符號名稱為準。建議先讀 [runtime-flow.md](runtime-flow.md)。
->
-> **權威內部來源**：tune→merge→rebuild→verify 完整流程與輸出目錄（`1_`~`3_`）見
-> [`internal_docs/tensilelite-kernel-generator.md`](../internal_docs/tensilelite-kernel-generator.md)；
-> 架構脈絡見 [`internal_docs/hipblaslt-tensilelite-reference.md`](../internal_docs/hipblaslt-tensilelite-reference.md) Module C.2。
+路徑說明：本檔在 repo 內的 `study_docs/hipblaslt/`，code 連結為相對路徑（`../../projects/...`，先回到 repo root 再進 `projects/`）。行號可能隨 commit 漂移，對不上時以符號名稱為準。建議先讀 [runtime-flow.md](runtime-flow.md)。
+
+**權威內部來源**：
+- tune→merge→rebuild→verify 完整流程與輸出目錄（`1_`~`3_`）見 [internal_docs/tensilelite-kernel-generator.md](../internal_docs/tensilelite-kernel-generator.md)。
+- 架構脈絡見 [internal_docs/hipblaslt-tensilelite-reference.md](../internal_docs/hipblaslt-tensilelite-reference.md) Module C.2。
 
 ## 白話總覽
 
@@ -64,13 +63,15 @@ flowchart LR
 
 ### kernel 組合語言怎麼吐出來：KernelWriter + rocisa
 
-候選 kernel 的 GPU 組合語言由 `KernelWriter.py` 產生，它呼叫 C++ 模組 `rocisa`（Nanobind 綁定）逐條產生指令。
+候選 kernel 的 GPU 組合語言由 [KernelWriter.py](../../projects/hipblaslt/tensilelite/Tensile/KernelWriter.py) 產生，它呼叫 C++ 模組 [rocisa](../../projects/hipblaslt/tensilelite/rocisa)（Nanobind 綁定）逐條產生指令。
 一開始不用全懂，先記住入口。
 
 - kernel 主體建構：[kernelBody()](../../projects/hipblaslt/tensilelite/Tensile/KernelWriter.py#L5279)
 - 產生 source 的入口：[_getKernelSource()](../../projects/hipblaslt/tensilelite/Tensile/KernelWriter.py#L10602)
 
-> 名詞：**rocisa** = 專門「組裝 AMDGPU 指令」的 C++ 工具庫；`KernelWriter.py` 像在用它寫組合語言。
+名詞：
+- **rocisa** = 專門「組裝 AMDGPU 指令」的 C++ 工具庫。
+- [KernelWriter.py](../../projects/hipblaslt/tensilelite/Tensile/KernelWriter.py) 像在用 rocisa 寫組合語言。
 
 ## 一次 build 涵蓋什麼？候選 vs 出貨、size 範圍、何時要重跑
 
@@ -101,7 +102,7 @@ flowchart LR
 - **需要重跑 TensileLite**：
   - 換 GPU 架構（`.co` 是 per-arch，例如 `gfx942` 的檔不能給別的架構用）。
   - 想要目前沒有的新調校點或新功能（為某個 shape 追求更快、支援新型別/epilogue）→ 改 config 重跑三階段。
-  - 改了 kernel 產生邏輯或參數（`KernelWriter.py`、`rocisa`、tile 設定）→ 重跑才會反映到新的 `.co`。
+  - 改了 kernel 產生邏輯或參數（[KernelWriter.py](../../projects/hipblaslt/tensilelite/Tensile/KernelWriter.py)、[rocisa](../../projects/hipblaslt/tensilelite/rocisa)、tile 設定）→ 重跑才會反映到新的 `.co`。
 
 ## 關鍵資料結構 / 輸出目錄
 
@@ -125,13 +126,13 @@ Tensile/bin/Tensile <config.yaml> out/
 ```
 
 可拆兩步：先 `--build-only`（只產生+編譯），再 `--use-cache`（跑 benchmark + 後續階段）。範例 config 見
-`../../projects/hipblaslt/tensilelite/Tensile/Tests/`。
+[Tensile/Tests/](../../projects/hipblaslt/tensilelite/Tensile/Tests/)。
 
 ## Terminology
 
 - `tuning` - 試多種 kernel 設定、比較效能、挑最快的過程。
 - `fork` - 把參數的多個值展開成多組候選設定。
-- `rocisa` - 組裝 AMDGPU 指令的 C++ 工具庫。
+- [rocisa](../../projects/hipblaslt/tensilelite/rocisa) - 組裝 AMDGPU 指令的 C++ 工具庫。
 - `library logic` - 「哪種 size 配哪個 solution」的選擇邏輯（YAML/MsgPack）。
 
 ## 交叉連結

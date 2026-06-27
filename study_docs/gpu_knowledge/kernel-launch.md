@@ -1,7 +1,8 @@
 # CPU 把 kernel launch 到 GPU 的詳細步驟
 
-> 路徑說明：本檔在 `study_docs/gpu_knowledge/`。連回頂層用 `../`。以 CUDA / NVIDIA 為主軸，
-> 並標註 HIP / ROCm 對應；AMD、OpenCL、Vulkan Compute 概念相近，只是 API 名稱與 driver 實作不同。
+路徑說明：本檔在 `study_docs/gpu_knowledge/`。連回頂層用 `../`。以 CUDA / NVIDIA 為主軸，並標註 HIP / ROCm 對應。
+
+- AMD、OpenCL、Vulkan Compute 概念相近，只是 API 名稱與 driver 實作不同。
 
 ## 白話總覽
 
@@ -94,8 +95,10 @@ launch 發生前，code 要先被編成 GPU 看得懂的東西。
 22. D2H：把結果從 GPU copy 回 CPU。
 23. 檢查錯誤（見下）、釋放 device memory（`cudaFree` / `hipFree`）。
 
-> 抓錯兩段式：`cudaGetLastError()` 抓 launch configuration error；`cudaDeviceSynchronize()`
-> 抓 kernel 執行期錯誤。因為 launch 非同步，執行期錯誤要等同步點才浮現。
+**抓錯兩段式**：
+
+- `cudaGetLastError()` 抓 launch configuration error。
+- `cudaDeviceSynchronize()` 抓 kernel 執行期錯誤。因為 launch 非同步，執行期錯誤要等同步點才浮現。
 
 ## 餐廳比喻
 
@@ -142,6 +145,6 @@ launch 發生前，code 要先被編成 GPU 看得懂的東西。
 
 ## 一句話總結
 
-> kernel launch 的本質不是「CPU 把程式碼丟過去」，而是「CPU 把已編好、GPU 找得到的 kernel，
-> 用一組 launch 參數排進 GPU 的工作隊列」，然後通常立刻返回；GPU 自己把 grid 拆成 block、
-> 派到 SM/CU、用 warp 執行。
+kernel launch 的本質不是「CPU 把程式碼丟過去」，而是「CPU 把已編好、GPU 找得到的 kernel，
+用一組 launch 參數排進 GPU 的工作隊列」，然後通常立刻返回；GPU 自己把 grid 拆成 block、
+派到 SM/CU、用 warp 執行。

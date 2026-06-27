@@ -1,12 +1,8 @@
 # GEMM 最佳化切入點：要改什麼、在哪裡改
 
-> 路徑說明：本檔在 repo 內的 `study_docs/hipblaslt/`，code 連結為相對路徑（`../../projects/...`，先回到 repo root 再進 `projects/`）。
-> 行號可能隨 commit 漂移，對不上時以符號名稱為準。建議先讀 [runtime-flow.md](runtime-flow.md)
-> 與 [tensilelite-pipeline.md](tensilelite-pipeline.md)。
->
-> **權威內部來源**：solution selection（兩層）、調參工具生態（GEKO / bench-driven swap）、codegen
-> 重構（snippet / StinkyTofu）見 [`internal_docs/hipblaslt-tensilelite-reference.md`](../internal_docs/hipblaslt-tensilelite-reference.md)
-> Module B/C；參數速查見 [tuning-config-reference.md](tuning-config-reference.md)。
+路徑說明：本檔在 repo 內的 `study_docs/hipblaslt/`，code 連結為相對路徑（`../../projects/...`，先回到 repo root 再進 `projects/`）。行號可能隨 commit 漂移，對不上時以符號名稱為準。建議先讀 [runtime-flow.md](runtime-flow.md) 與 [tensilelite-pipeline.md](tensilelite-pipeline.md)。
+
+**權威內部來源**：solution selection（兩層）、調參工具生態（GEKO / bench-driven swap）、codegen 重構（snippet / StinkyTofu）見 [internal_docs/hipblaslt-tensilelite-reference.md](../internal_docs/hipblaslt-tensilelite-reference.md) Module B/C；參數速查見 [tuning-config-reference.md](tuning-config-reference.md)。
 
 ## 白話總覽
 
@@ -18,8 +14,9 @@
 2. 改參數或 codegen → 用 TensileLite 重新產生 + benchmark。
 3. 比 before/after 的效能，確認真的變快（見 [profiling-rocprof.md](profiling-rocprof.md)）。
 
-> 名詞：**tile** = 把大矩陣切成小塊，每個 workgroup 算一塊；tile 大小直接影響快取/暫存器使用與效能。
-> **MFMA** = AMD 矩陣乘加指令（Matrix Fused Multiply-Add），是 GEMM 在 CDNA GPU 上的核心算力來源。
+名詞：
+- **tile** = 把大矩陣切成小塊，每個 workgroup 算一塊；tile 大小直接影響快取/暫存器使用與效能。
+- **MFMA** = AMD 矩陣乘加指令（Matrix Fused Multiply-Add），是 GEMM 在 CDNA GPU 上的核心算力來源。
 
 ## 架構 / 流程圖
 
@@ -59,7 +56,7 @@ flowchart TD
 2. **改 kernel 產生邏輯（codegen）**
    - 在 `kernelBody()` 內調整指令排程、prefetch、local/global read-write 等。
    - 程式碼：[kernelBody()](../../projects/hipblaslt/tensilelite/Tensile/KernelWriter.py#L5279)
-   - 模組化建構元件（MAC、read/write、排程）在 `../../projects/hipblaslt/tensilelite/Tensile/Components/`。
+   - 模組化建構元件（MAC、read/write、排程）在 [Tensile/Components/](../../projects/hipblaslt/tensilelite/Tensile/Components/)。
 
 3. **改 rocisa 指令層（最深，需熟 AMD ISA）**
    - rocisa 負責逐條 AMDGPU 指令的產生與最佳化 pass；改這層才會直接動到輸出的組合語言。
@@ -118,5 +115,4 @@ cd /data1/perlee/rocm-libraries/projects/hipblaslt/build/release
 
 ## 一句話總結
 
-> 先在 config 層調參數讓 TensileLite 幫你找好 kernel；要更極致再進 KernelWriter / rocisa。
-> 每次都用 benchmark + profiling 證明真的變快，下一篇 [profiling-rocprof.md](profiling-rocprof.md)。
+先在 config 層調參數讓 TensileLite 幫你找好 kernel；要更極致再進 KernelWriter / rocisa。每次都用 benchmark + profiling 證明真的變快，下一篇 [profiling-rocprof.md](profiling-rocprof.md)。

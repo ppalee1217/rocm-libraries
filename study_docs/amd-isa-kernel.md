@@ -1,7 +1,9 @@
 # 寫 GPU kernel 熟悉 AMD ISA（gfx942 / MI300）
 
-> 路徑說明：本檔在 repo 內的 `study_docs/`（最上層）。連到原始碼用 `../projects/...`（往上一層回到 repo root 再進 `projects/`）。
-> 行號可能隨 commit 漂移，對不上時以符號名稱為準。建議先讀總綱 [README.md](README.md)。
+路徑說明：本檔在 repo 內的 `study_docs/`（最上層）。連到原始碼用 `../projects/...`（往上一層回到 repo root 再進 `projects/`）。
+
+- 行號可能隨 commit 漂移，對不上時以符號名稱為準。
+- 建議先讀總綱 [README.md](README.md)。
 
 ## 白話總覽
 
@@ -9,11 +11,14 @@
 
 - **階段 A（先學單字）** — 自己寫最小的 HIP kernel，編譯後**反組譯**看它變成哪些 gfx942 指令。
   迴圈短、相依少、source 與組語一一對應，最適合從零認得指令。
-- **階段 B（再讀文章）** — TensileLite **不走 hipcc 編 C++**，而是用 `KernelWriter.py` 透過 `rocisa`
+- **階段 B（再讀文章）** — TensileLite **不走 hipcc 編 C++**，而是用 [KernelWriter.py](../projects/hipblaslt/tensilelite/Tensile/KernelWriter.py) 透過 `rocisa`
   **程式化產生組合語言**。把階段 A 認得的指令對應回 TensileLite 產出的 GEMM kernel 組語，理解
   prefetch、double buffer、MFMA 排程等真實手法。
 
-> 名詞：**ISA** = 指令集架構（這裡是 AMDGPU gfx942 的組語）。**反組譯（disassemble）** = 把編譯好的機器碼還原成可讀的組語。
+名詞：
+
+- **ISA** = 指令集架構（這裡是 AMDGPU gfx942 的組語）。
+- **反組譯（disassemble）** = 把編譯好的機器碼還原成可讀的組語。
 
 ## 架構 / 流程圖
 
@@ -54,14 +59,14 @@ which hipcc || ls /opt/rocm*/bin/hipcc
 
 ## 階段 A：寫獨立 HIP kernel → 反組譯看 ISA
 
-> **對應可跑範例**：主管整理的 [`asm/`](../../asm)（在 repo 外的同層 `/data1/perlee/asm`，容器內 `/src/asm`）
-> 已有四個完整可編譯、重注解的 gfx942 範例，是本階段最好的對照教材：
-> [example01_reduce_sum](../../asm/example01_reduce_sum)（手寫 AMDGCN baseline）、
-> [example02_reduce_sum](../../asm/example02_reduce_sum)（rocprof-compute 找瓶頸 → `dwordx4` 向量化，1.9×；
-> **優化/profiling 概念最佳單篇教材**）、
-> [example03_mfma](../../asm/example03_mfma)（MFMA GEMM + LDS tiling，最接近最終工作）、
-> [example04_global_mem_oob](../../asm/example04_global_mem_oob)（buffer descriptor / 邊界檢查）。
-> 各範例容器內 `cmake -S . -B build && cmake --build build` 即可跑。整體時程見 [learning-roadmap.md](learning-roadmap.md)。
+**對應可跑範例**：主管整理的 [asm/](../../asm)（在 repo 外的同層 `/data1/perlee/asm`，容器內 `/src/asm`）已有四個完整可編譯、重注解的 gfx942 範例，是本階段最好的對照教材：
+
+- [example01_reduce_sum](../../asm/example01_reduce_sum)（手寫 AMDGCN baseline）。
+- [example02_reduce_sum](../../asm/example02_reduce_sum)（rocprof-compute 找瓶頸 → `dwordx4` 向量化，1.9×；**優化/profiling 概念最佳單篇教材**）。
+- [example03_mfma](../../asm/example03_mfma)（MFMA GEMM + LDS tiling，最接近最終工作）。
+- [example04_global_mem_oob](../../asm/example04_global_mem_oob)（buffer descriptor / 邊界檢查）。
+
+各範例容器內 `cmake -S . -B build && cmake --build build` 即可跑。整體時程見 [learning-roadmap.md](learning-roadmap.md)。
 
 ### A-1：最小 kernel（vector add），先看基本指令
 
@@ -99,8 +104,10 @@ llvm-objdump -d --mcpu=gfx942 vadd.o      # 或對最終 .co / 可執行檔反�
 | `s_waitcnt` | 等記憶體/向量指令完成（計數器） | 編譯器插入的同步 |
 | `s_endpgm` | kernel 結束 | 函式返回 |
 
-> 名詞：**VGPR**（vector reg，每 thread 各一份）/ **SGPR**（scalar reg，整個 wavefront 共用）。
-> `s_waitcnt` 的 `vmcnt/lgkmcnt` 計數器是讀懂記憶體延遲與同步的關鍵。
+名詞：
+
+- **VGPR**（vector reg，每 thread 各一份）/ **SGPR**（scalar reg，整個 wavefront 共用）。
+- `s_waitcnt` 的 `vmcnt/lgkmcnt` 計數器是讀懂記憶體延遲與同步的關鍵。
 
 ### A-2：tiled matmul，認識 LDS（shared memory）
 
@@ -114,9 +121,10 @@ llvm-objdump -d --mcpu=gfx942 vadd.o      # 或對最終 .co / 可執行檔反�
 
 這對應 GEMM 的核心手法：先把 A/B 的小塊搬進 LDS 重用，減少 global memory 流量。
 
-> 名詞：**LDS** = Local Data Share，workgroup 共用的高速 shared memory。
-> 對照範例：[example03_mfma](../../asm/example03_mfma) 用 LDS staging 一個 `32×32` 的 GEMM tile，
-> 是 `ds_read`/`ds_write`/`s_barrier` 與 reuse 手法的完整實例。
+名詞：
+
+- **LDS** = Local Data Share，workgroup 共用的高速 shared memory。
+- 對照範例：[example03_mfma](../../asm/example03_mfma) 用 LDS staging 一個 `32×32` 的 GEMM tile，是 `ds_read`/`ds_write`/`s_barrier` 與 reuse 手法的完整實例。
 
 ### A-3：召喚 MFMA 指令
 
@@ -130,15 +138,16 @@ GEMM 算力來自 MFMA（矩陣乘加）。可用 compiler builtin 直接產生�
 
 編譯後在組語裡找 `v_mfma_*`（如 `v_mfma_f32_16x16x16_f16`）。認得它，就能在階段 B 讀懂 GEMM kernel 的主迴圈在做什麼。
 
-> 名詞：**MFMA** = Matrix Fused Multiply-Add，AMD CDNA 的矩陣乘加指令，是 GEMM 的核心算力來源。
-> 對照範例：[example03_mfma](../../asm/example03_mfma) 直接用 `v_mfma_f32_16x16x4_f32` 手寫 GEMM，
-> README 詳列 MFMA register layout（哪個 lane 持有哪個 A/B/C 元素），是讀懂主迴圈的關鍵。
+名詞：
+
+- **MFMA** = Matrix Fused Multiply-Add，AMD CDNA 的矩陣乘加指令，是 GEMM 的核心算力來源。
+- 對照範例：[example03_mfma](../../asm/example03_mfma) 直接用 `v_mfma_f32_16x16x4_f32` 手寫 GEMM，README 詳列 MFMA register layout（哪個 lane 持有哪個 A/B/C 元素），是讀懂主迴圈的關鍵。
 
 ## 階段 B：橋接 TensileLite / rocisa 產出的 GEMM 組語
 
 ### B-1：TensileLite 怎麼產生組語（不是 hipcc）
 
-TensileLite 的 GEMM kernel **不是 HIP C++ 編出來的**，而是由 `KernelWriter.py` **直接組裝組合語言**，
+TensileLite 的 GEMM kernel **不是 HIP C++ 編出來的**，而是由 [KernelWriter.py](../projects/hipblaslt/tensilelite/Tensile/KernelWriter.py) **直接組裝組合語言**，
 再交給 `rocisa`（C++ / Nanobind）逐條吐出 AMDGPU 指令。也就是說，你在階段 A 反組譯看到的指令，
 TensileLite 是**用程式一條一條寫出來的**。
 
@@ -148,7 +157,10 @@ TensileLite 是**用程式一條一條寫出來的**。
   - [mfma.cpp](../projects/hipblaslt/tensilelite/rocisa/rocisa/src/instruction/mfma.cpp)
   - [mfma.hpp](../projects/hipblaslt/tensilelite/rocisa/rocisa/include/instruction/mfma.hpp)
 
-> 名詞：**rocisa** = 專門「組裝 AMDGPU 指令」的 C++ 工具庫；`KernelWriter.py` 像在用它寫組合語言。
+名詞：
+
+- **rocisa** = 專門「組裝 AMDGPU 指令」的 C++ 工具庫。
+- [KernelWriter.py](../projects/hipblaslt/tensilelite/Tensile/KernelWriter.py) 像在用它寫組合語言。
 
 ### B-2：拿到一支真實 GEMM kernel 的組語來讀
 
@@ -206,5 +218,4 @@ Tensile/bin/Tensile <config.yaml> out/
 
 ## 一句話總結
 
-> 先用獨立 HIP kernel 反組譯認得單字（`global`/`ds`/`s_waitcnt`/`v_mfma`），
-> 再把這些單字對應回 TensileLite/rocisa 產出的 GEMM 組語，就能讀懂並動手最佳化真實 kernel。
+**先用獨立 HIP kernel 反組譯認得單字（`global`/`ds`/`s_waitcnt`/`v_mfma`），再把這些單字對應回 TensileLite/rocisa 產出的 GEMM 組語，就能讀懂並動手最佳化真實 kernel。**

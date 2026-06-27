@@ -32,5 +32,5 @@ AMD-specific 的組語細節。適合 1.5 年前寫過 CUDA、現在補硬體架
 
 ## 一句話總結
 
-> 先在這裡建立「GPU 怎麼執行、CUDA 名詞怎麼對到 AMD/HIP」的通用心智模型，再進
-> [../amd-isa-kernel.md](../amd-isa-kernel.md) 學 gfx942 組語實作。
+先在這裡建立「GPU 怎麼執行、CUDA 名詞怎麼對到 AMD/HIP」的通用心智模型，再進
+[../amd-isa-kernel.md](../amd-isa-kernel.md) 學 gfx942 組語實作。

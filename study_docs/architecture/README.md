@@ -2,8 +2,10 @@
 
 這份文件組幫你看懂**這個 repo 在本機實際長什麼樣子**，並切分各部分的角色。
 
-> 路徑說明：本檔在 repo 內的 `study_docs/architecture/`。連到原始碼用 `../../projects/...`、`../../shared/...`（往上兩層回 repo root）；
-> 連到既有導讀用 `../hipblaslt/...`、頂層地圖用 `../README.md`。
+路徑說明：本檔在 repo 內的 `study_docs/architecture/`。
+
+- 連到原始碼用 `../../projects/...`、`../../shared/...`（往上兩層回 repo root）。
+- 連到既有導讀用 `../hipblaslt/...`、頂層地圖用 `../README.md`。
 
 ## 這個 repo 是什麼
 
@@ -26,16 +28,16 @@
 |------|--------|----------|
 | `projects/` | 各個 ROCm 函式庫（BLAS/FFT/sparse/solver/RNG/DNN/...） | 只有 `hipblaslt` 完整，其餘為骨架 |
 | `shared/` | 跨庫共用的依賴 / 工具 | `stinkytofu`、`origami`、`mxdatagenerator` 有內容；`tensile`、`rocroller` 為骨架 |
-| `dnn-providers/` | DNN provider 整合層與整合測試 | 有少量 cmake / stub |
-| `cmake/` | superbuild 共用 CMake module 與 toolchain | 完整（少量檔） |
+| [dnn-providers/](../../dnn-providers) | DNN provider 整合層與整合測試 | 有少量 cmake / stub |
+| [cmake/](../../cmake) | superbuild 共用 CMake module 與 toolchain | 完整（少量檔） |
 | `study_docs/` | 本學習文件組 | 完整 |
-| `run.sh` | 啟動 ROCm CI docker 容器的腳本 | 完整 |
+| [run.sh](../../run.sh) | 啟動 ROCm CI docker 容器的腳本 | 完整 |
 
 ## 完整 vs 骨架（一眼分辨）
 
-- **完整（可深入讀）**：`projects/hipblaslt`。
-- **有內容（共用依賴）**：`shared/stinkytofu`、`shared/origami`、`shared/mxdatagenerator`。
-- **骨架（僅 build 用 stub）**：`projects/` 其餘 22 個庫、`shared/tensile`、`shared/rocroller`。
+- **完整（可深入讀）**：[projects/hipblaslt](../../projects/hipblaslt)。
+- **有內容（共用依賴）**：[shared/stinkytofu](../../shared/stinkytofu)、[shared/origami](../../shared/origami)、[shared/mxdatagenerator](../../shared/mxdatagenerator)。
+- **骨架（僅 build 用 stub）**：`projects/` 其餘 22 個庫、[shared/tensile](../../shared/tensile)、[shared/rocroller](../../shared/rocroller)。
 
 ## 命名慣例：`hip*` vs `roc*`
 
@@ -58,5 +60,6 @@ ROCm 函式庫常成對出現：
 
 ## 一句話總結
 
-> 這是 ROCm 函式庫的 superbuild，但本機是 sparse checkout：真正能讀的是 hipBLASLt，其餘是骨架。
-> 先看 [hipblaslt-layout.md](hipblaslt-layout.md)。
+**這是 ROCm 函式庫的 superbuild，但本機是 sparse checkout：真正能讀的是 hipBLASLt，其餘是骨架。**
+
+先看 [hipblaslt-layout.md](hipblaslt-layout.md)。

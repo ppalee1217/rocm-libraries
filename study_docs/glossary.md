@@ -9,7 +9,7 @@
 
 ## 硬體 / ISA（待逐條補定義）
 
-仍待補；先以 [`gpu_knowledge/`](gpu_knowledge/) 與 [`amd-isa-kernel.md`](amd-isa-kernel.md) 為準
+仍待補；先以 [gpu_knowledge/](gpu_knowledge/) 與 [amd-isa-kernel.md](amd-isa-kernel.md) 為準
 （內部文件無 ISA 實質內容，這兩段不從內部借力）。
 
 - 硬體：wave / lane、VGPR / SGPR / AGPR、CU、XCD、LDS、HBM、L2、occupancy
@@ -17,8 +17,8 @@
 
 ## GEMM / Tensile
 
-> 以下定義 summary 自 [`internal_docs/hipblaslt-tensilelite-reference.md`](internal_docs/hipblaslt-tensilelite-reference.md)
-> Module A/B/C 與 [`internal_docs/tensilelite-kernel-generator.md`](internal_docs/tensilelite-kernel-generator.md)。
+> 以下定義 summary 自 [internal_docs/hipblaslt-tensilelite-reference.md](internal_docs/hipblaslt-tensilelite-reference.md)
+> Module A/B/C 與 [internal_docs/tensilelite-kernel-generator.md](internal_docs/tensilelite-kernel-generator.md)。
 
 - **GEMM** — 一般化矩陣乘法 `D = Activation(α·op(A)·op(B) + β·op(C) + bias)`。
 - **hipBLASLt** — AMD 的 HIP GEMM library（對標 cuBLASLt），focus GEMM + epilogue fusion（bias/
@@ -60,4 +60,4 @@
 
 - `study_docs/gpu_knowledge/`：GPU 通用名詞的**概念性解釋**來源（grid/block/warp/SM/CU、CUDA↔HIP 對照）
 - 各 study_docs 檔末「Terminology」段（`README.md`、`hipblaslt/*.md`、`amd-isa-kernel.md`）
-- 公司內部文件：[`internal_docs/`](internal_docs/)（GEMM/Tensile 名詞的權威來源）
+- 公司內部文件：[internal_docs/](internal_docs/)（GEMM/Tensile 名詞的權威來源）

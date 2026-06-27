@@ -18,7 +18,7 @@ HIP 刻意設計成與 CUDA 幾乎一對一，所以多數 CUDA 概念可直接�
 HIP / AMD，不必從零學。概念解釋（grid/block/warp 的設計用途）見
 [execution-model.md](execution-model.md)；本檔專注「名詞對照」。
 
-## 與 `../cuda-to-hip.md` 的分工
+## 與 [../cuda-to-hip.md](../cuda-to-hip.md) 的分工
 
 - 本檔 = **完整對照大表**，含工具鏈、library 生態系、硬體名詞。
 - [../cuda-to-hip.md](../cuda-to-hip.md) = 給有 CUDA 背景者的 **API 速查 / 快速喚回記憶**（含 hipify、wave 64 易踩雷）。
@@ -115,6 +115,8 @@ AMD 沒有「CUDA core」這個名詞（CUDA 是 NVIDIA 平台）；「類 tenso
 
 ## 一句話總結
 
-> HIP 與 CUDA 幾乎一對一：軟體名詞（grid/block/thread/stream、`cudaMalloc`↔`hipMalloc`）直接映射，
-> 硬體名詞（SM↔CU、warp↔wavefront、Tensor Core↔Matrix Core）概念對應但不可一比一比較，且 warp
-> size 在 AMD 上常是 64。
+HIP 與 CUDA 幾乎一對一：
+
+- 軟體名詞（grid/block/thread/stream、`cudaMalloc`↔`hipMalloc`）直接映射。
+- 硬體名詞（SM↔CU、warp↔wavefront、Tensor Core↔Matrix Core）概念對應但不可一比一比較。
+- warp size 在 AMD 上常是 64。

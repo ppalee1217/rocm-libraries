@@ -57,8 +57,14 @@ description: Use when the learner has finished a day's items in the 8-week inter
   與 notes 當天檔名對齊）。
 - 語言遵 repo CLAUDE.md：繁中敘述，技術名詞 / 函式 / 檔名 / 工具名保留英文。
 - 引用 codebase 用 markdown link + 行錨點，行號先查證；不確定就連檔不加行號。
+- **每個指向實際檔案/目錄的引用都要連成 link，且只連已存在的檔**（避免死連結）；env var / CLI flag /
+  副檔名名詞 / 執行期產物目錄維持 inline code，不要連。link 文字**不要包 backtick**
+  （`` [`name`](url) `` preview 會點不開），寫成 `[name](url)`。
+- 可讀性：題目與批改敘述也套同一套規範——一個 bullet 一個重點、多事實拆 nested 子 bullet、
+  長段斷點分段，避免擠成一行。
 
 ## 驗證
 
 出題前已讀過當天對應的真實檔案；測驗檔結構含題目區（含「我的作答」空白）+ 摺疊參考答案；
-批改後每個 ⚠️/❌ 都連回一個具體可看的資源。
+批改後每個 ⚠️/❌ 都連回一個具體可看的資源（指向已存在檔的引用皆為 link）；
+題目/批改敘述遵守可讀性規範（nested bullet 切割、長段斷點、不擠一行）。

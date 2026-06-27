@@ -1,17 +1,13 @@
 # Tuning config 參數速查（ForkParameters）
 
-> **內容主要 summary 自公司內部文件**，非從零整理：權威敘述見
-> [`internal_docs/tensilelite-kernel-generator.md`](../internal_docs/tensilelite-kernel-generator.md)
-> （Kernel Generator: TensileLite）與
-> [`internal_docs/hipblaslt-tensilelite-reference.md`](../internal_docs/hipblaslt-tensilelite-reference.md)
-> Module C.3；具體參數範例見
-> [`internal_docs/tensilelite-yaml-config-kernel-a-e.md`](../internal_docs/tensilelite-yaml-config-kernel-a-e.md)。
-> **合法值的最終真相仍以原始碼為準**（`ValidParameters.py` / `GlobalParameters.py`）。
-> 對應 roadmap：**P1 / 07-06、07-08** 與 **P2~P3**（調參）。
->
-> ⚠️ **架構差異**：內部 guide 的 worked example 多為 **gfx1150 / WMMA（`WavefrontSize 32`）**；
-> 我們的 target 是 **gfx942 / MFMA（wave 64）**——參數「概念」一致，但指令形狀、`WavefrontSize`、
-> device ID 不同，數值請以本機 `f32_gsu.yaml` 與 `ValidParameters.py` 為準。
+**內容主要 summary 自公司內部文件**，非從零整理。權威敘述來源：
+- [internal_docs/tensilelite-kernel-generator.md](../internal_docs/tensilelite-kernel-generator.md)（Kernel Generator: TensileLite）
+- [internal_docs/hipblaslt-tensilelite-reference.md](../internal_docs/hipblaslt-tensilelite-reference.md) Module C.3
+- 具體參數範例見 [internal_docs/tensilelite-yaml-config-kernel-a-e.md](../internal_docs/tensilelite-yaml-config-kernel-a-e.md)
+
+**合法值的最終真相仍以原始碼為準**（[ValidParameters.py](../../projects/hipblaslt/tensilelite/Tensile/Common/ValidParameters.py) / [GlobalParameters.py](../../projects/hipblaslt/tensilelite/Tensile/Common/GlobalParameters.py)）。對應 roadmap：**P1 / 07-06、07-08** 與 **P2~P3**（調參）。
+
+> ⚠️ **架構差異**：內部 guide 的 worked example 多為 **gfx1150 / WMMA（`WavefrontSize 32`）**；我們的 target 是 **gfx942 / MFMA（wave 64）**——參數「概念」一致，但指令形狀、`WavefrontSize`、device ID 不同，數值請以本機 [f32_gsu.yaml](../../projects/hipblaslt/tensilelite/Tensile/Tests/common/gsu/f32_gsu.yaml) 與 [ValidParameters.py](../../projects/hipblaslt/tensilelite/Tensile/Common/ValidParameters.py) 為準。
 
 ## 為何重要
 
@@ -63,7 +59,7 @@ MI tile    (一條硬體指令)                16 x 16
 
 - `WaveTileM/N`：一個 wave 沿 M/N 重複幾條矩陣指令（重複越多→LDS 重用越多，但吃越多 VGPR）。
 - `WaveM/N`：一個 workgroup 沿 M/N 疊幾個 wave（共用 LDS）；總 thread = `WaveM*WaveN*WavefrontSize`。
-- 衍生關係（連結 [`Solution.py::assignDerivedParameters`](../../projects/hipblaslt/tensilelite/Tensile/SolutionStructs/Solution.py)）：`MacroTile = (16*WTM*WM) x (16*WTN*WN)`。
+- 衍生關係（連結 [Solution.py::assignDerivedParameters](../../projects/hipblaslt/tensilelite/Tensile/SolutionStructs/Solution.py)）：`MacroTile = (16*WTM*WM) x (16*WTN*WN)`。
 
 ## Solution / kernel 命名（反推 YAML 參數）
 
@@ -83,7 +79,7 @@ MI tile    (一條硬體指令)                16 x 16
 
 ## 目前可先看的替代資源（本機原始碼＝合法值真相）
 
-- `projects/hipblaslt/tensilelite/Tensile/Common/ValidParameters.py`（合法值定義 + 註解）
-- `projects/hipblaslt/tensilelite/Tensile/Common/GlobalParameters.py`（GlobalParameters 預設值）
-- `projects/hipblaslt/tensilelite/Tensile/Tests/common/gsu/f32_gsu.yaml`（最小範例）
-- `study_docs/hipblaslt/gemm-optimization.md`「三個調整層級」
+- [ValidParameters.py](../../projects/hipblaslt/tensilelite/Tensile/Common/ValidParameters.py)（合法值定義 + 註解）
+- [GlobalParameters.py](../../projects/hipblaslt/tensilelite/Tensile/Common/GlobalParameters.py)（GlobalParameters 預設值）
+- [f32_gsu.yaml](../../projects/hipblaslt/tensilelite/Tensile/Tests/common/gsu/f32_gsu.yaml)（最小範例）
+- [gemm-optimization.md](gemm-optimization.md)「三個調整層級」

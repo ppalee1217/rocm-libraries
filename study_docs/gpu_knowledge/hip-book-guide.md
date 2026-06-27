@@ -1,7 +1,8 @@
 # 《Accelerated Computing with HIP》章節導讀
 
-> 路徑說明：本檔在 `study_docs/gpu_knowledge/`。連回頂層用 `../`。
-> 對應書檔：`Accelerated_Computing_with_HIP_Internal.pdf`（AMD 內部教材）。
+路徑說明：本檔在 `study_docs/gpu_knowledge/`。連回頂層用 `../`。
+
+- 對應書檔：`Accelerated_Computing_with_HIP_Internal.pdf`（AMD 內部教材）。
 
 ## 白話總覽
 
@@ -56,5 +57,9 @@ pattern，一路到 stream、library、CUDA porting、多 GPU、datacenter 與�
 
 ## 一句話總結
 
-> 不必從頭讀整本：新手走 Ch1-2-4-5，優化走 Ch3-5-6-11+附錄A，移植走 Ch2-8-4-5，多 GPU 走
-> Ch6-9-10-11，並搭配 repo 內對應文件交叉閱讀。
+不必從頭讀整本，依目標選路徑：
+
+- 新手走 Ch1-2-4-5。
+- 優化走 Ch3-5-6-11+附錄A。
+- 移植走 Ch2-8-4-5。
+- 多 GPU 走 Ch6-9-10-11，並搭配 repo 內對應文件交叉閱讀。

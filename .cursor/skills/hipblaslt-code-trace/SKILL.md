@@ -52,10 +52,24 @@ The report must be understandable from the report alone.
   3-6 word plain-language gloss inline. Terms that usually need this: `GEMM`, `tile`,
   `MFMA`, `kernel`, `solution`, `heuristic`, `code object (.co)`, `epilogue`,
   `lazy load`, `contraction`, `workgroup`, `occupancy`.
-- **One idea per line.** Do not chain multiple facts into a run-on bullet. If a bullet
-  carries more than ~two facts, split into nested sub-bullets.
 - **Plain language, then term.** Every sentence should be understandable on first read;
   introduce the precise term after the plain wording, not before.
+
+## Readability / formatting rule (important)
+
+Readers bounce off walls of text. Optimise every section for scannability.
+
+- **一個 bullet 一個重點 (one idea per line).** Do not chain multiple facts with 頓號/
+  分號 into one run-on bullet. If a bullet carries more than ~two facts, split into
+  **nested sub-bullets**, one fact each.
+- **清單優先於長句 (list over long sentence).** When you are enumerating parallel things
+  (steps, params, products, tools), use a bullet / nested-bullet list or a table — never
+  pack them into a single sentence.
+- **長 paragraph 要斷點分段.** Reserve full paragraphs for genuinely connected narrative.
+  Even then, break at a semantic boundary once a paragraph runs past ~3 lines, or convert
+  it to a lead sentence + bullet list.
+- **`>` callouts stay short.** A `>` blockquote holds **one** short idea. Anything longer
+  becomes a lead line + bullets, not a multi-fact blockquote.
 
 ## Code reference rule (important)
 
@@ -63,6 +77,9 @@ This replaces the messy habit of pasting absolute paths into prose.
 
 - Cite every concrete code location as a **markdown link** whose text is the symbol or
   function name and whose URL is a **path relative to the report file** plus a line anchor.
+- **Do NOT wrap the link text in backticks** — `` [`name`](url) `` renders as raw text (no
+  clickable link) in many Markdown previews. Write `[name](url)`. Backticks are only for
+  standalone inline code that is **not** a link.
   Reports live inside the repo at `study_docs/hipblaslt/`, so the path climbs out of
   `study_docs/` back to the repo root and into `projects/`; recompute the `../` depth from
   the actual report location:
@@ -79,6 +96,13 @@ This replaces the messy habit of pasting absolute paths into prose.
   the call site is the point being made.
 - Present a flow's links **in execution order** so the reader can step through them.
 - For a list of structures, prefer a table: name | plain-language role | link.
+- **Link every reference to a real file or directory** that exists in the repo, so the
+  reader can click straight to it. **Link only files that exist** — verify before linking;
+  do not create dead links to not-yet-written files.
+- **Do NOT link** (keep as plain `inline code`): a bare extension used as a noun
+  (「載入 `.co`」), a C++ type (`const void*`), an env var (`HIPBLASLT_TENSILE_LIBPATH`),
+  a CLI flag (`--print_kernel_info`), a command fragment, or a runtime-generated output dir
+  (`out/`, `3_LibraryLogic/`). These are not navigable source files.
 
 ## Diagram rule
 
@@ -172,3 +196,7 @@ Before finalizing a report, confirm:
 - [ ] A reader with no prior context can follow the flow from the report alone.
 - [ ] The report stays within one topic; related flows are linked, not merged.
 - [ ] Ends with a one-line takeaway and a pointer to the next report.
+- [ ] No run-on bullets / over-long paragraphs: multi-fact bullets are split into nested
+      sub-bullets, long paragraphs are broken at a semantic boundary or turned into lists.
+- [ ] Every reference to an existing repo file/directory is a clickable relative-path link;
+      extensions/types/env vars/flags/output dirs are left as plain inline code, not linked.

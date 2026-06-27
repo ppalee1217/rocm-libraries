@@ -23,5 +23,5 @@
 - `study_docs/amd-isa-kernel.md`「階段 A-1」：第一支 HIP kernel 與反組譯
 - AMD 官方 HIP 課程（延伸閱讀）：[HIP 101 Part A](internal_docs/hip-training-at-amd.md#hip-101-hip-programming-part-a)、
   [HIP 202 HIPify - CUDA to HIP](internal_docs/hip-training-at-amd.md#hip-202-hipify-and-cuda-to-hip)；
-  library 類比另見 [`internal_docs/hipblaslt-tensilelite-reference.md`](internal_docs/hipblaslt-tensilelite-reference.md)
+  library 類比另見 [internal_docs/hipblaslt-tensilelite-reference.md](internal_docs/hipblaslt-tensilelite-reference.md)
   Module A.1（cuBLASLt ↔ hipBLASLt 對照）

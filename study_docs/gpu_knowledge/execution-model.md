@@ -1,7 +1,8 @@
 # GPU 執行模型：grid / block / warp / thread / SM / CU
 
-> 路徑說明：本檔在 `study_docs/gpu_knowledge/`。連回頂層用 `../`（如 `../amd-isa-kernel.md`）。
-> 建議先讀本資料夾入口 [README.md](README.md)。
+路徑說明：本檔在 `study_docs/gpu_knowledge/`。連回頂層用 `../`（如 `../amd-isa-kernel.md`）。
+
+- 建議先讀本資料夾入口 [README.md](README.md)。
 
 ## 白話總覽
 
@@ -204,6 +205,6 @@ register / shared memory，進而決定每個 SM/CU 能同時 resident 幾個 bl
 
 ## 一句話總結
 
-> Grid 是整份工作，block 是放到單一 SM/CU 的合作小隊，thread 是小隊成員、實際成為
-> warp/wavefront 裡的一個 lane；AMD 的「類 CUDA core」是 SIMD lane、「類 Tensor core」是
-> Matrix Core，但都不叫那個名字、也不能一比一比較。
+Grid 是整份工作，block 是放到單一 SM/CU 的合作小隊，thread 是小隊成員、實際成為
+warp/wavefront 裡的一個 lane；AMD 的「類 CUDA core」是 SIMD lane、「類 Tensor core」是
+Matrix Core，但都不叫那個名字、也不能一比一比較。

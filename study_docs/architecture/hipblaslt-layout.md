@@ -1,7 +1,8 @@
 # hipBLASLt 資料夾結構解說（哪個 folder 是做什麼的）
 
-> 路徑說明：本檔在 `study_docs/architecture/`。連到原始碼用 `../../projects/...`。
-> 本篇只講「**資料夾是什麼、放什麼**」；**執行期 / 產生 kernel 的行為**請看 [../hipblaslt/](../hipblaslt/) 的四篇導讀，不在此重述。
+路徑說明：本檔在 `study_docs/architecture/`。連到原始碼用 `../../projects/...`。
+
+本篇只講「**資料夾是什麼、放什麼**」；**執行期 / 產生 kernel 的行為**請看 [../hipblaslt/](../hipblaslt/) 的四篇導讀，不在此重述。
 
 ## 白話總覽
 
@@ -17,17 +18,17 @@
 
 | 資料夾 | 是什麼 |
 |--------|--------|
-| `library/` | hipBLASLt 函式庫本體（公開 API + 內部 `rocblaslt` 派工層）。 |
-| `tensilelite/` | kernel 產生器（Python codegen + C++ runtime + rocisa），建置期用。 |
-| `device-library/` | 裝置端 kernel：`extops/`、`matrix-transform/`。 |
-| `clients/` | 可執行用戶端：benchmark、測試、範例。 |
-| `deps/` | 第三方相依的取得設定（gtest、lapack 等）。 |
-| `docs/` | 官方文件來源（doxygen、how-to、conceptual 等）。 |
-| `scripts/` | 輔助腳本（如 Tensile logic 檢查）。 |
-| `tools/` | 雜項工具腳本。 |
-| `utilities/` | tuning 輔助（`QuickTune`、YAML 修正工具等）。 |
-| `cmake/` | 本庫專屬 CMake 設定（找 BLIS、python、支援架構等）。 |
-| `docker/` | 建置/開發用 Dockerfile。 |
+| [library/](../../projects/hipblaslt/library) | hipBLASLt 函式庫本體（公開 API + 內部 `rocblaslt` 派工層）。 |
+| [tensilelite/](../../projects/hipblaslt/tensilelite) | kernel 產生器（Python codegen + C++ runtime + rocisa），建置期用。 |
+| [device-library/](../../projects/hipblaslt/device-library) | 裝置端 kernel：`extops/`、`matrix-transform/`。 |
+| [clients/](../../projects/hipblaslt/clients) | 可執行用戶端：benchmark、測試、範例。 |
+| [deps/](../../projects/hipblaslt/deps) | 第三方相依的取得設定（gtest、lapack 等）。 |
+| [docs/](../../projects/hipblaslt/docs) | 官方文件來源（doxygen、how-to、conceptual 等）。 |
+| [scripts/](../../projects/hipblaslt/scripts) | 輔助腳本（如 Tensile logic 檢查）。 |
+| [tools/](../../projects/hipblaslt/tools) | 雜項工具腳本。 |
+| [utilities/](../../projects/hipblaslt/utilities) | tuning 輔助（`QuickTune`、YAML 修正工具等）。 |
+| [cmake/](../../projects/hipblaslt/cmake) | 本庫專屬 CMake 設定（找 BLIS、python、支援架構等）。 |
+| [docker/](../../projects/hipblaslt/docker) | 建置/開發用 Dockerfile。 |
 | `build/` | 建置輸出目錄（產生物，非原始碼）。 |
 
 > 建置指令與規範以官方 [AGENTS.md](../../projects/hipblaslt/AGENTS.md) 為準，本文件不重複。
@@ -47,9 +48,9 @@ library/
             └── rocroller/    # legacy rocRoller 自訂 kernel（gated）
 ```
 
-- `include/hipblaslt/` — 使用者 include 的公開 header（`hipblaslt.h`、`hipblaslt-ext.hpp` 等）。
-- `src/amd_detail/hipblaslt.cpp` — 公開 API 入口，把 opaque handle 轉成內部型別後轉呼叫 `rocblaslt`。
-- `src/amd_detail/rocblaslt/` — 內部層：參數驗證、組「訂單」、Tensile host 整合（`src/Tensile/`）、以及一組 legacy rocRoller kernel（`src/rocroller/`）。
+- [include/hipblaslt/](../../projects/hipblaslt/library/include/hipblaslt) — 使用者 include 的公開 header（`hipblaslt.h`、`hipblaslt-ext.hpp` 等）。
+- [src/amd_detail/hipblaslt.cpp](../../projects/hipblaslt/library/src/amd_detail/hipblaslt.cpp) — 公開 API 入口，把 opaque handle 轉成內部型別後轉呼叫 `rocblaslt`。
+- [src/amd_detail/rocblaslt/](../../projects/hipblaslt/library/src/amd_detail/rocblaslt) — 內部層：參數驗證、組「訂單」、Tensile host 整合（`src/Tensile/`）、以及一組 legacy rocRoller kernel（`src/rocroller/`）。
 
 > 對應行為：這條呼叫鏈（API → rocblaslt → tensile_host → 選 kernel → launch）詳見 [../hipblaslt/runtime-flow.md](../hipblaslt/runtime-flow.md)。
 
@@ -72,23 +73,25 @@ tensilelite/
 └── tests/          # 測試
 ```
 
-- `Tensile/` — Python 端：把 YAML 設定 fork 成候選 kernel、產生組語、跑 benchmark、挑最佳解、打包 library（三階段 `BenchmarkProblems → LibraryLogic → ClientWriter`）。
-- `rocisa/` — C++ 指令產生庫；`KernelWriter.py` 透過它逐條吐出 `v_mfma_*` 等 AMDGPU 指令。
-- `src/`、`include/` — 執行期 C++ runtime（`ContractionSolution`、`MasterSolutionLibrary`、`HipSolutionAdapter` 等）。
+- [Tensile/](../../projects/hipblaslt/tensilelite/Tensile) — Python 端：把 YAML 設定 fork 成候選 kernel、產生組語、跑 benchmark、挑最佳解、打包 library（三階段 `BenchmarkProblems → LibraryLogic → ClientWriter`）。
+- [rocisa/](../../projects/hipblaslt/tensilelite/rocisa) — C++ 指令產生庫；[KernelWriter.py](../../projects/hipblaslt/tensilelite/Tensile/KernelWriter.py) 透過它逐條吐出 `v_mfma_*` 等 AMDGPU 指令。
+- [src/](../../projects/hipblaslt/tensilelite/src)、[include/](../../projects/hipblaslt/tensilelite/include) — 執行期 C++ runtime（`ContractionSolution`、`MasterSolutionLibrary`、`HipSolutionAdapter` 等）。
 
-> 對應行為：三階段與輸出目錄詳見 [../hipblaslt/tensilelite-pipeline.md](../hipblaslt/tensilelite-pipeline.md)；
-> 想動手改 codegen / 練 ISA 見 [../amd-isa-kernel.md](../amd-isa-kernel.md)。
+對應行為：
+
+- 三階段與輸出目錄詳見 [../hipblaslt/tensilelite-pipeline.md](../hipblaslt/tensilelite-pipeline.md)。
+- 想動手改 codegen / 練 ISA 見 [../amd-isa-kernel.md](../amd-isa-kernel.md)。
 
 ## `device-library/` 與 `clients/`
 
-- `device-library/`
-  - `extops/` — 額外運算 kernel（如 AMax、LayerNorm、Softmax 類 ext op）。
-  - `matrix-transform/` — 矩陣轉換 kernel。
-- `clients/`
-  - `bench/` — `hipblaslt-bench`（量測 GEMM、印出選到的 solution）。
-  - `tests/` — gtest（由 `data/` 的 YAML 驅動）。
-  - `samples/` — 獨立使用範例。
-  - `common/`、`scripts/` — 用戶端共用程式與腳本。
+- [device-library/](../../projects/hipblaslt/device-library)
+  - [extops/](../../projects/hipblaslt/device-library/extops) — 額外運算 kernel（如 AMax、LayerNorm、Softmax 類 ext op）。
+  - [matrix-transform/](../../projects/hipblaslt/device-library/matrix-transform) — 矩陣轉換 kernel。
+- [clients/](../../projects/hipblaslt/clients)
+  - [bench/](../../projects/hipblaslt/clients/bench) — `hipblaslt-bench`（量測 GEMM、印出選到的 solution）。
+  - [tests/](../../projects/hipblaslt/clients/tests) — gtest（由 `data/` 的 YAML 驅動）。
+  - [samples/](../../projects/hipblaslt/clients/samples) — 獨立使用範例。
+  - [common/](../../projects/hipblaslt/clients/common)、[scripts/](../../projects/hipblaslt/clients/scripts) — 用戶端共用程式與腳本。
 
 ## 三大部分如何串起來
 
@@ -106,8 +109,9 @@ flowchart TD
     art --> load
 ```
 
-> 一句話：`tensilelite/` 與 `device-library/` 在**建置期**做出 `.co` 與選擇表；`library/` 在**執行期**查表並載入它們。
-> 這條 build→runtime 交接的細節見 [../hipblaslt/README.md](../hipblaslt/README.md)。
+一句話：`tensilelite/` 與 `device-library/` 在**建置期**做出 `.co` 與選擇表；`library/` 在**執行期**查表並載入它們。
+
+這條 build→runtime 交接的細節見 [../hipblaslt/README.md](../hipblaslt/README.md)。
 
 ## 交叉連結
 
@@ -117,5 +121,4 @@ flowchart TD
 
 ## 一句話總結
 
-> `library/` = 本體（執行期）、`tensilelite/` = kernel 產生器（建置期）、`device-library/` = 額外裝置 kernel；
-> 其餘是建置 / 測試 / 文件 / 工具。
+**[library/](../../projects/hipblaslt/library) = 本體（執行期）、[tensilelite/](../../projects/hipblaslt/tensilelite) = kernel 產生器（建置期）、[device-library/](../../projects/hipblaslt/device-library) = 額外裝置 kernel；其餘是建置 / 測試 / 文件 / 工具。**

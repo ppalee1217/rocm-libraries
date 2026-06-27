@@ -58,3 +58,23 @@ mirrors**: the Claude Code plan file
   auto-copies the canonical file to both mirrors on every edit.
 - The hook does NOT fire when editing in Cursor or when editing a mirror directly.
   In those cases, manually sync: copy `study_docs/learning-roadmap.md` over both mirrors.
+
+# Claude / Cursor parity (rules and skills MUST stay in sync)
+
+This repo is driven from both Claude Code and Cursor, so the agent instructions are
+duplicated on each side. Every Claude-side file has a Cursor-side counterpart, and the
+two must always carry the same content:
+
+- General rules: `CLAUDE.md` ↔ `.cursor/rules/hipblaslt-onboarding.mdc`
+  (same substantive rules; only the `.mdc` frontmatter and a few platform-specific
+  notes — e.g. how the auto-sync hook behaves — may differ in wording).
+- Skills: `.claude/skills/<name>/SKILL.md` ↔ `.cursor/skills/<name>/SKILL.md`
+  (byte-identical — no platform-specific content).
+
+Rule: whenever you edit one side — your own general rule OR any SKILL — apply the
+same change to its counterpart **in the same task**. Never leave the two out of sync.
+After editing, `diff` the pair to confirm (skills must be byte-identical; the rule
+files must match in substance, allowing only frontmatter / platform-specific wording).
+
+Note: `.claude/` and `.cursor/skills/` sit outside the sparse-checkout cone, so staging
+them needs `git add --sparse`.

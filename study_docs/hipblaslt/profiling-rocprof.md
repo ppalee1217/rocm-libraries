@@ -1,7 +1,6 @@
 # 用 rocprof 量測 + 用 TensileLite 驗證最佳化
 
-> 路徑說明：本檔在 repo 內的 `study_docs/hipblaslt/`，code 連結為相對路徑（`../../projects/...`，先回到 repo root 再進 `projects/`）。
-> 行號可能隨 commit 漂移，對不上時以符號名稱為準。建議先讀 [gemm-optimization.md](gemm-optimization.md)。
+路徑說明：本檔在 repo 內的 `study_docs/hipblaslt/`，code 連結為相對路徑（`../../projects/...`，先回到 repo root 再進 `projects/`）。行號可能隨 commit 漂移，對不上時以符號名稱為準。建議先讀 [gemm-optimization.md](gemm-optimization.md)。
 
 ## 白話總覽
 
@@ -13,8 +12,9 @@
 
 兩者搭配：bench 給你「結果數字」，rocprof 給你「原因」。
 
-> 名詞：**occupancy（佔用率）** = GPU 上同時有多少 wavefront 在跑，太低通常代表暫存器/LDS 用太多。
-> **rocprof** = ROCm 的 GPU profiler，可抓 kernel 時間與硬體計數器（counters）。
+名詞：
+- **occupancy（佔用率）** = GPU 上同時有多少 wavefront 在跑，太低通常代表暫存器/LDS 用太多。
+- **rocprof** = ROCm 的 GPU profiler，可抓 kernel 時間與硬體計數器（counters）。
 
 ## 架構 / 流程圖
 
@@ -151,7 +151,7 @@ TensileLite 三階段與輸出位置見 [tensilelite-pipeline.md](tensilelite-pi
 - 從 GEMM 維度算 arithmetic intensity，判斷落在 roofline 哪一側（compute- vs memory-bound 界線）
 - 常見診斷 recipe：memory-bound 怎麼救（向量化載入 / coalescing）、compute-bound 怎麼救
   （MFMA 利用率 / occupancy）
-- hipBLASLt 端的 bench / 除錯旋鈕（內部參考 [`internal_docs/hipblaslt-tensilelite-reference.md`](../internal_docs/hipblaslt-tensilelite-reference.md)
+- hipBLASLt 端的 bench / 除錯旋鈕（內部參考 [internal_docs/hipblaslt-tensilelite-reference.md](../internal_docs/hipblaslt-tensilelite-reference.md)
   Module A.5/B.4）：`--print_kernel_info`、`HIPBLASLT_LOG_MASK=64` + `HIPBLASLT_LOG_FILE`、`HIPBLASLT_BENCH_FREQ`；
   以及內部「hipBLASlt Startup Guide into Profiling, Debugging and Optimization」(pageId `1179073633`，可經 MCP 抓)
 

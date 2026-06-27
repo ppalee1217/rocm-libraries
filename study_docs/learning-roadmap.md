@@ -1,9 +1,9 @@
 # hipBLASLt / TensileLite 實習學習 Roadmap（8 週）
 
 > **這份是 canonical（唯一可編輯來源）。** 另有兩份只讀 mirror：Claude Code plan 檔
-> （`~/.claude/plans/rocm-libraries-repo-familiar-starry-aurora.md`）與 [`../.cursor/learning-roadmap.md`](../.cursor/learning-roadmap.md)。
+> （`~/.claude/plans/rocm-libraries-repo-familiar-starry-aurora.md`）與 [../.cursor/learning-roadmap.md](../.cursor/learning-roadmap.md)。
 > 要改 roadmap **一律改本檔**；在 Claude Code 內改本檔會自動同步兩份 mirror，在 Cursor 內或直接改
-> mirror 則需手動同步（見 [`../CLAUDE.md`](../CLAUDE.md)）。
+> mirror 則需手動同步（見 [../CLAUDE.md](../CLAUDE.md)）。
 
 ## Context（為什麼做這份計畫）
 
@@ -11,48 +11,53 @@
 TensileLite、寫 GPU kernel 熟悉 AMD ISA」，最終要在 main repo 有**多顆 commit**，並完成
 一個 GEMM kernel 優化。短期硬截止：**下週三 2026-07-01** 前要把 codebase / workflow 摸熟、HIP 練熟。
 
-> **North Star（最終交付的真目標）**：在**團隊在乎的 shape** 上做出一個 **codegen 級、可被 reviewer
-> 接受／合併**的 GEMM 優化 PR。
-> - **真目標**＝改善團隊在乎 shape 的效能、PR 可合併（多半落在第 2 層 codegen：`kernelBody()`/Components）。
-> - **floor（風險底線，非目標）**＝config-fork 讓新 solution 進選擇表並被選用——這是熱身級成果，也是
->   P3 codegen 做不完時的安全網，**不等於**最終交付。
-> - 這份 roadmap 的每個 phase 都應對照下方〈目標反推總覽〉反推「為了交付，我必須*能做到*什麼」，
->   而不是「把現有教材讀完」。**最高槓桿的第一步是第一週就與 mentor 對齊 target**（見 06-26）。
+**North Star（最終交付的真目標）**：在**團隊在乎的 shape** 上做出一個 **codegen 級、可被 reviewer
+接受／合併**的 GEMM 優化 PR。
+
+- **真目標**＝改善團隊在乎 shape 的效能、PR 可合併（多半落在第 2 層 codegen：`kernelBody()`/Components）。
+- **floor（風險底線，非目標）**＝config-fork 讓新 solution 進選擇表並被選用——這是熱身級成果，也是
+  P3 codegen 做不完時的安全網，**不等於**最終交付。
+- 這份 roadmap 的每個 phase 都應對照下方〈目標反推總覽〉反推「為了交付，我必須*能做到*什麼」，
+  而不是「把現有教材讀完」。**最高槓桿的第一步是第一週就與 mentor 對齊 target**（見 06-26）。
 
 本計畫評估了兩份既有資產並把它們融合成一條可執行的學習軌：
 
 - **`study_docs/`（rocm-libraries 內）** — 偏「看懂現有系統」（Track 1）：runtime-flow →
   tensilelite-pipeline → gemm-optimization → profiling-rocprof，外加 architecture 導覽。
-  深度足夠當系統地圖，但 Track 2（動手 ISA）只有方法論，可跑範例靠 [`asm/`](../../asm) 補上。
-- **[`asm/`](../../asm)（主管未完成的教材）** — 補上 study_docs 缺的實作半邊。四個**完整可編譯、
+  深度足夠當系統地圖，但 Track 2（動手 ISA）只有方法論，可跑範例靠 [asm/](../../asm) 補上。
+- **[asm/](../../asm)（主管未完成的教材）** — 補上 study_docs 缺的實作半邊。四個**完整可編譯、
   重注解**的 gfx942 範例，自成漸進：
-  - [`example01_reduce_sum`](../../asm/example01_reduce_sum) — 手寫 AMDGCN reduce baseline + HIP launcher + CMake。
-  - [`example02_reduce_sum`](../../asm/example02_reduce_sum) — 用 rocprof-compute 找瓶頸 → 改 `global_load_dwordx4` 優化（1.9×），
+  - [example01_reduce_sum](../../asm/example01_reduce_sum) — 手寫 AMDGCN reduce baseline + HIP launcher + CMake。
+  - [example02_reduce_sum](../../asm/example02_reduce_sum) — 用 rocprof-compute 找瓶頸 → 改 `global_load_dwordx4` 優化（1.9×），
     附完整 roofline / counter 解讀。**這是「profiling 驅動優化」的最佳範本**。
-  - [`example03_mfma`](../../asm/example03_mfma) — **MFMA GEMM + LDS tiling**（`v_mfma_f32_16x16x4_f32`），最接近最終工作，
+  - [example03_mfma](../../asm/example03_mfma) — **MFMA GEMM + LDS tiling**（`v_mfma_f32_16x16x4_f32`），最接近最終工作，
     附 ATT thread-trace（rocprof-compute-viewer）流程。
-  - [`example04_global_mem_oob`](../../asm/example04_global_mem_oob) — buffer descriptor (V#) / `num_records` 邊界檢查的 ISA 深潛。
+  - [example04_global_mem_oob](../../asm/example04_global_mem_oob) — buffer descriptor (V#) / `num_records` 邊界檢查的 ISA 深潛。
 
-**結論：[`asm/`](../../asm) 作為 Track 2 的實作骨幹**，與 study_docs 的 Track 1 交織。`asm/ex03` 是通往
+**結論：[asm/](../../asm) 作為 Track 2 的實作骨幹**，與 study_docs 的 Track 1 交織。`asm/ex03` 是通往
 真實 GEMM 優化的天然橋樑。（`asm/` 在 repo 外的同層 `/data1/perlee/asm`，容器內 `/src/asm`。）
 
 ### 環境現況（已驗證，省下數天）
 
 - GPU：**gfx942 (MI300X)**；ROCm 6.4.0 在 host，另有 **ROCm 7.2.0 docker 容器 `perlee`**
-  （`run.sh` 啟動，掛載 `/data1/perlee`→`/src`）。
-- hipBLASLt **已建置完成**：`projects/hipblaslt/build/release` 存在，`hipblaslt-bench` 已可用。
+  （[run.sh](../run.sh) 啟動，掛載 `/data1/perlee`→`/src`）。
+- hipBLASLt **已建置完成**：[projects/hipblaslt/build/release](../projects/hipblaslt/build/release)
+  存在，`hipblaslt-bench` 已可用。
   → 不必花時間從頭 build，可直接 bench / profile。
-- `asm/` 各範例附 CMake，容器內 `cmake -S . -B build && cmake --build build` 即可跑。
+- [asm/](../../asm) 各範例附 CMake，容器內 `cmake -S . -B build && cmake --build build` 即可跑。
 
 ### 學習者起點（據此校準節奏）
 
 - 約 1.5 年前寫過簡單 CUDA/Triton（已大半忘），近期在補 GPU 硬體架構 + launch workflow + 軟硬體名詞。
   → **HIP 語法可快速帶過**（CUDA→HIP 幾乎一對一），P0 的 A-1/A-2 視為「喚回記憶 + 對照組語」。
-- **讀得懂組合語言** → `asm/` 可加速看，gfx942 指令當增量學。
+- **讀得懂組合語言** → [asm/](../../asm) 可加速看，gfx942 指令當增量學。
 - **優化所知不深**（僅 occupancy、shared memory 資源控管）→ 把時間移到「優化 + profiling」，
-  這是最薄弱、也是 P3 成敗關鍵。需補：memory coalescing / 向量化載入、latency hiding 與
-  Little's Law、compute-bound vs memory-bound 判讀、roofline、occupancy↔暫存器/LDS 取捨、
-  bank conflict。`asm/example02` README 是這些概念最好的單篇教材。
+  這是最薄弱、也是 P3 成敗關鍵。需補的概念：
+  - memory coalescing / 向量化載入
+  - latency hiding 與 Little's Law
+  - compute-bound vs memory-bound 判讀、roofline
+  - occupancy ↔ 暫存器/LDS 取捨、bank conflict
+  - [asm/example02_reduce_sum/README.md](../../asm/example02_reduce_sum/README.md) 是這些概念最好的單篇教材。
 - **全職且願意加碼** → 進度表以工作日為主軸，里程碑排得積極，週末為彈性追進度/緩衝。
 
 ### 如何使用本 roadmap
@@ -64,14 +69,14 @@ TensileLite、寫 GPU kernel 熟悉 AMD ISA」，最終要在 main repo 有**多
   一行 `📚 參考資源`（現有 doc / asm 行段 / codebase 路徑 / AMD 選做）。動手項（**跑** / **寫**）
   仍附可貼指令與預期輸出。
 - **📚 參考資源是手段不是目的**：現有教學文件還不夠完整。資源若標記 **（待擴充：<doc>）**，表示
-  該主題對應一份規劃中、目前只是 outline 的文件（清單見 [`README.md`](README.md)「規劃中文件」），會隨學習補齊；
+  該主題對應一份規劃中、目前只是 outline 的文件（清單見 [README.md](README.md)「規劃中文件」），會隨學習補齊；
   在它長好前，以同列其他資源 + codebase 為準。
 - **（AMD 資源，選做）** 標記的 item 來自公司內部 HIP 課程與 GCN 架構 talk，是補充非必修；
   趕進度時可略過，完整對照見檔末「AMD 訓練資源對照表」。
 - **兩層測驗**：每天有**內嵌快速自測**（題數視內容調整，答案收在 `<details>` 摺疊區，先自答再核對）；
   完成當天 item 後若想要更深入的檢核，向我要求啟動 `learning-quiz` skill——我會依當天目標生成
-  互動測驗檔（放 [`study_docs/quizzes/`](quizzes/)）、批改你的作答、指出要回去補強的具體主題。
-- **筆記自己寫**：每天的「筆記提示」列出該記什麼；筆記由**你親手寫**在 [`study_docs/notes/`](notes/)
+  互動測驗檔（放 [study_docs/quizzes/](quizzes/)）、批改你的作答、指出要回去補強的具體主題。
+- **筆記自己寫**：每天的「筆記提示」列出該記什麼；筆記由**你親手寫**在 [study_docs/notes/](notes/)
   （檔名 `MMDD-{當天主題}.md`），用 `learning-notes` skill 開新筆記（含 template），我只協助補
   code / doc 連結，不代寫內容。
 - **P0–P2 逐日詳列；P3–P4 框架化**（給里程碑、決策樹與可重複套用的迭代 checklist 模板，
@@ -120,8 +125,8 @@ TensileLite、寫 GPU kernel 熟悉 AMD ISA」，最終要在 main repo 有**多
 - (f) **啟動 mentor 對齊**：本週內與 mentor/team 談過一次，產出 target shape shortlist
   （這是 North Star 的第一步，比任何讀文件都優先）
 
-關鍵檔案：[`study_docs/README.md`](README.md)、[`architecture/README.md`](architecture/README.md)、[`hipblaslt/`](hipblaslt/)、
-[`asm/example01_reduce_sum/`](../../asm/example01_reduce_sum)、[`asm/example02_reduce_sum/`](../../asm/example02_reduce_sum)、[`amd-isa-kernel.md`](amd-isa-kernel.md)。
+關鍵檔案：[study_docs/README.md](README.md)、[architecture/README.md](architecture/README.md)、[hipblaslt/](hipblaslt/)、
+[asm/example01_reduce_sum/](../../asm/example01_reduce_sum)、[asm/example02_reduce_sum/](../../asm/example02_reduce_sum)、[amd-isa-kernel.md](amd-isa-kernel.md)。
 
 ### 06-25（四）｜建立全局地圖 + 進容器驗證工具
 
@@ -129,21 +134,25 @@ TensileLite、寫 GPU kernel 熟悉 AMD ISA」，最終要在 main repo 有**多
 
 - [ ] **搞懂** build-time vs runtime 兩階段分工，以及 repo 為何長這樣
   - [ ] 能說出「build 時 TensileLite 做食譜、runtime 時 hipBLASLt 查食譜出菜」這條主軸
-  - [ ] 知道為何只有 `projects/hipblaslt` 是完整 source（sparse checkout），其餘是骨架
-  - [ ] 分清 [`library/`](../projects/hipblaslt/library)（runtime 本體）vs [`tensilelite/`](../projects/hipblaslt/tensilelite)（build-time kernel 產生器）的職責
+  - [ ] 知道為何只有 [projects/hipblaslt](../projects/hipblaslt) 是完整 source（sparse checkout），其餘是骨架
+  - [ ] 分清 [library/](../projects/hipblaslt/library)（runtime 本體）vs [tensilelite/](../projects/hipblaslt/tensilelite)（build-time kernel 產生器）的職責
   - ✅ 完成判準：能用兩句話講出兩階段如何交接、各由哪個資料夾負責
-  - 📚 參考資源：[`study_docs/README.md`](README.md)、[`architecture/README.md`](architecture/README.md)、[`architecture/hipblaslt-layout.md`](architecture/hipblaslt-layout.md)
+  - 📚 參考資源：[study_docs/README.md](README.md)、[architecture/README.md](architecture/README.md)、[architecture/hipblaslt-layout.md](architecture/hipblaslt-layout.md)
 - [ ] **搞懂** runtime GEMM 呼叫鏈：`hipblasLtMatmul` 如何一路走到 kernel launch
-  - [ ] 入口無邏輯：`hipblasLtMatmul`（[`library/src/amd_detail/hipblaslt.cpp`](../projects/hipblaslt/library/src/amd_detail/hipblaslt.cpp)）只做型別轉換、轉呼叫
-  - [ ] 收斂成問題：`rocblaslt_matmul_impl`（[`rocblaslt/src/rocblaslt_mat.cpp`](../projects/hipblaslt/library/src/amd_detail/rocblaslt/src/rocblaslt_mat.cpp)）把 descriptor
+  - [ ] 入口無邏輯：`hipblasLtMatmul`（[library/src/amd_detail/hipblaslt.cpp](../projects/hipblaslt/library/src/amd_detail/hipblaslt.cpp)）只做型別轉換、轉呼叫
+  - [ ] 收斂成問題：`rocblaslt_matmul_impl`（[rocblaslt/src/rocblaslt_mat.cpp](../projects/hipblaslt/library/src/amd_detail/rocblaslt/src/rocblaslt_mat.cpp)）把 descriptor
     收成一個 `RocblasltContractionProblem`
-  - [ ] dispatch hub：`runContractionProblem`（[`rocblaslt/src/tensile_host.cpp`](../projects/hipblaslt/library/src/amd_detail/rocblaslt/src/tensile_host.cpp)）＝
+  - [ ] dispatch hub：`runContractionProblem`（[rocblaslt/src/tensile_host.cpp](../projects/hipblaslt/library/src/amd_detail/rocblaslt/src/tensile_host.cpp)）＝
     選 solution → `solve()` 產 launch 描述 → `launchKernels`
-  - [ ] 出菜：`SolutionAdapter::launchKernel`（[`tensilelite/src/hip/HipSolutionAdapter.cpp`](../projects/hipblaslt/tensilelite/src/hip/HipSolutionAdapter.cpp)）
+  - [ ] 出菜：`SolutionAdapter::launchKernel`（[tensilelite/src/hip/HipSolutionAdapter.cpp](../projects/hipblaslt/tensilelite/src/hip/HipSolutionAdapter.cpp)）
     lazy `hipModuleLoad` 再 launch
   - ✅ 完成判準：能不看檔默述「API→problem→選 solution→solve→lazy load→launch」並指出每關卡的角色
-  - 📚 參考資源：[`study_docs/hipblaslt/runtime-flow.md`](hipblaslt/runtime-flow.md)（關卡 1→5）；上列 4 個函式路徑；
-    內部參考 [`internal_docs/hipblaslt-tensilelite-reference.md`](internal_docs/hipblaslt-tensilelite-reference.md) Module B：solution selection 的權威定義＝**兩層**（先 equality 查精確 M,N,K 命中就用；查不到再走 grid 取最近代表點），其上再疊 StreamK/Origami/Formocast
+  - 📚 參考資源：
+    - [runtime-flow.md](hipblaslt/runtime-flow.md)（關卡 1→5）
+    - 上列 4 個函式路徑（hipblaslt.cpp / rocblaslt_mat.cpp / tensile_host.cpp / HipSolutionAdapter.cpp）
+    - 內部參考 [hipblaslt-tensilelite-reference.md](internal_docs/hipblaslt-tensilelite-reference.md) Module B：
+      solution selection 權威定義＝**兩層**（先 equality 查精確 M,N,K 命中就用；查不到再走 grid 取最近代表點），
+      其上再疊 StreamK / Origami / Formocast
 - [ ] **跑**：進容器並確認工具鏈可用
   ```bash
   bash run.sh            # 或 docker exec -it perlee bash
@@ -155,9 +164,9 @@ TensileLite、寫 GPU kernel 熟悉 AMD ISA」，最終要在 main repo 有**多
   - [ ] `rocminfo` 確認是 gfx942
   - ✅ 完成判準：四個工具路徑齊全且確認 GPU 為 gfx942（MI300X）
 - [ ] **（AMD 資源，選做）** GCN talk #1「GPU Overview and Scheduling Kernels」建立硬體心智模型
-  - 📚 參考資源：[`study_docs/gpu_knowledge/`](gpu_knowledge/)（[execution-model.md](gpu_knowledge/execution-model.md) 執行模型、[kernel-launch.md](gpu_knowledge/kernel-launch.md) CPU→GPU launch、[cuda-hip-terminology.md](gpu_knowledge/cuda-hip-terminology.md) 名詞對照）
+  - 📚 參考資源：[study_docs/gpu_knowledge/](gpu_knowledge/)（[execution-model.md](gpu_knowledge/execution-model.md) 執行模型、[kernel-launch.md](gpu_knowledge/kernel-launch.md) CPU→GPU launch、[cuda-hip-terminology.md](gpu_knowledge/cuda-hip-terminology.md) 名詞對照）
 - **筆記提示**：把 runtime 呼叫鏈用自己的話各寫一句（每個函式做什麼）；記下容器內各工具的實際路徑。
-  筆記寫在 [`study_docs/notes/0625-建立全局地圖.md`](notes/0625-建立全局地圖.md)（用 `learning-notes` skill 開）。
+  筆記寫在 [study_docs/notes/0625-建立全局地圖.md](notes/0625-建立全局地圖.md)（用 `learning-notes` skill 開）。
 - **快速自測**（完成後想要深度測驗可用 `learning-quiz` skill）：
   1. 為什麼本機只有 `projects/hipblaslt` 有完整程式碼，其他庫只是骨架？
   2. runtime 選 kernel 是在「公開 API 層」還是「`tensile_host` 層」決定的？
@@ -177,13 +186,13 @@ TensileLite、寫 GPU kernel 熟悉 AMD ISA」，最終要在 main repo 有**多
   - [ ] 知道 runtime 尋找 library 的順序（env var `HIPBLASLT_TENSILE_LIBPATH` → 相對 `.so`）
   - [ ] 理解 lazy load：用到某 size 才載對應 shard / `.co`，不是一次全載
   - ✅ 完成判準：能畫出「build 產物 → 磁碟（`.dat`/`.co`）→ runtime lazy load」的接點圖
-  - 📚 參考資源：[`study_docs/hipblaslt/README.md`](hipblaslt/README.md)（建置產出 / runtime 載入兩節）
+  - 📚 參考資源：[study_docs/hipblaslt/README.md](hipblaslt/README.md)（建置產出 / runtime 載入兩節）
 - [ ] **搞懂** build-time 三階段 pipeline 各自產出什麼
   - [ ] 階段 1 BenchmarkProblems：產生 + 編譯 + benchmark 候選 kernel
   - [ ] 階段 2 LibraryLogic：每個 size 從計時結果挑「贏家」solution
   - [ ] 階段 3 ClientWriter：打包成 library / client
   - ✅ 完成判準：能說出三階段各自的輸入與輸出、以及 `0_`~`4_` 目錄對應哪階段
-  - 📚 參考資源：[`study_docs/hipblaslt/tensilelite-pipeline.md`](hipblaslt/tensilelite-pipeline.md)（待擴充：[tuning-config-reference.md](hipblaslt/tuning-config-reference.md)）
+  - 📚 參考資源：[study_docs/hipblaslt/tensilelite-pipeline.md](hipblaslt/tensilelite-pipeline.md)（待擴充：[tuning-config-reference.md](hipblaslt/tuning-config-reference.md)）
 - [ ] **搞懂** CPU→GPU kernel launch 的通用流程（把 06-25 的 runtime 呼叫鏈接到「硬體實際怎麼跑」）
   - [ ] kernel launch 是**非同步**的：CPU 提交工作後通常立刻返回，要結果才 synchronize
   - [ ] `<<<>>>`（HIP `hipLaunchKernelGGL`）不是普通函式呼叫，而是把工作單排進 stream / command queue
@@ -191,11 +200,11 @@ TensileLite、寫 GPU kernel 熟悉 AMD ISA」，最終要在 main repo 有**多
   - [ ] GPU front-end / command processor 取 command 後，自行把 grid 拆成 block → 分派到 SM/CU
   - ✅ 完成判準：能用「餐廳比喻」講出 CPU 安排工作 / GPU 執行工作的分界，並對應回真實鏈
     `hipblasLtMatmul → … → SolutionAdapter::launchKernel`（CPU 端排工作）→ GPU 自行執行
-  - 📚 參考資源：[`study_docs/gpu_knowledge/kernel-launch.md`](gpu_knowledge/kernel-launch.md)；回扣 [`study_docs/hipblaslt/runtime-flow.md`](hipblaslt/runtime-flow.md)
+  - 📚 參考資源：[study_docs/gpu_knowledge/kernel-launch.md](gpu_knowledge/kernel-launch.md)；回扣 [study_docs/hipblaslt/runtime-flow.md](hipblaslt/runtime-flow.md)
 - [ ] **（全程指引，建議）讀** `hip-book-guide` 建立《Accelerated Computing with HIP》查書索引
   - [ ] 知道四條閱讀路徑：新手（Ch1-2-4-5）/ 優化（Ch3-5-6-11+附錄A）/ 移植（Ch2-8-4-5）/ 多 GPU（Ch6-9-10-11）
   - ✅ 完成判準：日後遇到主題時能直接說出「該翻哪一章」，不必從頭讀整本
-  - 📚 參考資源：[`study_docs/gpu_knowledge/hip-book-guide.md`](gpu_knowledge/hip-book-guide.md)
+  - 📚 參考資源：[study_docs/gpu_knowledge/hip-book-guide.md](gpu_knowledge/hip-book-guide.md)
 - [ ] ⭐**啟動 mentor / team 對齊（本週內完成，最高槓桿）**——決定最終交付 target 的第一步
   - [ ] 約一次 mentor sync，帶著問題去問（不要等學完才問）：
     - [ ] 目前哪些 GEMM shape / dtype **underperform 或團隊在乎**（如特定 LLM 訓練/推論 shape）？
@@ -203,7 +212,7 @@ TensileLite、寫 GPU kernel 熟悉 AMD ISA」，最終要在 main repo 有**多
     - [ ] 什麼樣的 PR 比較容易被接受——**config fork 還是 codegen 級**改動？對 2 個月實習的期待？
     - [ ] 有沒有現成的內部 benchmark / 回歸 shape 清單可當 target 候選？
   - ✅ 完成判準：產出 **target shape shortlist（2~3 個）**，每個附一句「為何團隊在乎」+ 初判屬第 1/第 2 層
-  - 📚 參考資源：[`projects/hipblaslt/AGENTS.md`](../projects/hipblaslt/AGENTS.md)（PR 規範，先知道什麼 PR 收得了）；今天 bench 的既有數字
+  - 📚 參考資源：[projects/hipblaslt/AGENTS.md](../projects/hipblaslt/AGENTS.md)（PR 規範，先知道什麼 PR 收得了）；今天 bench 的既有數字
   - 註：此 item 跨整週，今天先約時間 + 列問題清單；shortlist 最遲 07-08 與 mentor 收斂成單一 target。
 - [ ] **跑** 既有 bench（已建置完成，免重 build），把抽象呼叫鏈對應到真實輸出：
   ```bash
@@ -214,12 +223,16 @@ TensileLite、寫 GPU kernel 熟悉 AMD ISA」，最終要在 main repo 有**多
   - [ ] 找到 solution index 欄位（記下來）
   - [ ] 找到 Gflops 欄位
   - ✅ 完成判準：能對照輸出講出「這次 heuristic 選了哪個 solution、跑多快」
-  - 📚 參考資源：[`projects/hipblaslt/clients/bench/README.md`](../projects/hipblaslt/clients/bench/README.md)（旗標）；
-    內部參考 [`hipblaslt-tensilelite-reference.md`](internal_docs/hipblaslt-tensilelite-reference.md) Module A.5/B.4 的除錯旋鈕：
-    `--print_kernel_info`（看 solution/kernel 名與 index churn）、`HIPBLASLT_LOG_MASK=64` + `HIPBLASLT_LOG_FILE`（記錄選了哪個 solution）、`HIPBLASLT_BENCH_FREQ`（收集頻率以穩定量測）
+  - 📚 參考資源：
+    - [clients/bench/README.md](../projects/hipblaslt/clients/bench/README.md)（旗標）
+    - 內部參考 [hipblaslt-tensilelite-reference.md](internal_docs/hipblaslt-tensilelite-reference.md)
+      Module A.5/B.4 的除錯旋鈕：
+      - `--print_kernel_info`：看 solution/kernel 名與 index churn
+      - `HIPBLASLT_LOG_MASK=64` + `HIPBLASLT_LOG_FILE`：記錄選了哪個 solution
+      - `HIPBLASLT_BENCH_FREQ`：收集頻率以穩定量測
 - [ ] **（AMD 資源，選做）** HIP 200「[HIP Tools](internal_docs/hip-training-at-amd.md#hip-200-hip-tools)」（~1.5h）的 ROCm Profiler/Tracer 段（HW5 即 profiling + debugger 練習）
 - **筆記提示**：記下這次 bench 選到的 solution index 與 Gflops，P2 調參時會回頭對照。
-  筆記寫在 [`study_docs/notes/0626-跑通第一次bench.md`](notes/0626-跑通第一次bench.md)。
+  筆記寫在 [study_docs/notes/0626-跑通第一次bench.md](notes/0626-跑通第一次bench.md)。
 - **快速自測**：
   1. runtime 載入的選擇表是 YAML 還是 MessagePack？`3_LibraryLogic/` 的 YAML 是同一份嗎？
   2. 一次 build 產生很多候選 `.co`，最後「出貨」的是哪些？
@@ -242,19 +255,19 @@ TensileLite、寫 GPU kernel 熟悉 AMD ISA」，最終要在 main repo 有**多
   - [ ] 影響效能的三件事：warp divergence、memory coalescing、occupancy
   - [ ] AMD 的「類 CUDA core」是 SIMD lane / Stream Processor、「類 Tensor core」是 Matrix Core（MFMA）；AMD 無「CUDA core」之名
   - ✅ 完成判準：能畫出「軟體抽象 vs 硬體實體」兩張階層圖並對應，且能回答「AMD 有沒有 tensor/cuda core」
-  - 📚 參考資源：[`study_docs/gpu_knowledge/execution-model.md`](gpu_knowledge/execution-model.md)
+  - 📚 參考資源：[study_docs/gpu_knowledge/execution-model.md](gpu_knowledge/execution-model.md)
 - [ ] **喚回** CUDA→HIP 名詞對照（你有 CUDA 背景，這步是喚回記憶不是從零學）
   - [ ] 執行模型：`threadIdx/blockIdx/blockDim/gridDim` 同名；warp(32) ↔ wavefront(64)
   - [ ] API：`cudaMalloc/cudaMemcpy/<<<>>>` ↔ `hipMalloc/hipMemcpy/hipLaunchKernelGGL`
   - [ ] 記憶體：`__shared__` ↔ LDS；registers ↔ VGPR/SGPR
   - ✅ 完成判準：能不查表寫出上述對應，並說出 shared↔LDS、warp(32)↔wavefront(64) 的差別
-  - 📚 參考資源：[`study_docs/gpu_knowledge/cuda-hip-terminology.md`](gpu_knowledge/cuda-hip-terminology.md)；[`study_docs/cuda-to-hip.md`](cuda-to-hip.md)
+  - 📚 參考資源：[study_docs/gpu_knowledge/cuda-hip-terminology.md](gpu_knowledge/cuda-hip-terminology.md)；[study_docs/cuda-to-hip.md](cuda-to-hip.md)
 - [ ] **搞懂** gfx942 執行模型的基本字彙（讀任何組語的前提；上面通用階層的 AMD 落地版）
   - [ ] wave = 64 lane；一個 wave 共用一個 exec mask
   - [ ] SGPR（全 wave 共用，放純量：指標/迴圈數）vs VGPR（每 lane 私有，放 per-thread 資料）
   - [ ] `s_waitcnt vmcnt`（等 HBM global load/store）vs `lgkmcnt`（等 LDS/scalar/kernarg）
   - ✅ 完成判準：能解釋為何同一段程式同時需要 `vmcnt` 與 `lgkmcnt` 兩種等待
-  - 📚 參考資源：[`study_docs/amd-isa-kernel.md`](amd-isa-kernel.md)「前置：定位工具 / 階段 A-1」（待擴充：[isa/gfx942-isa-reference.md](isa/gfx942-isa-reference.md)）
+  - 📚 參考資源：[study_docs/amd-isa-kernel.md](amd-isa-kernel.md)「前置：定位工具 / 階段 A-1」（待擴充：[isa/gfx942-isa-reference.md](isa/gfx942-isa-reference.md)）
 - [ ] **動手** 寫 vector add、反組譯、把組語對回原始碼
   ```bash
   hipcc --offload-arch=gfx942 --save-temps -c vadd.hip
@@ -266,7 +279,7 @@ TensileLite、寫 GPU kernel 熟悉 AMD ISA」，最終要在 main repo 有**多
   - [ ] 對照出 `global_load_*`（讀 HBM）與 `v_add_f32`（運算）
   - [ ] 對照出 `s_waitcnt` 與 `s_endpgm`
   - ✅ 完成判準：能逐條指出 `.s` 裡每個指令家族對應原始 C++ 的哪一行
-  - 📚 參考資源：[`asm/example01_reduce_sum/`](../../asm/example01_reduce_sum)（同類手寫組語可比對）
+  - 📚 參考資源：[asm/example01_reduce_sum/](../../asm/example01_reduce_sum)（同類手寫組語可比對）
 - [ ] **（AMD 資源，選做）** HIP 101「Part A」（~2h，kernel language/thread hierarchy）；
   GCN talk #5「Compiling for gfx9」
 - **筆記提示**：記下 `s_waitcnt` 的 `vmcnt` vs `lgkmcnt` 差別（你 06-29 會大量用到）；另記一句
@@ -296,12 +309,12 @@ TensileLite、寫 GPU kernel 熟悉 AMD ISA」，最終要在 main repo 有**多
   - [ ] 為何 tiling 要先把 HBM 資料 staging 進 LDS 再重複使用（省 HBM 流量）
   - [ ] `s_barrier` 的必要性：跨 wave 共享 LDS，寫完要全體同步才能讀
   - ✅ 完成判準：能說出 LDS 在 matmul tiling 裡扮演的角色與 barrier 為何不可省
-  - 📚 參考資源：[`study_docs/amd-isa-kernel.md`](amd-isa-kernel.md)「階段 A-2」；[`asm/example03_mfma/`](../../asm/example03_mfma) 的 LDS staging
+  - 📚 參考資源：[study_docs/amd-isa-kernel.md](amd-isa-kernel.md)「階段 A-2」；[asm/example03_mfma/](../../asm/example03_mfma) 的 LDS staging
 - [ ] **認識** LDS bank conflict（這是現有教材最大缺口，先建立概念）
   - [ ] 概念：LDS 32 banks、每 bank 4 bytes、`bank = (byte_addr/4) % 32`
   - [ ] 同 wave 多 lane 落同 bank 不同址 → N-way conflict 被序列化
   - ✅ 完成判準：能說出何時會 bank conflict、`LDSBankConflict` counter 看哪裡
-  - 📚 參考資源：（待擴充：[isa/lds-bank-conflicts.md](isa/lds-bank-conflicts.md)）；[`profiling-rocprof.md`](hipblaslt/profiling-rocprof.md) 的 `LDSBankConflict`
+  - 📚 參考資源：（待擴充：[isa/lds-bank-conflicts.md](isa/lds-bank-conflicts.md)）；[profiling-rocprof.md](hipblaslt/profiling-rocprof.md) 的 `LDSBankConflict`
 - [ ] **動手** 寫 tiled matmul（用 shared memory），反組譯確認 LDS 指令出現
   - [ ] 寫出有 shared memory tiling 的 matmul kernel
   - [ ] 反組譯找到 `ds_write_b*`（寫 LDS）與 `ds_read_b*`（讀 LDS）
@@ -325,11 +338,11 @@ TensileLite、寫 GPU kernel 熟悉 AMD ISA」，最終要在 main repo 有**多
 
 **今日目標**：能逐行讀懂一支完整手寫 kernel 並 build & run 到 PASS。
 
-- [ ] **讀** [`asm/example01_reduce_sum/README.md`](../../asm/example01_reduce_sum/README.md) 全 4 節
+- [ ] **讀** [asm/example01_reduce_sum/README.md](../../asm/example01_reduce_sum/README.md) 全 4 節
   - [ ] Prerequisites / Build：知道怎麼用 CMake 把 `.s` 組成 `.hsaco`
   - [ ] Run / Expected output：知道成功會印 `verification : PASS`
   - ✅ 完成判準：能說出 HIP host 端 `hipModuleLoad` → `hipExtModuleLaunchKernel` 的流程
-- [ ] **讀** `.s`（[`reduce_sum_f32_gfx942.s`](../../asm/example01_reduce_sum/reduce_sum_f32_gfx942.s)，219 行）逐段
+- [ ] **讀** `.s`（[reduce_sum_f32_gfx942.s](../../asm/example01_reduce_sum/reduce_sum_f32_gfx942.s)，219 行）逐段
   - [ ] L13–36：kernarg load → exec-mask 邊界保護的 `global_load_dword` → `s_waitcnt vmcnt(0)`
   - [ ] L38–56：第一個 LDS reduction 階段（`ds_write` → `s_barrier` → +128 offset）
   - [ ] L57–172：其餘 7 個 reduction 階段（offset 遞減）+ 最終 `global_store`
@@ -344,7 +357,7 @@ TensileLite、寫 GPU kernel 熟悉 AMD ISA」，最終要在 main repo 有**多
   - [ ] build 成功
   - [ ] 執行印出 `verification : PASS`
   - ✅ 完成判準：跑出 PASS，且能對應「組語裡哪段對應這次輸出的部分和」
-  - 📚 參考資源：[`asm/example01_reduce_sum/`](../../asm/example01_reduce_sum)（README + `.s`）（待擴充：[isa/gfx942-isa-reference.md](isa/gfx942-isa-reference.md)）
+  - 📚 參考資源：[asm/example01_reduce_sum/](../../asm/example01_reduce_sum)（README + `.s`）（待擴充：[isa/gfx942-isa-reference.md](isa/gfx942-isa-reference.md)）
 - **筆記提示**：畫一張 LDS tree reduction 圖（256→128→…→1），標每階段的 `s_barrier`。
   筆記寫在 `study_docs/notes/0629-精讀example01.md`。
 - **快速自測**：
@@ -361,13 +374,13 @@ TensileLite、寫 GPU kernel 熟悉 AMD ISA」，最終要在 main repo 有**多
 瓶頸如何從 counter 讀出來。這是你最薄弱、也是 P3 成敗關鍵的主題。
 **（解鎖 P3：判斷 target shape 是 compute/memory-bound、每次迭代驗證 counter 是否如預期改變。）**
 
-- [ ] **讀** [`asm/example02_reduce_sum/README.md`](../../asm/example02_reduce_sum/README.md) 全 4 節（四個範例裡 **profiling 最佳單篇教材**）
+- [ ] **讀** [asm/example02_reduce_sum/README.md](../../asm/example02_reduce_sum/README.md) 全 4 節（四個範例裡 **profiling 最佳單篇教材**）
   - [ ] Build and run：跑得起來
   - [ ] Generating profiling data：學會 `profile` → `analyze` 兩階段
   - [ ] How the report led us to dwordx4：學會「從報告讀出瓶頸 → 決定改哪行」的推理鏈
   - [ ] Performance comparison vs example01：看懂 before/after 數字表
   - ✅ 完成判準：能複述「報告哪個面板 → 指向哪個瓶頸 → 改哪條指令」的因果鏈
-  - 📚 參考資源：[`asm/example02_reduce_sum/README.md`](../../asm/example02_reduce_sum/README.md)（profiling 最佳單篇教材）
+  - 📚 參考資源：[asm/example02_reduce_sum/README.md](../../asm/example02_reduce_sum/README.md)（profiling 最佳單篇教材）
 - [ ] **跑** profile 與 analyze：
   ```bash
   cd /src/asm/example02_reduce_sum
@@ -386,12 +399,12 @@ TensileLite、寫 GPU kernel 熟悉 AMD ISA」，最終要在 main repo 有**多
   - [ ] 找出兩條 `global_load_dwordx4`（每 thread 8 floats）
   - [ ] 看懂 8→1 的 ILP pairwise 加法樹
   - ✅ 完成判準：能解釋「`dword`→`dwordx4` + K=8/thread 為何帶來 1.90× 加速」
-- [ ] **讀** [`study_docs/hipblaslt/profiling-rocprof.md`](hipblaslt/profiling-rocprof.md)「第三步：怎麼讀這些指標」counter 解讀表
+- [ ] **讀** [study_docs/hipblaslt/profiling-rocprof.md](hipblaslt/profiling-rocprof.md)「第三步：怎麼讀這些指標」counter 解讀表
   - [ ] memory coalescing / 向量化載入
   - [ ] latency hiding 與 Little's Law
   - [ ] compute-bound vs memory-bound 判讀
   - ✅ 完成判準：能用 counter 數值說出一個 kernel 是 compute- 還是 memory-bound
-  - 📚 參考資源：[`study_docs/hipblaslt/profiling-rocprof.md`](hipblaslt/profiling-rocprof.md)（待擴充：該檔末「bench+rocprof cookbook / roofline 數字」、[isa/lds-bank-conflicts.md](isa/lds-bank-conflicts.md)）
+  - 📚 參考資源：[study_docs/hipblaslt/profiling-rocprof.md](hipblaslt/profiling-rocprof.md)（待擴充：該檔末「bench+rocprof cookbook / roofline 數字」、[isa/lds-bank-conflicts.md](isa/lds-bank-conflicts.md)）
 - [ ] **（AMD 資源，選做）** HIP 200「[HIP Tools](internal_docs/hip-training-at-amd.md#hip-200-hip-tools)」HW5（profiler trace/counter + debugger 讀 kernel 組語）＋ HIP 201「[Performance Tuning for HIP Programs](internal_docs/hip-training-at-amd.md#hip-201-performance-tuning-for-hip-programs)」（~1.5h），與本日 profiling 迴圈同主題
 - **筆記提示**：抄下 ex01→ex02 的對照數字（HBM 峰值佔比 44.7%→83.7%、1.90×、Dependency Wait
   84.8%→95.4%），並寫一句「為何 L2 延遲反而上升卻更快」（Little's Law）。
@@ -415,7 +428,7 @@ TensileLite、寫 GPU kernel 熟悉 AMD ISA」，最終要在 main repo 有**多
   - [ ] 知道 MFMA＝矩陣乘累加硬體指令，一條算一整塊 tile（非逐元素）
   - [ ] 知道用 builtin（如 `__builtin_amdgcn_mfma_f32_16x16x16f16`）讓編譯器發 `v_mfma_*`
   - ✅ 完成判準：能說出 MFMA 為何比手寫 FMA 迴圈快（吞吐與 register 重用）
-  - 📚 參考資源：[`study_docs/amd-isa-kernel.md`](amd-isa-kernel.md)「階段 A-3」（待擴充：[isa/mfma-deep-dive.md](isa/mfma-deep-dive.md)）
+  - 📚 參考資源：[study_docs/amd-isa-kernel.md](amd-isa-kernel.md)「階段 A-3」（待擴充：[isa/mfma-deep-dive.md](isa/mfma-deep-dive.md)）
 - [ ] **動手** 寫 builtin kernel 並反組譯
   - [ ] 寫出呼叫該 builtin 的 kernel 並編譯
   - [ ] 反組譯找到 `v_mfma_*` 指令
@@ -442,8 +455,8 @@ TensileLite、寫 GPU kernel 熟悉 AMD ISA」，最終要在 main repo 有**多
 GEMM `.s` 裡認出優化手法。**並在 07-08 與 mentor 把 06-26 的 shortlist 收斂成單一 target shape +
 優化假設**（直接餵給 P3，避免 P3 才從零選題）。（ex04 buffer 邊界改為按需選讀，見 07-04。）
 
-關鍵檔案：[`asm/example03_mfma/`](../../asm/example03_mfma)、[`asm/example04_global_mem_oob/`](../../asm/example04_global_mem_oob)（選讀）、
-`tensilelite/Tensile/` 下的 [`KernelWriter.py`](../projects/hipblaslt/tensilelite/Tensile/KernelWriter.py)、[`SolutionStructs/`](../projects/hipblaslt/tensilelite/Tensile/SolutionStructs)、[`Components/`](../projects/hipblaslt/tensilelite/Tensile/Components)、[`Tests/`](../projects/hipblaslt/tensilelite/Tensile/Tests)。
+關鍵檔案：[asm/example03_mfma/](../../asm/example03_mfma)、[asm/example04_global_mem_oob/](../../asm/example04_global_mem_oob)（選讀）、
+`tensilelite/Tensile/` 下的 [KernelWriter.py](../projects/hipblaslt/tensilelite/Tensile/KernelWriter.py)、[SolutionStructs/](../projects/hipblaslt/tensilelite/Tensile/SolutionStructs)、[Components/](../projects/hipblaslt/tensilelite/Tensile/Components)、[Tests/](../projects/hipblaslt/tensilelite/Tensile/Tests)。
 
 ### 07-02（四）｜⚙️ Charge day（不上班・team 活動）
 
@@ -457,12 +470,12 @@ GEMM `.s` 裡認出優化手法。**並在 07-08 與 mentor 把 06-26 的 shortl
 若當天消化不完，可順延到 07-04／07-05。）
 **（解鎖 P3：第 2 層 codegen 優化＝真目標——改 prefetch / 排程 / store 位址前必須先讀懂這支。）**
 
-- [ ] **（原 07-02）讀** [`asm/example03_mfma/README.md`](../../asm/example03_mfma/README.md) 結構三節
+- [ ] **（原 07-02）讀** [asm/example03_mfma/README.md](../../asm/example03_mfma/README.md) 結構三節
   - [ ] 「What the kernel does」：kernel 做的是 32×32 輸出塊的 tiled GEMM
   - [ ] 「Tiling summary」表：256 thread / 4 wave / 4 個 16×16 子 tile 如何組成 32×32
   - [ ] 「Constraints」：這支教學 kernel 的尺寸/型別限制
   - ✅ 完成判準：能畫出 256 thread → 4 wave → 4 子 tile → 32×32 的組成圖
-- [ ] **（原 07-02）讀** `.s`（[`mfma_gemm_f32_gfx942.s`](../../asm/example03_mfma/mfma_gemm_f32_gfx942.s)，259 行）L6–119 結構段
+- [ ] **（原 07-02）讀** `.s`（[mfma_gemm_f32_gfx942.s](../../asm/example03_mfma/mfma_gemm_f32_gfx942.s)，259 行）L6–119 結構段
   - [ ] L6–41 檔頭註解：tiling 表、kernarg layout、**MFMA register layout**（lane↔元素）
   - [ ] L43–59：kernarg load、tile 基底座標、stride 常數
   - [ ] L61–119：各 lane 的 global staging 位址、LDS 讀位址、accumulator 清零
@@ -482,7 +495,7 @@ GEMM `.s` 裡認出優化手法。**並在 07-08 與 mentor 把 06-26 的 shortl
   - [ ] L165–167：`s_nop 15` pipeline drain
   - ✅ 完成判準：能解釋「為何 MFMA 後要 `s_nop 15` 才能讀 accumulator VGPR」
 - [ ] **讀 + 跑** ATT thread trace（RCV GUI 在桌機端，容器內僅收集）
-  - [ ] 讀 [`asm/example03_mfma/README.md`](../../asm/example03_mfma/README.md)「Thread trace with RCV」Stage 1–2
+  - [ ] 讀 [asm/example03_mfma/README.md](../../asm/example03_mfma/README.md)「Thread trace with RCV」Stage 1–2
   - [ ] 跑 trace：
     ```bash
     rocprofv3 --att --att-target-cu 0 --att-shader-engine-mask 0x1 \
@@ -491,7 +504,7 @@ GEMM `.s` 裡認出優化手法。**並在 07-08 與 mentor 把 06-26 的 shortl
     ```
   - [ ] 在輸出辨認開頭 `s_waitcnt lgkmcnt(0)`（等 kernarg load）造成的數千 cycle stall
   - ✅ 完成判準：能在 trace 指出那個 leading stall 並說明成因
-  - 📚 參考資源：[`asm/example03_mfma/`](../../asm/example03_mfma)（待擴充：[isa/mfma-deep-dive.md](isa/mfma-deep-dive.md)、[isa/gfx942-isa-reference.md](isa/gfx942-isa-reference.md)）
+  - 📚 參考資源：[asm/example03_mfma/](../../asm/example03_mfma)（待擴充：[isa/mfma-deep-dive.md](isa/mfma-deep-dive.md)、[isa/gfx942-isa-reference.md](isa/gfx942-isa-reference.md)）
 - **筆記提示**：抄下 MFMA register layout（lane l 持有 A/B/D 的哪個元素），P3 改 store 位址會用到；
   記下 ATT 輸出目錄結構（`code.json` = 每指令 hitcount/latency）。筆記寫在 `study_docs/notes/0703-example03-MFMA-GEMM.md`。
 - **快速自測**：
@@ -514,17 +527,17 @@ GEMM 優化」不在關鍵路徑上，留到 P3 真的撞到記憶體定址/邊�
   - [ ] 對 shortlist 的 2~3 個候選 shape 各跑一次 `hipblaslt-bench`，記下 Gflops 與選到的 solution
   - [ ] 粗判每個候選偏 compute- 還是 memory-bound（沿用 06-30 的判讀法）
   - ✅ 完成判準：對每個候選 shape 都有一行 baseline 數字 + 一句瓶頸初判，供 07-08 定案參考
-  - 📚 參考資源：06-26 shortlist；[`study_docs/hipblaslt/profiling-rocprof.md`](hipblaslt/profiling-rocprof.md)
+  - 📚 參考資源：06-26 shortlist；[study_docs/hipblaslt/profiling-rocprof.md](hipblaslt/profiling-rocprof.md)
 - [ ] **（彈性，補 07-03）選做** 補讀 ex03 `.s` L6–119 未消化的部分，直到看懂 tiling 與
   MFMA register layout
-- [ ] **（選讀／按需，非必修）讀** [`asm/example04_global_mem_oob/README.md`](../../asm/example04_global_mem_oob/README.md) 四節
+- [ ] **（選讀／按需，非必修）讀** [asm/example04_global_mem_oob/README.md](../../asm/example04_global_mem_oob/README.md) 四節
   ——P3 第 2 層改 store/邊界定址時再回來精讀；此處掃過建立印象即可
   - [ ] 「The store loop」：這支 kernel 只用單 lane 反覆 store 的設計
   - [ ] 「The kinds of global-memory OOB」表：5 類越界的差別（丟棄/fault/corruption）
   - [ ] 「Kernel argument layout」：kernarg 怎麼擺
   - [ ] safe / fault 兩節：兩種 `num_records` 設定造成的不同結果
   - ✅ 完成判準：能講出 5 類 OOB 中哪些會 fault、哪些靜默
-- [ ] **（選讀／按需）讀** `.s`（[`oob_store_gfx942.s`](../../asm/example04_global_mem_oob/oob_store_gfx942.s)，161 行）L62–113
+- [ ] **（選讀／按需）讀** `.s`（[oob_store_gfx942.s](../../asm/example04_global_mem_oob/oob_store_gfx942.s)，161 行）L62–113
   - [ ] SRD（V#）在 `s[4:7]` 的構造（`s_and_b32` 遮罩 + `s_mov_b32` 設 word3）
   - [ ] `.Lloop` 的 `buffer_store_dwordx4 ... offen offset:N nt`
   - [ ] 64-bit base 進位（`s_add_u32` + `s_addc_u32`）與 `num_records` 夾擠遞減（`s_cselect_b32`）
@@ -539,7 +552,7 @@ GEMM 優化」不在關鍵路徑上，留到 P3 真的撞到記憶體定址/邊�
   - [ ] safe 模式：無 fault、越界寫入被丟棄
   - [ ] fault 模式：出現 GPU memory access fault（SIGABRT）
   - ✅ 完成判準：能對應「兩次 `num_records` 設定差異 → 為何一個安全一個 fault」
-  - 📚 參考資源：[`asm/example04_global_mem_oob/`](../../asm/example04_global_mem_oob)（待擴充：[isa/gfx942-isa-reference.md](isa/gfx942-isa-reference.md)）
+  - 📚 參考資源：[asm/example04_global_mem_oob/](../../asm/example04_global_mem_oob)（待擴充：[isa/gfx942-isa-reference.md](isa/gfx942-isa-reference.md)）
 - [ ] **（AMD 資源，選做）** GCN talk #3「Memory, IO, and CU Architecture on gfx9」
 - **筆記提示**：主記 target 初探的 baseline 表（候選 shape / Gflops / 瓶頸初判），供 07-08 定案；
   若有讀 ex04（選讀），附記 Raw Buffer 範圍檢查公式：越界 iff `inst_offset + voff >= num_records`
@@ -572,7 +585,7 @@ GEMM 優化」不在關鍵路徑上，留到 P3 真的撞到記憶體定址/邊�
 
 **今日目標**：親手跑完一次 tuning，看到 `0_`~`4_` 輸出目錄生成。
 
-- [ ] **讀** [`study_docs/hipblaslt/tensilelite-pipeline.md`](hipblaslt/tensilelite-pipeline.md)「如何建置 / 執行以觀察此流程」
+- [ ] **讀** [study_docs/hipblaslt/tensilelite-pipeline.md](hipblaslt/tensilelite-pipeline.md)「如何建置 / 執行以觀察此流程」
   - [ ] 看懂 `invoke rocisa` / `invoke build-client` / `Tensile/bin/Tensile` 各做什麼
   - ✅ 完成判準：能說出跑一次 tuning 需要哪幾個前置步驟
 - [ ] **跑** 一次完整 tuning（小 config 練手最合適）：
@@ -588,7 +601,7 @@ GEMM 優化」不在關鍵路徑上，留到 P3 真的撞到記憶體定址/邊�
   - [ ] `Tensile/bin/Tensile` 跑完不報錯
   - [ ] `ls out/` 看到 `0_`~`4_` 五個目錄
   - ✅ 完成判準：五個輸出目錄都生成，且能說出每個放什麼
-  - 📚 參考資源：[`study_docs/hipblaslt/tensilelite-pipeline.md`](hipblaslt/tensilelite-pipeline.md)；[`Tensile/Tests/common/gsu/f32_gsu.yaml`](../projects/hipblaslt/tensilelite/Tensile/Tests/common/gsu/f32_gsu.yaml)（待擴充：[hipblaslt/tuning-config-reference.md](hipblaslt/tuning-config-reference.md)）
+  - 📚 參考資源：[study_docs/hipblaslt/tensilelite-pipeline.md](hipblaslt/tensilelite-pipeline.md)；[Tensile/Tests/common/gsu/f32_gsu.yaml](../projects/hipblaslt/tensilelite/Tensile/Tests/common/gsu/f32_gsu.yaml)（待擴充：[hipblaslt/tuning-config-reference.md](hipblaslt/tuning-config-reference.md)）
 - **筆記提示**：記下五個輸出目錄各放什麼（對照 pipeline 文件的輸出目錄表）。筆記寫在 `study_docs/notes/0706-跑TensileLite-tuning.md`。
 - **快速自測**：
   1. `3_LibraryLogic/` 與 `2_BenchmarkData/` 內容差在哪？
@@ -603,7 +616,7 @@ GEMM 優化」不在關鍵路徑上，留到 P3 真的撞到記憶體定址/邊�
 **今日目標**：用 ex01–03 學的指令當索引（ex04 選讀），在 TensileLite 產出的真實 kernel 組語裡認出
 prefetch / double buffer / MFMA 排程。
 
-- [ ] **讀** [`study_docs/amd-isa-kernel.md`](amd-isa-kernel.md)「階段 B」三小節
+- [ ] **讀** [study_docs/amd-isa-kernel.md](amd-isa-kernel.md)「階段 B」三小節
   - [ ] B-1：為何 TensileLite 用 rocisa 產組語、不是 hipcc
   - [ ] B-2：怎麼從 build 產出拿到一支真實 GEMM kernel 的組語
   - [ ] B-3：把階段 A 學的指令對應回 GEMM kernel 的對照表
@@ -613,12 +626,12 @@ prefetch / double buffer / MFMA 排程。
   - [ ] 找出 double buffer（LDS 雙緩衝交替）
   - [ ] 找出 MFMA 主迴圈排程與 `s_waitcnt` 調度
   - ✅ 完成判準：能在真實 `.s` 至少指出 prefetch 與 double buffer 各一處
-  - 📚 參考資源：[`study_docs/amd-isa-kernel.md`](amd-isa-kernel.md)「階段 B」（待擴充：[isa/mfma-deep-dive.md](isa/mfma-deep-dive.md)、[isa/gfx942-isa-reference.md](isa/gfx942-isa-reference.md)、[isa/lds-bank-conflicts.md](isa/lds-bank-conflicts.md)）
+  - 📚 參考資源：[study_docs/amd-isa-kernel.md](amd-isa-kernel.md)「階段 B」（待擴充：[isa/mfma-deep-dive.md](isa/mfma-deep-dive.md)、[isa/gfx942-isa-reference.md](isa/gfx942-isa-reference.md)、[isa/lds-bank-conflicts.md](isa/lds-bank-conflicts.md)）
 - [ ] **解讀** TensileLite kernel 命名規則（看到 solution/kernel 名就能反推 YAML 參數）
   - [ ] 名稱把完整 config 編進去，如 `Cijk_..._MT128x96x64_MI16x16x1_..._WG64_2_1_..._PGR2_PLR1_ISA...`
   - [ ] 認得片段：`MT`＝macro tile、`MI`＝MFMA 指令形狀、`WG`＝workgroup、`PGR`/`PLR`＝prefetch global/local read 深度、`ISA`＝目標架構
   - ✅ 完成判準：拿到一個真實 kernel 名能讀出它的 tile / MFMA / prefetch 設定
-  - 📚 參考資源：內部參考 [`hipblaslt-tensilelite-reference.md`](internal_docs/hipblaslt-tensilelite-reference.md) Module C.3（命名規則與參數對照）
+  - 📚 參考資源：內部參考 [hipblaslt-tensilelite-reference.md](internal_docs/hipblaslt-tensilelite-reference.md) Module C.3（命名規則與參數對照）
 - **筆記提示**：把「手寫 ex03 的 `.Lkloop`」與「真實 GEMM kernel 主迴圈」並排，記下多了哪些
   優化（prefetch / 更深 unroll / 排程交錯）。筆記寫在 `study_docs/notes/0707-真實GEMM組語認優化.md`。
 - **快速自測**：
@@ -634,22 +647,22 @@ prefetch / double buffer / MFMA 排程。
 **今日目標**：在程式碼裡定位 GEMM 優化的三個介入層，為 P2/P3 做準備；並與 mentor 把 06-26 的
 shortlist 收斂成**單一 target**。
 
-- [ ] **讀** [`study_docs/hipblaslt/gemm-optimization.md`](hipblaslt/gemm-optimization.md) 兩節
+- [ ] **讀** [study_docs/hipblaslt/gemm-optimization.md](hipblaslt/gemm-optimization.md) 兩節
   - [ ] 「你會調的參數從哪來：Solution 與 Problem」：參數的來源與衍生
   - [ ] 「三個調整層級（由淺到深）」：參數 fork → codegen → rocisa
   - ✅ 完成判準：能說出三層各改什麼、風險高低排序
 - [ ] **定位** 三個關鍵入口（開檔掃過，先建立座標感，不必讀懂全部）
-  - [ ] [`tensilelite/Tensile/KernelWriter.py`](../projects/hipblaslt/tensilelite/Tensile/KernelWriter.py) 的 `kernelBody()`（約 L5279）
-  - [ ] [`tensilelite/Tensile/SolutionStructs/Solution.py`](../projects/hipblaslt/tensilelite/Tensile/SolutionStructs/Solution.py) 的 `assignDerivedParameters`（約 L1478）
-  - [ ] [`tensilelite/Tensile/Components/`](../projects/hipblaslt/tensilelite/Tensile/Components)（`MAC` / `LocalRead` / `SIA` / `GlobalWriteComponents`）
+  - [ ] [tensilelite/Tensile/KernelWriter.py](../projects/hipblaslt/tensilelite/Tensile/KernelWriter.py) 的 `kernelBody()`（約 L5279）
+  - [ ] [tensilelite/Tensile/SolutionStructs/Solution.py](../projects/hipblaslt/tensilelite/Tensile/SolutionStructs/Solution.py) 的 `assignDerivedParameters`（約 L1478）
+  - [ ] [tensilelite/Tensile/Components/](../projects/hipblaslt/tensilelite/Tensile/Components)（`MAC` / `LocalRead` / `SIA` / `GlobalWriteComponents`）
   - ✅ 完成判準：能在每個檔指出「若要改 prefetch / 改 tile / 改 MFMA 發射，該動哪裡」
-  - 📚 參考資源：[`study_docs/hipblaslt/gemm-optimization.md`](hipblaslt/gemm-optimization.md)；上列三入口路徑（待擴充：[hipblaslt/components-codegen-map.md](hipblaslt/components-codegen-map.md)、[hipblaslt/tuning-config-reference.md](hipblaslt/tuning-config-reference.md)）
+  - 📚 參考資源：[study_docs/hipblaslt/gemm-optimization.md](hipblaslt/gemm-optimization.md)；上列三入口路徑（待擴充：[hipblaslt/components-codegen-map.md](hipblaslt/components-codegen-map.md)、[hipblaslt/tuning-config-reference.md](hipblaslt/tuning-config-reference.md)）
 - [ ] ⭐**與 mentor 收斂單一 target + 優化假設**（把 06-26 的 shortlist 定案）
   - [ ] 從 shortlist 選定 **1 個 target shape + dtype**（對齊團隊在乎的負載）
   - [ ] 寫下一句話**優化假設**（例：「此 memory-bound shape 可靠加深 prefetch / 調 tile 提高 HBM 利用率」）
   - [ ] 初判落在第 1 層（config fork，warm-up）還是第 2 層（codegen，真目標）；確認 mentor 認為值得做
   - ✅ 完成判準：P3 開工時**不需要再選題**——target / dtype / 假設 / 介入層都已定案
-  - 📚 參考資源：06-26 的 shortlist；〈目標反推總覽〉；[`study_docs/hipblaslt/gemm-optimization.md`](hipblaslt/gemm-optimization.md)
+  - 📚 參考資源：06-26 的 shortlist；〈目標反推總覽〉；[study_docs/hipblaslt/gemm-optimization.md](hipblaslt/gemm-optimization.md)
 - **筆記提示**：用一句話記住三層：第 1 層改 config fork（warm-up/floor）→ 第 2 層改 `kernelBody()`/
   Components codegen（真目標）→ 第 3 層改 rocisa 指令（最深，非必需）。另記下定案的 target + 假設。
   筆記寫在 `study_docs/notes/0708-定位codegen三層入口.md`。
@@ -669,21 +682,24 @@ shortlist 收斂成**單一 target**。
 
 里程碑：累積 2~3 顆 main repo commit + 一套穩定量測流程。
 
-關鍵檔案：[`projects/hipblaslt/AGENTS.md`](../projects/hipblaslt/AGENTS.md)、[`clients/bench/README.md`](../projects/hipblaslt/clients/bench/README.md)、
-[`tensilelite/AGENTS.md`](../projects/hipblaslt/tensilelite/AGENTS.md)、[`Solution.py`](../projects/hipblaslt/tensilelite/Tensile/SolutionStructs/Solution.py)、[`KernelWriter.py`](../projects/hipblaslt/tensilelite/Tensile/KernelWriter.py)、[`Components/`](../projects/hipblaslt/tensilelite/Tensile/Components)。
+關鍵檔案：[projects/hipblaslt/AGENTS.md](../projects/hipblaslt/AGENTS.md)、[clients/bench/README.md](../projects/hipblaslt/clients/bench/README.md)、
+[tensilelite/AGENTS.md](../projects/hipblaslt/tensilelite/AGENTS.md)、[Solution.py](../projects/hipblaslt/tensilelite/Tensile/SolutionStructs/Solution.py)、[KernelWriter.py](../projects/hipblaslt/tensilelite/Tensile/KernelWriter.py)、[Components/](../projects/hipblaslt/tensilelite/Tensile/Components)。
 
-> 先決條件（07-09 開工前完成）：精讀 [`projects/hipblaslt/AGENTS.md`](../projects/hipblaslt/AGENTS.md) 與
-> [`projects/hipblaslt/tensilelite/AGENTS.md`](../projects/hipblaslt/tensilelite/AGENTS.md) 的 build / 測試 / PR 規範（分支 `users/<user>/<branch>`、
-> base `develop`、SPDX header、PR 六段模板、`invoke build` / `invoke build-client` / `tox -e unit`）。
+**先決條件（07-09 開工前完成）**：精讀 [projects/hipblaslt/AGENTS.md](../projects/hipblaslt/AGENTS.md) 與
+[tensilelite/AGENTS.md](../projects/hipblaslt/tensilelite/AGENTS.md) 的 build / 測試 / PR 規範：
+
+- 分支 `users/<user>/<branch>`、base `develop`
+- 新檔加 SPDX header、PR 套六段模板
+- 本地檢查：`invoke build` / `invoke build-client` / `tox -e unit`
 
 ### 07-09（三）｜讀 Solution / Problem：參數從哪來
 
 **今日目標**：看懂使用者參數如何衍生成 tile 幾何，建立調參的因果感。
 
-- [ ] **讀** [`tensilelite/Tensile/SolutionStructs/Solution.py`](../projects/hipblaslt/tensilelite/Tensile/SolutionStructs/Solution.py) 的 `assignDerivedParameters`
+- [ ] **讀** [tensilelite/Tensile/SolutionStructs/Solution.py](../projects/hipblaslt/tensilelite/Tensile/SolutionStructs/Solution.py) 的 `assignDerivedParameters`
   （約 L1478）與 `assignProblemIndependentDerivedParameters`（約 L618）
   - 完成後能說出：`MacroTile0 = SubGroup0 * ThreadTile0`、`NumThreads` 怎麼來
-- [ ] **讀** [`tensilelite/Tensile/SolutionStructs/Problem.py`](../projects/hipblaslt/tensilelite/Tensile/SolutionStructs/Problem.py) 的 `ProblemType`（約 L818）
+- [ ] **讀** [tensilelite/Tensile/SolutionStructs/Problem.py](../projects/hipblaslt/tensilelite/Tensile/SolutionStructs/Problem.py) 的 `ProblemType`（約 L818）
 - **筆記提示**：畫一張「使用者參數 → 衍生參數」依賴圖（`MatrixInstruction`/`WorkGroup` → tile）。
 - **小測驗**：
   1. `MatrixInstruction` 9 元素格式各代表什麼？macro tile 怎麼從它推出？
@@ -697,13 +713,15 @@ shortlist 收斂成**單一 target**。
 
 **今日目標**：看懂 config YAML 結構，知道每個 fork 參數控制什麼。
 
-- [ ] **讀** [`tensilelite/Tensile/Tests/common/gsu/f32_gsu.yaml`](../projects/hipblaslt/tensilelite/Tensile/Tests/common/gsu/f32_gsu.yaml)（61 行）整份結構：
+- [ ] **讀** [tensilelite/Tensile/Tests/common/gsu/f32_gsu.yaml](../projects/hipblaslt/tensilelite/Tensile/Tests/common/gsu/f32_gsu.yaml)（61 行）整份結構：
   `GlobalParameters` / `BenchmarkProblems`（ProblemType + ForkParameters）/ `BenchmarkFinalParameters`
-- [ ] **讀** [`tensilelite/Tensile/Common/ValidParameters.py`](../projects/hipblaslt/tensilelite/Tensile/Common/ValidParameters.py) 裡 `DepthU`、`GlobalReadVectorWidth`、
+- [ ] **讀** [tensilelite/Tensile/Common/ValidParameters.py](../projects/hipblaslt/tensilelite/Tensile/Common/ValidParameters.py) 裡 `DepthU`、`GlobalReadVectorWidth`、
   `WorkGroup` 的定義與註解
   - 完成後能說出每個 fork 參數控制的硬體行為（unroll / coalescing / tile / split-K / tile 排序）
-- **筆記提示**：列一張小抄：`DepthU` / `GlobalReadVectorWidthA/B` / `MatrixInstruction` /
-  `GlobalSplitU` / `WorkGroupMapping` / `PrefetchGlobalRead` 各管什麼。
+- **筆記提示**：列一張小抄，記下各 fork 參數各管什麼：
+  - `DepthU`、`GlobalReadVectorWidthA/B`
+  - `MatrixInstruction`、`WorkGroupMapping`
+  - `GlobalSplitU`、`PrefetchGlobalRead`
 - **小測驗**：
   1. `GlobalSplitU` > 1 在輸出端會多出什麼動作？什麼情況（K 大小）受益？
   2. `ForkParameters` 裡每個參數給多個值，產生的是什麼？
@@ -717,14 +735,22 @@ shortlist 收斂成**單一 target**。
 **今日目標**：親手改 fork 重跑，從 `2_BenchmarkData` 看出參數對效能的影響。
 **（解鎖 P3：第 1 層參數優化＝warm-up/floor——這是 config-fork 路線的預演。）**
 
-- [ ] **寫**：複製 [`f32_gsu.yaml`](../projects/hipblaslt/tensilelite/Tensile/Tests/common/gsu/f32_gsu.yaml)，改 `DepthU` / `GlobalReadVectorWidth` / tile 其一，重跑
+- [ ] **寫**：複製 [f32_gsu.yaml](../projects/hipblaslt/tensilelite/Tensile/Tests/common/gsu/f32_gsu.yaml)，改 `DepthU` / `GlobalReadVectorWidth` / tile 其一，重跑
   `Tensile/bin/Tensile <你的config> out_tune/`
 - [ ] **比較** `out_tune/2_BenchmarkData/*.csv` 的 Gflops 與原始 baseline
 - [ ] **認識** 上層調參工具生態與分層策略（先知道有哪些工具、何時用，不必今天全跑）
-  - [ ] 工具：`hipblaslt-bench --algo_method all`（dense search 既有 solutions）、GEKO（GA/dense 搜尋＋整合 library）、bench-driven swap（不重產 kernel，只在 grid 換贏家）、hipBLT-board（Dash UI 整合）、tunableop solution maps（把贏家持久化）
-  - [ ] **分層策略（由便宜到貴）**：① 先 dense search 既有 solutions → ② grid 用得不好就 bench-driven swap → ③ 還不夠才投入 TensileLite tuning 擴充 kernel pool
+  - [ ] 工具：
+    - `hipblaslt-bench --algo_method all`：dense search 既有 solutions
+    - GEKO：GA/dense 搜尋 ＋ 整合 library
+    - bench-driven swap：不重產 kernel，只在 grid 換贏家
+    - hipBLT-board：Dash UI 整合
+    - tunableop solution maps：把贏家持久化
+  - [ ] **分層策略（由便宜到貴）**：
+    - ① 先 dense search 既有 solutions
+    - ② grid 用得不好就 bench-driven swap
+    - ③ 還不夠才投入 TensileLite tuning 擴充 kernel pool
   - ✅ 完成判準：能說出「為何先 dense search / swap、最後才 TensileLite tuning」
-  - 📚 參考資源：內部參考 [`hipblaslt-tensilelite-reference.md`](internal_docs/hipblaslt-tensilelite-reference.md) Module B.3（工具生態與分層調參策略）
+  - 📚 參考資源：內部參考 [hipblaslt-tensilelite-reference.md](internal_docs/hipblaslt-tensilelite-reference.md) Module B.3（工具生態與分層調參策略）
 - **筆記提示**：表格記下「改了什麼 → Gflops 變化 → 你的解釋」，這是 P3 調參的預演。
 - **小測驗**：
   1. `DepthU` 調大通常的取捨是什麼？
@@ -741,7 +767,7 @@ shortlist 收斂成**單一 target**。
 - [ ] 找低風險題材（**優先選能服務 target 的小改**，讓熱身 commit 也鋪路最終交付）：
   - 首選：為 07-08 定案的 target shape 補 benchmark / 回歸測試、補相關 config 或註解
   - 次選：泛用的文件錯字、註解補強、明顯小 bug、缺測試、config 清理
-- [ ] 依 [`AGENTS.md`](../projects/hipblaslt/AGENTS.md)：開分支 `users/<user>/<branch>`、加 SPDX header、填 PR 六段模板
+- [ ] 依 [AGENTS.md](../projects/hipblaslt/AGENTS.md)：開分支 `users/<user>/<branch>`、加 SPDX header、填 PR 六段模板
 - [ ] 跑本地檢查（如 `tox -e unit`），推上去跑 CI
 - **筆記提示**：記下 PR / CI 流程踩到的坑（build 時間、lint、模板要求），最終大 PR 會再用。
 - **小測驗**：
@@ -757,16 +783,22 @@ shortlist 收斂成**單一 target**。
 **今日目標**：理解 codegen 如何程式化產生你手讀過的那類 MFMA 組語。
 **（解鎖 P3：第 2 層 codegen 優化＝真目標——這裡學的 `kernelBody()`/Components 就是 P3 要動的地方。）**
 
-- [ ] **讀** [`KernelWriter.py`](../projects/hipblaslt/tensilelite/Tensile/KernelWriter.py) 的 `kernelBody()`（約 L5279）主結構：signature → 資源配置 →
+- [ ] **讀** [KernelWriter.py](../projects/hipblaslt/tensilelite/Tensile/KernelWriter.py) 的 `kernelBody()`（約 L5279）主結構：signature → 資源配置 →
   prologue（`setupNewTile`）→ 主 unroll 迴圈（global read / local write / local read / MAC）→ epilogue/store
-- [ ] **讀** [`Components/`](../projects/hipblaslt/tensilelite/Tensile/Components) 至少三個：`MAC`（發 MFMA）、`LocalRead`（LDS→VGPR）、
+- [ ] **讀** [Components/](../projects/hipblaslt/tensilelite/Tensile/Components) 至少三個：`MAC`（發 MFMA）、`LocalRead`（LDS→VGPR）、
   `SIA` 或 `GlobalWriteComponents`（排程 / 輸出）
   - 對照 ex03 手寫 `.Lkloop`，理解 Components 怎麼組出同類組語
 - [ ] **認識** codegen 的測試護欄與重構方向（改 codegen 前必懂，避免悄悄破壞行為）
-  - [ ] **Characterization tests**：~99 個 `.ambr` golden 檔覆蓋 ~29 個 codegen/config/solution 模組；任何改變行為的 PR 沒同步更新對應 golden 會**卡 required CI gate**——所以 codegen 改動要同時過效能與 golden
-  - [ ] **Snippet architecture / StinkyTofu**：把舊的 14k 行 `KernelWriterAssembly` 巨石重構成可組合 snippet + pass-based IR 優化器（DAG 排程、waitcnt 插入、peephole）——P3 真要深潛 codegen 時的背景脈絡
+  - [ ] **Characterization tests**：
+    - ~99 個 `.ambr` golden 檔覆蓋 ~29 個 codegen/config/solution 模組
+    - 任何改變行為的 PR 沒同步更新對應 golden 會**卡 required CI gate**
+    - ⇒ codegen 改動要同時過效能與 golden
+  - [ ] **Snippet architecture / StinkyTofu**：
+    - 把舊的 14k 行 `KernelWriterAssembly` 巨石重構成可組合 snippet + pass-based IR 優化器
+      （DAG 排程、waitcnt 插入、peephole）
+    - 這是 P3 真要深潛 codegen 時的背景脈絡
   - ✅ 完成判準：知道改 `kernelBody()`/Components 後要跑哪類測試、為何不能只看 Gflops
-  - 📚 參考資源：內部參考 [`hipblaslt-tensilelite-reference.md`](internal_docs/hipblaslt-tensilelite-reference.md) Module C.4（characterization tests）、C.2/C.5（snippet / StinkyTofu）
+  - 📚 參考資源：內部參考 [hipblaslt-tensilelite-reference.md](internal_docs/hipblaslt-tensilelite-reference.md) Module C.4（characterization tests）、C.2/C.5（snippet / StinkyTofu）
 - [ ] 再找 1~2 顆小 commit 送出——**盡量讓 commit 鋪路 target**（如該 shape 的測試/量測/小修），
   而非隨機泛用清理
 - **筆記提示**：把 ex03 手寫主迴圈的每個區塊，對應到 `kernelBody()` 裡呼叫的 Component。
@@ -809,7 +841,8 @@ shortlist 收斂成**單一 target**。
 優化並送 PR（**真目標**）。config-fork 進選擇表是 **warm-up/floor**（風險底線），時間不足時可退守，但
 **不是最終交付目標**。由淺到深推進：先做 floor 確保有底，再盡力推到第 2 層 codegen。
 
-關鍵檔案：tuning config（fork 區段）、`KernelWriter.py::kernelBody()`、`Components/`、
+關鍵檔案：tuning config（fork 區段）、[KernelWriter.py](../projects/hipblaslt/tensilelite/Tensile/KernelWriter.py)
+的 `kernelBody()`、[Components/](../projects/hipblaslt/tensilelite/Tensile/Components)、
 `hipblaslt-bench`、rocprof-compute。
 
 ### 決策樹（決定今天該待在哪一層）
@@ -832,10 +865,12 @@ target shape + baseline（07-08 已定案 target；P2 已建好量測 harness）
         └── 仍不足且時間允許 → 第 3 層 rocisa 指令（高風險，非必需，謹慎評估）
 ```
 
-> **策略提醒（內部參考 [`hipblaslt-tensilelite-reference.md`](internal_docs/hipblaslt-tensilelite-reference.md) Module A.5/B.3）**：
-> 內部觀察指出約 **80% 的「hipBLASLt 慢」問題其實出在輸入形狀不佳或 solution-selection 假象，而非 codegen**。
-> 因此先把第 1 層（dense search / config fork / bench-driven swap）做扎實拿到 floor，確認瓶頸真的在 kernel 本身
-> 後再投入第 2 層 codegen——這正是本實習「floor 先有底、真目標推 codegen」框架的依據。
+**策略提醒**（內部參考 [hipblaslt-tensilelite-reference.md](internal_docs/hipblaslt-tensilelite-reference.md) Module A.5/B.3）：
+
+- 內部觀察指出約 **80% 的「hipBLASLt 慢」問題其實出在輸入形狀不佳或 solution-selection 假象，而非 codegen**。
+- 因此先把第 1 層（dense search / config fork / bench-driven swap）做扎實拿到 floor，確認瓶頸真的在 kernel 本身，
+  之後再投入第 2 層 codegen。
+- 這正是本實習「floor 先有底、真目標推 codegen」框架的依據。
 
 ### 里程碑與時間框
 
@@ -882,11 +917,13 @@ target shape + baseline（07-08 已定案 target；P2 已建好量測 harness）
 
 ## 風險與 scope 控制（客觀評估）
 
-- **最大風險（戰略）：選錯 target，做出團隊不在乎的優化。** 緩解：第一週（06-26）就啟動 mentor 對齊，
-  07-08 收斂單一 target；不要 solo 埋頭學完才選題。**target 對齊比任何讀文件都優先。**
-- **次大風險：P3 codegen 太深做不完。** 緩解：先做第 1 層參數優化拿 **warm-up/floor**（新 solution 進
-  選擇表）確保有底；但 **floor ≠ 最終目標**，真目標是第 2 層 codegen 的可合併優化，floor 後仍應盡力上推。
-  避免一開始就鑽 rocisa 指令層（第 3 層），那是 scope 過大的陷阱。
+- **最大風險（戰略）：選錯 target，做出團隊不在乎的優化。**
+  - 緩解：第一週（06-26）就啟動 mentor 對齊，07-08 收斂單一 target；不要 solo 埋頭學完才選題。
+  - **target 對齊比任何讀文件都優先。**
+- **次大風險：P3 codegen 太深做不完。**
+  - 緩解：先做第 1 層參數優化拿 **warm-up/floor**（新 solution 進選擇表）確保有底。
+  - 但 **floor ≠ 最終目標**，真目標是第 2 層 codegen 的可合併優化，floor 後仍應盡力上推。
+  - 避免一開始就鑽 rocisa 指令層（第 3 層），那是 scope 過大的陷阱。
 - **不要過度投入 HIP C++。** 你的目標是 ISA + tensilelite；HIP 只是反組譯練單字的手段，A-1~A-3 夠用。
 - **deep ISA 按需學。** ex04（buffer 邊界）等深潛降為選讀，P3 真的撞到記憶體定址再回看，別前置占時間。
 - **避免進度盲點：** P0 是硬截止，若 06-30 仍未跑通 profiling，週末（06-27/28 已預留彈性）優先補，
@@ -903,11 +940,11 @@ target shape + baseline（07-08 已定案 target；P2 已建好量測 harness）
 
 ## AMD 訓練資源對照表
 
-公司內部文件已抓成完整 markdown 存於 [`internal_docs/`](internal_docs/)（取代原本 repo 根目錄的網頁
-snapshot PDF），後續 agent 可直接讀全文；分類 URL 索引見 [`internal_docs/README.md`](internal_docs/README.md)：
-- HIP 課程全文：[`internal_docs/hip-training-at-amd.md`](internal_docs/hip-training-at-amd.md)
-- GCN 架構 talk 系列：[`internal_docs/gcn-architecture-training-resources.md`](internal_docs/gcn-architecture-training-resources.md)
-- hipBLASLt / TensileLite 內部總參考：[`internal_docs/hipblaslt-tensilelite-reference.md`](internal_docs/hipblaslt-tensilelite-reference.md)
+公司內部文件已抓成完整 markdown 存於 [internal_docs/](internal_docs/)（取代原本 repo 根目錄的網頁
+snapshot PDF），後續 agent 可直接讀全文；分類 URL 索引見 [internal_docs/README.md](internal_docs/README.md)：
+- HIP 課程全文：[internal_docs/hip-training-at-amd.md](internal_docs/hip-training-at-amd.md)
+- GCN 架構 talk 系列：[internal_docs/gcn-architecture-training-resources.md](internal_docs/gcn-architecture-training-resources.md)
+- hipBLASLt / TensileLite 內部總參考：[internal_docs/hipblaslt-tensilelite-reference.md](internal_docs/hipblaslt-tensilelite-reference.md)
 
 定位：HIP 課程與 GCN talk 屬**選做補充**（非必修，趕進度可略過），每日 checklist 已用
 「**（AMD 資源，選做）**」標記嵌入相關日期；**hipBLASLt/TensileLite 參考則與實習主線直接相關、非選做**，
@@ -915,7 +952,7 @@ snapshot PDF），後續 agent 可直接讀全文；分類 URL 索引見 [`inter
 
 ### HIP 課程（Learning Center）
 
-課程名稱連結指向 [`hip-training-at-amd.md`](internal_docs/hip-training-at-amd.md) 內對應章節（含 topics、作業題目、部分原始碼）。
+課程名稱連結指向 [hip-training-at-amd.md](internal_docs/hip-training-at-amd.md) 內對應章節（含 topics、作業題目、部分原始碼）。
 
 | 課程 | 時長 | 對應階段 | 為何在這裡學 |
 |---|---|---|---|
@@ -932,7 +969,7 @@ snapshot PDF），後續 agent 可直接讀全文；分類 URL 索引見 [`inter
 
 ### GCN（gfx9）架構 talk 系列
 
-連結與離線影片/投影片清單見 [`gcn-architecture-training-resources.md`](internal_docs/gcn-architecture-training-resources.md)
+連結與離線影片/投影片清單見 [gcn-architecture-training-resources.md](internal_docs/gcn-architecture-training-resources.md)
 （影片/投影片本體在 SharePoint / Stream，需 SSO，無法經 MCP 抓取，僅保留 URL）。
 
 | Talk | 主題 | 對應階段 | 為何在這裡學 |
@@ -946,7 +983,7 @@ snapshot PDF），後續 agent 可直接讀全文；分類 URL 索引見 [`inter
 
 ### hipBLASLt / TensileLite 內部參考（Module A/B/C，**非選做**）
 
-[`hipblaslt-tensilelite-reference.md`](internal_docs/hipblaslt-tensilelite-reference.md)（ROVO 整理的內部總索引，
+[hipblaslt-tensilelite-reference.md](internal_docs/hipblaslt-tensilelite-reference.md)（ROVO 整理的內部總索引，
 本身再連向 ~50 份內部頁面）與實習主線直接對應，建議當「主參考」逐階段查用。三個 module 對應到本 roadmap 的階段：
 
 | Module | 內容重點 | 對應階段 | 主線用途 |

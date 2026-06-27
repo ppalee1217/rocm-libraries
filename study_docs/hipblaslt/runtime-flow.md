@@ -1,11 +1,8 @@
 # 執行期 GEMM 呼叫鏈：從 `hipblasLtMatmul` 到 kernel 跑起來
 
-> 路徑說明：本檔在 repo 內的 `study_docs/hipblaslt/`，code 連結為相對路徑（`../../projects/...`，先回到 repo root 再進 `projects/`）。
-> 行號可能隨 commit 漂移，對不上時以符號名稱為準。先看 [README.md](README.md) 了解全局。
->
-> **權威內部來源**：第 4 關「選師傅」的 solution selection 權威定義＝**兩層**（先 equality 查精確
-> M,N,K 命中就用；查不到走 grid 取最近代表點），見
-> [`internal_docs/hipblaslt-tensilelite-reference.md`](../internal_docs/hipblaslt-tensilelite-reference.md) Module B。
+路徑說明：本檔在 repo 內的 `study_docs/hipblaslt/`，code 連結為相對路徑（`../../projects/...`，先回到 repo root 再進 `projects/`）。行號可能隨 commit 漂移，對不上時以符號名稱為準。先看 [README.md](README.md) 了解全局。
+
+**權威內部來源**：第 4 關「選師傅」的 solution selection 權威定義＝**兩層**（先 equality 查精確 M,N,K 命中就用；查不到走 grid 取最近代表點），見 [internal_docs/hipblaslt-tensilelite-reference.md](../internal_docs/hipblaslt-tensilelite-reference.md) Module B。
 
 ## 白話總覽
 
@@ -17,7 +14,9 @@
 4. **選師傅** — 依矩陣大小（M, N, K）查一張事先做好的表，選出最適合的 kernel（solution）。
 5. **取工具開工** — 把該 kernel 的機器碼檔（`.co`）載入 GPU 並 launch 執行。
 
-> 名詞：**problem** = 這次要算什麼的描述（大小、型別、是否轉置等）。**solution** = 被選中的 kernel 設定。
+名詞：
+- **problem** = 這次要算什麼的描述（大小、型別、是否轉置等）。
+- **solution** = 被選中的 kernel 設定。
 
 ## 架構 / 流程圖
 
@@ -63,8 +62,9 @@ flowchart TD
 | `workspaceSizeInBytes` | `size_t` | 上述 workspace 的大小；也用來**過濾**掉需要更多 workspace 的 solution。 |
 | `stream` | `hipStream_t` | 要在哪條 HIP stream 上非同步執行。 |
 
-> 名詞：**ld（leading dimension）** = 矩陣在記憶體中相鄰兩欄（或列）起點的間距，用來支援 sub-matrix。
-> **order** = 資料是 column-major / row-major 等排列方式。
+名詞：
+- **ld（leading dimension）** = 矩陣在記憶體中相鄰兩欄（或列）起點的間距，用來支援 sub-matrix。
+- **order** = 資料是 column-major / row-major 等排列方式。
 
 ### 關卡 2：進入 rocBLASLt 層，整理成「訂單」
 
@@ -93,8 +93,9 @@ flowchart TD
 | `E, aux_type` | `matmul_descr` | 輔助輸出（例如保存 activation 前的中間值，給反傳用）。 |
 | `gradient` | `matmul_descr` | 是否為反向（梯度）模式，影響 epilogue 行為。 |
 
-> 名詞：**contraction**（張量縮併）是 GEMM 的數學一般化講法；這裡當成「矩陣乘法問題」理解即可。
-> **batched GEMM** = 一次算很多個同形狀的小矩陣乘法。
+名詞：
+- **contraction**（張量縮併）是 GEMM 的數學一般化講法；這裡當成「矩陣乘法問題」理解即可。
+- **batched GEMM** = 一次算很多個同形狀的小矩陣乘法。
 
 ### 關卡 3：派工總管
 
@@ -120,8 +121,9 @@ flowchart TD
 | `prob` | `const RocblasltContractionProblem&` | 來源訂單。 |
 | `tensileProblem` | `TensileLite::ContractionProblemGemm&` | 目標物件：把 M/N/K、各型別、stride、free/batch/bound index、epilogue（bias/activation）等寫進去，供查表與 `solve()` 使用。 |
 
-> 名詞：**epilogue** = GEMM 主乘法之後的收尾運算（加 bias、套 activation 等）。
-> **adapter** = 負責把 kernel 的 `.co` 載入 GPU 並 launch 的執行者。
+名詞：
+- **epilogue** = GEMM 主乘法之後的收尾運算（加 bias、套 activation 等）。
+- **adapter** = 負責把 kernel 的 `.co` 載入 GPU 並 launch 的執行者。
 
 ### 關卡 4：依矩陣大小選 kernel
 
@@ -152,8 +154,9 @@ flowchart TD
 | `hardware` | `Hardware const&` | 目標 GPU 屬性。 |
 | `index` | `const int` | 要取出的 solution 索引（lazy load 時可能觸發載入它所在的 shard）。 |
 
-> 名詞：**heuristic** = 不用實際跑就猜哪個 solution 最快的規則。
-> **solution index** = 選擇表裡每個候選 kernel 的唯一編號，貫穿「選 → 取 → launch」。
+名詞：
+- **heuristic** = 不用實際跑就猜哪個 solution 最快的規則。
+- **solution index** = 選擇表裡每個候選 kernel 的唯一編號，貫穿「選 → 取 → launch」。
 
 沒被 tune 過的矩陣大小怎麼辦？選擇表是「最近鄰」設計，所以任意 M/N/K 都查得到一個 solution：
 
@@ -190,8 +193,9 @@ flowchart TD
 | `startEvent` / `stopEvent` | `hipEvent_t` | 可選的計時 event（量測 kernel 時間用）。 |
 | `isKernelLoaded` | `bool` | 該 kernel 的 `.co` 是否已載入；**`false` 且有 `codeObjectFile` 時才呼叫 `FindCodeObject` 觸發 lazy load**。 |
 
-> 名詞：**.co** = code object，編譯好的 GPU 機器碼檔，等同那位師傅要用的工具。
-> **KernelInvocation** = 「這一刀怎麼切」的完整指示：用哪支 kernel、哪個 `.co`、開多少 thread、傳什麼引數。
+名詞：
+- **.co** = code object，編譯好的 GPU 機器碼檔，等同那位師傅要用的工具。
+- **KernelInvocation** = 「這一刀怎麼切」的完整指示：用哪支 kernel、哪個 `.co`、開多少 thread、傳什麼引數。
 
 ## 關鍵資料結構
 
