@@ -108,6 +108,8 @@ flowchart LR
 - Track 1 主題入口：[hipblaslt/README.md](hipblaslt/README.md)
 - Track 2 動手細節：[amd-isa-kernel.md](amd-isa-kernel.md)
 - Track 2 可跑範例：[asm/](../../asm)（example01~04，gfx942 手寫組語 + HIP launcher）
+- AMD Datacenter GPU 型號 ↔ ISA（gfx）對照總表：[isa/amd-datacenter-gpu-isa.md](isa/amd-datacenter-gpu-isa.md)
+  — 把本 repo 目標 gfx942（MI300 / CDNA3）放回整條 Instinct 產品線（gfx908/90a/942/950）。
 - build / PR 規範以官方文件為準：[hipblaslt/AGENTS.md](../projects/hipblaslt/AGENTS.md)、[tensilelite/AGENTS.md](../projects/hipblaslt/tensilelite/AGENTS.md)（本文件組不重複）。
 - **公司內部文件（Confluence 全文 + 分類 URL 索引）**：[internal_docs/README.md](internal_docs/README.md)
   — GCN 架構 talk、HIP 課程（100~300）、hipBLASLt/TensileLite 內部總參考；已抓成 markdown 供 agent 直接讀，
@@ -125,6 +127,8 @@ flowchart LR
 - [isa/lds-bank-conflicts.md](isa/lds-bank-conflicts.md)（P0；LDS 32-bank 與 padding，最高優先 gap）
 - [hipblaslt/tuning-config-reference.md](hipblaslt/tuning-config-reference.md)（P1；fork 參數表）
 - [hipblaslt/components-codegen-map.md](hipblaslt/components-codegen-map.md)（P1；Components/ 地圖）
+- [research/ductile-geko-notes.md](research/ductile-geko-notes.md)（P1~P2；研究線：Ductile/GEKO/Formocast 生態與 SWDEV-477426 對接筆記）
+- [research/surrogate-dse-plan.md](research/surrogate-dse-plan.md)（P2~P3；研究線：資料集 schema、三切角假設與評估 metric）
 - 另：[hipblaslt/profiling-rocprof.md](hipblaslt/profiling-rocprof.md) 末尾有「bench+rocprof cookbook」待擴充區段
 
 ## 一句話總結
