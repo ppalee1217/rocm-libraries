@@ -22,8 +22,5 @@ Description = 當天 roadmap 的今日目標主題（例：0625-建立全局地�
 <!-- 例：[runContractionProblem](../../projects/hipblaslt/.../tensile_host.cpp#L3235) -->
 <!-- 例：[runtime-flow.md](../hipblaslt/runtime-flow.md) -->
 
-## 待釐清（自己寫）
+## Questions 整理（自己寫）
 <!-- 還沒搞懂、想之後問人或查的點 -->
-
-## 隔日 todo（自己寫）
-<!-- 明天要接著做什麼 -->
