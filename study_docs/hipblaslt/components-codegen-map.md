@@ -2,6 +2,7 @@
 
 > **狀態：outline，待擴充。** 對應 roadmap：**P1 / 07-08** 與 **P3 第 2 層 codegen 優化**。
 > 文件補齊前用下方替代資源（`Component.py` 是註冊機制、`kernelBody()` 是組裝點）。
+> **KernelWriter 骨架與「base→asm→Components」分工的導讀已在 [kernelwriter-implementation.md](kernelwriter-implementation.md)**，本文件聚焦在 `Components/` 的檔案級職責地圖。
 
 ## 為何重要
 
@@ -25,6 +26,7 @@ Component 檔」的地圖，否則會迷失在數萬行 Python 裡。
 - `projects/hipblaslt/tensilelite/Tensile/Components/`（直接看目錄——檔案級職責對應仍以原始碼為準）
 - `study_docs/hipblaslt/gemm-optimization.md`「三個調整層級」
 - `study_docs/amd-isa-kernel.md`「階段 B」
+- KernelWriter 實作導讀（`kernelBody()` 骨架、兩層排程、抽象→asm 對應表）：[kernelwriter-implementation.md](kernelwriter-implementation.md)
 - 內部參考（架構脈絡，非檔案級地圖）：[internal_docs/hipblaslt-tensilelite-reference.md](../internal_docs/hipblaslt-tensilelite-reference.md)
   Module C.2（codegen pipeline、snippet architecture / StinkyTofu）；
   [internal_docs/tensilelite-kernel-generator.md](../internal_docs/tensilelite-kernel-generator.md)（參數→kernel 的產生流程）
