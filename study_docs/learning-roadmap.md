@@ -7,18 +7,55 @@
 
 ## Context（為什麼做這份計畫）
 
-你是短期實習生（剩近 2 個月，從 2026-06-25 起算 ~8 週），目標是「熟悉 hipBLASLt 與
-TensileLite、寫 GPU kernel 熟悉 AMD ISA」，最終要在 main repo 有**多顆 commit**，並完成
-一個 GEMM kernel 優化。短期硬截止：**下週三 2026-07-01** 前要把 codebase / workflow 摸熟、HIP 練熟。
+你是短期實習生（剩近 2 個月，從 2026-06-25 起算 ~8 週），起步目標是「熟悉 hipBLASLt 與
+TensileLite、寫 GPU kernel 熟悉 AMD ISA」。短期硬截止：**2026-07-01** 前把 codebase / workflow
+摸熟、HIP 練熟（P0，已完成）。
 
-**North Star（最終交付的真目標）**：在**團隊在乎的 shape** 上做出一個 **codegen 級、可被 reviewer
-接受／合併**的 GEMM 優化 PR。
+**方向調整（2026-07-06 與 mentor 談定）**：核心產品項目（Ductile / GEKO 的 GA tuning）皆已有正職
+主導，intern 能切入的合併型貢獻僅剩零星小 ticket；mentor 因此**鼓勵往研究型題目發展**。這和你的研究
+背景高度同構——你做 NPU tile-level DSE：用 instruction 維度 offline profiling 建 latency 表，痛點是
+configuration 一改就要重 profiling、拖慢 DSE，方向是用 **prediction 改善 profiling data 重用、加快
+DSE**。因此本 roadmap 後半段（P2~P4）從「codegen 優化 PR」**重導向**為「**用 prediction / surrogate
+降低 GEMM tuning 的 profiling 成本、加快 DSE**」的研究線。
 
-- **真目標**＝改善團隊在乎 shape 的效能、PR 可合併（多半落在第 2 層 codegen：`kernelBody()`/Components）。
-- **floor（風險底線，非目標）**＝config-fork 讓新 solution 進選擇表並被選用——這是熱身級成果，也是
-  P3 codegen 做不完時的安全網，**不等於**最終交付。
-- 這份 roadmap 的每個 phase 都應對照下方〈目標反推總覽〉反推「為了交付，我必須*能做到*什麼」，
-  而不是「把現有教材讀完」。**最高槓桿的第一步是第一週就與 mentor 對齊 target**（見 06-26）。
+**North Star（最終交付的真目標）**：一份**團隊用得上的研究產出**——針對「GEMM tuning 每次 codegen /
+config 一改就要重跑 grid search 建表」這個成本問題，用 surrogate / prediction 降低評估成本，交付
+**分析 + prototype + writeup**，對接 solution-library GA 搜尋這條線（JIRA `SWDEV-477426`）。
+
+- **真目標（研究主線）**＝在既有 benchmark 資料上建 predictor / analytics，量化「省下多少評估、DSE
+  加速多少」，產出可被 SolutionSelection / Tensile team 參考的結論；**不需動正職維護的 Ductile/GEKO 核心**。
+- **floor（風險底線，非目標）**＝**2~3 顆小 ticket commit**（docs/config/test/小 bug），滿足「main repo
+  多顆 commit」與熟悉 PR/CI 流程，是研究高變異時的安全網，**不等於**最終交付。
+- 每個 phase 都對照〈目標反推總覽〉反推「為了交付，我必須*能做到*什麼」，而非「把教材讀完」。
+  **最高槓桿的第一步是與 mentor 對齊研究題目 + 資料 / repo 存取**（見 07-08）。
+
+### 生態系定位（本 roadmap 全篇沿用此地圖）
+
+先把名詞理清（你在描述時容易混）：主管講的 **Ductile** 屬**產生 / 調校層（tuning）**，用基因演算法
+（GA）取代 grid search 窮舉建表；「預測選 kernel」則屬**選擇層（selection）**，是 Origami / Formocast
+的事。研究主線鎖定 **tuning 層的評估成本**，用既有 benchmark CSV 做 offline 建模。
+
+```mermaid
+flowchart TD
+  api["hipBLASLt API"] --> sel
+  subgraph sel [選擇層 selection：挑現有 solution]
+    eq["equality + grid-based"]
+    org["Origami / Formocast 預測選 solution"]
+  end
+  api --> tune
+  subgraph tune [產生/調校層 tuning：決定有哪些 kernel]
+    grid["TensileLite Grid Search 窮舉建表"]
+    duc["Ductile GA 搜尋 (GEKO 預設 backend)"]
+  end
+  tune --> data["2_BenchmarkData CSV：(params, shape) -> GFLOPS"]
+  data --> research["研究主線：surrogate / prediction 降低評估成本、加快 DSE"]
+```
+
+- **痛點對照**：你 NPU 研究「config 一改就要重 profiling」↔ 這裡「codegen / 參數一改就要重跑 grid
+  笛卡兒積 benchmark」。GA（Ductile）用少量評估找好解；Formocast 用模擬預測免 benchmark——分別對應
+  你研究的「加快搜尋」與「用預測減少 profiling」兩軸。
+- **你的 edge**：Ductile / grid 是整支 kernel end-to-end 量 GFLOPS，沒把 compute / memory 拆開重用；
+  你論文「拆解 profiling 後跨 config 重用」的想法在此可能是新角度（見 P3 切角 #3）。
 
 本計畫評估了兩份既有資產並把它們融合成一條可執行的學習軌：
 
@@ -80,7 +117,7 @@ TensileLite、寫 GPU kernel 熟悉 AMD ISA」，最終要在 main repo 有**多
   （檔名 `MMDD-{當天主題}.md`），用 `learning-notes` skill 開新筆記（含 template），我只協助補
   code / doc 連結，不代寫內容。
 - **P0–P2 逐日詳列；P3–P4 框架化**（給里程碑、決策樹與可重複套用的迭代 checklist 模板，
-  因為優化主線是開放式探索，無法預先寫死每天步驟）。
+  因為研究主線是開放式探索，無法預先寫死每天步驟）。
 
 ---
 
@@ -89,31 +126,35 @@ TensileLite、寫 GPU kernel 熟悉 AMD ISA」，最終要在 main repo 有**多
 | 階段 | 日期 | 主題 | 產出 |
 |---|---|---|---|
 | P0 | 06-25 ~ 07-01 | Codebase + workflow 摸熟、HIP 練熟（**硬截止**） | 能跑 bench/profile、自寫 HIP kernel 反組譯、讀懂 ex01/02 |
-| P1 | 07-02 ~ 07-08 | AMD ISA 深化（ex03 MFMA；ex04 buffer 選讀）、tensilelite pipeline 實跑、收斂 target | 讀懂 MFMA GEMM 組語、跑過一次 Tensile tuning、定案單一 target |
-| P2 | 07-09 ~ 07-22 | tensilelite 內部 + 第一批低風險 commit | 2~3 顆 main repo commit（小修/docs/config/test） |
-| P3 | 07-23 ~ 08-13 | GEMM 優化主線：確認 target → codegen/調參 → 驗證 → PR | 團隊在乎 shape 的 codegen 級優化 PR（floor：config-fork 採用） |
-| P4 | 08-14 ~ 08-20 | 收尾、benchmark 報告、PR review 回應、buffer | 合併產出、實習總結 |
+| P1 | 07-02 ~ 07-08 | AMD ISA（ex03 MFMA；ex04 選讀）、tensilelite pipeline 實跑、**收斂研究題目** | 讀懂 MFMA GEMM 組語、跑過一次 Tensile tuning、定案研究切角 + 資料/repo 存取 |
+| P2 | 07-09 ~ 07-22 | tuning 參數（gene）空間 + 工具生態 + **資料生成 pipeline** + floor tickets | 可重跑的 benchmark 資料集 + baseline analytics + 1~2 顆 floor commit |
+| P3 | 07-23 ~ 08-13 | 研究主線（開放式）：三切角決策樹 → 建 predictor/analytics → 量化 DSE 加速 | surrogate/prediction 的分析 + prototype（floor：floor commit 累積到 2~3 顆） |
+| P4 | 08-14 ~ 08-20 | 研究 writeup、對接 SWDEV-477426/team、收尾、buffer | 研究產出 writeup + commit 清單 + 實習總結 |
 
-> 提醒：每個工作日都有單一可 follow 的目標（見下）。落後時用週末補；領先時把 P3 優化迭代提前
-> （target 已在 07-08 與 mentor 定案，不必等到 P3 才選）。
+> 提醒：每個工作日都有單一可 follow 的目標（見下）。落後時用週末補；floor ticket 與研究主線平行推進，
+> 但 floor 不佔研究主時段。研究切角在 07-08 先與 mentor 對齊、07-23~25 kickoff 依資料可得性定案。
 
 ## 目標反推總覽（每個 phase 學的東西如何用到最終交付）
 
-> 讀法：**從右往左**——先看「最終交付需要的能力」，再確認「在哪學」「解鎖 P3 哪個任務」。
+> 讀法：**從右往左**——先看「研究交付需要的能力」，再確認「在哪學」「解鎖 P3 哪個任務」。
 > 任何學習若在此表找不到下游任務，就降級為選讀。
 
-| 最終交付需要的能力 | 在哪學（phase / 天） | 解鎖 P3 的哪個任務 |
+| 研究交付需要的能力 | 在哪學（phase / 天） | 解鎖 P3 的哪個任務 |
 |---|---|---|
-| 判讀 compute/memory-bound、讀 rocprof counter | P0・06-30（ex02） | 決定優化方向、驗證瓶頸是否如預期改變 |
-| 讀懂真實 MFMA GEMM 主迴圈、register/LDS layout | P1・07-03（ex03）+ 07-07（階段B） | 第 2 層改 prefetch / 排程 / store 位址 |
-| config fork 參數 ↔ 硬體行為 | P2・07-09~11 | 第 1 層參數優化（warm-up / floor） |
-| `kernelBody()` / Components codegen 介入點 | P1・07-08 + P2・07-14~18 | **第 2 層 codegen 優化（真目標）** |
-| 可信 before/after 量測 harness | P2・07-19~22 | 每次迭代加速驗證 + PR 證據 |
-| **target shape + 團隊需求** | **P0~P1 mentor 對齊軌**（06-26、07-08） | **選對要優化的 shape、PR 被接受** |
+| 判讀 compute/memory-bound、讀 rocprof counter | P0・06-30（ex02） | 定義 predictor 目標 / feature、判讀 benchmark 是否可信 |
+| 理解 kernel 參數（gene）空間、gene → kernel 結構映射 | P1・07-07 + P2・07-09~10 | 定義 predictor 的輸入特徵空間（染色體編碼） |
+| 跑 grid search 產出 `2_BenchmarkData`、看懂 fitness=GFLOPS | P1・07-06 + P2・07-11 | 產生研究用的訓練/評估資料 |
+| 建立可重複的 benchmark 資料生成 pipeline | P2・07-14~22 | predictor 訓練資料 + ground truth（切角 #1/#2/#3 共用地基）|
+| tuning 工具生態（grid/GA/Ductile/GEKO/Formocast）定位 | P2・07-11 | 選對研究切角、對接 SWDEV-477426、避免撞正職 |
+| **研究題目 + 資料/repo 存取 + 是否撞正職** | **mentor 對齊軌**（07-08、07-23~25 kickoff） | **選對研究切角、產出團隊用得上的結論** |
 
 ---
 
 ## P0：Codebase + Workflow 摸熟、HIP 練熟（06-25 → 07-01，硬截止）
+
+> 註：North Star 已於 07-06 調整為研究線（見上方 Context），但 **P0 基礎完全不變且更重要**——
+> profiling / counter 判讀（06-30）是之後定義 predictor 目標與判讀 benchmark 可信度的根基。P0 已完成，
+> 以下日程原貌保留。
 
 階段目標：07-01 結束時，你能:
 - (a) 講清楚 build-time / runtime 兩階段如何交接
@@ -122,8 +163,8 @@ TensileLite、寫 GPU kernel 熟悉 AMD ISA」，最終要在 main repo 有**多
 - (d) 逐行讀懂 ex01/ex02 的組語與優化邏輯
 - (e) 建立 GPU 通用心智模型：講清 grid/block/warp/SM/CU 階層、CPU→GPU launch 流程、
   CUDA↔HIP 軟硬體名詞對照（這層是讀 gfx942 組語的通用前導）
-- (f) **啟動 mentor 對齊**：本週內與 mentor/team 談過一次，產出 target shape shortlist
-  （這是 North Star 的第一步，比任何讀文件都優先）
+- (f) **啟動 mentor 對齊**：本週內與 mentor/team 談過一次，產出候選題目 / 素材清單
+  （這是 North Star 的第一步，比任何讀文件都優先；此次 sync 後方向定為研究線，見 Context）
 
 關鍵檔案：[study_docs/README.md](README.md)、[architecture/README.md](architecture/README.md)、[hipblaslt/](hipblaslt/)、
 [asm/example01_reduce_sum/](../../asm/example01_reduce_sum)、[asm/example02_reduce_sum/](../../asm/example02_reduce_sum)、[amd-isa-kernel.md](amd-isa-kernel.md)。
@@ -205,15 +246,16 @@ TensileLite、寫 GPU kernel 熟悉 AMD ISA」，最終要在 main repo 有**多
   - [ ] 知道四條閱讀路徑：新手（Ch1-2-4-5）/ 優化（Ch3-5-6-11+附錄A）/ 移植（Ch2-8-4-5）/ 多 GPU（Ch6-9-10-11）
   - ✅ 完成判準：日後遇到主題時能直接說出「該翻哪一章」，不必從頭讀整本
   - 📚 參考資源：[study_docs/gpu_knowledge/hip-book-guide.md](gpu_knowledge/hip-book-guide.md)
-- [ ] ⭐**啟動 mentor / team 對齊（本週內完成，最高槓桿）**——決定最終交付 target 的第一步
+- [ ] ⭐**啟動 mentor / team 對齊（本週內完成，最高槓桿）**——決定實習交付方向的第一步
   - [ ] 約一次 mentor sync，帶著問題去問（不要等學完才問）：
     - [ ] 目前哪些 GEMM shape / dtype **underperform 或團隊在乎**（如特定 LLM 訓練/推論 shape）？
-    - [ ] 有沒有 **known gap / good-first-issue / 已知可改的 solution**？
-    - [ ] 什麼樣的 PR 比較容易被接受——**config fork 還是 codegen 級**改動？對 2 個月實習的期待？
-    - [ ] 有沒有現成的內部 benchmark / 回歸 shape 清單可當 target 候選？
-  - ✅ 完成判準：產出 **target shape shortlist（2~3 個）**，每個附一句「為何團隊在乎」+ 初判屬第 1/第 2 層
+    - [ ] 有沒有 **known gap / good-first-issue / 適合 intern 的題目**？（正職已主導的核心項目不重疊）
+    - [ ] intern 適合做**合併型小改**還是**研究型探索**？對 2 個月實習的期待？
+    - [ ] 有沒有現成的內部 benchmark / 資料集 / 回歸 shape 清單可當研究素材？
+  - ✅ 完成判準：對「方向該偏合併型還是研究型」有初步共識 + 一份候選素材/題目清單
   - 📚 參考資源：[projects/hipblaslt/AGENTS.md](../projects/hipblaslt/AGENTS.md)（PR 規範，先知道什麼 PR 收得了）；今天 bench 的既有數字
-  - 註：此 item 跨整週，今天先約時間 + 列問題清單；shortlist 最遲 07-08 與 mentor 收斂成單一 target。
+  - 註（07-06 後更新）：這次 sync 的結論導向**研究線**（見上方 Context 方向調整）——核心項目有正職主導、
+    intern 走研究型題目 + 小 ticket floor。研究切角與資料/repo 存取最遲 07-08 與 mentor 收斂（見 07-08）。
 - [ ] **跑** 既有 bench（已建置完成，免重 build），把抽象呼叫鏈對應到真實輸出：
   ```bash
   ./build/release/clients/hipblaslt-bench -m 4096 -n 4096 -k 4096 -r f16_r --print_kernel_info
@@ -371,8 +413,8 @@ TensileLite、寫 GPU kernel 熟悉 AMD ISA」，最終要在 main repo 有**多
 ### 06-30（二）⭐優化重點日｜example02：profiling 驅動優化完整迴圈
 
 **今日目標**：第一次跑通「profile → 讀 counter → 改 code → 驗證加速」的完整迴圈，並能講出
-瓶頸如何從 counter 讀出來。這是你最薄弱、也是 P3 成敗關鍵的主題。
-**（解鎖 P3：判斷 target shape 是 compute/memory-bound、每次迭代驗證 counter 是否如預期改變。）**
+瓶頸如何從 counter 讀出來。這是你最薄弱、也是研究線 profiling 判讀的關鍵基礎。
+**（解鎖研究線：判讀 compute/memory-bound、判斷 benchmark 是否可信、定義 predictor 的目標 / feature。）**
 
 - [ ] **讀** [asm/example02_reduce_sum/README.md](../../asm/example02_reduce_sum/README.md) 全 4 節（四個範例裡 **profiling 最佳單篇教材**）
   - [ ] Build and run：跑得起來
@@ -451,9 +493,10 @@ TensileLite、寫 GPU kernel 熟悉 AMD ISA」，最終要在 main repo 有**多
 
 ## P1：AMD ISA 深化 + tensilelite 實跑（07-02 → 07-08）
 
-階段目標：讀懂真實 MFMA GEMM 組語（ex03）、實跑一次完整 TensileLite tuning 並在產出的真實
-GEMM `.s` 裡認出優化手法。**並在 07-08 與 mentor 把 06-26 的 shortlist 收斂成單一 target shape +
-優化假設**（直接餵給 P3，避免 P3 才從零選題）。（ex04 buffer 邊界改為按需選讀，見 07-04。）
+階段目標：讀懂真實 MFMA GEMM 組語（ex03）、實跑一次完整 TensileLite tuning，並在真實 GEMM `.s`
+建立「參數 → kernel 結構」的介面級理解。**並在 07-08 與 mentor 收斂研究切角 + 敲定資料 / repo 存取**
+（見 Context 的方向調整；07-07/07-08 已從「codegen 手改準備」轉為研究線）。（ex04 buffer 邊界改為
+按需選讀，見 07-04。）
 
 關鍵檔案：[asm/example03_mfma/](../../asm/example03_mfma)、[asm/example04_global_mem_oob/](../../asm/example04_global_mem_oob)（選讀）、
 `tensilelite/Tensile/` 下的 [KernelWriter.py](../projects/hipblaslt/tensilelite/Tensile/KernelWriter.py)、[SolutionStructs/](../projects/hipblaslt/tensilelite/Tensile/SolutionStructs)、[Components/](../projects/hipblaslt/tensilelite/Tensile/Components)、[Tests/](../projects/hipblaslt/tensilelite/Tensile/Tests)。
@@ -468,7 +511,8 @@ GEMM `.s` 裡認出優化手法。**並在 07-08 與 mentor 把 06-26 的 shortl
 **今日目標**：看懂 MFMA register layout 與 LDS staging，逐行讀懂主迴圈，並用 ATT trace 看出
 實際 stall 在哪。（內容較滿——這是把 07-02 charge day 的 example03 結構併入的一天；`.s` 深讀
 若當天消化不完，可順延到 07-04／07-05。）
-**（解鎖 P3：第 2 層 codegen 優化＝真目標——改 prefetch / 排程 / store 位址前必須先讀懂這支。）**
+**（研究線用途：建立「一支真實 GEMM kernel 長什麼樣」的介面級直覺，之後理解 gene→kernel 映射用；
+方向已於 07-06 轉研究線，見 Context。）**
 
 - [ ] **（原 07-02）讀** [asm/example03_mfma/README.md](../../asm/example03_mfma/README.md) 結構三節
   - [ ] 「What the kernel does」：kernel 做的是 32×32 輸出塊的 tiled GEMM
@@ -505,7 +549,7 @@ GEMM `.s` 裡認出優化手法。**並在 07-08 與 mentor 把 06-26 的 shortl
   - [ ] 在輸出辨認開頭 `s_waitcnt lgkmcnt(0)`（等 kernarg load）造成的數千 cycle stall
   - ✅ 完成判準：能在 trace 指出那個 leading stall 並說明成因
   - 📚 參考資源：[asm/example03_mfma/](../../asm/example03_mfma)（待擴充：[isa/mfma-deep-dive.md](isa/mfma-deep-dive.md)、[isa/gfx942-isa-reference.md](isa/gfx942-isa-reference.md)）
-- **筆記提示**：抄下 MFMA register layout（lane l 持有 A/B/D 的哪個元素），P3 改 store 位址會用到；
+- **筆記提示**：抄下 MFMA register layout（lane l 持有 A/B/D 的哪個元素），理解 gene→kernel 映射時會用到；
   記下 ATT 輸出目錄結構（`code.json` = 每指令 hitcount/latency）。筆記寫在 `study_docs/notes/0703-example03-MFMA-GEMM.md`。
 - **快速自測**：
   1. 一條 `v_mfma_f32_16x16x4_f32` 的 K 維只有 4，BK=16 要幾條 MFMA 串起來？
@@ -517,21 +561,21 @@ GEMM `.s` 裡認出優化手法。**並在 07-08 與 mentor 把 06-26 的 shortl
   3. 保證 CU 0 一定被排到、trace 資料量可控、可重現。
   </details>
 
-### 07-04（六，彈性）｜target shape 初探 + baseline 預習（ex04 buffer 改選讀）
+### 07-04（六，彈性）｜候選 shape / baseline 資料初探（ex04 buffer 改選讀）
 
-**今日目標**：把彈性日用在**最接近交付的事**——對 06-26 shortlist 的候選 shape 做初步 bench、
-預習 baseline 數字，並補前面落後項。ex04（buffer 邊界）**降為選讀**：它對「config-fork / codegen
-GEMM 優化」不在關鍵路徑上，留到 P3 真的撞到記憶體定址/邊界再回來看。
+**今日目標**：把彈性日用在**離研究線最近的事**——對幾個候選 shape 做初步 bench、預習 baseline 數字
+（這批數字是之後研究資料集的第一手素材），並補前面落後項。ex04（buffer 邊界）**降為選讀**：它對
+研究線（surrogate / analytics）不在關鍵路徑上，留到真的撞到記憶體定址/邊界再回來看。
 
-- [ ] ⭐**target shape 初探**（為 07-08 與 mentor 收斂 target 暖身）
-  - [ ] 對 shortlist 的 2~3 個候選 shape 各跑一次 `hipblaslt-bench`，記下 Gflops 與選到的 solution
+- [ ] ⭐**候選 shape / baseline 資料初探**（為 07-08 收斂研究切角、P2 資料 pipeline 暖身）
+  - [ ] 對 2~3 個候選 shape 各跑一次 `hipblaslt-bench`，記下 Gflops 與選到的 solution
   - [ ] 粗判每個候選偏 compute- 還是 memory-bound（沿用 06-30 的判讀法）
-  - ✅ 完成判準：對每個候選 shape 都有一行 baseline 數字 + 一句瓶頸初判，供 07-08 定案參考
-  - 📚 參考資源：06-26 shortlist；[study_docs/hipblaslt/profiling-rocprof.md](hipblaslt/profiling-rocprof.md)
+  - ✅ 完成判準：對每個候選 shape 都有一行 baseline 數字 + 一句瓶頸初判，供 07-08 參考
+  - 📚 參考資源：06-26 候選清單；[study_docs/hipblaslt/profiling-rocprof.md](hipblaslt/profiling-rocprof.md)
 - [ ] **（彈性，補 07-03）選做** 補讀 ex03 `.s` L6–119 未消化的部分，直到看懂 tiling 與
   MFMA register layout
 - [ ] **（選讀／按需，非必修）讀** [asm/example04_global_mem_oob/README.md](../../asm/example04_global_mem_oob/README.md) 四節
-  ——P3 第 2 層改 store/邊界定址時再回來精讀；此處掃過建立印象即可
+  ——研究線不需要；純為 ISA 完整性，掃過建立印象即可
   - [ ] 「The store loop」：這支 kernel 只用單 lane 反覆 store 的設計
   - [ ] 「The kinds of global-memory OOB」表：5 類越界的差別（丟棄/fault/corruption）
   - [ ] 「Kernel argument layout」：kernarg 怎麼擺
@@ -554,9 +598,9 @@ GEMM 優化」不在關鍵路徑上，留到 P3 真的撞到記憶體定址/邊�
   - ✅ 完成判準：能對應「兩次 `num_records` 設定差異 → 為何一個安全一個 fault」
   - 📚 參考資源：[asm/example04_global_mem_oob/](../../asm/example04_global_mem_oob)（待擴充：[isa/gfx942-isa-reference.md](isa/gfx942-isa-reference.md)）
 - [ ] **（AMD 資源，選做）** GCN talk #3「Memory, IO, and CU Architecture on gfx9」
-- **筆記提示**：主記 target 初探的 baseline 表（候選 shape / Gflops / 瓶頸初判），供 07-08 定案；
+- **筆記提示**：主記候選 shape 的 baseline 表（候選 shape / Gflops / 瓶頸初判），供 07-08 參考；
   若有讀 ex04（選讀），附記 Raw Buffer 範圍檢查公式：越界 iff `inst_offset + voff >= num_records`
-  （比的是 offset 不是 base，base 前進時 `num_records` 要同步遞減）。筆記寫在 `study_docs/notes/0704-target初探與buffer選讀.md`。
+  （比的是 offset 不是 base，base 前進時 `num_records` 要同步遞減）。筆記寫在 `study_docs/notes/0704-候選shape初探與buffer選讀.md`。
 - **快速自測**：
   1. 為什麼 `flat` / `global_*` 指令沒有 `num_records` 邊界保護，`buffer_*` 有？
   2. safe 模式為何不會 fault？
@@ -577,9 +621,9 @@ GEMM 優化」不在關鍵路徑上，留到 P3 真的撞到記憶體定址/邊�
   - [ ] 默畫：tiling（32×32 組成）→ 主迴圈 `.Lkloop`（load/ds_write/barrier/ds_read/mfma）→ store
   - ✅ 完成判準：不看檔能完整講一遍 example03 的資料流
 - [ ] **（AMD 資源，選做）** HIP 102「[Part B](internal_docs/hip-training-at-amd.md#hip-102-hip-programming-part-b)」的「Example: Reduction」段（回扣 ex01/ex02；課程頁附 HW3 Histogram 完整 C++ 可當額外練習）
-- **筆記提示**：補完原 07-02 要記的 MFMA register layout（lane l 持有 A/B/D 的哪個元素，P3 改
-  store 位址會用到）；列出目前還不夠有把握的 1–2 個主題，P2 安排時間補。
-  可用 `learning-quiz` 對 P0~P1 最薄弱主題做一次綜合測驗，找出要回補的點。
+- **筆記提示**：補完原 07-02 要記的 MFMA register layout（lane l 持有 A/B/D 的哪個元素，理解
+  gene→kernel 映射時會用到）；列出目前還不夠有把握的 1–2 個主題，P2 安排時間補。筆記寫在
+  `study_docs/notes/0705-補進度與鞏固example03.md`。可用 `learning-quiz` 對 P0~P1 最薄弱主題做一次綜合測驗，找出要回補的點。
 
 ### 07-06（一）｜實跑一次 TensileLite tuning
 
@@ -611,10 +655,14 @@ GEMM 優化」不在關鍵路徑上，留到 P3 真的撞到記憶體定址/邊�
   2. 不一定，視改動而定（可用 `--build-only` / cache 等避免全跑）；詳見 pipeline 文件「何時要重跑」。
   </details>
 
-### 07-07（二）｜在真實 GEMM 組語裡認出優化手法
+### 07-07（二）｜在真實 GEMM 組語裡認出優化手法（介面級理解）
 
 **今日目標**：用 ex01–03 學的指令當索引（ex04 選讀），在 TensileLite 產出的真實 kernel 組語裡認出
 prefetch / double buffer / MFMA 排程。
+
+> **研究線定位（降級）**：方向已轉研究線，本日**不再是為「手改 codegen」做準備**，而是**介面級理解**：
+> 建立「哪些參數（gene）→ 產生哪種 kernel 結構」的直覺。重點放在最後一項「kernel 命名規則 ↔ YAML
+> 參數」——那正是之後 predictor 的**輸入特徵（染色體編碼）**。組語逐條深讀可略過，看懂命名編碼即可。
 
 - [ ] **讀** [study_docs/amd-isa-kernel.md](amd-isa-kernel.md)「階段 B」三小節
   - [ ] B-1：為何 TensileLite 用 rocisa 產組語、不是 hipcc
@@ -642,65 +690,81 @@ prefetch / double buffer / MFMA 排程。
   2. 本輪 MFMA 還在算時，就先發出下一輪的 `global_load`（載入與計算重疊），用雙緩衝交替 LDS。
   </details>
 
-### 07-08（三）｜定位 codegen 入口 + 三層優化地圖 + 收斂 target
+### 07-08（三）⭐｜定位 tuning 參數空間 + 生態定位 + 收斂研究題目
 
-**今日目標**：在程式碼裡定位 GEMM 優化的三個介入層，為 P2/P3 做準備；並與 mentor 把 06-26 的
-shortlist 收斂成**單一 target**。
+**今日目標**：把 tuning 的**參數空間（gene）與工具生態**定位清楚，並**與 mentor 收斂研究切角 + 敲定
+資料 / repo 存取**（這是研究線最高槓桿的一步，取代原本的「收斂 codegen target」）。
 
-- [ ] **讀** [study_docs/hipblaslt/gemm-optimization.md](hipblaslt/gemm-optimization.md) 兩節
-  - [ ] 「你會調的參數從哪來：Solution 與 Problem」：參數的來源與衍生
-  - [ ] 「三個調整層級（由淺到深）」：參數 fork → codegen → rocisa
-  - ✅ 完成判準：能說出三層各改什麼、風險高低排序
-- [ ] **定位** 三個關鍵入口（開檔掃過，先建立座標感，不必讀懂全部）
-  - [ ] [tensilelite/Tensile/KernelWriter.py](../projects/hipblaslt/tensilelite/Tensile/KernelWriter.py) 的 `kernelBody()`（約 L5279）
-  - [ ] [tensilelite/Tensile/SolutionStructs/Solution.py](../projects/hipblaslt/tensilelite/Tensile/SolutionStructs/Solution.py) 的 `assignDerivedParameters`（約 L1478）
-  - [ ] [tensilelite/Tensile/Components/](../projects/hipblaslt/tensilelite/Tensile/Components)（`MAC` / `LocalRead` / `SIA` / `GlobalWriteComponents`）
-  - ✅ 完成判準：能在每個檔指出「若要改 prefetch / 改 tile / 改 MFMA 發射，該動哪裡」
-  - 📚 參考資源：[study_docs/hipblaslt/gemm-optimization.md](hipblaslt/gemm-optimization.md)；上列三入口路徑（待擴充：[hipblaslt/components-codegen-map.md](hipblaslt/components-codegen-map.md)、[hipblaslt/tuning-config-reference.md](hipblaslt/tuning-config-reference.md)）
-- [ ] ⭐**與 mentor 收斂單一 target + 優化假設**（把 06-26 的 shortlist 定案）
-  - [ ] 從 shortlist 選定 **1 個 target shape + dtype**（對齊團隊在乎的負載）
-  - [ ] 寫下一句話**優化假設**（例：「此 memory-bound shape 可靠加深 prefetch / 調 tile 提高 HBM 利用率」）
-  - [ ] 初判落在第 1 層（config fork，warm-up）還是第 2 層（codegen，真目標）；確認 mentor 認為值得做
-  - ✅ 完成判準：P3 開工時**不需要再選題**——target / dtype / 假設 / 介入層都已定案
-  - 📚 參考資源：06-26 的 shortlist；〈目標反推總覽〉；[study_docs/hipblaslt/gemm-optimization.md](hipblaslt/gemm-optimization.md)
-- **筆記提示**：用一句話記住三層：第 1 層改 config fork（warm-up/floor）→ 第 2 層改 `kernelBody()`/
-  Components codegen（真目標）→ 第 3 層改 rocisa 指令（最深，非必需）。另記下定案的 target + 假設。
-  筆記寫在 `study_docs/notes/0708-定位codegen三層入口.md`。
+- [ ] **讀** [study_docs/hipblaslt/gemm-optimization.md](hipblaslt/gemm-optimization.md)「你會調的參數從哪來：Solution 與 Problem」
+  - [ ] 搞懂使用者參數（`MatrixInstruction` / `WorkGroup` / `DepthU`…）如何衍生成 tile 幾何
+  - [ ] 用「gene」視角看這些參數：**每個可調參數＝一個 gene，值域組成搜尋空間**（GA 的染色體）
+  - ✅ 完成判準：能說出「哪些參數是 gene、值域多大、笛卡兒積為何爆炸」（這就是 predictor 的輸入空間）
+  - 📚 參考資源：[study_docs/hipblaslt/gemm-optimization.md](hipblaslt/gemm-optimization.md)；[tensilelite/Tensile/SolutionStructs/Solution.py](../projects/hipblaslt/tensilelite/Tensile/SolutionStructs/Solution.py)（待擴充：[hipblaslt/tuning-config-reference.md](hipblaslt/tuning-config-reference.md)）
+- [ ] **定位** tuning / selection 生態（讀文件建立座標，不必動 code）
+  - [ ] **tuning 層**：grid search（現行窮舉建表）vs Ductile GA（GEKO 預設 backend）——各解決什麼
+  - [ ] **selection 層**：equality/grid、Origami、Formocast（模擬式效能預測）——與研究主線的關係
+  - [ ] 讀 JIRA `SWDEV-477426`「Create a genetic algorithms driven search for building solution libraries」
+    的 scope（尤其第 4 點 analytics-driven search），確認研究主線對接點
+  - ✅ 完成判準：能一句話說清 Ductile vs Formocast 差在哪、你的研究切哪一層
+  - 📚 參考資源：內部參考 [hipblaslt-tensilelite-reference.md](internal_docs/hipblaslt-tensilelite-reference.md) Module B；JIRA `SWDEV-477426`；Confluence：Ductile 頁（`1772982240`）、GEKO（`1186895430`）、Formocast RFC（`1304232451`）（待擴充：[research/ductile-geko-notes.md](research/ductile-geko-notes.md)）
+- [ ] ⭐**與 mentor 收斂研究切角 + 資料 / repo 存取 + 避免撞正職**（研究線的定案關卡）
+  - [ ] 對齊研究方向落在三切角哪個附近（見 P3）：#1 analytics / #2 surrogate-assisted / #3 跨 codegen reuse
+  - [ ] 確認**能否取得**：GEKO / Ductile / TuningDriver repo，或至少既有 `2_BenchmarkData` 資料集
+  - [ ] 確認你選的切角**不與正職重疊**（若 surrogate fitness 已有人做 → 往 #1/#3 靠）
+  - [ ] 列 **floor ticket 候選 2~3 個**（docs/config/test/小 bug），作為 commit floor
+  - ✅ 完成判準：P3 kickoff 前已有「研究切角方向 + 資料來源確認 + floor ticket 清單」
+  - 📚 參考資源：〈目標反推總覽〉；P3 決策樹；07-08 的生態定位
+- **筆記提示**：記下「gene 空間長什麼樣（哪些參數、值域）」＋「三切角初判 + 資料可得性 + floor ticket
+  候選」。筆記寫在 `study_docs/notes/0708-參數空間與研究題目收斂.md`。
 - **快速自測**：
-  1. 實習 scope 下，優化應該從哪一層開始？為什麼？
-  2. tile 大小、`DepthU` 這類參數屬於三層中的哪一層？
+  1. 主管講的 Ductile 屬 tuning 層還是 selection 層？它取代的是什麼？
+  2. 「用 prediction 減少 profiling」對應到生態裡哪個既有工具的思路？
+  3. 你的 predictor 輸入特徵（染色體）大致由哪些參數組成？
   <details><summary>答案</summary>
-  1. 從第 1 層（config 參數 fork）開始——風險最低，可當 warm-up/floor 先拿到「新 solution 進選擇表」；
-     但**真目標是第 2 層 codegen**（團隊在乎 shape 的可合併優化），floor 達成後仍應評估能否往第 2 層推。
-  2. 第 1 層（參數空間）。
+  1. tuning 層；取代 grid search 的笛卡兒積窮舉 benchmark（GA 用少量評估找好解）。
+  2. Formocast（模擬 / 模型預測效能，免窮舉 benchmark）——研究主線的近親。
+  3. `DepthU`、`MatrixInstruction`、`WorkGroup(Mapping)`、`GlobalReadVectorWidth`、`StaggerU`、
+     `PrefetchGlobalRead/LocalRead`、`GlobalSplitU` 等 tuning 參數的離散值。
   </details>
 
-## P2：tensilelite 內部 + 第一批低風險 commit（07-09 → 07-22）
+## P2：參數（gene）空間 + 工具生態 + 資料生成 pipeline + floor tickets（07-09 → 07-22）
 
-階段策略：先用「小而真」的 commit 熟悉 PR / CI / review 流程（**降低最終大 PR 的風險**），同時
-加深對 solution 參數空間的理解，並建立一套可信的 before/after 量測 harness。
+階段策略：**打好研究線的三塊地基**——(1) 把 tuning 參數空間（gene）與 gene→kernel 映射搞熟（predictor
+的輸入特徵）；(2) 把 tuning / selection 工具生態定位清楚（grid / GA / Ductile / GEKO / Formocast）；
+(3) 建立**可重複的 benchmark 資料生成 pipeline**，穩定產出 `(params, shape, GFLOPS, counters)` 資料集
+（三個研究切角共用的訓練資料與 ground truth）。同時**平行**用小 ticket 累積 commit floor。
 
-里程碑：累積 2~3 顆 main repo commit + 一套穩定量測流程。
+里程碑：一套可重跑的 benchmark 資料集 + 一份 baseline analytics（搜尋空間初探）+ 1~2 顆 floor commit。
 
 關鍵檔案：[projects/hipblaslt/AGENTS.md](../projects/hipblaslt/AGENTS.md)、[clients/bench/README.md](../projects/hipblaslt/clients/bench/README.md)、
-[tensilelite/AGENTS.md](../projects/hipblaslt/tensilelite/AGENTS.md)、[Solution.py](../projects/hipblaslt/tensilelite/Tensile/SolutionStructs/Solution.py)、[KernelWriter.py](../projects/hipblaslt/tensilelite/Tensile/KernelWriter.py)、[Components/](../projects/hipblaslt/tensilelite/Tensile/Components)。
+[tensilelite/AGENTS.md](../projects/hipblaslt/tensilelite/AGENTS.md)、[Solution.py](../projects/hipblaslt/tensilelite/Tensile/SolutionStructs/Solution.py)、[Common/ValidParameters.py](../projects/hipblaslt/tensilelite/Tensile/Common/ValidParameters.py)、[Tests/common/gsu/f32_gsu.yaml](../projects/hipblaslt/tensilelite/Tensile/Tests/common/gsu/f32_gsu.yaml)。
 
 **先決條件（07-09 開工前完成）**：精讀 [projects/hipblaslt/AGENTS.md](../projects/hipblaslt/AGENTS.md) 與
-[tensilelite/AGENTS.md](../projects/hipblaslt/tensilelite/AGENTS.md) 的 build / 測試 / PR 規範：
+[tensilelite/AGENTS.md](../projects/hipblaslt/tensilelite/AGENTS.md) 的 build / 測試 / PR 規範（floor ticket 會用到）：
 
 - 分支 `users/<user>/<branch>`、base `develop`
 - 新檔加 SPDX header、PR 套六段模板
 - 本地檢查：`invoke build` / `invoke build-client` / `tox -e unit`
 
-### 07-09（三）｜讀 Solution / Problem：參數從哪來
+> **資料 / repo 前提**：研究線資料來源＝TensileLite grid search 自己產出的 `2_BenchmarkData/*.csv`
+> （tensilelite 已在 workspace，可本地跑，見 07-06/07-11）。Ductile / GEKO / TuningDriver **不在
+> sparse-checkout 內**；若 07-08 與 mentor 談到能取得他們的既有資料集會更省事，否則以本地 grid search
+> 自產資料為主。
 
-**今日目標**：看懂使用者參數如何衍生成 tile 幾何，建立調參的因果感。
+### 07-09（三）｜讀 Solution / Problem：gene 空間從哪來
+
+**今日目標**：看懂使用者參數如何衍生成 tile 幾何，建立「gene（可調參數）→ 衍生參數 → kernel 幾何」
+的因果感——這是 predictor 的**輸入特徵空間**與 GA 的**染色體編碼**。
 
 - [ ] **讀** [tensilelite/Tensile/SolutionStructs/Solution.py](../projects/hipblaslt/tensilelite/Tensile/SolutionStructs/Solution.py) 的 `assignDerivedParameters`
   （約 L1478）與 `assignProblemIndependentDerivedParameters`（約 L618）
   - 完成後能說出：`MacroTile0 = SubGroup0 * ThreadTile0`、`NumThreads` 怎麼來
 - [ ] **讀** [tensilelite/Tensile/SolutionStructs/Problem.py](../projects/hipblaslt/tensilelite/Tensile/SolutionStructs/Problem.py) 的 `ProblemType`（約 L818）
-- **筆記提示**：畫一張「使用者參數 → 衍生參數」依賴圖（`MatrixInstruction`/`WorkGroup` → tile）。
+- [ ] **研究視角**：分清「**自由 gene**（可獨立調的原始參數）vs **衍生特徵**（由 gene 算出，不獨立）」——
+  predictor 的輸入應是自由 gene，避免把衍生量當獨立特徵造成共線性
+  - ✅ 完成判準：能列出「哪些是自由 gene、哪些是衍生」，並說出為何這對 predictor 特徵設計重要
+- **筆記提示**：畫一張「使用者參數（gene）→ 衍生參數 → tile 幾何」依賴圖（`MatrixInstruction`/`WorkGroup` → tile），
+  標出哪些是自由 gene。
 - **小測驗**：
   1. `MatrixInstruction` 9 元素格式各代表什麼？macro tile 怎麼從它推出？
   2. `ProblemType` 與 `Problem` 差在哪？
@@ -709,67 +773,72 @@ shortlist 收斂成**單一 target**。
   2. `ProblemType` 是問題「規格」（op/型別/transpose/bias…）；`Problem` 是一組具體 M,N,K,batch。
   </details>
 
-### 07-10（四）｜讀懂 tuning config 的 fork 區段
+### 07-10（四）｜讀懂 tuning config 的 fork 區段（gene 值域）
 
-**今日目標**：看懂 config YAML 結構，知道每個 fork 參數控制什麼。
+**今日目標**：看懂 config YAML 結構，知道每個 fork 參數控制什麼、值域多大——這決定 gene 的**離散值域**
+與搜尋空間大小。
 
 - [ ] **讀** [tensilelite/Tensile/Tests/common/gsu/f32_gsu.yaml](../projects/hipblaslt/tensilelite/Tensile/Tests/common/gsu/f32_gsu.yaml)（61 行）整份結構：
   `GlobalParameters` / `BenchmarkProblems`（ProblemType + ForkParameters）/ `BenchmarkFinalParameters`
 - [ ] **讀** [tensilelite/Tensile/Common/ValidParameters.py](../projects/hipblaslt/tensilelite/Tensile/Common/ValidParameters.py) 裡 `DepthU`、`GlobalReadVectorWidth`、
   `WorkGroup` 的定義與註解
   - 完成後能說出每個 fork 參數控制的硬體行為（unroll / coalescing / tile / split-K / tile 排序）
-- **筆記提示**：列一張小抄，記下各 fork 參數各管什麼：
+- [ ] **研究視角**：估算「單一 config 的笛卡兒積大小」與「加一個 gene 值域成長多少」——這正是 grid search
+  成本爆炸、需要 GA / surrogate 的動機，也是你之後量化「省下多少評估」的分母
+  - ✅ 完成判準：能對某個 fork 區段算出候選數，並說出「哪些 gene 值域最能撐大空間」
+- **筆記提示**：列一張 gene 小抄（各 fork 參數管什麼 + 值域）：
   - `DepthU`、`GlobalReadVectorWidthA/B`
   - `MatrixInstruction`、`WorkGroupMapping`
   - `GlobalSplitU`、`PrefetchGlobalRead`
 - **小測驗**：
   1. `GlobalSplitU` > 1 在輸出端會多出什麼動作？什麼情況（K 大小）受益？
-  2. `ForkParameters` 裡每個參數給多個值，產生的是什麼？
+  2. `ForkParameters` 裡每個參數給多個值，產生的是什麼？空間為何指數成長？
   <details><summary>答案</summary>
   1. 把 K 切給多個 workgroup，輸出端要做 atomic-add 或多緩衝 reduction；K 很大時受益。
-  2. 各參數值的笛卡兒積——每個組合是一個候選 solution。
+  2. 各參數值的笛卡兒積——每個組合是一個候選 solution；每加一個 gene 或值，候選數等比成長 → 指數爆炸。
   </details>
 
-### 07-11（五）｜動手調參並比較 Gflops
+### 07-11（五）⭐｜跑 grid search 產出第一批資料集 + 定位工具生態
 
-**今日目標**：親手改 fork 重跑，從 `2_BenchmarkData` 看出參數對效能的影響。
-**（解鎖 P3：第 1 層參數優化＝warm-up/floor——這是 config-fork 路線的預演。）**
+**今日目標**：親手跑 grid search 產出 `2_BenchmarkData/*.csv`，**把它當研究資料集的第一批樣本**（gene →
+GFLOPS），並把 tuning / selection 工具生態定位清楚（研究主線要對接的對象）。
 
-- [ ] **寫**：複製 [f32_gsu.yaml](../projects/hipblaslt/tensilelite/Tensile/Tests/common/gsu/f32_gsu.yaml)，改 `DepthU` / `GlobalReadVectorWidth` / tile 其一，重跑
+- [ ] **寫 + 跑**：複製 [f32_gsu.yaml](../projects/hipblaslt/tensilelite/Tensile/Tests/common/gsu/f32_gsu.yaml)，擴一點 fork 值域（如 `DepthU` 多給 2~3 值），重跑
   `Tensile/bin/Tensile <你的config> out_tune/`
-- [ ] **比較** `out_tune/2_BenchmarkData/*.csv` 的 Gflops 與原始 baseline
-- [ ] **認識** 上層調參工具生態與分層策略（先知道有哪些工具、何時用，不必今天全跑）
-  - [ ] 工具：
-    - `hipblaslt-bench --algo_method all`：dense search 既有 solutions
-    - GEKO：GA/dense 搜尋 ＋ 整合 library
-    - bench-driven swap：不重產 kernel，只在 grid 換贏家
-    - hipBLT-board：Dash UI 整合
-    - tunableop solution maps：把贏家持久化
-  - [ ] **分層策略（由便宜到貴）**：
-    - ① 先 dense search 既有 solutions
-    - ② grid 用得不好就 bench-driven swap
-    - ③ 還不夠才投入 TensileLite tuning 擴充 kernel pool
-  - ✅ 完成判準：能說出「為何先 dense search / swap、最後才 TensileLite tuning」
-  - 📚 參考資源：內部參考 [hipblaslt-tensilelite-reference.md](internal_docs/hipblaslt-tensilelite-reference.md) Module B.3（工具生態與分層調參策略）
-- **筆記提示**：表格記下「改了什麼 → Gflops 變化 → 你的解釋」，這是 P3 調參的預演。
+- [ ] **看資料集雛形**：`out_tune/2_BenchmarkData/*.csv` ＝ 一列一個 candidate 的 `(gene 參數, shape, GFLOPS)`
+  - [ ] 能對應 CSV 欄位 ↔ 07-09/07-10 的 gene；確認「fitness = GFLOPS」怎麼讀
+  - [ ] 觀察同一 shape 下不同 gene 的 GFLOPS 分佈（之後 predictor 要學的就是這個映射）
+  - ✅ 完成判準：能指著 CSV 說出「這批資料的特徵欄位是哪些、label 是哪個」
+- [ ] **定位** tuning / selection 工具生態（研究對接對象，先知道有哪些、誰做什麼）
+  - [ ] tuning：`Tensile/bin/Tensile`（grid 窮舉）、**Ductile**（GA backend）、**GEKO**（編排，預設 ductile）
+  - [ ] selection：`hipblaslt-bench --algo_method all`（dense search）、bench-driven swap、Origami / **Formocast**（模擬預測）
+  - [ ] **分層策略（由便宜到貴）**：① dense search 既有 solutions → ② bench-driven swap → ③ TensileLite/GA tuning 擴 kernel pool
+  - ✅ 完成判準：能畫出「grid vs GA(Ductile) vs 預測(Formocast)」三者在成本 / 覆蓋 / 隨機性上的取捨
+  - 📚 參考資源：內部參考 [hipblaslt-tensilelite-reference.md](internal_docs/hipblaslt-tensilelite-reference.md) Module B.3；Confluence：Ductile（`1772982240`）、GEKO（`1186895430`）、Formocast RFC（`1304232451`）、Origami/Formocast 差異（`1304199634`）
+- [ ] **補讀研究主線參考**（建立問題意識，供 P3 切角選定）
+  - [ ] JIRA `SWDEV-477426` scope（GA 建 solution library；第 2 點 completeness、第 4 點 analytics-driven）
+  - [ ] Solution Selection Metrics（`744174730`）：**efficiency vs ideal** 的定義——你評估 predictor / DSE 好壞的 metric
+  - ✅ 完成判準：能用一句話說「研究主線要對接 SWDEV-477426 的哪個 scope、用什麼 metric 衡量成果」
+- **筆記提示**：記下 CSV 的欄位 schema（哪些是 gene / shape / label / counter）＋ 工具生態取捨表 ＋
+  研究 metric（efficiency vs ideal）。筆記寫在 `study_docs/notes/0711-grid資料集與工具生態.md`。
 - **小測驗**：
-  1. `DepthU` 調大通常的取捨是什麼？
-  2. 若某參數讓 Gflops 變差，下一步該往哪個方向試？
+  1. grid search 產出的 CSV 為什麼天生就是 predictor 的訓練資料？
+  2. 為何先 dense search / swap、最後才 GA / TensileLite tuning？
   <details><summary>答案</summary>
-  1. 更多 ILP / 更少迴圈開銷，但暫存器壓力上升、可能降 occupancy。
-  2. 回看是 compute- 還是 memory-bound（rocprof），朝放鬆瓶頸資源的方向調。
+  1. 每列＝(gene 參數, shape) → 實測 GFLOPS，正是「輸入特徵 → label」的監督式訓練樣本。
+  2. 前兩者不重產 kernel、成本低；只有在既有 pool 仍不夠好時，才投入昂貴的 GA / codegen tuning。
   </details>
 
-### 07-12 ~ 07-13（六/日，彈性）｜送出第 1 顆 PR
+### 07-12 ~ 07-13（六/日，彈性）｜floor ticket #1：送出第 1 顆 PR
 
-**里程碑：第 1 顆 PR 送出。**
+**里程碑：floor commit #1 送出（floor＝commit 數安全網，非研究主線）。**
 
-- [ ] 找低風險題材（**優先選能服務 target 的小改**，讓熱身 commit 也鋪路最終交付）：
-  - 首選：為 07-08 定案的 target shape 補 benchmark / 回歸測試、補相關 config 或註解
+- [ ] 找低風險題材（**平行軌，不佔研究主時段**；優先選順手且能鋪路研究線的小改）：
+  - 首選：與研究資料 / tuning 相關的小改（config 註解、tuning test 補強、docs 修正）
   - 次選：泛用的文件錯字、註解補強、明顯小 bug、缺測試、config 清理
 - [ ] 依 [AGENTS.md](../projects/hipblaslt/AGENTS.md)：開分支 `users/<user>/<branch>`、加 SPDX header、填 PR 六段模板
 - [ ] 跑本地檢查（如 `tox -e unit`），推上去跑 CI
-- **筆記提示**：記下 PR / CI 流程踩到的坑（build 時間、lint、模板要求），最終大 PR 會再用。
+- **筆記提示**：記下 PR / CI 流程踩到的坑（build 時間、lint、模板要求），第 2 顆 floor ticket 會再用。
 - **小測驗**：
   1. PR 的 base 分支是什麼？分支命名規則？
   2. 新檔案一定要加什麼？
@@ -778,165 +847,179 @@ shortlist 收斂成**單一 target**。
   2. SPDX header（Copyright + `SPDX-License-Identifier: MIT`）。
   </details>
 
-### 07-14 ~ 07-18（一~五）｜深入 codegen + 再找 1~2 顆 commit
+### 07-14 ~ 07-18（一~五）⭐｜建立資料生成 pipeline + 搜尋空間 analytics EDA
 
-**今日目標**：理解 codegen 如何程式化產生你手讀過的那類 MFMA 組語。
-**（解鎖 P3：第 2 層 codegen 優化＝真目標——這裡學的 `kernelBody()`/Components 就是 P3 要動的地方。）**
+**今日目標**：把 07-11 的一次性跑法**工程化成可重複的資料生成 pipeline**，產出乾淨資料集；並做第一輪
+**搜尋空間 analytics EDA**（研究切角 #1 的第一步、也是 #2/#3 的前置）。平行送 **floor ticket #2**。
+**（解鎖 P3：資料集 + analytics 是三個研究切角共用地基。）**
 
-- [ ] **讀** [KernelWriter.py](../projects/hipblaslt/tensilelite/Tensile/KernelWriter.py) 的 `kernelBody()`（約 L5279）主結構：signature → 資源配置 →
-  prologue（`setupNewTile`）→ 主 unroll 迴圈（global read / local write / local read / MAC）→ epilogue/store
-- [ ] **讀** [Components/](../projects/hipblaslt/tensilelite/Tensile/Components) 至少三個：`MAC`（發 MFMA）、`LocalRead`（LDS→VGPR）、
-  `SIA` 或 `GlobalWriteComponents`（排程 / 輸出）
-  - 對照 ex03 手寫 `.Lkloop`，理解 Components 怎麼組出同類組語
-- [ ] **認識** codegen 的測試護欄與重構方向（改 codegen 前必懂，避免悄悄破壞行為）
-  - [ ] **Characterization tests**：
-    - ~99 個 `.ambr` golden 檔覆蓋 ~29 個 codegen/config/solution 模組
-    - 任何改變行為的 PR 沒同步更新對應 golden 會**卡 required CI gate**
-    - ⇒ codegen 改動要同時過效能與 golden
-  - [ ] **Snippet architecture / StinkyTofu**：
-    - 把舊的 14k 行 `KernelWriterAssembly` 巨石重構成可組合 snippet + pass-based IR 優化器
-      （DAG 排程、waitcnt 插入、peephole）
-    - 這是 P3 真要深潛 codegen 時的背景脈絡
-  - ✅ 完成判準：知道改 `kernelBody()`/Components 後要跑哪類測試、為何不能只看 Gflops
-  - 📚 參考資源：內部參考 [hipblaslt-tensilelite-reference.md](internal_docs/hipblaslt-tensilelite-reference.md) Module C.4（characterization tests）、C.2/C.5（snippet / StinkyTofu）
-- [ ] 再找 1~2 顆小 commit 送出——**盡量讓 commit 鋪路 target**（如該 shape 的測試/量測/小修），
-  而非隨機泛用清理
-- **筆記提示**：把 ex03 手寫主迴圈的每個區塊，對應到 `kernelBody()` 裡呼叫的 Component。
+- [ ] **建立資料生成 pipeline**（一支腳本，重複跑不同 config / shape 產出統一資料集）
+  - [ ] 輸入：一組 config（gene 值域）+ 一組 shape；輸出：合併後的 `dataset.csv`，欄位＝`(gene..., M,N,K,batch, dtype, GFLOPS[, counters])`
+  - [ ] 從 `2_BenchmarkData/*.csv` 解析並正規化欄位；記錄環境（GPU、ROCm、driver、iteration）以利重現
+  - [ ] 過濾 invalid（超 VGPR/LDS 被丟棄的 candidate）與離群值；固定 iteration / 取中位數降噪
+  - [ ] （選配）對挑出的 candidate 用 `HIPBLASLT_BENCH_PERF=1` + rocprof-compute 補 counter 欄位
+  - ✅ 完成判準：**同一指令重跑能產出 schema 一致、可比對的資料集**（研究可重現的地基）
+  - 📚 參考資源：[clients/bench/README.md](../projects/hipblaslt/clients/bench/README.md)；[study_docs/hipblaslt/profiling-rocprof.md](hipblaslt/profiling-rocprof.md)；07-11 的 CSV schema
+- [ ] **搜尋空間 analytics EDA**（切角 #1 第一步）
+  - [ ] 畫 GFLOPS 分佈、gene ↔ 效能的關係（單變量 + 交互）
+  - [ ] 初估 feature importance（哪些 gene 對效能影響最大）與 landscape 平滑度（鄰近 gene 效能是否連續）
+  - [ ] 用「efficiency vs ideal」定義每個 shape 的 best-of-pool，作為之後 predictor 的評估基準
+  - ✅ 完成判準：一頁 EDA 摘要——「哪些 gene 最重要、landscape 平不平滑、best-of-pool 落在哪」
+  - 📚 參考資源：Solution Selection Metrics（`744174730`）；JIRA `SWDEV-477426`（scope 4 analytics）
+- [ ] **floor ticket #2**：再送 1 顆小 commit（平行軌，同 07-12/13 流程）
+- **筆記提示**：記下 pipeline 的可貼指令 + 資料集 schema + EDA 三結論（feature importance / 平滑度 /
+  best-of-pool）。筆記寫在 `study_docs/notes/0714-資料pipeline與analytics.md`。
 - **小測驗**：
-  1. `kernelBody()` 主迴圈裡，global read / local write / local read / MAC 的先後與重疊關係？
-  2. Component 系統怎麼替當前 GPU/kernel 選對的實作？
+  1. 為什麼資料集要記錄環境（GPU/ROCm/iteration）並過濾 invalid candidate？
+  2. landscape「平滑」與否，如何影響 predictor / GA 的可行性？
   <details><summary>答案</summary>
-  1. 透過排程交錯：本輪 MAC 進行時 prefetch 下一輪 global read，local write/read 雙緩衝銜接。
-  2. `Component.find()` 依 `asmCaps`/`archCaps`/`kernel` 參數做 partial-match 選註冊的實作。
+  1. benchmark 有雜訊且隨環境漂移；不記錄與不過濾會讓 label 不可比、模型學到假訊號、結果不可重現。
+  2. 越平滑（鄰近 gene 效能相近），surrogate 越好學、GA 局部搜尋越有效；崎嶇則需更多樣本或更強模型。
   </details>
 
-### 07-19 ~ 07-22（六~二）｜建立穩定 before/after 量測 harness
+### 07-19 ~ 07-22（六~二）⭐｜彙整資料集 + baseline analytics + 敲定 P3 切角
 
-**里程碑：累積 2~3 顆 commit + 一套可信的量測 harness。**
-**（解鎖 P3：每次優化迭代的加速驗證 + 最終 PR 的 before/after 證據——直接用 07-08 定案的 target shape。）**
+**里程碑：一份可重跑的資料集 + baseline analytics 報告 + 累積 1~2 顆 floor commit；並與 mentor 敲定 P3 研究切角。**
+**（解鎖 P3：kickoff 時不需再從零選題——資料、baseline、切角、metric 都已就緒。）**
 
-- [ ] **建立** 可重複量測流程：
-  ```bash
-  HIPBLASLT_BENCH_PERF=1 ./build/release/clients/hipblaslt-bench \
-      -m <M> -n <N> -k <K> -r bf16_r --algo_method heuristic -i 50 -j 5 --print_kernel_info -v
-  ```
-  - 固定 GPU / iteration / problem，取中位數；加 `-v` 確認正確性；必要時 rocprof-compute 抓 counter
-- [ ] **確認** target problem shape——用 07-08 與 mentor 定案的 target（非從零選），記錄 baseline 數字
-- **筆記提示**：把量測協定寫成可貼指令 + 一張 baseline 表（shape / dtype / Gflops 中位數 / 主要 counter），P3 直接沿用。
+- [ ] **彙整資料集到「研究可用」規模**：擴幾組 shape / gene 值域，跑 pipeline 累積到足夠訓練/驗證的樣本數
+  - [ ] 切好 train / validation（**避免 leakage**：如按 shape 或 config 分組切，而非隨機切列）
+  - [ ] 記錄資料集版本與生成指令（可重現）
+  - ✅ 完成判準：一份帶版本、可重跑、已切分的 `dataset.csv`
+- [ ] **baseline analytics 報告**（把 07-14 EDA 收斂成給 mentor 看的一頁）
+  - [ ] best-of-pool / efficiency-vs-ideal 現況、feature importance、landscape 平滑度結論
+  - [ ] 一個**平庸 baseline predictor**（如線性 / 隨機森林）當對照，報 rank correlation（Spearman/Kendall）與 top-k 命中率
+  - ✅ 完成判準：能回答「一個簡單 predictor 現在能多準地排序 gene」，作為 P3 改進的起點
+- [ ] ⭐**與 mentor 敲定 P3 切角**（決策樹輸入，見 P3）
+  - [ ] 依 (a) 資料可得性（能否拿到跨 codegen 版本資料 → 開 #3）、(b) 是否撞正職、(c) mentor 認為有用者，選定主切角
+  - [ ] 寫下一句話**研究假設**與**成功 metric**（如「predictor pre-screen 可在保住 top-1 的前提下省 X% benchmark」）
+  - ✅ 完成判準：P3 開工時切角 / 假設 / metric / 資料都已定案
+- **筆記提示**：把資料集 schema + 切分策略 + baseline predictor 數字 + 敲定的切角/假設/metric 記下來，
+  P3 直接沿用。筆記寫在 `study_docs/notes/0719-資料集彙整與切角定案.md`。
 - **小測驗**：
-  1. `HIPBLASLT_BENCH_PERF=1` 會多印哪類欄位？為何對判斷瓶頸有用？
-  2. 為什麼要取中位數、固定 cold/iter 次數？
+  1. 為什麼 train/val 要按 shape / config 分組切，而不是隨機切列？
+  2. 為何用 rank correlation / top-k 命中率、而非絕對 GFLOPS 誤差，來評估 tuning 用的 predictor？
   <details><summary>答案</summary>
-  1. efficiency monitor 欄位（num_cu、tiles_per_cu、granularity、efficiency、mem read/write bytes）——
-     可看 tile/CU 利用率與記憶體流量，輔助 compute/memory-bound 判讀。
-  2. 降低雜訊與暖機/時脈波動影響，讓 before/after 比較可信。
+  1. 同一 config 的多列高度相關，隨機切會 leakage、高估準度；分組切才測得出對「沒見過的設定」的泛化。
+  2. tuning 只需「挑出好的 gene」＝排序 / 選 top-k 對就好，絕對值誤差不必最小；rank/命中率更貼近下游用途。
   </details>
 
-## P3：GEMM 優化主線（07-23 → 08-13）
+## P3：研究主線（surrogate-assisted DSE，07-23 → 08-13）
 
-> 本階段是**開放式探索**，故採框架化：給里程碑、決策樹與可重複套用的「迭代日 checklist 模板」，
+> 本階段是**開放式研究探索**，故採框架化：給決策樹（選切角）、三切角里程碑、研究迭代日模板，
 > 而非寫死每天步驟。每天從模板複製一份 checklist 來用。
 
-階段目標：在 07-08 定案的 target shape 上，完成一個**codegen 級、可被 reviewer 接受/合併**的 GEMM
-優化並送 PR（**真目標**）。config-fork 進選擇表是 **warm-up/floor**（風險底線），時間不足時可退守，但
-**不是最終交付目標**。由淺到深推進：先做 floor 確保有底，再盡力推到第 2 層 codegen。
+階段目標：在 P2 建好的資料集 + baseline 上，把**選定的研究切角**推進到「有量化結論 + 可展示 prototype」。
+研究主線是**開放式**（結果不保證），故 **floor＝P2 起累積到 2~3 顆 floor commit**（commit 數安全網），
+研究主線與 floor 平行，但研究佔主時段。**不動正職維護的 Ductile / GEKO 核心**，只用既有 / 自產 benchmark
+資料做 offline 建模與分析。
 
-關鍵檔案：tuning config（fork 區段）、[KernelWriter.py](../projects/hipblaslt/tensilelite/Tensile/KernelWriter.py)
-的 `kernelBody()`、[Components/](../projects/hipblaslt/tensilelite/Tensile/Components)、
-`hipblaslt-bench`、rocprof-compute。
+關鍵素材：P2 的 `dataset.csv` 與資料生成 pipeline、`Tensile/bin/Tensile`（產更多資料）、
+Solution Selection Metrics（efficiency vs ideal）、Python 建模工具（sklearn / xgboost 等）。
+（研究計畫細節待擴充：[research/surrogate-dse-plan.md](research/surrogate-dse-plan.md)。）
 
-### 決策樹（決定今天該待在哪一層）
+### 決策樹（07-23~25 kickoff 依此定主切角）
 
-```
-target shape + baseline（07-08 已定案 target；P2 已建好量測 harness）
-        │
-        ▼
-第 1 層：擴 config fork → 重跑 Tensile → 新 solution 進 3_LibraryLogic 並被選用？
-        │
-        ├── 是 → ✅ warm-up floor 達成（非最終目標）→ 仍應評估能否推到第 2 層 codegen
-        │         （若時間真的不足，floor + PR 化是可接受的退守）
-        │
-        ▼
-第 2 層（真目標）：改 kernelBody() / Components（prefetch / 排程 / read-write）
-        │         改 store/邊界定址撞到問題時 → 回看 ex04（選讀，07-04）
-        │
-        ├── 成功且 -v 正確、且改善的是團隊在乎 shape → PR 化（這才是最終交付）
-        │
-        └── 仍不足且時間允許 → 第 3 層 rocisa 指令（高風險，非必需，謹慎評估）
+```mermaid
+flowchart TD
+  start["P2 產出: dataset + baseline analytics + baseline predictor"] --> q1
+  q1{"能取得跨 codegen 版本的 benchmark 資料?"}
+  q1 -->|"能"| a3["切角 #3 可行: 跨 codegen profiling 重用 (最貼近你論文)"]
+  q1 -->|"不能"| q2
+  q2{"surrogate fitness 已被正職在做?"}
+  q2 -->|"是, 會撞"| a1["切角 #1: 搜尋空間 analytics / completeness (低風險純分析)"]
+  q2 -->|"否, 空間乾淨"| a2["切角 #2: surrogate-assisted tuning (predictor pre-screen)"]
+  a1 --> pick["與 mentor 確認: 選 1 主切角 + 1 備援, 定假設與 metric"]
+  a2 --> pick
+  a3 --> pick
 ```
 
-**策略提醒**（內部參考 [hipblaslt-tensilelite-reference.md](internal_docs/hipblaslt-tensilelite-reference.md) Module A.5/B.3）：
+三切角都以 P2 的資料集為地基，共用同一套「efficiency vs ideal / rank correlation / 省下的評估次數」metric。
 
-- 內部觀察指出約 **80% 的「hipBLASLt 慢」問題其實出在輸入形狀不佳或 solution-selection 假象，而非 codegen**。
-- 因此先把第 1 層（dense search / config fork / bench-driven swap）做扎實拿到 floor，確認瓶頸真的在 kernel 本身，
-  之後再投入第 2 層 codegen。
-- 這正是本實習「floor 先有底、真目標推 codegen」框架的依據。
+### 三切角里程碑（選定主切角後，套對應這段）
+
+- **切角 #1 — 搜尋空間 analytics / completeness**（最低風險、純分析；對接 `SWDEV-477426` scope 2/4）
+  - 產出：feature importance 排名、landscape 平滑度量化、completeness 指標（「任意 shape 都有近最佳 kernel」的可證性）。
+  - 交付：一份能指導「GA 該重點搜哪些 gene、grid 該裁哪些軸」的分析報告。
+- **切角 #2 — surrogate-assisted tuning**（最貼近研究命題、可行性高）
+  - 產出：predictor（gene → GFLOPS 或排序）→ 在 GA / grid 前 **pre-screen** candidate → 量化「保住 top-1/top-k 前提下省下的 benchmark 次數」與 tuning-time vs quality 取捨曲線。
+  - 交付：prototype（predictor + pre-screen 迴圈）+ 對照「純窮舉」的加速數字。
+- **切角 #3 — 跨 codegen profiling 重用**（最novel、最貼近你論文；需跨版本資料）
+  - 產出：量化「codegen 改版前後效能排序保留度」→ 建 correction / transfer model → 量「重用舊資料可省下多少 re-profiling」。
+  - 交付：跨版本重用實驗 + 一句話結論「舊 profiling 能否 / 何時可安全重用」。
 
 ### 里程碑與時間框
 
-- **07-23 ~ 07-25 確認 target + baseline**：用 07-08 已定案的 target（非從零選），rocprof-compute
-  判斷 compute-bound / memory-bound（ex02 判讀法 + P2 量測 harness），確立/微調優化假設與 baseline。
-- **07-26 ~ 08-01 第 1 層（warm-up/floor，先做拿底）**：擴 tuning config 的 fork，讓 LibraryLogic
-  自動挑出更快 solution；新 solution 被選擇表採用＝floor 達成（先確保有底，但不停在這）。
-- **08-02 ~ 08-09 第 2 層（codegen＝真目標，主力時間）**：進 `kernelBody()` / `Components/` 調
-  prefetch / 排程 / read-write。每步 before/after 驗證。**這段是交付的核心，盡量留足時間。**
-- **08-10 ~ 08-13 PR 化**：整理 commit、benchmark 證據（中位數、roofline、counter），依 AGENTS.md
-  送 PR。**里程碑：團隊在乎 shape 的 codegen 級優化 PR 送出（floor：config-fork 採用）。**
+- **07-23 ~ 07-25 kickoff + 定切角**：跑決策樹、與 mentor 確認主切角 + 備援、定研究假設與成功 metric；
+  必要時用 pipeline 補資料到夠用。
+- **07-26 ~ 08-01 建 v1 模型 / 分析**：切角 #1 出第一版 analytics；#2 訓 v1 predictor 並接 pre-screen；
+  #3 做跨版本排序保留度量測。每步對照 P2 baseline。
+- **08-02 ~ 08-09 迭代強化（主力時間）**：改特徵 / 模型 / 資料，逼近成功 metric；畫取捨曲線。
+  **這段是研究核心，盡量留足時間。**
+- **08-10 ~ 08-13 收斂結果**：凍結最佳結果、整理圖表與資料，為 P4 writeup 備料；floor commit 補到 2~3 顆。
 
-### 優化迭代日 checklist 模板（每天複製一份）
+### 研究迭代日 checklist 模板（每天複製一份）
 
-- [ ] **定 hypothesis**：今天要驗證的一句話假設（例：「`DepthU` 16→32 能提高此 memory-bound shape 的 ILP」）
-- [ ] **改** config fork 或 `kernelBody()`/Components（一次只改一個變因）
-- [ ] **重 build**：第 1 層 `Tensile/bin/Tensile <config> out/`；第 2 層 `invoke build-client`
-- [ ] **量測**：`hipblaslt-bench` 取中位數 + `-v` 正確性（沿用 P2 量測協定）
-- [ ] **比 counter**：rocprof-compute 對照 before/after，確認瓶頸是否如預期改變
-- [ ] **記錄**：hypothesis / 改動 / 數字 / 結論（成立或否）寫進優化日誌
+- [ ] **定 hypothesis**：今天要驗證的一句話假設（例：「加 shape 特徵能讓 predictor 的 top-1 命中率 +X%」）
+- [ ] **改一個變因**：特徵 / 模型 / 資料切分 / pre-screen 比例（一次只改一個）
+- [ ] **跑評估**：在固定 validation 上算 metric（rank correlation / top-k 命中率 / 省下的評估次數）
+- [ ] **對照 baseline**：與 P2 baseline predictor 或純窮舉比，確認改善是否真實（非過擬合 / 非雜訊）
+- [ ] **記錄**：hypothesis / 改動 / 數字 / 結論（成立或否）寫進研究日誌
 - **每日進度自我檢核**：
-  1. 我的新 solution 有出現在 `3_LibraryLogic` 嗎？怎麼確認它「被選用」而非只是候選？
-  2. 這次加速是真的嗎（中位數、固定條件、`-v` 通過）還是雜訊？
+  1. 這次改善是在 held-out validation 上、且非 leakage 造成的嗎？
+  2. 我的 metric 是否真的對應下游用途（tuning 只需排序 / 選 top-k 對）？
   <details><summary>答案</summary>
-  1. 看 `3_LibraryLogic` 的選擇邏輯 YAML / 選擇表是否把該 size 映射到新 solution；
-     或用 `hipblaslt-bench --algo_method index --solution_index <idx>` 對照它確被 heuristic 選中。
-  2. 需同 GPU / 同 iteration / 取中位數且 `-v` 正確，單次跑贏不算數。
+  1. 需在按 shape/config 分組切出的 validation 上成立；同一 config 混進 train/val 會 leakage 高估。
+  2. 是——tuning 用的 predictor 重點是「把好的 gene 排前面 / 選中 top-k」，不是最小化絕對 GFLOPS 誤差。
   </details>
 
-## P4：收尾 + buffer（08-14 → 08-20）
+## P4：研究 writeup + 收尾 + buffer（08-14 → 08-20）
 
-階段目標：把 P3 產出收斂成已合併/可交付的成果，並寫實習總結。
+階段目標：把 P3 的研究產出收斂成**團隊用得上的 writeup**，並對接 solution-library GA 這條線。
 
-- [ ] 回應 PR review、修 CI、依 reviewer 意見迭代數字
-- [ ] **寫實習總結**：before/after 效能（中位數 + roofline + counter）、學到的 ISA / tooling、
-  送出的 commit / PR 清單
+- [ ] **寫研究 writeup**（內部 report / RFC 風格；這是 North Star 的最終交付）
+  - [ ] 問題（GEMM tuning 每次 codegen/config 一改就要重跑 grid 建表的成本）
+  - [ ] 方法（資料集 + 選定切角的 predictor / analytics / 重用模型）
+  - [ ] 資料集（來源、規模、切分、可重現指令）
+  - [ ] 結果（預測準度 / rank correlation、省下的評估次數、DSE 加速、efficiency-vs-ideal、取捨曲線圖）
+  - [ ] 限制與 next steps（資料/架構泛化、與 Formocast/Ductile 的關係、能否落地）
+  - ✅ 完成判準：一份可交給 mentor / SolutionSelection team 的自足 writeup（含圖表與可重現指令）
+- [ ] **對接團隊**：把結論連到 JIRA `SWDEV-477426`（GA 建 solution library；分析可餵給該線），
+  必要時找負責人 William Gilmartin / SolutionSelection team 對齊後續
+- [ ] **收尾 floor commits**：把 floor ticket 累積到 2~3 顆、回應 review、修 CI
 - [ ] buffer 吸收任何前期落後
-- [ ] （行有餘力，加碼）挑第 2 個 shape 或更深的 codegen 優化，增加 commit 數
-- **筆記提示**：實習總結應包含——目標達成度（多顆 commit + 團隊在乎 shape 的 codegen 級優化 PR；
-  floor：config-fork 採用）、量化效能證據、
+- [ ] （行有餘力，加碼）延伸主切角（多一組 shape / dtype、或試備援切角），強化結論
+- **筆記提示**：實習總結應包含——研究產出（切角、量化結論、prototype）、floor commit / PR 清單、
   遇到的坑與解法、若再多兩週會做什麼。
 
 ---
 
 ## 風險與 scope 控制（客觀評估）
 
-- **最大風險（戰略）：選錯 target，做出團隊不在乎的優化。**
-  - 緩解：第一週（06-26）就啟動 mentor 對齊，07-08 收斂單一 target；不要 solo 埋頭學完才選題。
-  - **target 對齊比任何讀文件都優先。**
-- **次大風險：P3 codegen 太深做不完。**
-  - 緩解：先做第 1 層參數優化拿 **warm-up/floor**（新 solution 進選擇表）確保有底。
-  - 但 **floor ≠ 最終目標**，真目標是第 2 層 codegen 的可合併優化，floor 後仍應盡力上推。
-  - 避免一開始就鑽 rocisa 指令層（第 3 層），那是 scope 過大的陷阱。
-- **不要過度投入 HIP C++。** 你的目標是 ISA + tensilelite；HIP 只是反組譯練單字的手段，A-1~A-3 夠用。
-- **deep ISA 按需學。** ex04（buffer 邊界）等深潛降為選讀，P3 真的撞到記憶體定址再回看，別前置占時間。
-- **避免進度盲點：** P0 是硬截止，若 06-30 仍未跑通 profiling，週末（06-27/28 已預留彈性）優先補，
-  不要把 ISA 深潛（P1）往前擠壓掉 profiling 基礎。
-- **commit 早做。** P2 的低風險 commit 不只是練手，是降低最終大 PR 在 CI/review 卡關的風險。
+- **最大風險（戰略）：研究題目選錯 / 撞正職 / 拿不到資料。**
+  - 緩解：07-08 先與 mentor 對齊切角 + 資料/repo 存取，07-23~25 kickoff 用決策樹定案；不要 solo 埋頭做完才對齊。
+  - **研究題目 + 資料可得性對齊，比任何讀文件都優先。**
+- **次大風險：研究主線是開放式探索，結果不保證。**
+  - 緩解：**floor＝2~3 顆 floor ticket commit**（平行、不佔主時段），確保「main repo 多顆 commit」不落空。
+  - 三切角有難度梯度（#1 純分析最穩 → #2 → #3 最novel），選定主切角時同時定一個**備援切角**，卡住可退。
+  - 每個切角都以 P2 資料集為地基，先確保「資料 + baseline predictor」可用，再談改進。
+- **不要過度投入 codegen 手改 / 深 ISA。** 方向已轉研究線；07-07 之後 codegen 深潛與 ex04 降為選讀，
+  只需介面級理解 gene→kernel 映射，別前置占研究時間。
+- **不要過度投入 HIP C++。** HIP 只是 P0 反組譯練單字的手段，A-1~A-3 夠用。
+- **避免評估陷阱：** benchmark 有雜訊、易 leakage。固定環境 / 取中位數 / 按 shape/config 分組切 train-val，
+  單次跑贏或隨機切列的高準度都不算數。
+- **floor commit 早做。** P2 的 floor ticket 平行推進，別全擠到最後；也順帶熟悉 PR/CI 流程。
 
 ## 驗證方式（如何確認每階段達標）
 
 - P0：容器內自寫 HIP kernel 反組譯出預期指令；`hipblaslt-bench` + rocprof-compute 跑通 ex02 並能解讀。
-- P1：`Tensile/bin/Tensile` 跑出 `1_`~`4_`；能在真實 GEMM `.s` 指出 prefetch/MFMA 排程。
-- P2：PR 出現在 main repo 且 CI 綠；`2_BenchmarkData` 能比出 config 改動的效能差。
-- P3（真目標）：在**團隊在乎的 target shape** 上，codegen 級改動讓 `hipblaslt-bench -v` 正確 + 中位數
-  證明加速，且 **PR 可被 reviewer 接受/合併**。floor：`3_LibraryLogic` / 選擇表顯示新 config-fork solution 被選用。
+- P1：`Tensile/bin/Tensile` 跑出 `1_`~`4_`；能在真實 GEMM `.s` 認出 prefetch/MFMA 排程並讀懂 kernel 命名編碼；
+  07-08 與 mentor 對齊研究切角 + 資料/repo 存取。
+- P2：一份**可重跑、已切分**的 benchmark 資料集 + baseline analytics（feature importance / 平滑度 /
+  best-of-pool）+ baseline predictor 數字；1~2 顆 floor commit 出現在 main repo 且 CI 綠。
+- P3（研究主線）：選定切角在 **held-out validation** 上有量化改進（rank correlation / top-k 命中率 /
+  省下的評估次數 / DSE 加速），且有可展示 prototype；floor commit 累積到 2~3 顆。
+- P4：一份自足、含圖表與可重現指令的研究 writeup，對接 `SWDEV-477426` / SolutionSelection team。
 
 ## AMD 訓練資源對照表
 
@@ -989,8 +1072,22 @@ snapshot PDF），後續 agent 可直接讀全文；分類 URL 索引見 [intern
 | Module | 內容重點 | 對應階段 | 主線用途 |
 |---|---|---|---|
 | **A：hipBLASLt 基礎** | API/descriptor、呼叫堆疊、bench 旋鈕、入門 best practices | P0 | 看懂 runtime 呼叫鏈與 `hipblaslt-bench` 輸出 |
-| **B：Solution Selection** | equality+grid 兩層選擇、StreamK/Origami/Formocast、GEKO、bench-driven swap、debug 旋鈕 | P0（概念）、P2（調參） | 理解 kernel 怎麼被選、如何量測/換 solution |
-| **C：TensileLite Codegen** | YAML→kernel→library pipeline、kernel 命名規則、snippet/StinkyTofu、characterization tests | P1（pipeline）、P3（codegen） | 認出真實 kernel、找 codegen 介入點 |
+| **B：Solution Selection** | equality+grid 兩層選擇、StreamK/Origami/Formocast、GEKO、bench-driven swap、debug 旋鈕 | P0（概念）、P1~P2（生態定位） | 理解 kernel 怎麼被選 / 被 tune、研究線對接對象 |
+| **C：TensileLite Codegen** | YAML→kernel→library pipeline、kernel 命名規則、snippet/StinkyTofu、characterization tests | P1（pipeline）、P2（gene 空間） | 認出真實 kernel、理解 gene→kernel 映射 |
+
+### 研究線參考（Ductile / GEKO / GA tuning，**與 P1~P4 研究主線直接相關**）
+
+方向轉研究線後，以下為主線核心參考。Confluence 頁用 page id 標註（同一 `amd.atlassian.net/wiki` 站，
+用 cloud_atlassian 抓取）；JIRA 用 issue key。
+
+| 參考 | 類型 | 對應階段 | 主線用途 |
+|---|---|---|---|
+| Ductile 與 TensileLite Tuning 深入比較（`1772982240`） | Confluence | P1（07-08）、P2 | GA 染色體 / fitness / `--convert-config`、grid vs GA 取捨的權威整理 |
+| JIRA `SWDEV-477426`（GA-driven search for building solution libraries） | JIRA | P1~P4 | 研究主線對接的 feature（scope 2 completeness、scope 4 analytics）；負責人 William Gilmartin |
+| GEMM Kernel Optimization / GEKO（`1186895430`） | Confluence | P2（07-11） | GEKO 編排、`--backend ductile\|tensile`、tuning→merge 流程 |
+| Formocast Design RFC（`1304232451`） | Confluence | P2、P3（#2/#3） | 模擬式效能預測——「用預測減少 benchmark」的近親與對照 |
+| Difference between Origami and Formocast（`1304199634`） | Confluence | P1（07-08） | 釐清 selection 層兩個預測 heuristic 的差別 |
+| Solution Selection Metrics（`744174730`） | Confluence | P2~P3 | efficiency vs ideal 定義＝研究成果的評估 metric |
 
 ## 每日提醒
 
