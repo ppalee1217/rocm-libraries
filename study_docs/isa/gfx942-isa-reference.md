@@ -24,3 +24,4 @@ asm 範例註解清楚，但讀 TensileLite 產出的真實 kernel 時會遇到�
 - `asm/example0[1-4]_*` 的 `.s` 註解與 README
 - `study_docs/amd-isa-kernel.md` 的指令家族表
 - 連結：mfma-deep-dive.md、lds-bank-conflicts.md
+- gfx942 在整條 Instinct 產品線的位置（型號 ↔ CDNA 世代 ↔ gfx 對照）：[amd-datacenter-gpu-isa.md](amd-datacenter-gpu-isa.md)
