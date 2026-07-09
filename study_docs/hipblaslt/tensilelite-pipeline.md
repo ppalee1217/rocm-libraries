@@ -66,7 +66,7 @@ flowchart LR
 
 ### 階段 1：BenchmarkProblems（產生 + 編譯 + benchmark）
 
-依 YAML 把參數「fork」成很多組合，每組變成一個候選 kernel，編譯成 `.co`，再跑 benchmark 量速度。
+依 YAML 把參數「fork」成很多組合，每組變成一個候選 kernel，編譯成 `.co`，再**跑 benchmark 量速度**。產出目錄 `1_BenchmarkProblems/`、`2_BenchmarkData/`。
 
 - 入口：[BenchmarkProblems.main()](../../projects/hipblaslt/tensilelite/Tensile/BenchmarkProblems.py#L818)
 - 單一 problem-type 的 generate→build→benchmark 迴圈：[_benchmarkProblemType()](../../projects/hipblaslt/tensilelite/Tensile/BenchmarkProblems.py#L557)
@@ -90,15 +90,53 @@ flowchart LR
 `main()` 對每個 problem type 呼叫 `_benchmarkProblemType()`，帶入 `problemTypeConfig`（這批要算的問題型別：型別、轉置、index 配置）與 `problemSizeGroupConfig`（含 `ForkParameters` 與要 benchmark 的 size 清單）。它內部把一個 benchmark step 拆成 **generate → build → benchmark** 三小步，各自呼叫的 API 與傳入內容如下：
 
 
-| 小步        | 主要 API（args）                                                                                                                                                                                                                                                                       | 這一步在做什麼                                                                                                                                                              |
-| --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| generate  | `[constructForkPermutations(forkParams, paramGroups)](../../projects/hipblaslt/tensilelite/Tensile/BenchmarkStructs.py#L336)`                                                                                                                                                      | 把 `forkParams`（每個參數的多個候選值）展開成所有組合，每個組合就是一個候選 kernel 設定。                                                                                                              |
-| generate  | `[_generateForkedSolutions(problemType, constantParams, forkPermutations, assembler, debugConfig, isaInfoMap)](../../projects/hipblaslt/tensilelite/Tensile/BenchmarkProblems.py#L241)`                                                                                            | 把上面的組合 + `constantParams`（所有候選共用的固定參數）組成一批 solution 物件；無效組合會在這裡被剔除。                                                                                                  |
-| build     | `[writeBenchmarkFiles(stepBaseDir, solutions, problemSizes, biasTypeArgs, factorDimArgs, activationArgs, icacheFlushArgs, …, asmToolchain, srcToolchain, sourcePath, …, gfxName, isaInfoMap, probSolMap)](../../projects/hipblaslt/tensilelite/Tensile/BenchmarkProblems.py#L414)` | 把每個 solution 產出 kernel source（呼叫 KernelWriter）並編成 `.co`，同時寫出這一步 benchmark client 需要的檔案。`problemSizes` 是要測的 size；`biasTypeArgs / activationArgs` 等是要一起掃的 epilogue 變體。 |
-| benchmark | `[runClient(libraryLogicPath, forBenchmark, enableTileSelection, cxxCompiler, cCompiler, outputPath, configPaths)](../../projects/hipblaslt/tensilelite/Tensile/ClientWriter.py#L231)`                                                                                             | 用上一步編好的 `.co` 在 `deviceId` 指定的 GPU 上實跑，量每個候選在每個 size 的速度，輸出成 CSV。`configPaths` 指向剛寫好的 `ClientParameters.ini`。                                                        |
+| 小步        | 主要 API（args）                                                                                                                                                                                                                                                                       | 這一步在做什麼                                                                                                                                                                  |
+| --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| generate  | `[constructForkPermutations(forkParams, paramGroups)](../../projects/hipblaslt/tensilelite/Tensile/BenchmarkStructs.py#L336)`                                                                                                                                                      | 把 `forkParams`（每個參數的多個候選值）展開成所有組合，每個組合就是一個候選 kernel 設定。                                                                                                                  |
+| generate  | `[_generateForkedSolutions(problemType, constantParams, forkPermutations, assembler, debugConfig, isaInfoMap)](../../projects/hipblaslt/tensilelite/Tensile/BenchmarkProblems.py#L241)`                                                                                            | 把上面的組合 + `constantParams`（所有候選共用的固定參數）組成一批 solution 物件；無效組合會在這裡被剔除。                                                                                                      |
+| build     | `[writeBenchmarkFiles(stepBaseDir, solutions, problemSizes, biasTypeArgs, factorDimArgs, activationArgs, icacheFlushArgs, …, asmToolchain, srcToolchain, sourcePath, …, gfxName, isaInfoMap, probSolMap)](../../projects/hipblaslt/tensilelite/Tensile/BenchmarkProblems.py#L414)` | 把每個 solution 產出 kernel source（呼叫 **KernelWriter**）並編成 `.co`，同時寫出這一步 benchmark client 需要的檔案。`problemSizes` 是要測的 size；`biasTypeArgs / activationArgs` 等是要一起掃的 epilogue 變體。 |
+| benchmark | `[runClient(libraryLogicPath, forBenchmark, enableTileSelection, cxxCompiler, cCompiler, outputPath, configPaths)](../../projects/hipblaslt/tensilelite/Tensile/ClientWriter.py#L231)`                                                                                             | 用上一步編好的 `.co` 在 `deviceId` 指定的 GPU 上實跑，量每個候選在每個 size 的速度，輸出成 CSV。`configPaths` 指向剛寫好的 `ClientParameters.ini`。                                                            |
 
 
 > 名詞：**constantParams** = 所有候選共用、不參與 fork 的固定參數；**forkParams** = 會展開成多組候選的參數。
+
+
+
+#### 補充 Q&A：solution 和 problem size 是怎麼決定的？
+
+常見誤解：以為 problem size 也是拿 const/fork 參數「乘」出來的。實際上 **solution（候選 kernel）和 problem size 是兩條獨立的軸**。
+
+**(1) solution：const + fork 展開成一大堆候選 kernel**
+
+- fork 參數做笛卡兒積（`itertools.product`），見 [constructLazyForkPermutations()](../../projects/hipblaslt/tensilelite/Tensile/BenchmarkStructs.py#L366)。
+- 每組 fork 組合疊上共用的 `constantParams` 組成一個 solution，見 [_generateForkedSolutions()](../../projects/hipblaslt/tensilelite/Tensile/BenchmarkProblems.py#L241)；無效組合會被剔除，log 會印 `Actual Solutions: X / maxPossibleSolutions after SolutionStructs`。
+- 另可加 `CustomKernels`（手寫 kernel）。
+- 結論：**候選 kernel 數 = fork 全組合（扣掉無效）+ custom kernel**。
+
+**(2) problem size：獨立列出的一份「題目清單」，不是 fork 出來的**
+
+來源是 YAML 的 `BenchmarkFinalParameters → ProblemSizes`，由 [ProblemSizes](../../projects/hipblaslt/tensilelite/Tensile/SolutionStructs/Problem.py#L279) 解析。它也有「參數」，但形式跟 kernel 完全不同，支援兩種寫法（可混用）：
+
+
+| 寫法      | 語意                                  | 範例                                                                                                                |
+| ------- | ----------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `Exact` | 逐一列出要測的尺寸（最常用）                      | `- Exact: [1024, 775, 1, 184]`（一組 `[M, N, batch, K]`）                                                             |
+| `Range` | 用描述子 `[起始, 步進, 步進增量, 上限]` 自動展開成一串尺寸 | 見 [ProblemSizeRange](../../projects/hipblaslt/tensilelite/Tensile/SolutionStructs/Problem.py#L39)（1~4 個數字，長度決定語意） |
+
+
+另外某維度給 `int`（非 list）表示 **mapped index**：這個維度大小 = 綁定另一個維度（例如讓 M=N 連動）。
+
+**(3) 兩者關係：交叉相乘去跑 benchmark**
+
+每個 solution 對每個 problem size 都跑一次，得到 `data[problem size][solution] = GFlops` 這張表（就是階段 2 LibraryLogic 讀進去分析的表）。總跑次數約：
+
+```
+候選 solution 數 × problem size 數 × (epilogue 變體：biasType × activation × factorDim × icacheFlush)
+```
+
+epilogue 那幾個（`biasTypeArgs`/`activationArgs`/`factorDimArgs`/`icacheFlushArgs`）只增加「跑的次數」，**不增加 kernel 數量**（同一支 kernel 在不同 epilogue 情境重跑）。步數在 log 分開印，見 [_benchmarkProblemType()](../../projects/hipblaslt/tensilelite/Tensile/BenchmarkProblems.py#L614)。
+
+> 一句話：**kernel 靠 fork 全組合「炸出很多解法」；problem size 是另一份「挑好的題目清單」（Exact 為主，Range 可自動展開）；benchmark 就是拿每個解法去解每道題，量出一張效能表。**
 
 
 
@@ -141,6 +179,41 @@ flowchart LR
 
 它會建一個 `LogicAnalyzer`，比對「每個 size 上哪個 solution 最快」，最後輸出成 runtime 查表用的選擇邏輯樹。
 
+#### 補充 Q&A：GSU 是什麼？LibraryLogic 怎麼挑選/淘汰 kernel？
+
+**Q1：**`splitGSU` **裡的 GSU 是什麼？**
+
+**GSU = GlobalSplitU（切分 U/K 累加維度）**。矩陣乘法 `C = A×B` 中，M、N 是輸出 `C` 的兩個維度，K（程式裡叫 **U / Unroll**，即 summation 累加維度）是「要一路加總」的維度。
+
+- **問題**：當 M、N 很小但 K 很大（又扁又長，如 `128×128×65536`），輸出 tile 很少 → 派得出去的 workgroup 很少 → 大量 CU 閒置，很慢。
+- **GSU 解法**：把 K 再切成多段，讓多組 workgroup 各算「一段 K 的部分和」，最後合併。把工作分給更多 CU，提升硬體使用率。
+- 相關參數：`GlobalSplitU`（`1`=不切；`2/4/8`=切幾段；`0`=不含 GSU 支援；`-1`=runtime 自動決定）；`GlobalSplitUAlgorithm`（部分和怎麼合併：`SingleBuffer` atomic 累加同一 buffer／`MultipleBuffer` 各寫 buffer 再用另一 kernel 加總／`MultipleBufferSingleKernel` 同 kernel 內加總）。
+- 定義見 [ValidParameters.py](../../projects/hipblaslt/tensilelite/Tensile/Common/ValidParameters.py#L336-L345)。
+
+LibraryLogic 的 `splitGSU` 只影響 **solution/kernel 的命名與「合併重複 solution」的判斷**（傳給 `getSolutionNameMin`/`getKernelNameMin`），決定是否把 GSU 當成獨立可調維度，而不是把每個 GSU 值都視為完全不同的 kernel。
+
+**Q2：LibraryLogic 挑選/淘汰 kernel 的策略**
+
+`LogicAnalyzer` 先把 benchmark 數據讀成 `data[problem size][solution] = GFlops`（越大越快），再依序執行三道關卡，見 [analyzeProblemType()](../../projects/hipblaslt/tensilelite/Tensile/LibraryLogic.py#L96-L108)：
+
+
+| 步驟                                         | 函式                                | Policy（白話）                                                                                                                                                                     |
+| ------------------------------------------ | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 1. 淘汰無效                                    | `removeInvalidSolutions()`        | 任一測到的 size 上 `gflops==0`（跑不出來）→ 整個 solution 踢掉，一次都不能失敗。                                                                                                                        |
+| 2a. 淘汰不重要（**預設** `SolutionSelectionAlg=1`） | `keepWinnerSolutions()`           | 只保留「當過任一 size 第一名」的贏家聯集 + 所有 exact size 贏家；從沒贏過就丟。較快。                                                                                                                          |
+| 2b. 淘汰不重要（`SolutionSelectionAlg=0`，舊版）     | `removeLeastImportantSolutions()` | 逐一移除「省時貢獻 < `SolutionImportanceMin`（預設 1%）或從沒贏過」的 solution；但「某 size 唯一可行解」與「exact 贏家」豁免。更精簡。                                                                                   |
+| 3. 組織輸出                                    | `exactWinners` + `enRule()`       | Exact 點直接建對照表；Range 用決策樹（相鄰同贏家就合併、變則加分支），以「總執行時間最短」為贏家判準（沒 benchmark 過的組合給 `+inf` 判出局）。這棵決策樹在 runtime 就是條件樹的尺寸層，兩者是同一份資料的兩端，詳見 [solution-selection.md](solution-selection.md)。 |
+
+
+- 預設值：`SolutionSelectionAlg=1`、`SolutionImportanceMin=0.01`（1%），見 [GlobalParameters.py](../../projects/hipblaslt/tensilelite/Tensile/Common/GlobalParameters.py#L114-L115) 與 [L642-L643](../../projects/hipblaslt/tensilelite/Tensile/Common/GlobalParameters.py#L642-L643)。
+- `FreeSize` / `Prediction` 類型走 `deReferenceSolutions()`，不做上述淘汰。
+
+> 核心精神：**「跑不出來的先淘汰 → 從沒當過任何尺寸最快的（或贏太少）再淘汰 → 剩下的贏家組成一棵盡量精簡的 size 決策樹供 runtime 查表」**。
+>
+> 這棵 build 出來的決策樹、runtime 怎麼走訪它（條件樹）、以及「最近鄰」在其中的位置，三者關係易混淆，統一整理在 [solution-selection.md](solution-selection.md)。
+
+
+
 ### 階段 3：ClientWriter（打包成 library / client）
 
 讀 `3_LibraryLogic/` 的選擇邏輯，重建 solutions、編出最終 library（`.co` + 索引），並產生 benchmark client。
@@ -165,6 +238,8 @@ flowchart LR
 
 ### kernel 組合語言怎麼吐出來：KernelWriter + rocisa
 
+> **延伸閱讀**：這一小節只講「入口與大方向」。想深入 `kernelBody()` 的組裝骨架、兩層排程器（`makeSchedule` / `_makeSubIterSchedule`）、以及 `KernelWriter.py`（排程/骨架）與 `KernelWriterAssembly.py`（逐條發指令）＋ `Components/` 的三層分工，見專篇 [kernelwriter-implementation.md](kernelwriter-implementation.md)。
+
 候選 kernel 的 GPU 組合語言由 [KernelWriter.py](../../projects/hipblaslt/tensilelite/Tensile/KernelWriter.py) 產生，它呼叫 C++ 模組 [rocisa](../../projects/hipblaslt/tensilelite/rocisa)（Nanobind 綁定）逐條產生指令。
 一開始不用全懂，先記住入口。這條路是階段 1 build 小步（`writeBenchmarkFiles`）內部呼叫的：每個 solution 都會走一次，把抽象的 solution 參數變成一支 kernel 的原始碼。
 
@@ -187,7 +262,14 @@ flowchart LR
 - **rocisa** = 專門「組裝 AMDGPU 指令」的 C++ 工具庫。
 - [KernelWriter.py](../../projects/hipblaslt/tensilelite/Tensile/KernelWriter.py) 像在用 rocisa 寫組合語言。
 
-想深入 `kernelBody()` 的組裝骨架、兩層排程，以及 `KernelWriter.py`（排程/骨架）與 `KernelWriterAssembly.py`（逐條發指令）的分工：見 [kernelwriter-implementation.md](kernelwriter-implementation.md)。
+深入導讀請見 [kernelwriter-implementation.md](kernelwriter-implementation.md)，重點小節：
+
+- [白話總覽：兩個人分工寫組語](kernelwriter-implementation.md#白話總覽兩個人分工寫組語) — `KernelWriter.py`（導演/排程）vs `KernelWriterAssembly.py`（執筆者/發指令）。
+- [kernelBody 解剖](kernelwriter-implementation.md#3-kernelbody-解剖主組裝點l5279) — signature → prefetch → 主迴圈 → 收尾 → 寫回的組裝順序。
+- [主迴圈與指令排程](kernelwriter-implementation.md#4-主迴圈與指令排程base-層) — 兩層排程器怎麼交錯 load / LDS / MFMA 藏延遲。
+- [抽象介面對應清單](kernelwriter-implementation.md#7-抽象介面對應清單) — 「想改 X 行為要開哪個方法」的導覽表。
+
+
 
 ## 一次 build 涵蓋什麼？候選 vs 出貨、size 範圍、何時要重跑
 
@@ -208,7 +290,7 @@ flowchart LR
 
 - **kernel 對 size 通用**：solution 用 **tiling**（把輸出切成固定大小的 tile 分塊掃過）寫成，同一個 `.co` 算 `512×512` 或 `8192×8192` 只是 tile 數不同。能不能用由 kernel 的 predicate / assertion（如「K 要是某數的倍數」「需要多少 workspace」）決定，**不是 size 上限**。
 - **tuning 只挑代表性 size**：要 benchmark 哪些 size 是在 tuning config（YAML）裡**人工列出**的有限清單，通常對齊真實負載（例如常見的 LLM GEMM shape），不窮舉。測得越廣，對那些 size 越準。
-- **沒測過的 size 用最近鄰補**：runtime 對沒 tune 過的 M/N/K，用距離函數找「最接近的 benchmark 點」，套用那個點的贏家。見 [ProblemMatchingLibrary](../../projects/hipblaslt/tensilelite/include/Tensile/MatchingLibrary.hpp#L44-L47)（"find the benchmarked size that is closest to the size asked for"）與 [ProblemFreeSizeLibrary](../../projects/hipblaslt/tensilelite/include/Tensile/FreeSizeLibrary.hpp#L46-L49)。
+- **沒測過的 size 用最近鄰補**：runtime 對沒 tune 過的 M/N/K，用距離函數找「最接近的 benchmark 點」，套用那個點的贏家。見 [ProblemMatchingLibrary](../../projects/hipblaslt/tensilelite/include/Tensile/MatchingLibrary.hpp#L44-L47)（"find the benchmarked size that is closest to the size asked for"）與 [ProblemFreeSizeLibrary](../../projects/hipblaslt/tensilelite/include/Tensile/FreeSizeLibrary.hpp#L46-L49)。注意「最近鄰」只是條件樹尺寸比對層最底部的**泛化葉子策略**（精確 → 區間 → 最近鄰），不是整棵條件樹；完整層次見 [solution-selection.md](solution-selection.md)。
 
 > 名詞：**tiling** = 把大矩陣切成固定大小的小塊（tile），kernel 用迴圈逐塊計算，因此同一支 kernel 不綁定特定矩陣大小。
 
@@ -258,20 +340,4 @@ Tensile/bin/Tensile <config.yaml> out/
 - `fork` - 把參數的多個值展開成多組候選設定。
 - [rocisa](../../projects/hipblaslt/tensilelite/rocisa) - 組裝 AMDGPU 指令的 C++ 工具庫。
 - `library logic` - 「哪種 size 配哪個 solution」的選擇邏輯（YAML/MsgPack）。
-
-
-
-## 交叉連結
-
-- 上一層全局：[README.md](README.md)
-- 這些產物在執行期怎麼被用：[runtime-flow.md](runtime-flow.md)
-- 想動手改 kernel / 調參數：[gemm-optimization.md](gemm-optimization.md)
-- build / PR 規範見官方 [tensilelite/AGENTS.md](../../projects/hipblaslt/tensilelite/AGENTS.md)（本文件不重複）。
-
-
-
-## 一句話總結
-
-> 三階段 = 試做 + 評分 + 出版食譜。最終的 `.co` 與選擇邏輯，就是 runtime 拿來查表用的。
-> 想動手最佳化，下一篇 [gemm-optimization.md](gemm-optimization.md)。
 

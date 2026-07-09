@@ -165,6 +165,8 @@ flowchart LR
 3. [gemm-optimization.md](gemm-optimization.md) — 想動手最佳化時，參數與 codegen 在哪裡改。
 4. [profiling-rocprof.md](profiling-rocprof.md) — 改完怎麼用 rocprof + TensileLite benchmark 證明變快。
 
+延伸：runtime 查表選 kernel 的「條件樹 / 尺寸比對層 / 最近鄰 / build-time 決策樹」關係易混淆，統一整理在 [solution-selection.md](solution-selection.md)。
+
 本頁負責「build→runtime 的交接（產物、放哪、怎麼被載入）」這層；**實際載入的逐行呼叫鏈在 [runtime-flow.md](runtime-flow.md)，產物如何生成在 [tensilelite-pipeline.md**](tensilelite-pipeline.md)，兩者不在本頁重述。
 
 ## Terminology（全域共用名詞）
@@ -174,7 +176,7 @@ flowchart LR
 - **solution** - 一個具體 kernel 的設定組合（含 tile 大小等參數）。
 - **TensileLite** - hipBLASLt 內建、建置時產生並挑選 kernel 的框架。
 - **code object (.co)** - 編譯好的 GPU 機器碼檔（一個 solution 對應一個 `.co`，runtime 用 `hipModuleLoad` 載入）。
-- **選擇表 / library logic** - 「哪種 problem 配哪個 solution」的條件樹；runtime 載入的實體是 MessagePack 的 `TensileLibrary_lazy_<arch>.dat`（**不是 YAML**）。
+- **選擇表 / library logic** - 「哪種 problem 配哪個 solution」的條件樹；runtime 載入的實體是 MessagePack 的 `TensileLibrary_lazy_<arch>.dat`（**不是 YAML**）。條件樹的分層、尺寸比對層與最近鄰的關係見 [solution-selection.md](solution-selection.md)。
 - **lazy load** - 選擇表的 shard 與 kernel 的 `.co` 都「第一次用到才從磁碟載入」，縮短啟動時間。
 - `HIPBLASLT_TENSILE_LIBPATH` - 指定 runtime 去哪找 library 目錄的環境變數；未設時改相對 `librocblaslt.so` 探測。
 - `<arch>` **/ gfx942** - GPU 架構名（本環境為 MI300 / CDNA3），library 依架構分子目錄存放。

@@ -153,7 +153,7 @@ flowchart TD
 ### 關卡 4：依矩陣大小選 kernel
 
 關鍵分岔：呼叫時**有指定 algo** 就直接讀出其中的 solution index；**沒指定**就現場跑 heuristic 選一個最好的。
-真正比對矩陣大小的「查表」邏輯，在 TensileLite 的 library logic（一棵依條件分層的樹）。
+真正比對矩陣大小的「查表」邏輯，在 TensileLite 的 library logic（一棵依條件分層的樹）。這棵條件樹的分層、尺寸比對層的 fallback（精確 → 區間 → 最近鄰）、以及它與 build-time 決策樹的關係，整理在 [solution-selection.md](solution-selection.md)。
 
 - heuristic 排序：[getBestSolutions](../../projects/hipblaslt/library/src/amd_detail/rocblaslt/src/tensile_host.cpp#L4316)
 - 條件樹比對：[ExactLogicLibrary::findTopSolutions](../../projects/hipblaslt/tensilelite/include/Tensile/ExactLogicLibrary.hpp#L264)
@@ -192,6 +192,7 @@ flowchart TD
 
 - tuning 只在**有限的代表 size** 上 benchmark；遇到沒測過的 size，就用距離函數找「最接近的 benchmark 點」，套用那個點選出的贏家。見 [ProblemMatchingLibrary](../../projects/hipblaslt/tensilelite/include/Tensile/MatchingLibrary.hpp#L44-L47)（"find the benchmarked size that is closest to the size asked for"）。
 - kernel 本身用 tiling 寫成，對任意大小通用，所以「能不能算」不受 size 限制；離 tuning 點越遠只是可能選到非最佳 kernel，而非算不出來。完整說明見 [tensilelite-pipeline.md](tensilelite-pipeline.md) 的〈有限的 kernel 如何涵蓋無限大的 problem size〉。
+- 最近鄰只是條件樹尺寸比對層最底部的泛化葉子策略（精確 → 區間 → 最近鄰），與整棵條件樹的關係見 [solution-selection.md](solution-selection.md)。
 
 
 
