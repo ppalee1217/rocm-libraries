@@ -16,6 +16,9 @@
 - [ ] 讀 `.s`（[mfma_gemm_f32_gfx942.s](../../../asm/example03_mfma/mfma_gemm_f32_gfx942.s)，259 行）L6–119 結構段
   - L6–41 檔頭（tiling 表、kernarg layout、MFMA register layout：lane↔元素）／L43–59 kernarg/座標/stride／L61–119 staging 位址、LDS 讀位址、accumulator 清零
   - ✅ 完成判準：能說出「lane l 持有 A/B/D 的哪個元素」
+- [ ] （原 07-02）跑 build & run（ATT 也需先 build 出 `.hsaco`，故放在跑 ATT 前；指令見下方「操作記錄」）
+  - ✅ 完成判準：執行印出 `verification : PASS`、`max_abs_err 0`，拿到可被 ATT 使用的 `.hsaco`
+  - 📚 參考資源：[asm/example03_mfma](../../../asm/example03_mfma)（README + `.s` + CMake）
 - [ ] 讀 `.s` L121–167 主迴圈
   - L121–140 `.Lkloop` 開頭（4 條 global load → `ds_write` → `s_barrier`）／L141–156 核心（8 條 `ds_read` + 4 條 `v_mfma_f32_16x16x4_f32`）／L165–167 `s_nop 15` pipeline drain
   - ✅ 完成判準：能解釋「為何 MFMA 後要 `s_nop 15` 才能讀 accumulator VGPR」

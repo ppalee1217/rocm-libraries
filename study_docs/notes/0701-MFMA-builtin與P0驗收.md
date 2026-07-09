@@ -15,6 +15,7 @@
   - ✅ 完成判準：能說出 MFMA 為何比手寫 FMA 迴圈快（吞吐與 register 重用）
 - [ ] 動手 寫 builtin kernel 並反組譯
   - ✅ 完成判準：在 `.s` 指出那條 MFMA，並說出它一次算的矩陣形狀
+  - 📚 參考資源：[amd-isa-kernel.md](../amd-isa-kernel.md)「階段 A-3」（待擴充 isa/mfma-deep-dive.md）
 
 ## P0 總驗收（自我檢核，全部要能做到）
 - [ ] 對人講清楚 build-time / runtime 兩階段如何交接

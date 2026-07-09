@@ -25,6 +25,8 @@
 - [ ] 讀 [profiling-rocprof.md](../hipblaslt/profiling-rocprof.md)「怎麼讀這些指標」
   - coalescing / 向量化、latency hiding 與 Little's Law、compute vs memory-bound 判讀
   - ✅ 完成判準：能用 counter 數值說出一個 kernel 是 compute- 還是 memory-bound
+- [ ] （AMD 資源，選做）HIP 200「HIP Tools」HW5（profiler trace/counter + debugger 讀 kernel 組語）＋ HIP 201「Performance Tuning for HIP Programs」（~1.5h），與本日 profiling 迴圈同主題
+  - 📚 參考資源：[internal_docs/hip-training-at-amd.md](../internal_docs/hip-training-at-amd.md#hip-200-hip-tools)（HIP 200）、[HIP 201 段](../internal_docs/hip-training-at-amd.md#hip-201-performance-tuning-for-hip-programs)
 
 ## 操作記錄
 ```bash
@@ -69,6 +71,7 @@ rocprof-compute analyze --path prof/n128m --tui
 ## code & doc 參考
 - 範例（profiling 最佳單篇教材）：[asm/example02_reduce_sum/README.md](../../../asm/example02_reduce_sum/README.md)
 - counter 解讀：[hipblaslt/profiling-rocprof.md](../hipblaslt/profiling-rocprof.md)「第三步：怎麼讀這些指標」
+- AMD 課程（選做）：[HIP 200 HIP Tools](../internal_docs/hip-training-at-amd.md#hip-200-hip-tools)（HW5）、[HIP 201 Performance Tuning](../internal_docs/hip-training-at-amd.md#hip-201-performance-tuning-for-hip-programs)
 - 研究線 metric 對照：Solution Selection Metrics（Confluence `744174730`，efficiency vs ideal）
 
 ## Questions 整理（自己寫）

@@ -21,6 +21,7 @@
   - ✅ 完成判準：能不看檔說出「為何每個 reduction 階段之間都要 `s_barrier`」
 - [ ] 跑 build & run
   - ✅ 完成判準：跑出 PASS，且能對應「組語裡哪段對應這次輸出的部分和」
+  - 📚 參考資源：[asm/example01_reduce_sum](../../../asm/example01_reduce_sum)（README + `.s`；待擴充 isa/gfx942-isa-reference.md）
 
 ## 操作記錄
 ```bash

@@ -17,6 +17,8 @@ AI 只協助補 code/doc 連結與格式化。對應 quiz：study_docs/quizzes/0
   - ✅ 完成判準：能說出何時會 bank conflict、`LDSBankConflict` counter 看哪裡
 - [ ] 動手 寫 tiled matmul（用 shared memory），反組譯確認 LDS 指令出現
   - ✅ 完成判準：能解釋「為什麼 tile 載入後、計算前需要 `s_barrier`」
+- [ ] （AMD 資源，選做）HIP 100「Fundamentals」的 Matrix Transpose naive→LDS 優化段（與 A-2 同主題的官方教材）
+  - 📚 參考資源：[internal_docs/hip-training-at-amd.md](../internal_docs/hip-training-at-amd.md#hip-100-fundamentals-of-hip-programming)
 
 ## 我學到什麼（自己寫）
 <!-- 用自己的話寫懂了什麼；越白話越好。這是學習的核心，不要讓 AI 代寫。 -->
@@ -36,5 +38,6 @@ AI 只協助補 code/doc 連結與格式化。對應 quiz：study_docs/quizzes/0
 - 真實 LDS staging 範例：[asm/example03_mfma](../../../asm/example03_mfma)
 - bank conflict counter：[hipblaslt/profiling-rocprof.md](../hipblaslt/profiling-rocprof.md) 的 `LDSBankConflict`
   （概念深潛文件 isa/lds-bank-conflicts.md 為待擴充 stub）
+- AMD 課程（選做）：[HIP 100 Fundamentals](../internal_docs/hip-training-at-amd.md#hip-100-fundamentals-of-hip-programming)（Matrix Transpose naive→LDS）
 
 ## Questions 整理（自己寫）

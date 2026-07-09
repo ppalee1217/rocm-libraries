@@ -8,10 +8,22 @@
 
 - [x] 搞懂磁碟上的兩階段接點：build 產物（`.dat` 選擇表 / `.co` kernel）如何被 runtime lazy load
   - ✅ 完成判準：能畫出「build 產物 → 磁碟（`.dat`/`.co`）→ runtime lazy load」的接點圖
-- [ ] 搞懂 build-time 三階段 pipeline（BenchmarkProblems → LibraryLogic → ClientWriter）各自產出什麼
+- [x] 搞懂 build-time 三階段 pipeline（BenchmarkProblems → LibraryLogic → ClientWriter）各自產出什麼
   - ✅ 完成判準：能說出三階段各自的輸入與輸出、以及 `0_` ~ `4_` 目錄對應哪階段
+- [ ] 搞懂 CPU→GPU kernel launch 的通用流程（把 06-25 的 runtime 呼叫鏈接到「硬體實際怎麼跑」）
+  - kernel launch 是**非同步**的：CPU 提交工作後通常立刻返回，要結果才 synchronize
+  - `<<<>>>`（HIP `hipLaunchKernelGGL`）不是普通函式呼叫，而是把工作單排進 stream / command queue
+  - 參數會被打包進 launch（device pointer 的值、純量值），不是讓 GPU 直接解讀 host pointer
+  - GPU front-end / command processor 取 command 後，自行把 grid 拆成 block → 分派到 SM/CU
+  - 📚 參考資源：[gpu_knowledge/kernel-launch.md](../gpu_knowledge/kernel-launch.md)（CPU→GPU launch）、[execution-model.md](../gpu_knowledge/execution-model.md)（執行模型）
+- [ ] （全程指引，建議）讀 `hip-book-guide` 建立《Accelerated Computing with HIP》查書索引
+  - 知道四條閱讀路徑：新手（Ch1-2-4-5）/ 優化（Ch3-5-6-11+附錄A）/ 移植（Ch2-8-4-5）/ 多 GPU（Ch6-9-10-11）
+  - 📚 參考資源：[gpu_knowledge/hip-book-guide.md](../gpu_knowledge/hip-book-guide.md)（查書索引）
 - [x] 跑既有 bench，把抽象呼叫鏈對應到真實輸出
   - ✅ 完成判準：能對照輸出講出「這次 heuristic 選了哪個 solution、跑多快」
+  - 📚 參考資源：[clients/bench/README.md](../../projects/hipblaslt/clients/bench/README.md)（旗標）、[internal_docs/hipblaslt-tensilelite-reference.md](../internal_docs/hipblaslt-tensilelite-reference.md)（Module A.5/B.4 除錯旋鈕）
+- [ ] （AMD 資源，選做）HIP 200「HIP Tools」（~1.5h）的 ROCm Profiler/Tracer 段（HW5 即 profiling + debugger 練習）
+  - 📚 參考資源：[internal_docs/hip-training-at-amd.md](../internal_docs/hip-training-at-amd.md#hip-200-hip-tools)
 
 ## 我學到什麼（自己寫）
 
@@ -39,7 +51,28 @@
 
 ### 搞懂 build-time 三階段 pipeline（BenchmarkProblems → LibraryLogic → ClientWriter）各自產出什麼
 
+#### Refer to [tensilelite-pipeline.md](../hipblaslt/tensilelite-pipeline.md)
 
+#### Entry Point
+
+命令列入口 `Tensile/bin/Tensile` 呼叫 `Tensile()`，再由 `executeStepsInConfig()` 依 config 內容依序觸發三階段。它會檢查 `config` 裡有沒有 `BenchmarkProblems` / `LibraryLogic` / `LibraryClient` 這三個 key，有哪個就跑哪個，並把「用什麼工具鏈編、輸出到哪、目標是哪張 GPU」這些共用資訊一路往下傳。
+
+- 頂層驅動：[Tensile()](../../projects/hipblaslt/tensilelite/Tensile/Tensile.py#L478)
+- 三階段分派：[executeStepsInConfig()](../../projects/hipblaslt/tensilelite/Tensile/Tensile.py#L71)
+
+#### 階段 1：BenchmarkProblems（產生 + 編譯 + benchmark）
+- Tensile build-time 流程的**第 1 階段**，負責「把 YAML 展開成一堆候選 kernel → 編譯 → 在真 GPU 上 benchmark → 收集效能資料」。
+- 產出目錄 `1_BenchmarkProblems/`、`2_BenchmarkData/`。
+- 定義在 `[tensilelite/Tensile/BenchmarkProblems.py](../../projects/hipblaslt/tensilelite/Tensile/BenchmarkProblems.py)`（由 `[Tensile.py](../../projects/hipblaslt/tensilelite/Tensile/Tensile.py#L110)` 的 `executeStepsInConfig()` 呼叫 `BenchmarkProblems.main()`）。
+
+#### 階段 2：LibraryLogic（挑每個 size 的最佳解）
+- build-time 流程的**第 2 階段**，負責「分析 benchmark 資料 → 決定每種 problem size 該配哪個 solution → 輸出邏輯檔（logic YAML）」，也就是選擇表的邏輯來源。
+- 產出目錄 `3_LibraryLogic/`。定義在 `[tensilelite/Tensile/LibraryLogic.py](../../projects/hipblaslt/tensilelite/Tensile/LibraryLogic.py)`（`LibraryLogic.main()`，核心是 `analyzeProblemType()`）。
+
+#### 階段 3：ClientWriter（打包成 library / client）
+- build-time 流程的**第 3 階段**，負責「把前兩階段的產物打包成可被查表/呼叫的 library 與 client」，產出目錄 `4_LibraryClient/`，最終得到 runtime 用的 `TensileLibrary_lazy_<arch>.dat` 與 `*.co`。
+- 定義在 `[tensilelite/Tensile/ClientWriter.py](../../projects/hipblaslt/tensilelite/Tensile/ClientWriter.py)`（`ClientWriter.main()`）。
+- 補充：這三階段是同一條 pipeline，串接處見 `Tensile.py` 的 `[executeStepsInConfig()](../../projects/hipblaslt/tensilelite/Tensile/Tensile.py#L71)`（BenchmarkProblems → LibraryLogic → ClientWriter）。
 
 ### 額外發現：`class TENSILE_API SolutionAdapter` 的 `TENSILE_API` 是什麼
 
@@ -137,6 +170,10 @@
 - [hipblaslt/README.md](../hipblaslt/README.md)（建置產出 / runtime 載入兩節）
 - [hipblaslt/tensilelite-pipeline.md](../hipblaslt/tensilelite-pipeline.md)
 - [clients/bench/README.md](../../projects/hipblaslt/clients/bench/README.md)（bench 旗標）
+- [internal_docs/hipblaslt-tensilelite-reference.md](../internal_docs/hipblaslt-tensilelite-reference.md)（Module A.5/B.4 bench 除錯旋鈕）
+- CPU→GPU launch：[gpu_knowledge/kernel-launch.md](../gpu_knowledge/kernel-launch.md)、[execution-model.md](../gpu_knowledge/execution-model.md)
+- 查書索引（建議）：[gpu_knowledge/hip-book-guide.md](../gpu_knowledge/hip-book-guide.md)
+- HIP 200（選做）：[internal_docs/hip-training-at-amd.md](../internal_docs/hip-training-at-amd.md#hip-200-hip-tools)
 
 
 

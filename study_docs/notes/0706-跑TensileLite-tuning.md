@@ -16,6 +16,7 @@
   - ✅ 完成判準：能說出跑一次 tuning 需要哪幾個前置步驟
 - [ ] 跑 一次完整 tuning（小 config 練手）
   - ✅ 完成判準：五個輸出目錄都生成，且能說出每個放什麼
+  - 📚 參考資源：[hipblaslt/tensilelite-pipeline.md](../hipblaslt/tensilelite-pipeline.md)、[f32_gsu.yaml](../../projects/hipblaslt/tensilelite/Tensile/Tests/common/gsu/f32_gsu.yaml)（待擴充 hipblaslt/tuning-config-reference.md）
 
 ## 操作記錄
 ```bash

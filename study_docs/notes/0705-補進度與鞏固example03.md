@@ -14,6 +14,8 @@
 - [ ] 鞏固 ex03：能不看檔默畫 example03 完整流程
   - 默畫：tiling（32×32 組成）→ 主迴圈 `.Lkloop`（load/ds_write/barrier/ds_read/mfma）→ store
   - ✅ 完成判準：不看檔能完整講一遍 example03 的資料流
+- [ ] （AMD 資源，選做）HIP 102「Part B」的「Example: Reduction」段（回扣 ex01/ex02；課程頁附 HW3 Histogram 完整 C++ 可當額外練習）
+  - 📚 參考資源：[internal_docs/hip-training-at-amd.md](../internal_docs/hip-training-at-amd.md#hip-102-hip-programming-part-b)
 
 ## 補進度清單（列出補了哪些未勾項）
 -
