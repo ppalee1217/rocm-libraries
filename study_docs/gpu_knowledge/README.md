@@ -21,6 +21,7 @@ AMD-specific 的組語細節。適合 1.5 年前寫過 CUDA、現在補硬體架
 | 2 | [kernel-launch.md](kernel-launch.md) | CPU 把 kernel launch 到 GPU 的詳細步驟（CUDA 主軸 + HIP 對應） |
 | 3 | [cuda-hip-terminology.md](cuda-hip-terminology.md) | CUDA ↔ HIP / ROCm 名詞完整對照（軟體 + 硬體 + 生態系） |
 | 4 | [hip-book-guide.md](hip-book-guide.md) | 《Accelerated Computing with HIP》章節導讀 |
+| 進階 | [cdna5-gfx1250.md](cdna5-gfx1250.md) | CDNA5 / gfx1250（MI450）深入：AGPR、WGP、MFMA→WMMA、dual-issue、同步原語、UDNA |
 
 ## 交叉連結
 
@@ -28,6 +29,7 @@ AMD-specific 的組語細節。適合 1.5 年前寫過 CUDA、現在補硬體架
 - API 速查 / hipify：[../cuda-to-hip.md](../cuda-to-hip.md)
 - 跨文件名詞彙總：[../glossary.md](../glossary.md)
 - 接續的 gfx942 ISA 實作：[../amd-isa-kernel.md](../amd-isa-kernel.md)
+- 最新架構（CDNA5 / gfx1250 / MI450）深入：[cdna5-gfx1250.md](cdna5-gfx1250.md)
 - 八週進度表：[../learning-roadmap.md](../learning-roadmap.md)
 
 ## 一句話總結
