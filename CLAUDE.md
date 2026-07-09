@@ -59,6 +59,26 @@ mirrors**: the Claude Code plan file
 - The hook does NOT fire when editing in Cursor or when editing a mirror directly.
   In those cases, manually sync: copy `study_docs/learning-roadmap.md` over both mirrors.
 
+# Learning notes must mirror the full daily roadmap
+
+Each daily study note (`study_docs/notes/MMDD-*.md`) is what the learner reads to decide
+what to do that day, so its "對應 roadmap item" section MUST list EVERY item from that
+day's roadmap section — nothing dropped:
+
+- Every main item, all of its sub-bullets, and its `✅ 完成判準` line.
+- ALL optional / recommended items too — `（AMD 資源，選做）`, `（全程指引，建議）`,
+  `（選讀／按需）` — copied verbatim WITH their tag kept, so the learner sees what is
+  skippable but never misses that it exists. Never omit an item just because it is optional.
+- Preserve the roadmap's checkbox state (`- [x]` done / `- [ ]` not done).
+- Carry each item's `📚 參考資源` too, not just the item text: put an inline `📚 參考資源：...`
+  line under the item AND consolidate the same links in the bottom "code & doc 參考" section
+  (dual-track). Only link files that exist. A missing reference means the learner does not
+  know where to look it up.
+
+A missing item in the note means the learner silently skips that work. Use the
+`learning-notes` skill as the authoritative procedure; when creating or reviewing a note,
+verify its "對應 roadmap item" list matches the roadmap section one-for-one.
+
 # Claude / Cursor parity (rules and skills MUST stay in sync)
 
 This repo is driven from both Claude Code and Cursor, so the agent instructions are
