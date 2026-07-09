@@ -56,6 +56,19 @@ were fetched from AMD's internal Confluence (`amd.atlassian.net`) via the Atlass
 > - GEMM Kernel Optimization (GEKO) — `1186895430`
 > - HIPBLASLT Onboarding — `1711090025`
 
+## Ductile / GEKO / GA tuning（研究線：tuning + selection 生態）
+
+對應研究筆記 [../research/ductile-geko-notes.md](../research/ductile-geko-notes.md)。tuning 層（Ductile GA / GEKO 編排）
+與 selection 層（Origami / Formocast 預測、selection metrics）的權威來源。
+
+| Document | URL | pageId | Description | Local copy |
+| --- | --- | --- | --- | --- |
+| Ductile 與 TensileLite Tuning 深入比較 | https://amd.atlassian.net/wiki/spaces/~7120204c779face96d403c9783064701435635/pages/1772982240 | `1772982240` | ROVO-authored 深入比較 Ductile（GA backend）vs TensileLite Grid Search：染色體/fitness、`--convert-config` 值域擴張、grid vs GA trade-off、分層 tuning 策略（Dense Search → TensileLite → Ductile）。 | [ductile-tensilelite-tuning.md](./ductile-tensilelite-tuning.md) |
+| GEMM Kernel Optimization (GEKO) | https://amd.atlassian.net/wiki/spaces/MLSE/pages/1186895430 | `1186895430` | GEKO 官方使用文件：`--tune`(GA via Ductile) / `--search`(dense) / `--bench` 三種 workflow、CLI reference、package 架構、workdir 輸出結構、tune→merge→rebuild 整合流程。 | [gemm-kernel-optimization-geko.md](./gemm-kernel-optimization-geko.md) |
+| Formocast Design Document (RFC) | https://amd.atlassian.net/wiki/spaces/MLSE/pages/1304232451 | `1304232451` | Formocast RFC：以硬體模擬預測 GEMM kernel 效能的 selection 模型，設計/元件/執行計畫/風險；「用預測減少 benchmark」的近親。 | [formocast-design-rfc.md](./formocast-design-rfc.md) |
+| Difference between Origami and Formocast | https://amd.atlassian.net/wiki/spaces/MLSE/pages/1304199634 | `1304199634` | Origami vs Formocast 逐項對照（效能 ~90% vs ~95%、solution pool、HW constants、code review）與整合計畫（含 PR #3735）。 | [origami-vs-formocast.md](./origami-vs-formocast.md) |
+| Solution Selection Metrics | https://amd.atlassian.net/wiki/spaces/MLSE/pages/744174730 | `744174730` | Solution selection 效率指標定義（vs ideal / hand-tuned / 競品）與量測步驟；主要內容為 mi100/a100 F32/F64 儀表板截圖（圖檔未鏡像，保留連結）。 | [solution-selection-metrics.md](./solution-selection-metrics.md) |
+
 ## Other
 
 | Document | URL | Description |
