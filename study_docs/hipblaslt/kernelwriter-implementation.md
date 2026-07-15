@@ -13,7 +13,7 @@ TensileLite 要把一個 GEMM solution（一組 tuning 參數）變成一支可�
 
 > 名詞：
 >
-> - **rocisa** = 一個 C++ 工具庫（Nanobind 綁定），提供「一個 Python 物件 = 一條 AMDGPU 指令」的積木（例如 `VMovB32`、`SWaitCnt`、`SBarrier`）。KernelWriterAssembly 就是用這些積木拼出整支 kernel。
+> - **rocisa** = 一個 C++ 工具庫（Nanobind 綁定），提供「一個 Python 物件 = 一條 AMDGPU 指令」的積木（例如 `VMovB32`、`SWaitCnt`、`SBarrier`）。KernelWriterAssembly 就是用這些積木拼出整支 kernel。想深入 rocisa 本身（目錄結構、核心概念、怎麼新增一條指令、與 StinkyTofu 的介面），見專篇 [rocisa.md](rocisa.md)。
 > - **抽象方法（abstract method）** = 基底類別只宣告「有這個動作」，但把「怎麼做」留給子類別填。這讓同一套排程骨架能換不同硬體後端（見下節）。
 
 一句話：**`KernelWriter.py` 排好順序，`KernelWriterAssembly.py` 逐條發指令。**
@@ -234,6 +234,7 @@ flowchart TD
 ## 交叉連結
 
 - 三階段全貌（本篇的上一層）：[tensilelite-pipeline.md](tensilelite-pipeline.md)
+- rocisa 積木庫本身（本篇的下一層：指令物件/`Module`/怎麼加指令/build/與 StinkyTofu 介面）：[rocisa.md](rocisa.md)
 - 「改 X 行為開哪個 Component 檔」地圖：[components-codegen-map.md](components-codegen-map.md)
 - 動手改 kernel / 調參數的三個層級：[gemm-optimization.md](gemm-optimization.md)
 - MFMA 指令語意：[../isa/mfma-deep-dive.md](../isa/mfma-deep-dive.md)
@@ -241,6 +242,7 @@ flowchart TD
 - 手寫 asm kernel 的階段拆解（背景）：[../amd-isa-kernel.md](../amd-isa-kernel.md)
 - tuning 參數 → kernel 的產生流程（權威內部指南）：[../internal_docs/tensilelite-kernel-generator.md](../internal_docs/tensilelite-kernel-generator.md)
 - 架構脈絡（snippet / StinkyTofu 重構方向）：[../internal_docs/hipblaslt-tensilelite-reference.md](../internal_docs/hipblaslt-tensilelite-reference.md) Module C.2
+- 組語**產生之後**的最佳化層（gfx1250+ 走 StinkyTofu 重排/補等待指令）：[../stinkytofu/README.md](../stinkytofu/README.md)
 
 ## 一句話總結
 

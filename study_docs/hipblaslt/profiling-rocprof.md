@@ -155,6 +155,19 @@ TensileLite 三階段與輸出位置見 [tensilelite-pipeline.md](tensilelite-pi
   Module A.5/B.4）：`--print_kernel_info`、`HIPBLASLT_LOG_MASK=64` + `HIPBLASLT_LOG_FILE`、`HIPBLASLT_BENCH_FREQ`；
   以及內部「hipBLASlt Startup Guide into Profiling, Debugging and Optimization」(pageId `1179073633`，可經 MCP 抓)
 
+### 實測 baseline：MI300X / bf16 4096³（第一次跑通）
+
+作為之後調參對照的具體起點（P2 調參會回頭比對）：
+
+- **指令**：`./build/release/clients/hipblaslt-bench -m 4096 -n 4096 -k 4096 -r bf16_r --compute_type f32_r --print_kernel_info`
+- **環境**：MI300X（gfx942），ROCm 7.2.4；自編 hipBLASLt（`--architecture=gfx942 --skip_rocroller`）
+- **選到的 solution**：index `90105`，name `Cijk_Ailk_Bljk_BBS_BH_UserArgs_MT256x224x64_MI16x16x1_..._ISA942_...`（MacroTile 256×224×64 / MI 16×16×1 / GSU1）
+- **效能**：`607868` Gflops（≈ 608 TFLOPS，約 **47% bf16 peak**）、GB/s `414.64`、時間 `226.1 us`
+- **其他**：`Is supported 1 / Total solutions: 1`
+- **換算驗證**：`2·4096³ ≈ 137.4 GFLOP ÷ 226.1 µs ≈ 608 TFLOPS`，與輸出一致
+
+> kernel 名含 `ISA942` 代表確實跑在 gfx942 上；早期用 gfx90a build 的執行檔放到 MI300X 會一啟動就 segfault，排查與解法見 [../architecture/shared-and-build.md](../architecture/shared-and-build.md) 的〈常見建置踩坑〉。
+
 ## 一句話總結
 
 > bench 回答「快多少」，rocprof 回答「為什麼」，TensileLite benchmark 在 tuning 階段就能比候選 kernel。

@@ -250,6 +250,35 @@ flowchart TD
 
 
 
+## 深入問答：`adapter` / `rocblaslt_handle` / `gemmData`
+
+這幾個名詞在關卡 3～5 一直出現，這裡把它們的角色講深一點（源自實際 trace 這條呼叫鏈時的疑問）。
+
+### `adapter` 的定義
+
+- `adapter` 指 [`TensileLite::hip::SolutionAdapter`](../../projects/hipblaslt/tensilelite/include/Tensile/hip/HipSolutionAdapter.hpp#L45)，是 **HIP 層的執行代理**：它持有已載入的 code object modules（`hipModule_t`）、維護「kernel 名稱 → `hipFunction_t`」的對應、負責 `.co` 的 lazy 載入（`loadCodeObjectFile` / `initializeLazyLoading` / `FindCodeObject`），並最終發出 `hipModuleLaunchKernel`。
+- 概念上它是**抽象的** `KernelInvocation`**（由** `solve()` **產生）與底層 HIP driver 呼叫之間的橋**，把「裝置端 launch 的機械細節」封裝起來。實作上是 **per-device 快取的單例**（一張 GPU 一個 adapter），由 tensile host 用 `get_library_and_adapter()`（[tensile_host.cpp#L2958](../../projects/hipblaslt/library/src/amd_detail/rocblaslt/src/tensile_host.cpp#L2958)）依 device id 取得並在第一次使用時 lazy 初始化。
+
+### `rocblaslt_handle` 的定義
+
+- 是 rocBLASLt 的 **opaque 內部 context/session handle**，承載這一組呼叫共用的狀態：device id、stream、device properties，以及對已載入 library / adapter 狀態的存取。
+- 它是對外 `hipblasLtHandle_t` 的內部對應物；每個 API 呼叫都帶著它，讓 host 知道「這次跑在哪張卡、用哪份 library」。
+
+### 都有 `prob` 了，為什麼 `gemmData` 裡還要包 problem 和 kernel？
+
+疑問拆解：傳入 `algo` 是不是代表 kernel 還沒選定？那 `gemmData` 裡的 kernel 會被變動嗎？還是這個 pointer 就是拿來被填資料的？
+
+**你的直覺基本正確——`gemmData` 就是一個傳進來被填 / 被重用的可變工作緩衝。** 它的型別是 [`TensileDataGemm`](../../projects/hipblaslt/library/src/amd_detail/rocblaslt/src/tensile_host.cpp#L3051)，欄位有 `problem`（Tensile 格式）、`inputs`、`kernels`、`algoIndex`。要點：
+
+- `prob`（`RocblasltContractionProblem`）是 **rocblaslt 格式的「訂單」**；`gemmData->problem`（`ContractionProblemGemm`）是**翻譯成 Tensile 格式後的 problem**，兩者不是重複，是**同一問題的兩種表述**，由 `updateTensileProblem(prob, data->problem)` 做轉換。
+- 之所以把它們包在一個持久物件裡，是為了**重用**：hipBLASLt 的 ext API 允許你建立一個 gemm 物件後**重複呼叫**，`gemmData` 讓重複呼叫時不必每次重新翻譯 problem / 重新配置。
+- `kernels` 欄位是**輸出槽**：選定 solution 後由 `solve()` 產生 `KernelInvocation` 填進去，會被（重）寫入——所以是的，它會被變動。
+- 傳入 `algo` 只是**指定要用哪個 solution index**（若為 `nullptr` 就跑 heuristic 選）；真正的 kernel（`.co` / `KernelInvocation`）要到 `solve()` / launch 才展開。所以「傳 algo 時 kernel 尚未實體選定」是對的，`gemmData` 的用途正是被傳進來承接這些結果。
+
+> 關卡 4 的「查表選 kernel」實際怎麼走訪條件樹（精確 → 區間 → 泛化的 fallback、為何用樹），見 [solution-selection.md](solution-selection.md)。
+
+
+
 ## 如何建置 / 執行以觀察此流程
 
 用 `hipblaslt-bench` 跑一個 GEMM 並印出實際選到的 kernel/solution（建置與選項見官方文件）：

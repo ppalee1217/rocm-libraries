@@ -262,6 +262,8 @@ LibraryLogic 的 `splitGSU` 只影響 **solution/kernel 的命名與「合併重
 - **rocisa** = 專門「組裝 AMDGPU 指令」的 C++ 工具庫。
 - [KernelWriter.py](../../projects/hipblaslt/tensilelite/Tensile/KernelWriter.py) 像在用 rocisa 寫組合語言。
 
+> 組語**產生之後**還有一層最佳化：較新架構（gfx1250+）會把 rocisa 產出的組語交給 **StinkyTofu**（pass-based IR 最佳化器）重排指令、補等待指令。白話整理見 [../stinkytofu/README.md](../stinkytofu/README.md)。
+
 深入導讀請見 [kernelwriter-implementation.md](kernelwriter-implementation.md)，重點小節：
 
 - [白話總覽：兩個人分工寫組語](kernelwriter-implementation.md#白話總覽兩個人分工寫組語) — `KernelWriter.py`（導演/排程）vs `KernelWriterAssembly.py`（執筆者/發指令）。
@@ -270,6 +272,28 @@ LibraryLogic 的 `splitGSU` 只影響 **solution/kernel 的命名與「合併重
 - [抽象介面對應清單](kernelwriter-implementation.md#7-抽象介面對應清單) — 「想改 X 行為要開哪個方法」的導覽表。
 
 
+
+## build 產物 → 磁碟 → runtime lazy load（兩階段接點）
+
+三階段跑完後，出貨物落在磁碟上：選擇表 `TensileLibrary_lazy_<arch>.dat`（＋ `_Mapping.dat` 與多個 shard 子表）和各 solution 的 `.co`。這批檔就是 **build-time 與 runtime 唯一的接點**——runtime 不再編譯，只從磁碟把它們 lazy load 回來。第一次 `hipblasLtMatmul` 觸發時的載入流程：
+
+```mermaid
+flowchart TD
+    init["TensileHost::initialize() 第一次 matmul 觸發"] --> master["載入選擇表 TensileLibrary_lazy_gfxNNN.dat"]
+    master --> map["initLibraryMapping：建 index → shard 對照"]
+    map --> pick["查表選出 solution (見 runtime-flow 關卡 4)"]
+    pick --> shard["用到該 solution 才載入它所在 shard"]
+    shard --> co["FindCodeObject：用到該 kernel 才載入對應 .co (hipModuleLoad)"]
+    co --> launch["launchKernel 執行"]
+```
+
+- 初始化與載選擇表：[initialize()](../../projects/hipblaslt/library/src/amd_detail/rocblaslt/src/tensile_host.cpp#L2765)、[LoadLibraryFilePreload](../../projects/hipblaslt/library/src/amd_detail/rocblaslt/src/tensile_host.cpp#L2915)
+  - `initialize()`：確認執行環境 / lib，並在 CMake 有設 `HIPBLASLT_ENABLE_LAZY_LOAD` 時以 lazy load 載入選擇表。
+  - `LoadLibraryFilePreload` 用來指定 problem 與 solution。
+- index→shard 對照：[initLibraryMapping](../../projects/hipblaslt/library/src/amd_detail/rocblaslt/src/tensile_host.cpp#L2936)
+- 按需載 `.co`：[FindCodeObject](../../projects/hipblaslt/tensilelite/src/hip/HipSolutionAdapter.cpp#L279)、[loadCodeObjectFile](../../projects/hipblaslt/tensilelite/src/hip/HipSolutionAdapter.cpp#L100)（內部 `hipModuleLoad`）
+
+> 磁碟上這批檔的名稱 / 角色 / 格式對照，以及 runtime 找檔的探測順序（`HIPBLASLT_TENSILE_LIBPATH`）見 [../architecture/hipblaslt-layout.md](../architecture/hipblaslt-layout.md)；查表選 solution 的完整呼叫鏈見 [runtime-flow.md](runtime-flow.md) 關卡 4–5；條件樹本身見 [solution-selection.md](solution-selection.md)。
 
 ## 一次 build 涵蓋什麼？候選 vs 出貨、size 範圍、何時要重跑
 

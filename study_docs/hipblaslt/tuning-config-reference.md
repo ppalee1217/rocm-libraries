@@ -61,6 +61,8 @@ MI tile    (一條硬體指令)                16 x 16
 - `WaveM/N`：一個 workgroup 沿 M/N 疊幾個 wave（共用 LDS）；總 thread = `WaveM*WaveN*WavefrontSize`。
 - 衍生關係（連結 [Solution.py::assignDerivedParameters](../../projects/hipblaslt/tensilelite/Tensile/SolutionStructs/Solution.py)）：`MacroTile = (16*WTM*WM) x (16*WTN*WN)`。
 
+> MacroTile 是什麼、為什麼調它會同時牽動 register / LDS / occupancy，以及完整的推導與 tuning 做法，見專篇 [macrotile-tuning.md](macrotile-tuning.md)。
+
 ## Solution / kernel 命名（反推 YAML 參數）
 
 名稱把完整 config 編進去，可從一個 kernel 名反推它的參數（片段對照見內部 guide §1.3）：
@@ -83,3 +85,4 @@ MI tile    (一條硬體指令)                16 x 16
 - [GlobalParameters.py](../../projects/hipblaslt/tensilelite/Tensile/Common/GlobalParameters.py)（GlobalParameters 預設值）
 - [f32_gsu.yaml](../../projects/hipblaslt/tensilelite/Tensile/Tests/common/gsu/f32_gsu.yaml)（最小範例）
 - [gemm-optimization.md](gemm-optimization.md)「三個調整層級」
+- [macrotile-tuning.md](macrotile-tuning.md)（MacroTile 是什麼、怎麼推導與 tune 的專篇）
