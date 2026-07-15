@@ -49,8 +49,12 @@ flowchart LR
 | MI50 / MI60 | Vega20（GCN5，**非 CDNA**） | `gfx906` | **無 MFMA** | 只作對照起點，矩陣算力靠一般 VALU |
 | MI100 | CDNA（CDNA1） | `gfx908` | **首度導入 MFMA / Matrix Core** | MFMA 家族從這代開始 |
 | MI210 / MI250 / MI250X | CDNA2 | `gfx90a` | 強化 MFMA、原生 FP64 矩陣 | MI250(X) 為雙 die（2 個 GCD） |
-| MI300A / MI300X / MI325X | CDNA3 | `gfx942` | 加入 **FP8（FNUZ 變體）**、chiplet（XCD） | **← 本 repo 目標**；MI300A 為 APU（含 CPU） |
-| MI350X / MI355X | CDNA4 | `gfx950` | **MXFP8 / MXFP6 / MXFP4（OCP MX）**、更大 LDS（160 KB/CU） | TF32 改為軟體模擬 |
+| MI300A / MI300X / MI325X | CDNA3 | `gfx942` | 加入 **FP8（FNUZ 變體）**、chiplet（XCD） | **← 實驗平台（MI300 / CDNA3）**；MI300A 為 APU（含 CPU） |
+| MI350X / MI355X | CDNA4 | `gfx950` | **MXFP8 / MXFP6 / MXFP4（OCP MX）**、更大 LDS（160 KB/CU） | **← 未來 migration 目標**；TF32 改為軟體模擬 |
+
+> **平台定位：** 本 repo 所有實驗 / benchmark / tuning 都在 **gfx942（MI300 / CDNA3）** 上跑；
+> **gfx950（MI350 / CDNA4）是後續需要時才 migrate 的目標，非目前實驗平台**。兩代的官方第一手規格
+> （白皮書 + ISA 手冊）本地 PDF 見 [spec-sources.md](spec-sources.md)。
 
 > wavefront 大小：上表所有 CDNA GPU 都是 **wave = 64 lane**（和消費級 RDNA 可能是 32 不同，
 > 見下方 CDNA vs RDNA）。
@@ -104,6 +108,10 @@ flowchart LR
 
 ## 交叉連結
 
+- 官方規格 PDF（CDNA3 / CDNA4 白皮書 + ISA 手冊）本地索引：[spec-sources.md](spec-sources.md)
+- 兩代 PDF 的深入整理（架構 + ISA 重點）：
+  [CDNA3 / MI300（gfx942）](../internal_docs/cdna3-mi300-architecture-and-isa.md)（實驗平台）、
+  [CDNA4 / MI350（gfx950）](../internal_docs/cdna4-mi350-architecture-and-isa.md)（migration 目標）
 - 本 repo 目標架構的 opcode 速查：[gfx942-isa-reference.md](gfx942-isa-reference.md)
 - MFMA 指令變體 / register layout（gfx942）：[mfma-deep-dive.md](mfma-deep-dive.md)
 - 寫 kernel → 反組譯認得 gfx942 指令：[../amd-isa-kernel.md](../amd-isa-kernel.md)
@@ -119,6 +127,17 @@ flowchart LR
 ## 來源
 
 本文對應關係與特性查證自（2026-07）：
+
+**官方第一手規格（本地 PDF，完整索引見 [spec-sources.md](spec-sources.md)）：**
+
+- **主要（gfx942 / MI300 / CDNA3，實驗平台）**：
+  [AMD CDNA3 White Paper](../../../amd-cdna-3-white-paper.pdf)（架構特性：XCD chiplet、Matrix Core、記憶體階層）、
+  [AMD Instinct MI300 (CDNA3) ISA](../../../amd-instinct-mi300-cdna3-instruction-set-architecture.pdf)（指令集：MFMA 型別含 FP8 FNUZ、VGPR/AGPR、`s_waitcnt`）。
+- **未來 migration 參考（gfx950 / MI350 / CDNA4）**：
+  [AMD CDNA4 White Paper](../../../amd-cdna-4-architecture-whitepaper.pdf)、
+  [AMD Instinct CDNA4 ISA](../../../amd-instinct-cdna4-instruction-set-architecture.pdf)（MXFP8/6/4、fp8 OCP 變體、更大 LDS）。
+
+**線上文件（對照 / 補充）：**
 
 - ROCm Documentation — GPU hardware specifications（Instinct GPU 型號 / 架構 / LLVM target 表）。
 - ROCm Documentation — AMD Instinct MI300 / MI350 Series workload optimization（CDNA3 vs CDNA4 特性、資料型別差異）。
