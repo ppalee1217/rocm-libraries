@@ -1,8 +1,10 @@
 # Internal AMD Documents — Categorized URL Index
 
 This folder holds **full markdown copies** of internal AMD Confluence pages relevant to
-GPU architecture, HIP programming, and the hipBLASLt / TensileLite GEMM stack. The pages
-were fetched from AMD's internal Confluence (`amd.atlassian.net`) via the Atlassian MCP on
+GPU architecture, HIP programming, and the hipBLASLt / TensileLite GEMM stack, **plus a few
+deep-dive notes distilled from AMD's official architecture / ISA PDFs** (see the *AMD CDNA
+架構與 ISA* section below — those are derived from local PDFs, not Confluence). The Confluence
+pages were fetched from AMD's internal Confluence (`amd.atlassian.net`) via the Atlassian MCP on
 **2026-06-26** and saved here so future agents can read the full content as markdown
 (the source pages require AMD SSO).
 
@@ -17,6 +19,21 @@ were fetched from AMD's internal Confluence (`amd.atlassian.net`) via the Atlass
 | Document | URL | pageId | Description | Local copy |
 | --- | --- | --- | --- | --- |
 | GCN (Graphics Core Next) Architecture Training Resources | https://amd.atlassian.net/wiki/spaces/MLSE/pages/744166024 | `744166024` | MLSE training-series hub: 9 recorded talks (GPU overview, scheduling, memory/CU arch, gfx9 roadmap, compiling, HIP, ML/OpenMP) plus GCN/CDNA background reading. | [gcn-architecture-training-resources.md](./gcn-architecture-training-resources.md) |
+
+## AMD CDNA 架構與 ISA（官方 PDF 白皮書 + 指令集手冊整理）
+
+以下兩份**不是** Confluence 頁面，而是根據 AMD 官方 PDF（架構白皮書 + ISA 指令集手冊）整理成的**繁中深入筆記**。
+PDF 本地索引與「哪份對應現在（MI300）/ 未來（MI350）」的定位見 [../isa/spec-sources.md](../isa/spec-sources.md)；
+產品名 ↔ CDNA 世代 ↔ gfx 代號總表見 [../isa/amd-datacenter-gpu-isa.md](../isa/amd-datacenter-gpu-isa.md)。
+
+> 指令層深入（與這兩份架構筆記互補）：MFMA 指令家族 / register layout / accumulator / latency /
+> **Matrix Core 微架構與 dataflow** 見 [../isa/mfma-deep-dive.md](../isa/mfma-deep-dive.md)（gfx942）；
+> WMMA 對照與 gfx1250 migration 見 [../isa/wmma-deep-dive.md](../isa/wmma-deep-dive.md)。
+
+| 文件 | 來源 PDF | 說明 | 本地整理 |
+| --- | --- | --- | --- |
+| CDNA3 / MI300（gfx942）架構與 ISA 深入筆記 | `amd-cdna-3-white-paper.pdf`（27p）+ `amd-instinct-mi300-cdna3-instruction-set-architecture.pdf`（561p） | **本 repo 實驗平台的第一手規格**：XCD chiplet、Matrix Core / MFMA（Table 28/32 完整型別×形狀）、記憶體階層（L2 per-XCD 4 MB、Infinity Cache 256 MB、HBM3 5.3 TB/s）、暫存器（256 VGPR + 256 AGPR + 104 SGPR + 64 KB LDS）、FP8 **FNUZ**、`s_waitcnt` 同步。 | [cdna3-mi300-architecture-and-isa.md](./cdna3-mi300-architecture-and-isa.md) |
+| CDNA4 / MI350（gfx950）架構與 ISA（含 gfx942 遷移對照） | `amd-cdna-4-architecture-whitepaper.pdf`（21p）+ `amd-instinct-cdna4-instruction-set-architecture.pdf`（608p） | **未來 migration 目標**，聚焦相對 CDNA3 的變化：MXFP8/6/4（OCP MX，block=32、E8M0 scale）、fp8 **FNUZ→OCP**、LDS 64→160 KB、288 GB HBM3E / 8 TB/s、低精度吞吐 ×2 但 Matrix FP64 砍半、TF32 改 BF16 模擬；附 gfx942→gfx950 遷移對照表 + checklist。 | [cdna4-mi350-architecture-and-isa.md](./cdna4-mi350-architecture-and-isa.md) |
 
 ## HIP Programming & Training
 
