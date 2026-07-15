@@ -15,7 +15,8 @@
   **Ductile**（GA backend）、**GEKO**（編排，預設 `--backend ductile`）。
 - **selection 層（挑現有 solution）**：equality + grid-based、Origami、**Formocast**（模擬式效能預測）。
 - **研究主線**：用既有 / 自產 `2_BenchmarkData` CSV 做 offline 建模，降低 tuning 層評估成本；**不動
-  正職維護的 Ductile / GEKO 核心**。
+  正職維護的 Ductile / GEKO 核心**。offline 建模資料**全部在 MI300（gfx942 / CDNA3）上生成**；
+  **MI350（gfx950 / CDNA4）為後續需要時才 migrate 的目標**（見 [surrogate-dse-plan.md](surrogate-dse-plan.md) 平台範圍）。
 
 ## 名詞澄清（我之前容易混的）
 
@@ -34,6 +35,7 @@
   - scope 2：**completeness 指標**——證明「任意 size 都有近最佳 kernel」。
   - scope 4：**analytics 驅動搜尋**——用分析讓搜尋更有效率（＝研究切角 #1）。
   - 不在 scope：build solution selection model（那是 selection 層的事）。
+- **Performance team roadmap 會議（2026/05/15）** — [../meeting_notes/GEMM-Optimization-Roadmap-Origami-Tile-Selection-摘要.md](../meeting_notes/GEMM-Optimization-Roadmap-Origami-Tile-Selection-摘要.md)。他們的 macro tile tuning 用改造過的 GA「固定 tile、對多尺寸一起 tune」（一個 tile 約 15 尺寸、2–3 hr/GPU），並用 Origami 做尺寸→tile mapping 與 greedy tile selection。**關鍵觀察：他們用 Origami 決定「tune 什麼、留什麼」，但沒有用它暖啟動 GA 的參數搜索**——後者正是本研究線的切入點（省那 2–3 hr/tile）。詳細 gap、可立即試的實驗（max-min fitness ↔ regression 保護、量化 Origami 假設）與邊界，見 [surrogate-dse-plan.md](surrogate-dse-plan.md) §3 對接團隊 pipeline（含 §3.2 循環依賴、§3.3 邊界）。
 
 ## 參考來源（本地副本 + 我的 summary）
 
