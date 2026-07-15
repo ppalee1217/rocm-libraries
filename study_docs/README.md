@@ -96,8 +96,15 @@ flowchart LR
 - **kernel** - GPU 上實際執行的運算程式。
 - **solution** - 一個具體 kernel 的設定組合（含 tile 大小等參數）。
 - **TensileLite** - hipBLASLt 內建、建置時產生並挑選 kernel 的框架。
-- **rocisa** - 組裝 AMDGPU 指令的 C++ 工具庫；`KernelWriter.py` 像在用它寫組合語言。
+- **rocisa** - 組裝 AMDGPU 指令的 C++ 工具庫（Nanobind 綁定）；`KernelWriter.py` 像在用它寫組合語言。白話專篇見 [hipblaslt/rocisa.md](hipblaslt/rocisa.md)。
+- **StinkyTofu** - LLVM 風格、以 pass 為基礎的 AMD GPU 組語最佳化器（gfx1250+）；把 rocisa 產出的 kernel 組語排得更快、補上等待指令。白話導讀見 [stinkytofu/README.md](stinkytofu/README.md)。
+- **Origami** - 分析式 GEMM solution 選型器；不真的跑 kernel，用硬體參數 + 延遲模型估算「哪個 config 最快」，runtime 選 solution 時被 hipBLASLt 呼叫。白話導讀見 [origami/README.md](origami/README.md)。
 - **ISA** - 指令集架構；本 repo 目標為 AMDGPU gfx942（MI300 / CDNA3）。
+
+> **平台定位（重要）：** 本 repo 的**實驗 / 研究平台是 MI300（gfx942 / CDNA3）**——所有 kernel、
+> benchmark、tuning 實驗都在這上面跑。**MI350（gfx950 / CDNA4）是後續需要時才 migrate 的目標，
+> 不是目前的實驗平台。** 官方第一手規格（CDNA3 / CDNA4 白皮書 + ISA 手冊）索引見
+> [isa/spec-sources.md](isa/spec-sources.md)。
 - **MFMA** - AMD 矩陣乘加指令（`v_mfma_*`），GEMM 在 CDNA GPU 上的核心算力來源。
 - **code object (.co)** - 編譯好的 GPU 機器碼檔。
 
@@ -106,10 +113,27 @@ flowchart LR
 - 八週學習進度表（每天做什麼）：[learning-roadmap.md](learning-roadmap.md)
 - 整個 repo 架構地圖：[architecture/README.md](architecture/README.md)
 - Track 1 主題入口：[hipblaslt/README.md](hipblaslt/README.md)
+- rocisa（程式化組裝 AMDGPU 組語的積木庫）專篇：[hipblaslt/rocisa.md](hipblaslt/rocisa.md)
+  — codegen 最內層：一個 Python 物件 = 一條指令、Nanobind 綁定、目錄結構、怎麼加指令、與 StinkyTofu 的橋接。
+- StinkyTofu（組語最佳化器）白話整理：[stinkytofu/README.md](stinkytofu/README.md)
+  — kernel 組語被產生「之後」的最佳化層（IR / pass pipeline / 在 TensileLite 怎麼被呼叫）。
+- Origami（分析式 GEMM 選型器）白話整理：[origami/README.md](origami/README.md)
+  — runtime「不跑就估延遲、挑最快 kernel」的 selection 層（延遲模型 / API / 在 hipBLASLt 怎麼被呼叫 / 與 Formocast 的關係）。
+- GEKO / Ductile（GEMM tuning 編排層與 GA 搜尋引擎）深入導讀：[geko-ductile/README.md](geko-ductile/README.md)
+  — 自動化 tuning 流程（讀 log → 產 config → 跑 tuning → merge 回 hipBLASLt）與基因演算法 backend。
+- 五組件整體交互關係（hipBLASLt / TensileLite / StinkyTofu / origami / GEKO）：[hipblaslt/component-interactions/README.md](hipblaslt/component-interactions/README.md)
 - Track 2 動手細節：[amd-isa-kernel.md](amd-isa-kernel.md)
 - Track 2 可跑範例：[asm/](../../asm)（example01~04，gfx942 手寫組語 + HIP launcher）
 - AMD Datacenter GPU 型號 ↔ ISA（gfx）對照總表：[isa/amd-datacenter-gpu-isa.md](isa/amd-datacenter-gpu-isa.md)
   — 把本 repo 目標 gfx942（MI300 / CDNA3）放回整條 Instinct 產品線（gfx908/90a/942/950）。
+- gfx942 / CDNA3 ISA 指令速查表（讀真實 GEMM 組語的 opcode 字典 + counter 模型）：[isa/gfx942-isa-reference.md](isa/gfx942-isa-reference.md)
+  — Scalar / Vector / Global·Buffer / LDS / Matrix 五類 opcode 表 + `s_waitcnt` counter 模型 + 常見組語 pattern。
+- MFMA 矩陣指令深入（變體表 / register layout / accumulator / latency / Matrix Core 微架構）：[isa/mfma-deep-dive.md](isa/mfma-deep-dive.md)
+  — 本 repo 現用（gfx942）矩陣算力的完整深入；GEMM 讀組語與 tuning 的核心參考。
+- WMMA 矩陣指令對照（RDNA / CDNA5，MFMA→WMMA migration）：[isa/wmma-deep-dive.md](isa/wmma-deep-dive.md)
+  — CDNA3/4 不用 WMMA；供 RDNA 對照與 gfx1250 migration 理解。
+- 官方規格文件（CDNA3 / CDNA4 白皮書 + ISA 手冊）本地 PDF 索引：[isa/spec-sources.md](isa/spec-sources.md)
+  — 主要來源＝MI300 / CDNA3（現在實驗平台）；MI350 / CDNA4 為未來 migration 參考。
 - build / PR 規範以官方文件為準：[hipblaslt/AGENTS.md](../projects/hipblaslt/AGENTS.md)、[tensilelite/AGENTS.md](../projects/hipblaslt/tensilelite/AGENTS.md)（本文件組不重複）。
 - **公司內部文件（Confluence 全文 + 分類 URL 索引）**：[internal_docs/README.md](internal_docs/README.md)
   — GCN 架構 talk、HIP 課程（100~300）、hipBLASLt/TensileLite 內部總參考；已抓成 markdown 供 agent 直接讀，
@@ -122,13 +146,11 @@ flowchart LR
 
 - [cuda-to-hip.md](cuda-to-hip.md)（P0；CUDA↔HIP 對照）
 - [glossary.md](glossary.md)（P0；跨文件名詞彙總）
-- [isa/gfx942-isa-reference.md](isa/gfx942-isa-reference.md)（P1；opcode 速查）
-- [isa/mfma-deep-dive.md](isa/mfma-deep-dive.md)（P1；MFMA 變體/latency）
 - [isa/lds-bank-conflicts.md](isa/lds-bank-conflicts.md)（P0；LDS 32-bank 與 padding，最高優先 gap）
 - [hipblaslt/tuning-config-reference.md](hipblaslt/tuning-config-reference.md)（P1；fork 參數表）
 - [hipblaslt/components-codegen-map.md](hipblaslt/components-codegen-map.md)（P1；Components/ 地圖）
 - [research/ductile-geko-notes.md](research/ductile-geko-notes.md)（P1~P2；研究線：Ductile/GEKO/Formocast 生態與 SWDEV-477426 對接筆記）
-- [research/surrogate-dse-plan.md](research/surrogate-dse-plan.md)（P2~P3；研究線：資料集 schema、三切角假設與評估 metric）
+- [research/surrogate-dse-plan.md](research/surrogate-dse-plan.md)（研究線執行計畫：方向（主線/支線/未來）、資料集 schema、實驗與評估 metric）
 - 另：[hipblaslt/profiling-rocprof.md](hipblaslt/profiling-rocprof.md) 末尾有「bench+rocprof cookbook」待擴充區段
 
 ## 一句話總結

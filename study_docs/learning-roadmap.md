@@ -1,5 +1,7 @@
 # hipBLASLt / TensileLite 實習學習 Roadmap（8 週）
 
+> ⚠️ **已 DEPRECATED（2026-07-15）。** 方向已收斂到單一研究目標（surrogate 輔助 GA 暖啟動、減少 tuning 評估），關鍵路徑改變——本 roadmap 前置的 HIP/ISA/asm/codegen 大多已降為 optional。**新的聚焦知識計畫見 [research/knowledge-plan.md](research/knowledge-plan.md)**（含依目前狀態排序的必修/選做 TODO），研究執行計畫見 [research/surrogate-dse-plan.md](research/surrogate-dse-plan.md)。本檔保留作歷史參考，不再更新。
+>
 > **這份是 canonical（唯一可編輯來源）。** 另有兩份只讀 mirror：Claude Code plan 檔
 > （`~/.claude/plans/rocm-libraries-repo-familiar-starry-aurora.md`）與 [../.cursor/learning-roadmap.md](../.cursor/learning-roadmap.md)。
 > 要改 roadmap **一律改本檔**；在 Claude Code 內改本檔會自動同步兩份 mirror，在 Cursor 內或直接改
@@ -35,7 +37,8 @@ config 一改就要重跑 grid search 建表」這個成本問題，用 surrogat
 
 先把名詞理清（你在描述時容易混）：主管講的 **Ductile** 屬**產生 / 調校層（tuning）**，用基因演算法
 （GA）取代 grid search 窮舉建表；「預測選 kernel」則屬**選擇層（selection）**，是 Origami / Formocast
-的事。研究主線鎖定 **tuning 層的評估成本**，用既有 benchmark CSV 做 offline 建模。
+的事（Origami 延遲模型 / API / 與 Formocast 關係的白話導讀見 [origami/README.md](origami/README.md)）。
+研究主線鎖定 **tuning 層的評估成本**，用既有 benchmark CSV 做 offline 建模。
 
 ```mermaid
 flowchart TD
@@ -82,6 +85,9 @@ tensilelite-pipeline → gemm-optimization → profiling-rocprof，外加 archit
 
 - GPU：**gfx942 (MI300X)**；ROCm 6.4.0 在 host，另有 **ROCm 7.2.0 docker 容器** `perlee`
 （[run.sh](../run.sh) 啟動，掛載 `/data1/perlee`→`/src`）。
+  - **平台定位：所有 benchmark / 實驗 / tuning 資料都在 MI300（gfx942 / CDNA3）上收集**；
+  **MI350（gfx950 / CDNA4）為後續需要時才 migrate 的目標，非目前實驗平台**。官方規格 PDF 索引見
+  [isa/spec-sources.md](isa/spec-sources.md)。
 - hipBLASLt **已建置完成**：[projects/hipblaslt/build/release](../projects/hipblaslt/build/release)
 存在，`hipblaslt-bench` 已可用。
 → 不必花時間從頭 build，可直接 bench / profile。
@@ -1023,7 +1029,7 @@ snapshot PDF），後續 agent 可直接讀全文；分類 URL 索引見 [intern
 | ------------------------- | ---------------------------------------------------------------------------------- | ------------------------ | ------------------------------------ |
 | **A：hipBLASLt 基礎**        | API/descriptor、呼叫堆疊、bench 旋鈕、入門 best practices                                     | P0                       | 看懂 runtime 呼叫鏈與 `hipblaslt-bench` 輸出 |
 | **B：Solution Selection**  | equality+grid 兩層選擇、StreamK/Origami/Formocast、GEKO、bench-driven swap、debug 旋鈕       | P0（概念）、P1~P2（生態定位）       | 理解 kernel 怎麼被選 / 被 tune、研究線對接對象      |
-| **C：TensileLite Codegen** | YAML→kernel→library pipeline、kernel 命名規則、snippet/StinkyTofu、characterization tests | P1（pipeline）、P2（gene 空間） | 認出真實 kernel、理解 gene→kernel 映射        |
+| **C：TensileLite Codegen** | YAML→kernel→library pipeline、kernel 命名規則、snippet/[StinkyTofu](stinkytofu/README.md)、characterization tests | P1（pipeline）、P2（gene 空間） | 認出真實 kernel、理解 gene→kernel 映射        |
 
 
 
