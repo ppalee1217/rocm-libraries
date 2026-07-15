@@ -40,16 +40,21 @@ kernel launch
 
 ```
 GPU device
-├── SM (NVIDIA) / CU (AMD)        ← 真正執行 block 的「工廠」
-│   ├── resident block(s)
-│   │   ├── warp / wavefront       ← 一次發令的一排 lanes
-│   │   └── ...
-│   ├── registers (VGPR/SGPR)
-│   ├── shared memory / LDS
-│   ├── warp/wavefront scheduler
-│   └── ALUs / SIMD lanes / matrix cores ...
-└── SM/CU ...
+└── XCD ×8                         ← AMD chiplet（MI300）；NVIDIA / 單體 GPU 無此層，可略
+    └── Shader Engine ×~4          ← 把 CU 分群；每個 SE 一個 SPI 派工器（見下方階層圖）
+        └── SM (NVIDIA) / CU (AMD) ← 真正執行 block 的「工廠」
+            ├── resident block(s)
+            │   ├── warp / wavefront   ← 一次發令的一排 lanes
+            │   └── ...
+            ├── registers (VGPR/SGPR)
+            ├── shared memory / LDS
+            ├── warp/wavefront scheduler
+            └── ALUs / SIMD lanes / matrix cores ...
 ```
+
+> 上圖的 **XCD / Shader Engine 是 AMD CDNA（MI300）的中間階層**；初學可先把焦點放在
+> 「block → SM/CU → warp」。XCD → SE → CU 的完整說明與 SE 的設計目的見
+> [硬體實體階層補充](#硬體實體階層補充xcd--shader-engine--cuse-是什麼和-ace-差在哪)。
 
 對照關鍵：**一個 block 會被完整放到一個 SM/CU 上執行**（所以 block 內 threads 能共享 shared memory/LDS、能 barrier 同步），不可以將一個 block 跨 SM/CU，因為 **block 內 threads 需要合作，而合作用的硬體資源綁在單一 SM/CU 上**；硬體再把 block 內 threads 切成固定大小的 warp/wavefront。
 
@@ -207,19 +212,28 @@ AMD CDNA = **64**、NVIDIA = **32**。這是「橫向多寬」。
 
 ### 硬體階層與排程單位圖（含維度 A / B / C + 派工/發令單位）
 
-除了「誰包含誰」（維度 C），這張圖也把兩個排程單位放進來：**SPI**（把 block 派進 CU 的派工層）
-和 **wave / warp scheduler**（在 SIMD 內每 cycle 挑 wave 發指令的執行層）。兩者分屬不同階層，別搞混。
+除了「誰包含誰」（維度 C），這張圖也把兩類排程/派工單位放進來：**ACE**（命令前端，讀 queue 發 workgroup）、
+**SPI**（每個 SE 一個、把 workgroup 派進 CU 的派工層）和 **wave / warp scheduler**（在 SIMD 內每 cycle
+挑 wave 發指令的執行層）。三者分屬不同階層，別搞混。圖上也補了 CDNA 的 **XCD → Shader Engine** 兩層
+（NVIDIA / 單體 GPU 無此中間層，可把 XCD/SE 略過、直接看 CU 以下）。
 
 ```mermaid
 flowchart TD
-    CP["Command Processor / ACE：接收 kernel launch"] --> SPI["SPI / GigaThread Engine：檢查資源後把 workgroup 派進 CU，佔用 wave slot / VGPR / SGPR / LDS（決定 occupancy）"]
+    GPU["GPU（MI300：8 個 XCD）"] --> XCD["1 個 XCD：私有 4MB L2 + 前端（scheduler / HW queue / ACE ×4）"]
+    XCD --> ACE["ACE（命令前端，每 XCD 4 個）：讀 queue、發 workgroup（async compute）"]
+    XCD ==> SE
 
-    SPI --> CU["1 個 CU / SM"]
+    subgraph SE["Shader Engine（每 XCD ~4 個）＝把 CU 分群的實體區塊，內含 1 個 SPI + 一群 CU"]
+        direction TB
+        SPI["SPI（每個 SE 一個）：檢查資源後把 workgroup 派進本 SE 的 CU，佔 wave slot / VGPR / SGPR / LDS（決定 occupancy）"]
+        SPI --> CU["1 個 CU / SM"]
+        CU --> S0["SIMD 0 / sub-partition（其餘 3 個同構）"]
+        CU --> S1["SIMD 1"]
+        CU --> S2["SIMD 2"]
+        CU --> S3["SIMD 3（每 CU 共 4 個 SIMD｜維度 C 巢狀）"]
+    end
 
-    CU --> S0["SIMD 0 / sub-partition（其餘 3 個同構）"]
-    CU --> S1["SIMD 1"]
-    CU --> S2["SIMD 2"]
-    CU --> S3["SIMD 3（每 CU 共 4 個 SIMD｜維度 C 巢狀）"]
+    ACE -. "把 workgroup 餵給 SPI（工作流）" .-> SPI
     CU -. "整個 CU 一塊、4 個 SIMD 共用" .-> LDS["LDS / shared memory"]
 
     S0 --> SCHED["wave scheduler / warp scheduler：每 cycle 從常駐 wave 挑 ready 的發指令（切換藏延遲）"]
@@ -229,16 +243,25 @@ flowchart TD
     WV --> WI["work-item / lane：最小 logical worker"]
 ```
 
-
+> **怎麼讀這張圖（SPI 到底「聽誰的」）**：圖上有兩種關係，別混：
+> - **SPI 被畫在 SE 框「裡面」＝結構從屬**：SPI 是 SE 的一個零件，住在 SE 內。SE 本身不是會下指令的
+>   主動單元，只是「把 1 個 SPI + 一群 CU 包在一起」的實體區塊。所以這是「SPI 屬於誰」，不是「SE 命令 SPI」。
+> - **ACE 的虛線指進 SPI ＝工作流**：ACE（前端）讀 queue、發 workgroup，工作經分配落到某個 SE 的 SPI，
+>   SPI 再把 wavefront 派進**本 SE 的 CU**。這才是「誰餵工作給 SPI」。
+>
+> 一句話：**SE 是 SPI 的「家」（它住哪），ACE 是 SPI 的「工作來源」（它做什麼）**——兩件不衝突的事，
+> SPI 沒有兩個老闆。前面的粗箭頭 `XCD ==> SE` 也是「XCD 內含這個 SE」的從屬關係。
 
 重點標注：
 
-- **維度 C（巢狀）**：GPU → CU → 4 個 SIMD → wave slot → wave → work-item。
+- **維度 C（巢狀）**：GPU → XCD → SE → CU → 4 個 SIMD → wave slot → wave → work-item（XCD/SE 為 CDNA 中間層）。
 - **維度 B（深度）**：一個 SIMD 最多 8 個常駐 wave slot。
 - **維度 A（寬度）**：一個 wave = 64 個 work-item（lane）。
-- **兩個排程單位分層**：
-  - **SPI**（≈ NVIDIA GigaThread Engine / Global Work Distributor）在「上場階段」把 block 派進 CU 並佔資源，**決定** occupancy
+- **三個派工/發令單位分層**：
+  - **ACE**（Asynchronous Compute Engine，命令前端，CDNA 每 XCD 4 個）：讀 compute queue、發 workgroup，讓多條 stream 能並行派工。
+  - **SPI**（≈ NVIDIA GigaThread Engine / Global Work Distributor，**每個 SE 一個**）在「上場階段」把 block 派進 CU 並佔資源，**決定** occupancy。
   - **wave scheduler**（≈ NVIDIA warp scheduler）在 SIMD 內「逐 cycle 階段」挑 ready 的 wave 發指令，**利用**這些常駐 wave 藏延遲。
+  - ACE（前端派工）與 SE（後端 CU 分群）是兩條並存的軸、都源自 GCN，別混——差別見 [硬體實體階層補充](#硬體實體階層補充xcd--shader-engine--cuse-是什麼和-ace-差在哪)。
 - **兩池不同記憶體**：
   - **LDS 是「每個 CU 一塊、4 個 SIMD 共用」**
   - **register file 則是「每個 SIMD 私有」**
@@ -337,8 +360,8 @@ CDNA5 是一次「ISA 斷裂」（Wave64→Wave32、CU→WGP、MFMA→WMMA），
 | 發令單位寬度（維度 A）                     | wavefront = 64               | **wavefront = 32**                                  | warp = 32                     |
 | 發令節奏                             | 4-cycle issue（wave64）        | **1-cycle issue（wave32）**                           | —                             |
 | 每 SIMD·SMSP 最多常駐 wave·warp（維度 B） | 8                            | **16**                                              | 16                            |
-| 每 CU·SM·WGP 最多 wave·warp         | 32                           | **64（4 × 16，推得）**                                  | 64                            |
-| 每 CU·SM·WGP 最多 work-item·thread  | 2048                         | **2048（64 × 32，推得）**                               | 2048                          |
+| 每 CU·SM·WGP 最多 wave·warp         | 32                           | **64（4 × 16，推得）**                                   | 64                            |
+| 每 CU·SM·WGP 最多 work-item·thread  | 2048                         | **2048（64 × 32，推得）**                                | 2048                          |
 | 暫存器檔（每 CU·SM·WGP）                | 512 KiB VGPR                 | 待查                                                  | 256 KB（65536 × 32-bit）        |
 | 暫存器檔（每 SIMD·SMSP）                | 128 KiB                      | 待查                                                  | 64 KB（16384 顆）                |
 | 每 thread 最多向量暫存器                 | 256 VGPR（+256 Acc，共用 512 預算） | **最多 1024 VGPR，無 AGPR**（>256 用 `s_set_vgpr_msb` 索引） | 255                           |
@@ -405,9 +428,12 @@ global ↔ LDS 之間非同步搬 tile。gfx950 沒有這個硬體，只能用�
 barrier 分離、零二進位相容與 UDNA）的逐點細講，見 [cdna5-gfx1250.md](cdna5-gfx1250.md)。
 
 更多技術細節（AMD 內部 Confluence）：
+
 - [gfx1250 to gfx942: Architecture Differences & More](https://amd.atlassian.net/wiki/spaces/MLSE/pages/1633927296)
 - [GFX1250 — Comprehensive Technical Reference](https://amd.atlassian.net/wiki/spaces/MLSE/pages/1762232146)
 - [GFX1250/MI450 related information](https://amd.atlassian.net/wiki/spaces/SHARK/pages/1126711694)
+
+
 
 ### Occupancy 限制清單：實際能跑幾個 wave 取「最小值」
 
@@ -447,23 +473,27 @@ occupancy 不是由單一因素決定，而是下列所有限制**同時作用�
 ### 兩軸獨立
 
 - **HW queue（硬體佇列）在前端**：由 **command processor / ACE（Asynchronous Compute Engines）**
-  的設計決定有幾條。它是「接收工作、往下派工」的入口。
+的設計決定有幾條。它是「接收工作、往下派工」的入口。
 - **CU / WGP 在後端**：真正執行 workgroup 的運算陣列，數量由晶片規模決定（如 gfx1250 的 128 WGP / 256 CU）。
 
 這兩個數字在晶片設計時**分開決定**、不成比例：CU 很多不代表佇列多，佇列多也不代表 CU 多。
 
 ### 誰限制什麼（困惑的根源：「工作」大小不同）
 
-| | HW queue（前端） | CU / WGP（後端） |
-| --- | --- | --- |
-| 限制的單位 | 同時有幾條 **stream（獨立時間線）** 能並行派工 | 同時有幾個 **workgroup / wave** 在實際執行 |
-| 是不是總算力天花板 | 否 | **是**（真正的吞吐上限） |
-| 何時成為瓶頸 | 只有在「單一 kernel 填不滿 CU」時 | 幾乎所有大工作（一個 kernel 就吃滿） |
+
+|           | HW queue（前端）                  | CU / WGP（後端）                     |
+| --------- | ----------------------------- | -------------------------------- |
+| 限制的單位     | 同時有幾條 **stream（獨立時間線）** 能並行派工 | 同時有幾個 **workgroup / wave** 在實際執行 |
+| 是不是總算力天花板 | 否                             | **是**（真正的吞吐上限）                   |
+| 何時成為瓶頸    | 只有在「單一 kernel 填不滿 CU」時        | 幾乎所有大工作（一個 kernel 就吃滿）           |
+
 
 注意兩個常見誤解（詳見 [kernel-launch.md 的 Stream 深入節](kernel-launch.md#stream-深入kernelstreamdefault-stream-的特殊性能開幾條)）：
 
 - **kernel ≠ stream**：stream 是一條 FIFO 佇列，裡面可排很多 kernel；**同一條 stream 內是序列、不重疊**，
-  並行發生在**不同 stream 之間**。所以佇列限制的是「幾條 stream 能並行」，不是「每個 kernel 各佔一條」。
+並行發生在**不同 stream 之間**。所以佇列限制的是「幾條 stream 能並行」，不是「每個 kernel 各佔一條」。
+
+
 
 ### 關鍵：一份 kernel 就能塞滿全部 CU/WGP
 
@@ -480,18 +510,108 @@ flowchart LR
     SPI --> CU["CU / WGP<br/>後端產能：幾個 workgroup 同時跑（所有 stream 共用）"]
 ```
 
+
+
+
+
 ### 何時哪邊是瓶頸（廚房類比）
 
 - **queue = 訂單傳送帶**（能同時收幾張獨立訂單）、**CU/WGP = 廚師**（真正做菜、所有訂單共用）。
 - **大 kernel（吃滿 CU）**：一張訂單就要 10000 個漢堡，所有廚師 100% 忙——再多開傳送帶也沒用，
-  瓶頸在 **CU/WGP**。大 GEMM 幾乎都是這種。
+瓶頸在 **CU/WGP**。大 GEMM 幾乎都是這種。
 - **小 kernel（填不滿 CU）**：一張訂單只用幾個廚師，其他廚師閒著——這時多一條傳送帶送第二張訂單，
-  才能用到閒置廚師，**queue 才成為讓 overlap 生效的關鍵**。
+才能用到閒置廚師，**queue 才成為讓 overlap 生效的關鍵**。
 
 > 一句話：**CU/WGP 是「真正能同時做多少活」的總天花板；HW queue 只是「能同時有幾條獨立生產線把活
 > 送進來」。** 因為一份 kernel 就能塞滿 CU，多數大工作的真正瓶頸是 CU/WGP，queue 只在「工作太小、
 > 填不滿 CU」時才成為額外限制。stream 的軟體語意（default stream、能開幾條）見
 > [kernel-launch.md](kernel-launch.md#stream-深入kernelstreamdefault-stream-的特殊性能開幾條)。
+
+
+
+## 硬體實體階層補充：XCD → Shader Engine → CU（SE 是什麼、和 ACE 差在哪）
+
+前面的派工圖從 `Command Processor / ACE → SPI → CU → SIMD` 講起，為了聚焦刻意略過了兩個中間層：
+**XCD** 和 **Shader Engine（SE）**。這節把完整實體階層補上，並釐清三個最常被混淆的問題：SE 是什麼、
+SE 為何要存在、SE 和 ACE 差在哪。
+
+### 完整實體階層（以 MI300 / CDNA3 為例）
+
+```
+一顆 GPU
+└── XCD ×8                        ← chiplet：負責算的小晶粒（+ 私有 4MB L2）
+    ├── 共享前端：scheduler、HW queue、ACE ×4   ← 命令前端（收單、派 workgroup）
+    └── Shader Engine（SE）／CU 組 ×~4          ← 執行後端：把 CU 分群
+        └── CU ×~9~10             ← 真正執行 block 的工廠
+            └── SIMD ×4           ← 每 CU 4 個 SIMD（維度 C）
+                └── wave slot → wave（64 lane）→ work-item
+```
+
+- 大小關係：**GPU > XCD > SE > CU > SIMD**。前面派工圖的「GPU → CU → SIMD」是簡化，這裡把 XCD、SE 補回去。
+- CDNA4 白皮書寫「每個 XCD 的 CU 排成 **4 組 × 9 CU**」，那個「組」就是 SE / shader array 這一層。
+- ⚠️ 這是硬體細節、隨世代變（CDNA3 每 XCD 38 活躍 CU、CDNA4 32 活躍）；repo 對 CDNA3 逐字的 SE 數
+並無記載（需查白皮書），本節 SE 數以 CDNA4 的「4 組」為依據。XCD / chiplet 的完整說明見
+[memory-hierarchy-and-chiplet.md](memory-hierarchy-and-chiplet.md#part-cxcd-與晶粒chiplet組織)。
+
+
+
+### SE 是什麼、為什麼要把 CU 再分成幾組？
+
+**SE（Shader Engine）＝把一大堆 CU 切成好管理的小群的積木。** 一個 XCD 幾十顆 CU 不會平鋪掛在單一
+派工器下，而是分成幾個 SE。四個動機：
+
+1. **分派頻寬（主因）**：每個 SE 有自己的 wavefront 分派器（GCN/RDNA 稱 **SPI**）。若整個 XCD 只有
+
+一個分派器餵 38 顆 CU，fan-out 太大會塞車；切成 ~4 組、各餵 ~9 顆，**分派得以平行化**。這也解釋了為何前面派工圖裡的「SPI」**不是全 GPU 一個，而是每個 SE 一個**。
+2. **佈線局部性**：控制訊號 / 仲裁 / 局部快取的線越短越好（影響時脈、功耗）；分小群、共用近距離資源。
+3. **共用固定功能**：同組 CU 共用某些資源（如 CDNA3「相鄰兩 CU 共用 64KB 指令 cache」；繪圖 GPU 上 SE 還各帶 rasterizer）。
+4. **模組化 / 良率**：設計一個 SE 積木再複製，壞的關掉做良率備援。
+
+> 為什麼常是「4 個」：這是工程權衡（非白皮書明述）——太少則每個分派器餵太多 CU 又塞車，太多則每組
+> 太小、控制邏輯 overhead 佔比高。~~9~~10 顆 CU 配一個分派器是取的平衡點，不是硬性規律。
+
+
+
+### SE vs ACE：兩條不同的軸（最容易混淆）
+
+重點：**SE 和 ACE 不是同一種東西，也不是「RDNA 叫 SE、CDNA 叫 ACE」。** 它們是兩條軸，且**都源自 GCN、在 CDNA / RDNA 並存**：
+
+
+|          | **ACE**（Asynchronous Compute Engine）                   | **SE**（Shader Engine / CU 組）          |
+| -------- | ------------------------------------------------------ | ------------------------------------- |
+| 屬於哪條軸    | **命令前端**（把工作餵進來、發出去）                                   | **執行後端**（執行單元怎麼實體分群）                  |
+| 職責       | 讀 compute queue 的 packet、發 kernel dispatch / workgroup | 把一群 CU 組起來，內含 wavefront 分派器（SPI）與共用資源 |
+| 解決的問題    | 多條 queue / stream 能並行派工（async compute）                 | 分派頻寬 + 佈線局部性 + 模組化                    |
+| 類比       | 餐廳的「點餐窗口」（同時收多張訂單）                                     | 廚房分成「幾個工作區」（每區一批廚師）                   |
+| MI300 數量 | 每 XCD **4 個 ACE**（repo 有據）                             | 每 XCD **~4 組 CU**（CDNA4：4 組 × 9 CU）   |
+
+
+- **CDNA 也有 SE**：SE 是 GCN 遺產，CDNA 繼承了這層（即上面的「CU 組」）。只是 AMD 的 CDNA 白皮書偏用 XCD / CU / ACE 的字、較少把「Shader Engine」拿出來講，所以你在 CDNA 文件裡少看到這個詞——但結構在。
+- **ACE 不是 CDNA 版的 SE**：兩者是並存的兩個角色（前端窗口 vs 後端工作區）。數字都是 4 只是接近，不代表同一個東西。
+
+
+
+### 順帶釐清：誰在管 LDS？（三個角色別混）
+
+延續「SPI（派工）vs wave scheduler（發令）」的分層，補上與 LDS 有關的三個角色——**wave scheduler 並不「管理」LDS**：
+
+
+| 事情                           | 誰負責                                  | 什麼時候                                                                          |
+| ---------------------------- | ------------------------------------ | ----------------------------------------------------------------------------- |
+| 決定每個 block 拿多少 LDS、能不能進 CU   | SPI / workgroup dispatcher（＋CU 資源管理） | dispatch（block 進 CU）時，是 occupancy 的一部分                                        |
+| LDS 實際定址、bank conflict 仲裁    | CU 內的 LDS 硬體單元                       | 執行 `ds_*` 指令時（見 [../isa/lds-bank-conflicts.md](../isa/lds-bank-conflicts.md)） |
+| 每 cycle 挑 ready wave 發指令、藏延遲 | wave / wavefront scheduler           | 每個 cycle                                                                      |
+
+
+wave scheduler 只「感知」到 LDS 存取會讓某個 wave 暫時 not-ready（於是先發別的 wave 藏延遲），
+但**它不分配也不定址 LDS**——分配在 dispatch 時、定址與 bank conflict 在 LDS 單元。
+
+### 一句話總結（本節）
+
+實體階層是 **GPU > XCD > SE > CU > SIMD**；**SE（Shader Engine）是「把幾十顆 CU 切成 ~4 組小積木」的
+執行後端分群**，為的是分派頻寬、佈線局部性與模組化，每個 SE 自帶一個 SPI 分派器（所以 SPI 不是全
+GPU 一個）；**ACE 則是命令前端的派工引擎（MI300 每 XCD 4 個）**，和 SE 是兩條並存的軸、都源自 GCN，
+ACE 不是 CDNA 版的 SE。
 
 ## AMD 有沒有 tensor core / cuda core？
 
@@ -534,7 +654,9 @@ flowchart LR
 
 - 本頁硬體上限速查（CDNA4 / CDNA5 / NVIDIA 對照、三軸分類、occupancy 清單）：[硬體限制規範速查](#硬體限制規範速查cdna4--cdna5--nvidia-對照)
 - 本頁併發與派工（HW queue vs CU/WGP）：[併發與派工](#併發與派工hw-queueacevs-cuwgp)
+- 本頁 XCD → SE → CU 實體階層、SE 目的、SE vs ACE、誰管 LDS：[硬體實體階層補充](#硬體實體階層補充xcd--shader-engine--cuse-是什麼和-ace-差在哪)
 - 本資料夾入口：[README.md](README.md)
+- 記憶體階層與晶粒組織（register / LDS / L1 / L2 / MALL / HBM、cache vs scratchpad、XCD / chiplet，本檔刻意略過的那塊）：[memory-hierarchy-and-chiplet.md](memory-hierarchy-and-chiplet.md)
 - launch 的詳細步驟與 stream 軟體語意（default stream、kernel≠stream、能開幾條）：[kernel-launch.md](kernel-launch.md#stream-深入kernelstreamdefault-stream-的特殊性能開幾條)
 - CUDA↔HIP 名詞完整對照：[cuda-hip-terminology.md](cuda-hip-terminology.md)
 - gfx942 ISA 實作（wave / SGPR / VGPR / exec mask / MFMA）：[../amd-isa-kernel.md](../amd-isa-kernel.md)

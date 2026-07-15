@@ -19,17 +19,23 @@ AMD-specific 的組語細節。適合 1.5 年前寫過 CUDA、現在補硬體架
 |------|------|------|
 | 1 | [execution-model.md](execution-model.md) | grid / block / warp / thread / SM / CU 的差異與設計用途；AMD 有沒有 tensor/cuda core |
 | 2 | [kernel-launch.md](kernel-launch.md) | CPU 把 kernel launch 到 GPU 的詳細步驟（CUDA 主軸 + HIP 對應） |
-| 3 | [cuda-hip-terminology.md](cuda-hip-terminology.md) | CUDA ↔ HIP / ROCm 名詞完整對照（軟體 + 硬體 + 生態系） |
-| 4 | [hip-book-guide.md](hip-book-guide.md) | 《Accelerated Computing with HIP》章節導讀 |
-| 進階 | [cdna5-gfx1250.md](cdna5-gfx1250.md) | CDNA5 / gfx1250（MI450）深入：AGPR、WGP、MFMA→WMMA、dual-issue、同步原語、UDNA |
+| 3 | [memory-hierarchy-and-chiplet.md](memory-hierarchy-and-chiplet.md) | 記憶體階層（register / LDS / L1 / L2 / MALL / HBM）、cache vs scratchpad、Infinity Cache 命名與 256MB 大小、XCD / chiplet 與 CDNA 世代 |
+| 4 | [cuda-hip-terminology.md](cuda-hip-terminology.md) | CUDA ↔ HIP / ROCm 名詞完整對照（軟體 + 硬體 + 生態系） |
+| 5 | [hip-book-guide.md](hip-book-guide.md) | 《Accelerated Computing with HIP》章節導讀 |
+| 進階 | [cdna5-gfx1250.md](cdna5-gfx1250.md) | CDNA5 / gfx1250（MI450）深入：AGPR、WGP、MFMA→WMMA、dual-issue、同步原語、UDNA（**未來 migration 參考**） |
+
+> **平台定位：** 本 repo 實驗平台是 **MI300（gfx942 / CDNA3）**；CDNA4（MI350）為近期 migration 目標、
+> CDNA5（MI450）為更遠期參考。官方規格 PDF 索引見 [../isa/spec-sources.md](../isa/spec-sources.md)。
 
 ## 交叉連結
 
 - 頂層學習地圖（兩軌總綱）：[../README.md](../README.md)
+- 記憶體階層 + 晶粒組織（MALL / Infinity Cache / XCD）：[memory-hierarchy-and-chiplet.md](memory-hierarchy-and-chiplet.md)
 - API 速查 / hipify：[../cuda-to-hip.md](../cuda-to-hip.md)
 - 跨文件名詞彙總：[../glossary.md](../glossary.md)
 - 接續的 gfx942 ISA 實作：[../amd-isa-kernel.md](../amd-isa-kernel.md)
 - 最新架構（CDNA5 / gfx1250 / MI450）深入：[cdna5-gfx1250.md](cdna5-gfx1250.md)
+- 官方規格 PDF（CDNA3 / CDNA4 白皮書 + ISA）本地索引：[../isa/spec-sources.md](../isa/spec-sources.md)
 - 八週進度表：[../learning-roadmap.md](../learning-roadmap.md)
 
 ## 一句話總結

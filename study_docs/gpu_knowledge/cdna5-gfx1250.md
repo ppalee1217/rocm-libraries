@@ -2,6 +2,12 @@
 
 路徑說明：本檔在 `study_docs/gpu_knowledge/`。連回頂層用 `../`（如 `../amd-isa-kernel.md`）。
 
+> **平台定位（先讀）：** 本 repo 的**實驗 / 研究平台是 MI300（gfx942 / CDNA3）**，本檔（CDNA5 / gfx1250）
+> 與 CDNA4 都是**未來 migration 的參考**，不是目前實驗用的架構。**近期 migration 目標是 MI350
+> （gfx950 / CDNA4）**，其官方規格見 [../isa/spec-sources.md](../isa/spec-sources.md)
+> （含 [CDNA4 白皮書](../../../amd-cdna-4-architecture-whitepaper.pdf) 與
+> [CDNA4 ISA](../../../amd-instinct-cdna4-instruction-set-architecture.pdf)）；CDNA5 / gfx1250 則是更遠期的斷裂式改動。
+
 ## 白話總覽
 
 [execution-model.md](execution-model.md) 的〈[CDNA5（gfx1250）的架構斷裂](execution-model.md#cdna5gfx1250的架構斷裂為何不是漸進式更新)〉
