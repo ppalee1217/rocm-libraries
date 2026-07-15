@@ -113,6 +113,27 @@ flowchart TD
 
 這條 build→runtime 交接的細節見 [../hipblaslt/README.md](../hipblaslt/README.md)。
 
+## build 產物落在磁碟哪裡（兩階段的接點檔案）
+
+上面說「建置期 / 執行期唯一的接點是磁碟上那批檔」。這批檔具體長什麼樣、放哪裡，是理解「repo 為何長這樣」的最後一塊拼圖：資料夾佈局其實就是被這條 **build 產檔 → runtime 讀檔** 的分工決定的。
+
+TensileLite 的產物會安裝到 per-arch 子目錄：`<安裝前綴>/lib/hipblaslt/library/<arch>/`（`arch` 指 GPU 架構名，如 `gfx942`）。
+
+| 檔案（實際名稱） | 白話角色 | 格式 |
+| --- | --- | --- |
+| `TensileLibrary_lazy_<arch>.dat` | **選擇表本體**：哪種 problem 配哪個 solution 的條件樹 | **MessagePack 二進位**（預設） |
+| `TensileLibrary_lazy_<arch>_Mapping.dat` | solution index → 它在哪個 shard（子表）裡 | MessagePack |
+| shard library（多個子表） | 被切開的選擇表，**用到才載**，縮短啟動 | MessagePack |
+| `*.co` | 各 solution 的 **GPU 機器碼**（一個 solution 對一個 `.co`） | AMDGPU code object |
+
+runtime 透過以下設定找到這些產物（entry point 是 [tensile_host.cpp](../../projects/hipblaslt/library/src/amd_detail/rocblaslt/src/tensile_host.cpp)）：
+
+- 先用 `getenv` 抓環境變數 `HIPBLASLT_TENSILE_LIBPATH`；有設就直接用它當 lib path。
+- 沒設 env 時，改**相對於已載入的** `librocblaslt.so` **去探測**，順序為 `{lib}/hipblaslt/library` → `{lib}/../Tensile/library` → `{lib}/library`。
+- 抓到 lib path 後，再依 GPU 架構選 `<arch>/` 子目錄（看該目錄下有沒有 `TensileLibrary_lazy_<arch>.dat`）。
+
+> 這批檔在 runtime 怎麼被 lazy load（`initialize()` → 載 `.dat` → `initLibraryMapping` → 用到才載 shard / `.co`）見 [../hipblaslt/tensilelite-pipeline.md](../hipblaslt/tensilelite-pipeline.md) 的〈build 產物 → 磁碟 → runtime lazy load〉；查表選 solution 的呼叫鏈見 [../hipblaslt/runtime-flow.md](../hipblaslt/runtime-flow.md) 關卡 4–5；條件樹本身見 [../hipblaslt/solution-selection.md](../hipblaslt/solution-selection.md)。
+
 ## 交叉連結
 
 - 全 repo 架構地圖：[README.md](README.md)
