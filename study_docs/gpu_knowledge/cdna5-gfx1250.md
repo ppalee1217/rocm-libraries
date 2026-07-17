@@ -20,6 +20,8 @@ wait counter 與 barrier 為何要拆開、以及「零二進位相容」跟 AMD
 > **gfx1250 不是把 gfx950 調快一點，而是換了一套 ISA（GFX9 → GFX12）。**
 > 執行模型、矩陣指令、暫存器、同步原語幾乎全部重寫，所以舊 kernel 不能只改個 target 就跑。
 
+
+
 ## 為何重要
 
 本 repo 的 ISA 實作層目標仍是 **gfx942（CDNA3，wave64、MFMA、AGPR）**，見
@@ -93,6 +95,8 @@ v_mfma_f32_16x16x16_f16  a[0:3], v[A], v[B], a[0:3]
 - **A / B 矩陣**：從 VGPR 讀，送進矩陣單元運算。
 - **C 矩陣（累加器）**：從 AGPR 讀、結果也寫回 AGPR。
 - 算完要把結果搬回一般 VGPR（例如要寫回 global memory 前），得用 `v_accvgpr_read_b32`——**每搬一個就是一次額外開銷**。這個「AGPR↔VGPR 搬運」正是 CDNA舊世代 GEMM kernel 的一個固定成本。
+
+
 
 ### gfx1250 的變化：AGPR 直接消失
 

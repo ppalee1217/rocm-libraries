@@ -188,6 +188,133 @@ SM/CU 不是「一顆 core」，而是內含 warp/wavefront scheduler、register
 register / shared memory，進而決定每個 SM/CU 能同時 resident 幾個 block / 幾個 warp——這就是
 **occupancy**。
 
+## CU 內的執行單元：VALU / SALU / Matrix Core（別以為「只有 matrix core」）
+
+上面說「CU 內含多條 ALU / matrix core」，這節把 CU 裡**幾種不同的執行單元**攤開——因為初學最常誤會兩件事：
+「以為 AI 只用 matrix core」、「以為 SALU 也有 lane」。先給一張對照表：
+
+| 執行單元 | 做什麼 | 是「逐 lane」嗎 | 用哪種暫存器 |
+| ------ | ------ | ------------ | -------- |
+| **VALU（Vector ALU / SIMD）** | 一般向量浮點/整數（`v_add`、`v_fma`、**位址計算**、A/B 載入…） | **是**，64 lane 各算各的 | Arch VGPR（每 lane 各一份） |
+| **Matrix Core** | 矩陣乘加（`v_mfma_*`） | 是（**跨 lane 協作**） | 讀 A/B 用 VGPR、累加器放 AGPR |
+| **SALU（Scalar ALU）** | uniform 純量運算、迴圈、位址基底、分支條件（`s_add`、`s_cmp`、`s_cbranch`…） | **不是！沒有 lane** | SGPR（整個 wave 共用一份） |
+| **VMEM / LDS 單元** | `global_load/store`、`ds_read/write` | 逐 lane 產生位址 | VGPR + 記憶體 |
+
+大部分「非矩陣」的工作（算位址、跑迴圈、控制流）其實是 **VALU + SALU** 在做，matrix core 只在真正算矩陣那幾條指令上場。
+
+### VALU vs Matrix Core：操作 lane 的方式不同（各做各的 vs 跨 lane 協作）
+
+先破除一個常見誤解：**在 ISA「語法」層面，MFMA 和 VALU 看起來一樣**——每個 lane 都只提供自己的暫存器，MFMA 也沒有一個「讀 lane X」的欄位；而且執行後兩者都是「每 lane 各留自己的一塊 reg 值」。所以差別**不在語法、也不在儲存方式**，而在**「這些 per-lane 暫存器的值，最後是怎麼被組合的」——也就是資料相依（information flow）**：
+
+| 面向 | VALU | Matrix Core |
+| ---- | ---- | ---------- |
+| 每 lane 各留自己的 reg | 是 | **是**（這點兩者相同） |
+| 語法上有「讀別的 lane」欄位嗎 | 沒有 | **也沒有**（跨 lane 是指令內建語意） |
+| **輸出依賴誰的輸入** | **只自己這條 lane**：`output[i]=f(input[i])` | **多條 lane**：`output[i]` 依賴很多 lane 的輸入 |
+| 能否讀別條 lane 的 VGPR | **不能**（要靠 `ds_permute`/`v_permlane`/LDS 另外搬） | **能**（硬體內建，包在 MFMA 語意裡） |
+| 實體單元 | SIMD16 × 4 cycle | 4×1×4 外積陣列（§7） |
+
+**用 example03 的 `16x16x4` layout 實際證明「跨 lane」**（layout 見 `asm/example03_mfma/mfma_gemm_f32_gfx942.s` L37-40：`A operand: lane l 持有 A[l%16][l/16]`、`D: vgpr d 持有 D[(l/16)*4+d][l%16]`）：
+
+算 `D[0][0] = Σ_{k=0..3} A[0][k]·B[k][0]`，需要 A 第 0 列的 4 個值 `A[0][0..3]`，依 `A[l%16][l/16]` 它們分別在 **lane 0 / 16 / 32 / 48**；而結果 `D[0][0]` 落在 **lane 0 的 v4**。→ **lane 0 的輸出用到了 lane 16/32/48 暫存器裡的值**，這就是「跨 lane 協作」。它不是你寫得出來的動作，而是 `v_mfma` **固定內建**的執行語意（硬體執行時自動跨 lane 抓資料），所以你在組語看不到「讀 lane 16」。
+
+**對照 VALU 的用法**：VALU 一條指令永遠**只能組合自己 lane 內**的暫存器：
+
+```asm
+v_add_f32  v3, v1, v2           ; lane i 的 v3 = lane i 的 v1 + v2，碰不到別條 lane
+v_fma_f32  v_c, v_a, v_b, v_c   ; 純量式乘加，a/b 必須「已經在自己這條 lane」
+```
+
+要跨 lane 就得**多發指令搬資料**：`ds_permute` / `ds_bpermute` / `v_permlane*` / `ds_swizzle`（lane 間搬 VGPR），或走 LDS（跨 lane 共享透過記憶體，不是暫存器）。**MFMA 則把「跨 lane 抓取 + 相乘 + 加總」全塞進一條指令、由 matrix core 硬體直接讀跨 lane 的 VGPR 完成。**
+
+> 一句話：MFMA 和 VALU 在「每 lane 各留自己的 reg」與「語法上沒有讀別條 lane」這兩點**相同**；差別是**資料相依**——**VALU 的輸出只依賴自己這條 lane（且物理上讀不到別條 lane 的 VGPR，要跨 lane 得靠 `ds_permute`/LDS 另外搬）；MFMA 的輸出依賴多條 lane，這個跨 lane 抓取加總是硬體內建在 `v_mfma` 語意裡、組語看不到的固定行為**。矩陣元素怎麼攤在 lane×VGPR 見 [../isa/mfma-deep-dive.md §4](../isa/mfma-deep-dive.md#4-register-layout64-個-lane-怎麼持有-abd)。
+
+### issue port：共用「發射閘門」≠ 共用「運算電路」
+
+一個常見誤解是「VALU 和 Matrix Core 共用硬體」。**它們是不同的執行單元（不同運算電路）**，共用的只是：
+① **VGPR 暫存器檔**（都從這讀 A/B）、② **issue port**（CU sequencer 每 cycle 把指令送去執行的閘門）。
+在 **gfx942（CDNA3）**，VALU 與 MFMA **走同一個 issue port**：
+
+- MFMA 佔住這個發射視窗時，一般 `v_add` / `v_fma` **發不出去（被擋）** → GEMM 的位址計算是 VALU，被擋著就形成
+  pipeline bubble（內部文件宣稱矩陣單元利用率因此只有約 **62%**）。
+- 但 **SALU、VMEM load、LDS `ds_read` 走別的 pipe**，MFMA 執行期間**仍可發射** → 這就是 prefetch 能塞進 MFMA
+  空檔藏延遲的原因。issue port 的 ISA 細節見 [../isa/mfma-deep-dive.md §7.3](../isa/mfma-deep-dive.md#73-issue-port為什麼-mfma-擋-valu卻不擋-ldsvmem)。
+
+```mermaid
+flowchart TD
+    SQ["CU sequencer (SQ)：每 cycle 挑指令發射"]
+    SQ --> P1["VALU issue port（共用）"]
+    SQ --> P2["Scalar pipe"]
+    SQ --> P3["VMEM / LDS pipe"]
+    P1 --> VALU["VALU (SIMD16)：逐 lane 向量算術"]
+    P1 --> MC["Matrix Core：v_mfma（跨 lane 矩陣乘）"]
+    P2 --> SALU["SALU：uniform 純量 + 控制流"]
+    P3 --> MEM["global_load / ds_read"]
+    MC -. "MFMA 佔住 port 時擋住 VALU（bubble，利用率約 62%）" .- VALU
+    SALU -. "走別的 pipe，可與 MFMA 並行" .- MC
+    MEM -. "走別的 pipe，可與 MFMA 並行（prefetch 藏延遲）" .- MC
+```
+
+> 廚房比喻：issue port 是「傳菜窗口」，VALU 和 Matrix Core 是**兩個不同的廚師**——遞大菜單（MFMA）時普通菜單（VALU）
+> 遞不進去（共用窗口），但食材庫（VGPR）兩人共用；另一個窗口（SALU / VMEM / LDS）可同時遞單。
+
+### VALU vs SALU：判準是「值在 64 個 lane 之間一不一樣」
+
+- **值 64 lane 都一樣（uniform）→ SALU**：便宜（一次算一個共用值）、省 VGPR、走獨立 pipe。SALU **不只做控制流**，
+  也做所有 uniform 的算術（共用位址基底、stride、迴圈計數、kernel 參數）。
+- **值每 lane 不同 → 只能 VALU**：per-thread 位址、`tid` 推出的 index、逐元素資料——這些 SALU 物理上做不到
+  （它只能產生「一個給整 wave 的值」）。
+
+對照 `asm/example03_mfma`：`s_lshl_b32 s14, s3, 5`（tile 基底來自 workgroup id，整 wave 一樣 → SALU）vs
+`v_lshrrev_b32 v1, 4, v0`（`v0` 是 tid，每 lane 不同 → VALU）。所以位址通常「共用基底用 SALU 算、再用 VALU 加上
+per-lane 的 tid 部分」。
+
+### VALU 在實務上都在做什麼
+
+即使在 matmul kernel 裡，matrix core 只佔那幾條 `v_mfma`，其餘幾乎全是 VALU：
+
+1. **GEMM 內的膠水**：位址計算、index、型別轉換、prefetch offset（`example03` 滿螢幕的 `v_*` 都是這類）。
+2. **非矩陣的 operator**：activation（ReLU/GELU）、bias/residual add、LayerNorm/RMSNorm、softmax、alpha/beta 縮放、
+   quantization scale、reduction——這些多為逐元素、memory-bound，是 transformer 裡「不是 matmul」的那一大半。
+
+## 一個 lane 裡有什麼：per-lane vs per-wave vs per-CU（釐清 lane ≠ register）
+
+最容易混的一點：**lane（work-item）和 register（VGPR/SGPR）是兩個不同的軸**。lane 是「64 個平行工人」，register 是
+「儲存欄位」；而**同一個 register 名在每個 lane 各有一份**——`v4` 是「64 個 lane 各自的 v4」，`s4` 則是「整個 wave
+64 lane 共用同一份」。下表按「歸屬範圍」把 CU 內的狀態分清（gfx942 / CDNA3，數字出處
+[../internal_docs/cdna3-mi300-architecture-and-isa.md §3.2](../internal_docs/cdna3-mi300-architecture-and-isa.md)）：
+
+| 範圍 | 有哪些 / 數量 | 說明 |
+| ---- | ---------- | ---- |
+| **per-lane（每 lane 各一份）** | **Arch VGPR 256 個 + AGPR 256 個**（各 32-bit，合計 2 KiB）、EXEC 的 1 bit、VCC 的 1 bit、一條（邏輯）ALU 通道 | 真正屬於單一 work-item 的 |
+| **per-wave（64 lane 共用）** | **SGPR 104 個**（S0–S103）、PC、EXEC(64-bit)、VCC(64-bit)、SCC(1-bit)、M0(32-bit) | 純量與控制狀態，64 lane 看到同一份；**不是每 lane 各一份** |
+| **per-CU（整個 CU 共用）** | LDS 64 KB、L1 32 KB、Matrix Core、scheduler | 更外層的共用資源 |
+
+```mermaid
+flowchart TD
+    CU["CU（per-CU 共用）：LDS 64KB、L1 32KB、Matrix Core、scheduler"]
+    CU --> SIMD["SIMD ×4（SIMD16）"]
+    SIMD --> Wave["wave = 64 lane（per-wave 共用）：SGPR×104、PC、EXEC(64b)、VCC(64b)、SCC、M0"]
+    Wave --> Lane["lane ×64（per-lane 各一份）：VGPR×256 + AGPR×256（2KiB）、EXEC/VCC 各 1 bit、1 條邏輯 ALU 通道"]
+```
+
+> 這也解釋了為何 `s_*`（SALU、操作 SGPR）沒有 lane：SGPR 本來就是 wave 共用的；「64 lane × 各自 VGPR」那套只屬於
+> 向量世界（VALU / Matrix Core / VMEM）。MFMA 把矩陣攤在「lane × VGPR」二維座標上的細節見
+> [../isa/mfma-deep-dive.md §4](../isa/mfma-deep-dive.md#4-register-layout64-個-lane-怎麼持有-abd)。
+
+### lane / CU / XCD 數量換算（MI300X / MI350）
+
+「一個 CU 有幾條 lane」有兩種算法，別混：
+
+| 算法 | 每 CU | 全 GPU |
+| ---- | ----- | ------ |
+| **實體向量 ALU lane**（一 cycle 能算幾條；= 4 SIMD × 16） | 64 | MI300X：304 × 64 = **19,456**；MI350：256 × 64 = **16,384** |
+| **最多常駐 work-item**（能同時掛幾個，= 32 wave × 64；維度 B occupancy） | 2048 | MI300X：304 × 2048 ≈ **62 萬**；MI350：256 × 2048 ≈ **52 萬** |
+
+- CU 數：**MI300X = 8 XCD × 38 活躍 CU = 304 CU**；**MI350 系列 = 8 × 32 = 256 CU**（實體更多，關掉部分做良率）。
+- ⚠️ repo 未逐字給「每 CU 幾個 Matrix Core / SALU」；依「每 SIMD 一份」的結構推得約各 4 個/CU。確定的是 4 SIMD/CU、
+  VALU 為 SIMD16。矩陣**吞吐**（非單元數）見 [../internal_docs/cdna3-mi300-architecture-and-isa.md §2.2](../internal_docs/cdna3-mi300-architecture-and-isa.md) Table 1。
+
 ## 硬體限制規範速查（CDNA4 / CDNA5 / NVIDIA 對照）
 
 
@@ -215,7 +342,10 @@ AMD CDNA = **64**、NVIDIA = **32**。這是「橫向多寬」。
 除了「誰包含誰」（維度 C），這張圖也把兩類排程/派工單位放進來：**ACE**（命令前端，讀 queue 發 workgroup）、
 **SPI**（每個 SE 一個、把 workgroup 派進 CU 的派工層）和 **wave / warp scheduler**（在 SIMD 內每 cycle
 挑 wave 發指令的執行層）。三者分屬不同階層，別搞混。圖上也補了 CDNA 的 **XCD → Shader Engine** 兩層
-（NVIDIA / 單體 GPU 無此中間層，可把 XCD/SE 略過、直接看 CU 以下）。
+（NVIDIA / 單體 GPU 無此中間層，可把 XCD/SE 略過、直接看 CU 以下）。圖裡 SIMD 底下也標了**執行單元**
+（VALU / Matrix Core / SALU）——它們是「SIMD 內真正做運算」的一層，和 wave scheduler（發令）、register file（儲存）
+並列；wave scheduler 挑到 ready wave 後，由 **CU sequencer（SQ）經 issue port** 把指令發給執行單元，其中 VALU
+與 Matrix Core 共用同一個 issue port（MFMA 會擋 VALU），細節見上面〈[CU 內的執行單元](#cu-內的執行單元valu--salu--matrix-core別以為只有-matrix-core)〉。
 
 ```mermaid
 flowchart TD
@@ -237,17 +367,25 @@ flowchart TD
     CU -. "整個 CU 一塊、4 個 SIMD 共用" .-> LDS["LDS / shared memory"]
 
     S0 --> SCHED["wave scheduler / warp scheduler：每 cycle 從常駐 wave 挑 ready 的發指令（切換藏延遲）"]
+    SCHED --> SQ["CU sequencer (SQ) + issue port：把選中 wave 的指令發給執行單元"]
+    SQ --> EU_V["VALU (SIMD16)：逐 lane 向量算術"]
+    SQ --> EU_M["Matrix Core：v_mfma（跨 lane 矩陣乘）"]
+    SQ --> EU_S["SALU：uniform 純量 + 控制流（走別的 pipe）"]
+    EU_V -. "與 MFMA 共用 issue port（MFMA 擋 VALU）" .- EU_M
     S0 -. "每個 SIMD 私有" .-> REG["register file（VGPR / SGPR）"]
     SCHED --> W["最多 8 個常駐 wave slot（維度 B：能疊幾個 wave）"]
     W --> WV["1 個 wave = 64 個 work-item（維度 A：一排多寬）"]
     WV --> WI["work-item / lane：最小 logical worker"]
 ```
 
+
+
 > **怎麼讀這張圖（SPI 到底「聽誰的」）**：圖上有兩種關係，別混：
+>
 > - **SPI 被畫在 SE 框「裡面」＝結構從屬**：SPI 是 SE 的一個零件，住在 SE 內。SE 本身不是會下指令的
->   主動單元，只是「把 1 個 SPI + 一群 CU 包在一起」的實體區塊。所以這是「SPI 屬於誰」，不是「SE 命令 SPI」。
+> 主動單元，只是「把 1 個 SPI + 一群 CU 包在一起」的實體區塊。所以這是「SPI 屬於誰」，不是「SE 命令 SPI」。
 > - **ACE 的虛線指進 SPI ＝工作流**：ACE（前端）讀 queue、發 workgroup，工作經分配落到某個 SE 的 SPI，
->   SPI 再把 wavefront 派進**本 SE 的 CU**。這才是「誰餵工作給 SPI」。
+> SPI 再把 wavefront 派進**本 SE 的 CU**。這才是「誰餵工作給 SPI」。
 >
 > 一句話：**SE 是 SPI 的「家」（它住哪），ACE 是 SPI 的「工作來源」（它做什麼）**——兩件不衝突的事，
 > SPI 沒有兩個老闆。前面的粗箭頭 `XCD ==> SE` 也是「XCD 內含這個 SE」的從屬關係。
@@ -478,6 +616,14 @@ occupancy 不是由單一因素決定，而是下列所有限制**同時作用�
 
 這兩個數字在晶片設計時**分開決定**、不成比例：CU 很多不代表佇列多，佇列多也不代表 CU 多。
 
+> **補充：HQD（Hardware Queue Descriptor）＝ HW queue 在晶片上的實體插槽。** 軟體可以開很多條 queue，
+> 但硬體上每個 **ACE** 只有固定數量的 **HQD** 卡槽（CDNA 常見每個 ACE 8 個，即架構圖上的 `HQD0-7`）能「掛住」
+> 一條 queue——被載入到 HQD 時，該 queue 的 read/write pointer、優先權、位址等狀態就寫進這組暫存器。一條軟體
+> queue 要被執行，得先由 **HWS（Hardware Scheduler）** map 到某個 ACE 的某個 HQD，ACE 才從那裡讀封包、發
+> workgroup。所以「幾條 stream 能並行派工」的硬上限約等於 `ACE 數 × 每 ACE 的 HQD 數`（例如 CDNA4 XCD 圖上
+> 4 ACE × 8 HQD = 32 個 queue 插槽）；當軟體 queue 數 > HQD 數時，HWS 負責動態 map/unmap。這也是為什麼架構
+> 圖的 `Global Resources` 那塊會同時畫 HWS 與 ACE×N（每個 ACE 下掛 HQD0-7）。
+
 ### 誰限制什麼（困惑的根源：「工作」大小不同）
 
 
@@ -589,6 +735,13 @@ SE 為何要存在、SE 和 ACE 差在哪。
 - **CDNA 也有 SE**：SE 是 GCN 遺產，CDNA 繼承了這層（即上面的「CU 組」）。只是 AMD 的 CDNA 白皮書偏用 XCD / CU / ACE 的字、較少把「Shader Engine」拿出來講，所以你在 CDNA 文件裡少看到這個詞——但結構在。
 - **ACE 不是 CDNA 版的 SE**：兩者是並存的兩個角色（前端窗口 vs 後端工作區）。數字都是 4 只是接近，不代表同一個東西。
 
+> **順帶別混：Shader Engine ≠ Shader Core。** CDNA3 CU 白皮書圖裡的「**Shader Core**」指的是**一顆 CU 內部**
+> 跑一般向量運算的 **ALU / SIMD lanes**（就是本文「類 CUDA core」那條，和旁邊的 Matrix Core 並排）；而
+> **Shader Engine 是 CU 外面把幾顆 CU 分群的那一層**。大小關係：`SE > CU > { Shader Core, Matrix Core, LDS, L1 }`。
+> 名字都有 "Shader" 只是 GCN 遺留的字根，一個是最底層算術 lane、一個是 CU 上面的分群層，別當成同一個。
+> 這個「Shader Core（向量 ALU）」在 CDNA4 幾乎原樣保留（SIMD16/wave64），CDNA5 改成 SIMD32/wave32 且單位換成
+> WGP，但那塊一般算力核心本身沒消失。
+
 
 
 ### 順帶釐清：誰在管 LDS？（三個角色別混）
@@ -655,6 +808,8 @@ ACE 不是 CDNA 版的 SE。
 - 本頁硬體上限速查（CDNA4 / CDNA5 / NVIDIA 對照、三軸分類、occupancy 清單）：[硬體限制規範速查](#硬體限制規範速查cdna4--cdna5--nvidia-對照)
 - 本頁併發與派工（HW queue vs CU/WGP）：[併發與派工](#併發與派工hw-queueacevs-cuwgp)
 - 本頁 XCD → SE → CU 實體階層、SE 目的、SE vs ACE、誰管 LDS：[硬體實體階層補充](#硬體實體階層補充xcd--shader-engine--cuse-是什麼和-ace-差在哪)
+- 本頁 CU 內執行單元（VALU/SALU/Matrix Core + issue port）與 lane 資源歸屬（per-lane / per-wave / per-CU、數量換算）：[CU 內的執行單元](#cu-內的執行單元valu--salu--matrix-core別以為只有-matrix-core)
+- MFMA 如何把矩陣攤在 lane×VGPR、issue port 細節：[../isa/mfma-deep-dive.md](../isa/mfma-deep-dive.md#4-register-layout64-個-lane-怎麼持有-abd)
 - 本資料夾入口：[README.md](README.md)
 - 記憶體階層與晶粒組織（register / LDS / L1 / L2 / MALL / HBM、cache vs scratchpad、XCD / chiplet，本檔刻意略過的那塊）：[memory-hierarchy-and-chiplet.md](memory-hierarchy-and-chiplet.md)
 - launch 的詳細步驟與 stream 軟體語意（default stream、kernel≠stream、能開幾條）：[kernel-launch.md](kernel-launch.md#stream-深入kernelstreamdefault-stream-的特殊性能開幾條)
@@ -662,10 +817,3 @@ ACE 不是 CDNA 版的 SE。
 - gfx942 ISA 實作（wave / SGPR / VGPR / exec mask / MFMA）：[../amd-isa-kernel.md](../amd-isa-kernel.md)
 - 跨文件名詞彙總：[../glossary.md](../glossary.md)
 
-
-
-## 一句話總結
-
-Grid 是整份工作，block 是放到單一 SM/CU 的合作小隊，thread 是小隊成員、實際成為
-warp/wavefront 裡的一個 lane；AMD 的「類 CUDA core」是 SIMD lane、「類 Tensor core」是
-Matrix Core，但都不叫那個名字、也不能一比一比較。

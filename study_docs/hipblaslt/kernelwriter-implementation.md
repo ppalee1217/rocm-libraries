@@ -194,6 +194,22 @@ flowchart TD
 - 做什麼：整個 epilogue 的組裝——對算完的 C tile 依序套用 **alpha 縮放、beta（讀回舊 C）、bias、activation**，再用 `buffer_store` 寫回 D（以及選用的 E/AmaxD）。它處理 full-tile 與 edge-tile（邊界不足一個 tile）兩種路徑、GSU/StreamK 的部分和累加、以及各種輸出型別轉換。這是 KernelWriterAssembly 裡最龐大的方法之一。
 - 上游呼叫者：base 層的 `notLocalSplitUGlobalWrite`（[L10243](../../projects/hipblaslt/tensilelite/Tensile/KernelWriter.py#L10243)）/ `localSplitUGlobalWrite`。
 
+### 6.5 Stream-K：fixup（部分和合併）與對 ISA / codegen 的影響
+
+Stream-K 把傳統「一個 output tile 配一個 workgroup、整條 K 自己跑完」改成「**把所有 tile 的 K 迭代平均分給固定數量的 workgroup**」，好處是負載平衡、CU idle 降低（尤其瘦長 / tile 填不滿 CU 的 GEMM）。代價是**同一個 tile 的 K 被拆給多個 workgroup**，各自只算出**部分和（partial sum）**，必須合併——這個合併收尾步驟就叫 **fixup**（示意：9 tile 分 4 CTA 時，切點落在 tile 中間，被拆的 tile 各算一半，fixup 把兩半加起來補成完整結果）。
+
+支援情況：CDNA3（MI300）需 `TENSILE_SOLUTION_SELECTION_METHOD=2` 啟用；**CDNA4（MI350）上 Origami+Stream-K 是唯一策略**（見 [how-to-use-streamk.rst](../../projects/hipblaslt/docs/how-to/how-to-use-streamk.rst)、[solution-selection.md](solution-selection.md#42-它不是被動-fallback開關會讓它插隊)）。
+
+對 ISA / codegen 的具體影響（比一般 tile-based 多出來的東西）：
+
+- **部分和合併路徑**：`globalWriteElements`（§6.4）多一條 GSU/StreamK 部分和累加——部分和寫進 workspace（通常 FP32），再由負責的 workgroup 讀回相加（fixup）；或用 `global_atomic_add` 原子累加（非決定性，追求 bit-reproducible 要用 workspace 版）。
+- **跨 CU 的 producer/consumer 旗標同步**：一個 workgroup 寫完部分 tile → 設 global flag → 別的 workgroup 輪詢 flag 才讀部分和。需要**跨 CU 的記憶體可見性**：`s_waitcnt vscnt(0)`、device-scope（`scope:SCOPE_DEV`）、`glc/dlc`，見 `Tensile/Components/StreamK.py` 的 `StreamKMemoryOrdering`。
+- **世代差異**：`StreamKMemoryOrderingDefault`（SMEM flag + `glc/dlc/SCOPE_DEV` 就夠）vs `StreamKMemoryOrderingDevScopeFences`（更新架構需 `global_wb scope:SCOPE_DEV`、volatile/atomic VMEM 前 `s_wait_xcnt 0`、flag 走 VMEM）——同一功能在不同世代要發不同同步序列。
+- **workgroup→tile 重新映射 + persistent loop**：`graWorkGroup` 含 StreamK/GSU 重分配與 `StreamKXCCMapping`（對齊 XCD/L2 局部性）；常搭 persistent kernel（`openPersistentLoop`），發的 workgroup 數可用 `TENSILE_STREAMK_FIXED_GRID` / `TENSILE_STREAMK_MAX_CUS` 控制。
+- **cache / 開銷取捨**：Stream-K 的成本主要是 workspace 部分和 + flag 同步流量（A/B 總讀取量沒變、且高度共享多半 L2 已有），所以只在「省下的 idle > 這些開銷」時才由 cost model（Origami，含逐層 cache 命中率建模）選用；大方陣（已填滿 CU）不會用它。
+
+> 執行模型層面的 HW queue / CU 派工背景見 [../gpu_knowledge/execution-model.md](../gpu_knowledge/execution-model.md#併發與派工hw-queueacevs-cuwgp)。
+
 ## 7. 抽象介面對應清單
 
 （想改 X，開哪個？base 宣告在 `KernelWriter.py`、實作在 `KernelWriterAssembly.py`）
