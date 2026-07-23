@@ -47,6 +47,71 @@
 - **gene 是候選清單的整數索引**：清單外的值 `_initKernel` 會 raise、fitness 無定義，**任何搜尋都碰不到**（[../geko-ductile/ga-faq-clarifications.md](../geko-ductile/ga-faq-clarifications.md) Q17）。→ 硬砍候選＝把模型誤差變成 GA 的天花板，所以 injection A **正式版只擴不砍**。
 - **`weights` 只影響「初始採樣」**：`mutation` 選新值仍是均勻抽（`ductile/core/mutation.py`、[../geko-ductile/ga-algorithm-implementation.md](../geko-ductile/ga-algorithm-implementation.md) §11.2）。→ **不宣稱有「逐世代退火」能力**；模型影響天然集中在第 0 代，之後由實測 GFLOPS 演化接手。
 
+### 1.3 Milestone 文件索引與執行狀態
+
+> 白話：本檔保留「研究全貌與共同門檻」；每個 milestone 另有一份可直接交給後續實作者的 design。實驗真正完成後才建立 report，**現在不建立空白報告、不預填結果**。
+
+狀態分三欄記，避免「文件寫完」被誤認為「實驗成功」：
+
+- `design status`：`draft / approved / locked / superseded`
+- `execution status`：`not_started / ready / running / blocked / completed / skipped_by_gate`
+- `outcome`：`not_available / positive / negative / inconclusive`
+
+| ID | Milestone / design | Dependency / 目前狀態 | 完成後才建立的 report |
+| --- | --- | --- | --- |
+| M00 | [Study contract 與 observability harness](ductile-origami-warmstart/designs/m00-study-contract-observability-design.md) | 無；`not_started` | `reports/m00-study-contract-observability-report.md` |
+| M01 | [Step-0 環境、整合、baseline、noise gate](ductile-origami-warmstart/designs/m01-step0-integration-gate-design.md) | M00；`blocked`（無可見 gfx942、TuningDriver unknown） | `reports/m01-step0-integration-gate-report.md` |
+| M02 | [Config→model→per-gene weights plumbing](ductile-origami-warmstart/designs/m02-guidance-plumbing-design.md) | M00 + M01.SW；`not_started` | `reports/m02-guidance-plumbing-report.md` |
+| M03 | [EXP-0a cold baseline / headroom](ductile-origami-warmstart/designs/m03-exp0a-cold-headroom-design.md) | M01.ALL；`blocked` | `reports/m03-exp0a-cold-headroom-{cohort}-report.md` |
+| M04 | [EXP-0b widen-only gate](ductile-origami-warmstart/designs/m04-exp0b-widening-gate-design.md) | M01.ALL；`blocked` | `reports/m04-exp0b-widening-gate-{cohort}-report.md` |
+| M05 | [EXP-C ranking / oracle marginals gate](ductile-origami-warmstart/designs/m05-expc-ranking-oracle-design.md) | M01.ALL + M02.FUNCTIONAL；`blocked` | `reports/m05-expc-ranking-oracle-{cohort}-report.md` |
+| M06 | [EXP-1 injection B](ductile-origami-warmstart/designs/m06-exp1-injection-b-design.md) | M02.COST + M03 + M05；`blocked` | `reports/m06-exp1-injection-b-{cohort}-report.md` |
+| M07 | [EXP-2 A-safe+B factorial](ductile-origami-warmstart/designs/m07-exp2-a-safe-b-factorial-design.md) | M04 + M06；`blocked`，A 被淘汰時 `skipped_by_gate` | `reports/m07-exp2-a-safe-b-factorial-{cohort}-report.md` |
+| M08 | [EXP-3 multi-shape / winner lock](ductile-origami-warmstart/designs/m08-exp3-multishape-design.md) | M07 通過或 B-only lock；`blocked` | `reports/m08-exp3-multishape-{cohort}-report.md` |
+| M09 | [Overall held-out confirmation](ductile-origami-warmstart/designs/m09-overall-confirmation-design.md) | M08 + winner lock + holdout seal；`blocked` | `reports/m09-overall-confirmation-{cohort}-report.md` |
+
+`{cohort}` 分別是 `nonstreamk`、`streamk`；完成哪個 cohort 才建立哪份報告。兩者共用同一 design 與 criteria schema，但 manifest、結果與結論獨立。
+
+```mermaid
+flowchart TD
+  m00["M00 contract / telemetry"]
+  m01sw["M01.SW build + mapping smoke"]
+  m01all["M01.ALL gfx942 + baseline + YAML + noise"]
+  m02f["M02.FUNCTIONAL mapping / weights"]
+  m02c["M02.COST guidance feasibility"]
+  m03["M03 EXP-0a"]
+  m04["M04 EXP-0b"]
+  m05["M05 EXP-C"]
+  m06["M06 EXP-1"]
+  m07["M07 EXP-2"]
+  m08["M08 EXP-3 + winner lock"]
+  m09["M09 final holdout"]
+  m00 --> m01sw --> m01all
+  m00 --> m02f
+  m01sw --> m02f
+  m01all --> m03
+  m01all --> m04
+  m01all --> m05
+  m02f --> m05
+  m03 --> m02c
+  m02c --> m06
+  m03 --> m06
+  m05 --> m06
+  m04 --> m07
+  m06 --> m07
+  m07 --> m08
+  m04 -. "A 被淘汰：B-only" .-> m08
+  m06 -. "B-only lock" .-> m08
+  m08 --> m09
+```
+
+共同文件規則：
+
+- M00 設計唯一可執行的 `protocol/experiment-contract.yaml`；runner 讀 contract，Markdown 只顯示 criterion key／非權威快照。
+- hypothesis、metric、threshold、censored estimand 與 analysis rule 必須在**第一次用它判斷 treatment 前**鎖定；事後只能 append amendment，不能回寫成「原本就這樣」。
+- M08 的 development-judgment sizes 與 M09 final holdout 完全分離。
+- 每份 report 要逐項回答對應 design 的 acceptance/falsification，包含 negative／inconclusive 結果、遇到的狀況、root cause 與解法。
+
 ---
 
 ## 2. Step-0：前置存取 / 授權 / 整合 gate（**必過才進 GPU 實驗**）
@@ -138,6 +203,7 @@ flowchart TD
 > 分工：**EXP-0a/0b/C 是便宜的 gate**（在投入完整 GA 前判斷「有沒有腿」）；**EXP-1→2→3 逐步擴大**；最後**總驗證**在封存的 held-out 真實 workload 上判成敗。
 
 ### EXP-0a — cold baseline 與浪費量測
+
 - **假設**：cold GA 在固定 ~1.5 萬預算內有 seed 不穩定，或 30 代後仍有可取得的 headroom（成立才有暖啟動空間）。
 - **資料**：3 個 pilot → 12 個 dev **真實 hot shape**（由 `summary.csv` runtime 貢獻排序選出，**不可由 Origami 選**），涵蓋 compute/memory-bound、small-K、transpose、skinny/square。
 - **步驟**：`weights=None`、`V_0`、defaults（`pop=512/n_gen=30/period=5/div_thr=0.5`）、**≥5 paired seeds**；另外 `period=0` 固定 horizon 跑 `n_gen=30/60/90`（1×/2×/3× 預算曲線，**這是診斷、不是 baseline 本身**）。
@@ -145,31 +211,37 @@ flowchart TD
 - **gate**：若 ≥80% dev shape 的 seed-spread <1% **且** 30→90 增益 <1% → headroom 太低 → 降級（只做最小 B smoke test）。
 
 ### EXP-0b — static vs widened profile（gate injection A）
+
 - **假設**：`V_0` 漏掉了合法且有用的值。
 - **步驟**：`V_0` vs `Vwide`（由 `ValidParameters` 建，但**一律經 `_initKernel` filter**——注意 `ValidParameters` 列出 ≠ 對該 dtype 合法，真正判準是 `_initKernel`）；一次只擴一組（GRVW → DepthU → WGM）再測 union；同 seeds，比**相同實際 `n_evals`**。
 - **A-gate**：若所有新增 family 都沒有 ≥1% median uplift、只造成稀釋 → **淘汰 injection A、只留 B**。
 - **注意**：候選 cardinality 改變會影響 adaptive population（`large_space`/`low_diversity`），**不能只比世代數**。
 
 ### EXP-C — 模型 ranking gate + oracle marginals
+
 - **步驟**：在 dev shape 上實測 256 個整組 config；算 Origami、Formocast 的 Spearman / Kendall / top-10% recall / top-decile lift。
 - **通過門檻**：median Spearman **≥0.25** **且** top-decile lift **≥2× random**。
 - **oracle marginals（診斷用）**：用真實分數建 factorized marginals，定位失敗來源——(a) 模型 whole-config 排名差、(b) 排名好但邊際化失真、(c) hook 本身表達力不足。
 - **falsify**：Origami、Formocast **都過不了** → **本輪 model-guided thesis 停止**，不浪費完整 GA 預算。
 
 ### EXP-1 — 小型 injection B（1 → 3 shape）
+
 - **arm**：`B0` uniform；**shuffled-weight control**（把模型權重在候選間隨機重排、保持相同 entropy，用來排除「任意集中初始族群都會變快」）；`Origami-B`；`Formocast-B`。
 - **步驟**：先 plumbing smoke（`pop=64/n_gen=5/period=0`）驗管線，再用完整設定、**≥5 paired seeds**、配對且隨機化執行順序。
 - **通過**：相對 `B0`，median `E99` **少 ≥15%**、最終 verified GFLOPS **≥99%**，且**贏過 shuffled control**。
 
 ### EXP-2 — A-safe + B factorial
+
 - **arm**：`V0+uniform`、`V0+B`、`A-safe+uniform`、`A-safe+B`、`Vwide+uniform`（稀釋對照）。
 - **保留 A 的條件**：`A-safe+B` 相對 `V0+B` 再降 `E99` **≥15%** **或** matched-budget GFLOPS uplift **≥1%**，且品質不退 >1%；否則**只否證 A**（不影響 B）。
 
 ### EXP-3 — multi-shape 擴張
+
 - 固定 macro tile、**15 個 guidance sizes** → 再擴到 **3 個 tile**；每個 tuned kernel 另在 **100 個獨立真實 sizes** 上驗證（tuning / judgment shape 完全分離，對齊會議 §3.2–3.3）。
 - **報告**：per-shape efficiency、geomean、**P10**、worst-case、regression shape 數——**不能只報平均**。
 
 ### 總驗證（overall confirmation）
+
 - **看 holdout 前先鎖定唯一 winner**：若 `A-safe+B` 相對 `B` 再省 ≥5% 評估且無品質/invalid 問題 → 選 `A-safe+B`；否則選 `B` 並結論「A 無增益」。
 - **protocol**：**≥24 個封存真實 shape**（分層）+ **≥4 個封存 multi-shape cluster**；primary = `period=0` 固定預算、比相同實際 `n_evals` 的品質；operational secondary = 原 `period=5`（量真實早停 + wall time）；隨機交錯、同 GPU/時脈/iteration；冠軍 7× median + 數值正確性檢查；**hierarchical bootstrap 以 shape 為 cluster**。
 - **seeds**：預設 **5 paired**，預先訂好「CI 寬度超過門檻就升到 10」的規則；**shape 是主要推論單位**（seed 不可假裝成獨立 shape）。
@@ -192,6 +264,7 @@ flowchart TD
 > 參考量：`Q_cold,s =` cold `B0` 在相同最大預算下最終重測 GFLOPS 的 median；`N@99%Qcold =` 首次達到 `0.99·Q_cold` 的實際評估數（未達視為 right-censored）。
 
 ### Route 1 — tuning 效率改善（以下**全部**成立才可宣稱「暖啟動加速 Ductile tuning」）
+
 1. `N@99%Qcold` point estimate **少 ≥20%**，且 shape-clustered bootstrap 95% LB **少 ≥10%**。
 2. 最終 GFLOPS geomean ratio 的 95% LB **≥0.99**（非劣）。
 3. 每個 preregistered critical shape 的 median regression **≤3%**，且全 shape 的 **P10 ratio ≥0.98**。
@@ -201,10 +274,12 @@ flowchart TD
 7. **贏過 same-entropy shuffled control**（不是只贏 uniform）。
 
 ### Route 2 — 固定預算下的 kernel 品質提升（**只在 Route 1 速度未過時**）
+
 - matched-budget GFLOPS uplift **≥1%** 且 95% CI LB > 0，並仍滿足 Route 1 的 (2)/(3)/(5)/(6)。
 - **必須**寫成「same-budget quality uplift」，**絕不可**當成 tuning speedup，也不能用它救回 combined 速度 claim。
 
 ### 否證條件（falsification）
+
 - Origami、Formocast **都過不了** EXP-C ranking gate → 本輪 model-guided thesis 停止。
 - 模型 marginals 失敗、但 oracle marginals 成功 → **否證該模型，不否證 hook**。
 - oracle marginals 也失敗 → **否證現有 factorized injection-B hook**。
@@ -231,4 +306,5 @@ flowchart TD
 
 - **產生方式**：dual-agent（GPT-5.6 Sol A、B）獨立開場 → 交互詰問 → 候選共識，**A、B 皆 `AGREE`**；factual crux 由 orchestrator 查核 branch 程式碼（§1.1）。
 - **交互詰問改變/強化的關鍵點**：(1) config→per-gene 從兩種抽樣法收斂為「global-uniform + conditional top-up、unit weight」單一程序；(2) epistasis 定案為「純 factorized + oracle-marginals gate」，pairwise 不偷渡進獨立 hook；(3) A-hard 收斂為「只做 offline oracle check、不花 GPU、不上線」；(4) baseline 命名規則統一（proxy 不得簡稱 original）；(5) 驗收收斂為速度/品質兩條互斥路徑 + 明確 falsification。
+- **Milestone 細化方式**：第二輪 `/design-discussion` 再由兩個 fresh GPT-5.6 Sol agents 對「文件拆分、dependency、observability、mapping、censoring、correctness、report lifecycle」獨立提案並交互詰問，修正門檻鎖定時點、correctness default 的分層事實與 censored metric 命名後，A、B 再次皆 `AGREE`；結果寫入 §1.3 與 M00–M09 十份 design。
 - **後續（需實跑補齊，本計畫不代填）**：Step-0 各項的實測結果；EXP-0a/0b/C 的 gate 數字；EXP-1/2/3 的取捨曲線與 per-shape 報告；mentor / owner 對門檻（20%/1%/3%）與 TuningDriver 授權的定案。
