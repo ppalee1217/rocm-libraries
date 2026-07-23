@@ -83,6 +83,8 @@ FP16 GEMM 最常用的主力指令之一。
 
 `Cycles` 是該變體的執行 pass 數——**數字越大延遲越高**，排程時要用更多獨立指令去掩蓋（見 §6）。
 
+> ❓ **你問過（2026-07）**：pass 和 cycle 一樣嗎？pass 跟 block 有關嗎？—— 本文把 **pass ≈ cycle**（Cycles 欄就是「這條要跑幾拍/幾個 pass」，衡量延遲；嚴格說一個 pass 不必然等於 1 個實體 clock）。而 **block（`_2B`/`_16B`）是另一個軸**：一條指令**同時算幾個獨立小矩陣**，跟「跑幾拍」不同——看下表 Blocks 欄和 Cycles 欄不成比例（如 `4x4x1_16B` 16 block/8 pass vs `16x16x4` 1 block/32 pass）就知道兩者不是同一件事。block 會影響總工作量、間接影響 pass，但別畫等號。
+
 
 | 指令族                                | 常見形狀（Variants）                                                    | Blocks     | Cycles        | 說明                              |
 | ---------------------------------- | ----------------------------------------------------------------- | ---------- | ------------- | ------------------------------- |
@@ -213,6 +215,8 @@ A/B 型別用 **CBSZ[2:0] 指定 A、BLGP[2:0] 指定 B**（本來是 broadcast 
 
 > ⚠️ 別把 F8F6F4 的「型別意義」套回一般 MFMA：在非 F8F6F4 的指令上，CBSZ/BLGP 還是原本的 broadcast 控制語意。只有 `F8F6F4` / `SCALE_*_F8F6F4` 這幾條把它們當型別選擇器用。
 
+
+
 #### 3.1.1 CBSZ / ABID / BLGP：broadcast 語意、編碼與 kernel 用法
 
 上面說 CBSZ/BLGP 在多 block MFMA 是「broadcast 控制」、在 F8F6F4 被 repurpose 成型別選擇器。這裡補上實務上真的要用到時需要知道的三件事：**怎麼在 kernel 指定、broadcast 各值的意義、以及同一欄位在不同 opcode 的意義**。
@@ -220,7 +224,7 @@ A/B 型別用 **CBSZ[2:0] 指定 A、BLGP[2:0] 指定 B**（本來是 broadcast 
 **（1）kernel 怎麼指定**——這三個是 MFMA（VOP3P-MAI）編碼裡的立即數欄位（CBSZ 在 bits[14:11]、ABID 在 bits[10:8]），必須是編譯期常數，有兩種寫法：
 
 - **compiler intrinsic**：`d = __builtin_amdgcn_mfma_<CDfmt>_<M>x<N>x<K><ABfmt>(a, b, c, cbsz, abid, blgp)`，最後三個參數就是它們。
-- **inline asm modifier**：指令後接 ` cbsz:N abid:N blgp:N`（TensileLite/rocisa 產生 `.s` 就是這樣輸出，見 `rocisa/include/instruction/mfma.hpp`）。
+- **inline asm modifier**：指令後接  `cbsz:N abid:N blgp:N`（TensileLite/rocisa 產生 `.s` 就是這樣輸出，見 `rocisa/include/instruction/mfma.hpp`）。
 
 只有「A 有多個 block」的變體才吃 cbsz/abid；單 block 設 0 即可（沒有廣播對象）。
 
@@ -230,34 +234,36 @@ A/B 型別用 **CBSZ[2:0] 指定 A、BLGP[2:0] 指定 B**（本來是 broadcast 
 - **ABID（A-matrix Broadcast Identifier）**：跟 CBSZ 搭配，指定每組內「哪個 block 當來源」。合法值 `0 ~ 2^CBSZ - 1`。例：16-block 時 `cbsz=2, abid=1` → block 1 廣播給 0-3、block 5 給 4-7、block 9 給 8-11…
 - **BLGP（B-matrix Lane Group Pattern）**：對 B 的 64 lane 做固定圖樣重排/廣播，值 0-7：
 
-| blgp | 對 B 做什麼 |
-|------|-----------|
-| `0` | 正常佈局 |
-| `1` | lane 0-31 廣播到 32-63 |
-| `2` | lane 32-63 廣播到 0-31 |
-| `3` | 全部往下旋轉 16（lane 0→48、lane 16→0…） |
-| `4` | lane 0-15 廣播到 16-31 / 32-47 / 48-63 |
-| `5` | lane 16-31 廣播到其餘三組 |
-| `6` | lane 32-47 廣播到其餘三組 |
-| `7` | lane 48-63 廣播到其餘三組 |
+
+| blgp | 對 B 做什麼                             |
+| ---- | ----------------------------------- |
+| `0`  | 正常佈局                                |
+| `1`  | lane 0-31 廣播到 32-63                 |
+| `2`  | lane 32-63 廣播到 0-31                 |
+| `3`  | 全部往下旋轉 16（lane 0→48、lane 16→0…）     |
+| `4`  | lane 0-15 廣播到 16-31 / 32-47 / 48-63 |
+| `5`  | lane 16-31 廣播到其餘三組                  |
+| `6`  | lane 32-47 廣播到其餘三組                  |
+| `7`  | lane 48-63 廣播到其餘三組                  |
+
 
 reuse 誰由 `abid`（來源 block）+ `cbsz`（廣播範圍）決定；在一條指令內把 A、B 都完整廣播沒意義（每個 block 結果會相同），實務上是「廣播一邊、另一邊逐 block 不同」。
 
 **（3）同欄位、隨 opcode 改變意義**（同一塊 bit 依 opcode 重新解讀，是 ISA 省編碼空間的常見手法）：
 
-| opcode | CBSZ | ABID | BLGP |
-|--------|------|------|------|
-| 多 block MFMA（`*_16B` 等） | A broadcast size | A broadcast 來源 block | B lane 圖樣（上表） |
-| `F8F6F4` / `SCALE_*` | A 型別 | —（不用） | B 型別 |
-| `f64` MFMA | 忽略 | 忽略 | `blgp[0:2]` = 對 A/B/C 取負（negate） |
+
+| opcode                  | CBSZ             | ABID                 | BLGP                             |
+| ----------------------- | ---------------- | -------------------- | -------------------------------- |
+| 多 block MFMA（`*_16B` 等） | A broadcast size | A broadcast 來源 block | B lane 圖樣（上表）                    |
+| `F8F6F4` / `SCALE_*`    | A 型別             | —（不用）                | B 型別                             |
+| `f64` MFMA              | 忽略               | 忽略                   | `blgp[0:2]` = 對 A/B/C 取負（negate） |
+
 
 > 為什麼 `F8F6F4` 能把它們挪去當型別：因為它是**單 block** 指令（16x16x128 / 32x32x64，無 `_NB`），沒有第二個 block 可廣播 → cbsz/blgp 閒置 → 被 repurpose。`f64` 那列（`blgp` 變負號控制）出自 CK 的 `mfma_gfx9.hpp` 註解。
 
 **（4）混精度實務**：F8F6F4 讓 A、B 各自獨立選 FP8/BF8/FP6/BF6/FP4（含跨型別如 FP4×FP8，`INST_F4_F8`=`cbsz:4 blgp:0` 等編碼都有）。不同窄格式在硬體內會**先各自解碼 → 尾數補隱含 1 再低位補零、指數去 bias → 對齊到共同內部寬度 → 進同一乘法器 → 累加進 FP32**。吞吐分兩檔（見 §3.1 表）：**任一邊是 F8 → 慢檔（16x16x128 為 32 cycle）、兩邊都在 FP6/FP4 → 快檔（16 cycle）**。所以想吃快檔就別混 F8；但實務也會刻意跨檔位用 **W4A8（權重 FP4 × 激活 FP8）** 省權重頻寬，寧可吃慢檔。
 
 **出處**：AMD GPUOpen「AMD matrix cores」lab notes、[AMD Matrix Instruction Calculator](https://github.com/ROCm/amd_matrix_instruction_calculator)（可對任一 opcode 查支援哪些 modifier 與逐 lane 對應：`./matrix_calculator.py --architecture cdna3 --instruction <name> --detail-instruction`）；逐位元最終權威為 MI300 / CDNA3 ISA Reference Guide 的 MFMA 章節。
-
-
 
 ### 3.2 MXFP 的硬體入口 `V_MFMA_SCALE_*`
 
@@ -271,6 +277,8 @@ reuse 誰由 `abid`（來源 block）+ `cbsz`（廣播範圍）決定；在一�
 **scale 的格式是 E8M0**：8-bit 的「純指數」（只有指數、沒有尾數，bias 127），本質上就是**一個 2 的次方倍率**（`2^(e-127)`）。用純指數是因為 scale 只需要調整「數量級」，用 2 的次方最省、也不會引入額外捨入誤差。
 
 **硬體入口**：`V_MFMA_SCALE_F32_16X16X128_F8F6F4` / `V_MFMA_SCALE_F32_32X32X64_F8F6F4` 把「載入 block scale」與「MFMA」融合成一條指令，實作 **OCP MX microscaling**——dot product 算完、accumulate 之前，把對應 block 的 E8M0 scale 乘進去（硬體實際做的是「指數相加」）。這是 CDNA4 最重要的新賣點，CDNA3 完全沒有。完整流程（block scaling 計算、`CVT_SCALE_`* 打包成 MX 格式、scale 在 VGPR 裡怎麼排）見 [cdna4 §3.4](../internal_docs/cdna4-mi350-architecture-and-isa.md)。
+
+> ❓ **你問過（2026-07）**：Matrix Core 是不是只做矩陣 MAC，epilogue / 其他非矩陣運算都是 VALU/SALU？—— 對。**Matrix Core 只做 `D=C+A×B` 的矩陣乘加**；alpha/beta、bias、activation、型別轉換、位址計算等 epilogue 與非矩陣工作都是 **VALU / SALU / VMEM**（見 [../gpu_knowledge/execution-model.md](../gpu_knowledge/execution-model.md#cu-內的執行單元valu--salu--matrix-core別以為只有-matrix-core)）。**唯一例外**就是這裡的 **MXFP per-block scale：它被融進 `V_MFMA_SCALE_*`、由 Matrix Core 順手乘進去**（但那仍屬矩陣運算的一部分，不是一般 epilogue）。
 
 ### 3.3 FP8 的 FNUZ → OCP 改變（重要相容性陷阱）
 
@@ -362,13 +370,23 @@ V_MFMA_F32_16x16x4_F32（lane l = 0..63）：
 - **B 是 4×16**：同樣 64 個元素、每 lane 1 個，但列（K）由 `l/16`、行（N）由 `l%16`。
 - **D 是 16×16**：共 256 個元素 = 64 lane × 4 個 → **每 lane 要 4 個 VGPR**（所以 example03 用 `v[4:7]`
 這連續 4 個 VGPR 當一個 lane 的累加器）。`vgpr d`（d=0..3）持有 `D[(l/16)*4 + d][l%16]`——
-即 4 個 VGPR 沿著「輸出的列（row）」方向，以 4 為一組打包。
+即 4 個 VGPR 沿著「輸出的列（row）」方向，以 4 為一組打包。所以一個 lane 手上是一個 **4×1 的直條**
+（同一 column 的連續 4 列）；一整個 column（16 個）則散在 lane `j` / `j+16` / `j+32` / `j+48`。
+
+> **這個 lane↔element 對應是硬體寫死的，不是你能指定的。** 上面 A / B / D 三行公式就是
+> `v_mfma_f32_16x16x4_f32` 這條指令**固定的 layout 規格**（源自 MI300 ISA p.43-47），你**無法**叫硬體
+> 「把 `D[0][0]` 改放到別的 lane」。你能自己決定的只有：**用哪組連續且對齊的 base 暫存器**（見下方
+> 〈MFMA 運算元的暫存器規則〉）、以及**載入 A/B、寫回 D 時的記憶體佈局**（row-/col-major、位址怎麼算）。
+> 但**餵進去的 A/B 必須先排成這個 layout、讀出來的 D 也必須照這個 layout 解讀**——排錯 assembler 不會報錯，
+> 只會默默算出錯的結果。
 
 > 為什麼是「4 個一組」：Matrix Core 的原始輸出單位就是 **4×N 的 tile**（見 §7 微架構），所以輸出永遠以 4 列為一包攤進 VGPR。這也是為什麼 MFMA 的暫存器要求「連續且對齊到所需暫存器數」——4 個輸出就得從能被 4 整除的 VGPR 起點開始（ISA p.42）。
 
+
+
 #### MFMA 運算元的暫存器規則（`v[4:7]` 是什麼、能不能自己指定數量）
 
-- **`v[start:end]` = 連續多顆 VGPR 當「一個寬運算元」**。`v[4:7]` 就是 v4、v5、v6、v7，和 `v18`、`v22` 是**同一個 VGPR 檔**（一顆 VGPR = 32-bit，裝不下的運算元才用連續多顆；例如 64-bit 位址用 `v[0:1]`、這裡的累加器用 `v[4:7]`）。
+- `v[start:end]` **= 連續多顆 VGPR 當「一個寬運算元」**。`v[4:7]` 就是 v4、v5、v6、v7，和 `v18`、`v22` 是**同一個 VGPR 檔**（一顆 VGPR = 32-bit，裝不下的運算元才用連續多顆；例如 64-bit 位址用 `v[0:1]`、這裡的累加器用 `v[4:7]`）。
 - **「用幾顆」由 opcode 定死，不能自己調**：`v_mfma_f32_16x16x4_f32` 的 D/C 就是 4 顆、A/B 各 1 顆。要改數量只能**換一條指令**（例如 `32x32x8` 的累加器是 16 顆）。你在 asm 能決定的只有「**放在哪個起點、且連續＋對齊**」（4 顆一組 → 起點要對齊到 4，所以用 v4）。
 - **寫錯只在「格式」層被擋**：寬度/對齊/型別不符，`llvm-mc` 組譯**直接報錯**；但「放錯資料、少等 MFMA write-back 延遲（`s_nop`）、layout 對錯」這類**邏輯錯誤 assembler 不會抓**，會默默算出錯結果。指定方式：inline asm 寫 `v_mfma_... v[4:7], v18, v22, v[4:7]`，或 intrinsic `__builtin_amdgcn_mfma_...(a, b, c, cbsz, abid, blgp)` 的暫存器參數。
 
@@ -394,6 +412,8 @@ V_MFMA_F32_16x16x4_F32（lane l = 0..63）：
 等比增加輸入 VGPR 數。
 - 精確的 lane↔element 公式（形如 `l = j + 32*((i/4)%2)` 這類）逐變體不同，完整列在 MI300 ISA p.43-47；
 平常讀 kernel 時抓住「元素攤在 lane×VGPR、輸出 4 列一包」的直覺即可，需要精確對位再回查 ISA。
+
+
 
 #### K 怎麼跨 lane 拆、誰把整條 K 加總
 
@@ -457,6 +477,10 @@ buffer 等，藉此塞下更多 wave（提高 occupancy）。代價是 epilogue 
 MFMA **不是單一 cycle 完成**（見 §2 的 Cycles 欄，一條要 8~64 個 pass），而且中間結果可被觀察到。所以在
 「發出 MFMA」與「讀它的結果 / 改它的輸入暫存器」之間，**必須插入一定數量的獨立指令或** `s_nop`，否則會讀到
 還沒算完的舊值。這套「要等幾拍」的規則是 MFMA 專屬的相依表（ISA Ch.7.5, Table 37, ISA p.55-58）。
+
+> ❓ **你問過（2026-07）**：要等幾 cycle 是 spec 規定的嗎？hipBLASLt 的 codegen 要考慮這些相依嗎？—— 是，**ISA spec（Ch.7.5 Table 37）明文規定**，數字取決於前一條 MFMA 的 pass 數與第二條怎麼用暫存器；**assembler 不會幫你擋**（少等只會默默算錯）。所以 **TensileLite/CK 的 codegen 必須處理**——而且不只是插 `s_nop`，是用 scheduling / prefetch 把 wait 視窗塞進有用工作（見 §6.2 與 [../hipblaslt/instruction-scheduling-and-latency.md](../hipblaslt/instruction-scheduling-and-latency.md)）。
+
+> ❓ **你問過（2026-07）**：VALU 和 MFMA 各持有自己的 reg，為什麼還有 dependency？—— 因為 A/B/C/D **全住在同一份 VGPR/AGPR 檔**，dependency 是「後面指令要讀前面還沒寫完的**同一個暫存器**」的 **RAW hazard**，跟「lane 歸屬」無關（lane 是邏輯單位，見 [../gpu_knowledge/execution-model.md](../gpu_knowledge/execution-model.md#lane-是邏輯單位不是一顆運算單元valu--matrix-core-的-datapath-各自獨立)）。
 
 需要等多少，取決於**前一條 MFMA 是幾 pass**、以及**第二條指令怎麼用那個暫存器**（大致方向，精確值查 Table 37）：
 
@@ -583,6 +607,20 @@ VALU（`v_add` / `v_fma` 等）就**發不出去（被擋）**。
 > 真正把「MFMA 擋 VALU」這個 issue-port 痛點解掉，要到 CDNA5 / gfx1250 改用 WMMA + 獨立 issue port + VALU
 > co-execution（XDL 利用率宣稱 62% → 92%）——那已是換 ISA 家族，見 [wmma-deep-dive.md](wmma-deep-dive.md) 與
 > [../gpu_knowledge/cdna5-gfx1250.md §3-4](../gpu_knowledge/cdna5-gfx1250.md)。
+
+
+
+### 7.5 為什麼累加鏈能 0-latency，但 MFMA→VALU 卻要等？
+
+> ❓ **你問過（2026-07）**：0-latency 一定要用同一個累加器 VGPR 嗎？硬體是不是要「偵測相鄰指令 C/D 相同」才能 forwarding？為什麼 MFMA→VALU 沒有這種機制？
+
+- **0 等待要求「同一個累加器 VGPR 當 SrcC 接力」**（§6.1 表最後一列）：`v_mfma ... v[4:7], A, B, v[4:7]` 一條接一條，第二條的 SrcC 正好是第一條的 D。這是天然關係（GEMM 沿 K 累加本來就回讀同一累加器）+ 設計使然（AMD 針對這個高頻型態優化）。
+- **硬體不是靠「偵測 C/D 相同」的通用 hazard detector**：最有力的反證是 **Table 37 這套 software wait state 的存在**——若硬體能動態偵測相依並自動 stall，就不需要叫軟體插 `s_nop` 了。gfx9 **沒有**那種通用 interlock。
+- **0 等待較可能來自「累加器整條鏈駐留矩陣單元內部、原地累加」**：鏈中途**不寫回、也不讀回暫存器檔**，所以沒有東西需要「偵測 + 前遞」。而 **MFMA→VALU 要等 5~19 拍**，是因為要讓別的單元讀到結果，累加器**必須先 write-back 回暫存器檔**，那個 write-back 有延遲。差別不在「有沒有偵測」，而在「值要不要離開矩陣單元」。
+- **誠實邊界**：確切是「駐留原地」還是「有一條顯式 bypass」、有沒有小比較器,屬未公開的微架構細節；但無論哪種,都**不是** CPU 式「偵測相依就自動 stall」的通用 hazard unit。
+
+> 執行模型視角的對照（dependency = 同一暫存器的 RAW、lane 是邏輯單位）見
+> [../gpu_knowledge/execution-model.md](../gpu_knowledge/execution-model.md#lane-是邏輯單位不是一顆運算單元valu--matrix-core-的-datapath-各自獨立)。
 
 ---
 

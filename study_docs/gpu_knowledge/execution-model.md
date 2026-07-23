@@ -114,6 +114,10 @@ tile[threadIdx.x] = some_value;
 __syncthreads();          // 全 block 寫完才繼續，之後可安全互讀
 ```
 
+> ⚠️ **常見誤解補充：block 的 shared memory 是「所有 wave 共用一塊」，不是「每個 wave 平分」。** 你在 launch 時指定的 shared memory（`<<<blocks, threads, sharedMemBytes>>>` 第三個參數）或 kernel 裡的 `__shared__`，本質就是**一整塊給整個 block 共用的 on-chip 記憶體**：block 內所有 wave 看到**同一塊、同一個位址空間**。這正是它存在的意義——若被 wave 平分成各自獨立的小塊，wave A 就讀不到 wave B 寫的值，上面 `__syncthreads()` 後互相讀資料（reduction、matmul tile、stencil）就全做不到了。
+>
+> 那「每個 wave 各自一份」的是什麼？是**暫存器（VGPR per-lane、SGPR per-wave）**——但它也不是從「block 的記憶體預算」平分出來的，而是從**每個 SIMD 私有的 register file 按 wave 撥**給每個常駐 wave（見 [§wave 切換為何零成本](#wave-切換為何零成本狀態常駐不做存還原vs-cpu-context-switch)）。所以是**兩池不同歸屬**的資源：**shared memory 按 workgroup 算、register 按 wave 算**（對應 [Occupancy 清單](#occupancy-限制清單實際能跑幾個-wave-取最小值) 的 ③ vs ①②）。LDS 作為「每個 CU 一塊、block 內共用」的資源細節見 [memory-hierarchy-and-chiplet.md](memory-hierarchy-and-chiplet.md)。
+
 **Block 不是 SM/CU**（最常見誤解）：
 
 - block 是軟體工作單位，SM/CU 是硬體。
@@ -123,6 +127,8 @@ __syncthreads();          // 全 block 寫完才繼續，之後可安全互讀
 **Block size 取捨**：太小則 scheduler overhead 相對高、難發揮 shared memory 合作；太大則每個
 block 吃太多 register / shared memory，使 SM/CU 能同時 resident 的 block 變少、occupancy 下降。
 常見起點 128 / 256 / 512（多為 warp/wavefront size 的倍數），最佳值需用 profiler 決定。
+
+**一個 workgroup 最多幾個 wave？** 上限是 **16 個 wave**：因為最大 workgroup size = **1024 work-item**（HIP/CUDA 的 `maxThreadsPerBlock`），而一個 wave 是 64 個 work-item（gfx942 wave64），所以 **1024 ÷ 64 = 16**。要注意這 16 是「單一 workgroup」的上限，別和「一個 CU 最多常駐 32 個 wave」（那是整個 CU 的容量、可由多個 workgroup 共住）搞混——兩者的差異見 [§數量關係表](#數量關係表把三軸的數字串起來以-cdna3--cdna4-為例)。（世代差異：CDNA5 / gfx1250 改成 wave32，這個換算的數字會變。）
 
 ## Thread / Work-item：最小的 logical worker
 
@@ -157,11 +163,30 @@ threads，以 SIMT / lockstep 方式執行同一條指令、各自處理不同�
 （CDNA5）已改為 **Wave32**——同一家 AMD 跨世代 wave 大小就變了，正好說明為什麼一定要查
 `warpSize` 而非寫死。
 
-**Warp 與 block 的關係**：硬體把 block 切成 warp/wavefront。
+**Warp 與 block 的關係**：硬體把 block 切成 warp/wavefront，兩者是**包含**關係、不是平行關係——**workgroup（= CUDA 的 block）是你在程式裡指定的一團 thread，屬於軟體邏輯單位；wave（= wavefront，NVIDIA 叫 warp）是硬體把這團 thread 每 64 個切一組、一次一起發指令的執行單位。**
 
-- `blockDim.x = 256` 在 NVIDIA → 256 / 32 = **8 warps**；在 CDNA wave64 → 256 / 64 = **4 wavefronts**。
-- block size 不是 warp size 倍數時（如 100 threads），最後一個 warp 會有未使用 lanes，浪費算力——
-所以 block size 最好取 warp/wavefront size 的倍數。
+- 一個 workgroup 由 `ceil(blockDim / wave_size)` 個 wave 組成（gfx942：`wave_size = 64`）。例：`blockDim.x = 256` → 256 / 64 = **4 個 wave**（NVIDIA warp32 則是 256 / 32 = **8 warps**）；100-thread block → 2 個 wave，第 2 個只有 36 lane 有效。
+- block size 不是 warp size 倍數時（如 100 threads），最後一個 warp 會有未使用 lanes，浪費算力——所以 block size 最好取 warp/wavefront size 的倍數。
+- **workgroup 這層的意義**：整團放進同一個 CU，才能共用 LDS、用 `__syncthreads()` 互相同步。
+- **wave 這層的意義**：硬體一次發令的單位（同一 wave 的 64 lane 走同一指令 → divergence 才會慢）；register 也是按 wave 分配（VGPR per-lane、SGPR per-wave）。
+- **資源歸屬不同**：**shared memory / LDS 按 workgroup 算、register 按 wave 算**（見 [數量關係表](#數量關係表把三軸的數字串起來以-cdna3--cdna4-為例) 與 [Occupancy 清單](#occupancy-限制清單實際能跑幾個-wave-取最小值)）。
+
+「誰切、何時切」的細節就是下面這段 ⬇️。
+
+> ⚠️ **常見誤解補充：wave 是「硬體 dispatch 時切」的，不是 compiler 切的。** 兩個常被混在一起的問題要分開答：
+>
+> - **切幾個 wave？照 workgroup size 算**：`wave 數 = ceil(blockDim / wave_size)`（gfx942 `wave_size = 64`），而且是**連續線性**切——先把多維 threadIdx 攤平成一維 `tid = x + y·Dx + z·Dx·Dy`，再每 64 個一組（work-item 0–63 → wave 0、64–127 → wave 1…）。`blockDim = 100` → `ceil(100/64) = 2` 個 wave，第 2 個只有 36 lane 有效、其餘 28 條被 EXEC mask 關掉（就是上面說的浪費）。
+> - **誰切？硬體，不是 compiler**：把 workgroup 切成 wave、分配 wave slot / VGPR / SGPR、攤到 4 個 SIMD 上，是 **SPI / workgroup dispatcher 在 runtime dispatch 時**做的。compiler **不決定、也無法決定**這次 launch 切幾個 wave——因為 `blockDim` 是 launch 時 `<<<...>>>` 才給的參數（可以是變數），編譯時根本不一定知道。
+>
+> compiler 的角色是**另一層**：它針對 target 的 wave 大小（gfx942 = 64）產生對應機器碼（64-bit EXEC mask、divergence 處理、MFMA 的 lane layout），並決定**每個 wave** 用幾個 VGPR/SGPR（間接影響 occupancy）。它面對的是「一個 wave 的行為」，不是「這次有幾個 wave」。這也是 [§Warp / Wavefront](#warp--wavefront硬體實際發射指令的一排-lanes) 一直強調「不要寫死 warp=32、要查 `warpSize`」的原因——換 target（gfx1250 是 wave32）compiler 產生的碼就完全不同。
+>
+>
+> | 事情                                                  | 誰做                       | 何時                   |
+> | --------------------------------------------------- | ------------------------ | -------------------- |
+> | wave 的**大小**（gfx942 = 64）                           | 硬體架構定死                   | 晶片設計時                |
+> | 產生「假設 wave = 64」的機器碼、每 wave 暫存器用量                   | **compiler**             | 編譯時（target = gfx942） |
+> | 把 workgroup **切成幾個 wave、哪些 tid 進哪個 wave、派上哪個 SIMD** | **硬體（SPI / dispatcher）** | runtime dispatch 時   |
+>
 
 
 
@@ -193,28 +218,34 @@ register / shared memory，進而決定每個 SM/CU 能同時 resident 幾個 bl
 上面說「CU 內含多條 ALU / matrix core」，這節把 CU 裡**幾種不同的執行單元**攤開——因為初學最常誤會兩件事：
 「以為 AI 只用 matrix core」、「以為 SALU 也有 lane」。先給一張對照表：
 
-| 執行單元 | 做什麼 | 是「逐 lane」嗎 | 用哪種暫存器 |
-| ------ | ------ | ------------ | -------- |
-| **VALU（Vector ALU / SIMD）** | 一般向量浮點/整數（`v_add`、`v_fma`、**位址計算**、A/B 載入…） | **是**，64 lane 各算各的 | Arch VGPR（每 lane 各一份） |
-| **Matrix Core** | 矩陣乘加（`v_mfma_*`） | 是（**跨 lane 協作**） | 讀 A/B 用 VGPR、累加器放 AGPR |
-| **SALU（Scalar ALU）** | uniform 純量運算、迴圈、位址基底、分支條件（`s_add`、`s_cmp`、`s_cbranch`…） | **不是！沒有 lane** | SGPR（整個 wave 共用一份） |
-| **VMEM / LDS 單元** | `global_load/store`、`ds_read/write` | 逐 lane 產生位址 | VGPR + 記憶體 |
+
+| 執行單元                        | 做什麼                                                     | 是「逐 lane」嗎         | 用哪種暫存器                 |
+| --------------------------- | ------------------------------------------------------- | ------------------ | ---------------------- |
+| **VALU（Vector ALU / SIMD）** | 一般向量浮點/整數（`v_add`、`v_fma`、**位址計算**、A/B 載入…）             | **是**，64 lane 各算各的 | Arch VGPR（每 lane 各一份）  |
+| **Matrix Core**             | 矩陣乘加（`v_mfma_`*）                                        | 是（**跨 lane 協作**）   | 讀 A/B 用 VGPR、累加器放 AGPR |
+| **SALU（Scalar ALU）**        | uniform 純量運算、迴圈、位址基底、分支條件（`s_add`、`s_cmp`、`s_cbranch`…） | **不是！沒有 lane**     | SGPR（整個 wave 共用一份）     |
+| **VMEM / LDS 單元**           | `global_load/store`、`ds_read/write`                     | 逐 lane 產生位址        | VGPR + 記憶體             |
+
 
 大部分「非矩陣」的工作（算位址、跑迴圈、控制流）其實是 **VALU + SALU** 在做，matrix core 只在真正算矩陣那幾條指令上場。
 
 ### VALU vs Matrix Core：操作 lane 的方式不同（各做各的 vs 跨 lane 協作）
 
+> ❓ **你問過（2026-07）**：VALU 和 MFMA 各持有自己的 reg，為什麼還有 dependency？—— 因為 A/B/C/D **全住在同一份 VGPR/AGPR 檔**，dependency 是「後面指令要讀前面還沒寫完的**同一個暫存器**」的 **RAW hazard**，跟「lane 歸屬」無關（lane 是邏輯單位，見下面〈lane 是「邏輯單位」…〉）。
+
 先破除一個常見誤解：**在 ISA「語法」層面，MFMA 和 VALU 看起來一樣**——每個 lane 都只提供自己的暫存器，MFMA 也沒有一個「讀 lane X」的欄位；而且執行後兩者都是「每 lane 各留自己的一塊 reg 值」。所以差別**不在語法、也不在儲存方式**，而在**「這些 per-lane 暫存器的值，最後是怎麼被組合的」——也就是資料相依（information flow）**：
 
-| 面向 | VALU | Matrix Core |
-| ---- | ---- | ---------- |
-| 每 lane 各留自己的 reg | 是 | **是**（這點兩者相同） |
-| 語法上有「讀別的 lane」欄位嗎 | 沒有 | **也沒有**（跨 lane 是指令內建語意） |
-| **輸出依賴誰的輸入** | **只自己這條 lane**：`output[i]=f(input[i])` | **多條 lane**：`output[i]` 依賴很多 lane 的輸入 |
-| 能否讀別條 lane 的 VGPR | **不能**（要靠 `ds_permute`/`v_permlane`/LDS 另外搬） | **能**（硬體內建，包在 MFMA 語意裡） |
-| 實體單元 | SIMD16 × 4 cycle | 4×1×4 外積陣列（§7） |
 
-**用 example03 的 `16x16x4` layout 實際證明「跨 lane」**（layout 見 `asm/example03_mfma/mfma_gemm_f32_gfx942.s` L37-40：`A operand: lane l 持有 A[l%16][l/16]`、`D: vgpr d 持有 D[(l/16)*4+d][l%16]`）：
+| 面向                | VALU                                         | Matrix Core                           |
+| ----------------- | -------------------------------------------- | ------------------------------------- |
+| 每 lane 各留自己的 reg  | 是                                            | **是**（這點兩者相同）                         |
+| 語法上有「讀別的 lane」欄位嗎 | 沒有                                           | **也沒有**（跨 lane 是指令內建語意）               |
+| **輸出依賴誰的輸入**      | **只自己這條 lane**：`output[i]=f(input[i])`       | **多條 lane**：`output[i]` 依賴很多 lane 的輸入 |
+| 能否讀別條 lane 的 VGPR | **不能**（要靠 `ds_permute`/`v_permlane`/LDS 另外搬） | **能**（硬體內建，包在 MFMA 語意裡）               |
+| 實體單元              | SIMD16 × 4 cycle                             | 4×1×4 外積陣列（§7）                        |
+
+
+**用 example03 的** `16x16x4` **layout 實際證明「跨 lane」**（layout 見 `asm/example03_mfma/mfma_gemm_f32_gfx942.s` L37-40：`A operand: lane l 持有 A[l%16][l/16]`、`D: vgpr d 持有 D[(l/16)*4+d][l%16]`）：
 
 算 `D[0][0] = Σ_{k=0..3} A[0][k]·B[k][0]`，需要 A 第 0 列的 4 個值 `A[0][0..3]`，依 `A[l%16][l/16]` 它們分別在 **lane 0 / 16 / 32 / 48**；而結果 `D[0][0]` 落在 **lane 0 的 v4**。→ **lane 0 的輸出用到了 lane 16/32/48 暫存器裡的值**，這就是「跨 lane 協作」。它不是你寫得出來的動作，而是 `v_mfma` **固定內建**的執行語意（硬體執行時自動跨 lane 抓資料），所以你在組語看不到「讀 lane 16」。
 
@@ -225,9 +256,11 @@ v_add_f32  v3, v1, v2           ; lane i 的 v3 = lane i 的 v1 + v2，碰不到
 v_fma_f32  v_c, v_a, v_b, v_c   ; 純量式乘加，a/b 必須「已經在自己這條 lane」
 ```
 
-要跨 lane 就得**多發指令搬資料**：`ds_permute` / `ds_bpermute` / `v_permlane*` / `ds_swizzle`（lane 間搬 VGPR），或走 LDS（跨 lane 共享透過記憶體，不是暫存器）。**MFMA 則把「跨 lane 抓取 + 相乘 + 加總」全塞進一條指令、由 matrix core 硬體直接讀跨 lane 的 VGPR 完成。**
+要跨 lane 就得**多發指令搬資料**：`ds_permute` / `ds_bpermute` / `v_permlane`* / `ds_swizzle`（lane 間搬 VGPR），或走 LDS（跨 lane 共享透過記憶體，不是暫存器）。**MFMA 則把「跨 lane 抓取 + 相乘 + 加總」全塞進一條指令、由 matrix core 硬體直接讀跨 lane 的 VGPR 完成。**
 
-> 一句話：MFMA 和 VALU 在「每 lane 各留自己的 reg」與「語法上沒有讀別條 lane」這兩點**相同**；差別是**資料相依**——**VALU 的輸出只依賴自己這條 lane（且物理上讀不到別條 lane 的 VGPR，要跨 lane 得靠 `ds_permute`/LDS 另外搬）；MFMA 的輸出依賴多條 lane，這個跨 lane 抓取加總是硬體內建在 `v_mfma` 語意裡、組語看不到的固定行為**。矩陣元素怎麼攤在 lane×VGPR 見 [../isa/mfma-deep-dive.md §4](../isa/mfma-deep-dive.md#4-register-layout64-個-lane-怎麼持有-abd)。
+> 一句話：MFMA 和 VALU 在「每 lane 各留自己的 reg」與「語法上沒有讀別條 lane」這兩點**相同**；差別是**資料相依**——**VALU 的輸出只依賴自己這條 lane（且物理上讀不到別條 lane 的 VGPR，要跨 lane 得靠** `ds_permute`**/LDS 另外搬）；MFMA 的輸出依賴多條 lane，這個跨 lane 抓取加總是硬體內建在** `v_mfma` **語意裡、組語看不到的固定行為**。矩陣元素怎麼攤在 lane×VGPR 見 [../isa/mfma-deep-dive.md §4](../isa/mfma-deep-dive.md#4-register-layout64-個-lane-怎麼持有-abd)。
+
+
 
 ### issue port：共用「發射閘門」≠ 共用「運算電路」
 
@@ -236,9 +269,9 @@ v_fma_f32  v_c, v_a, v_b, v_c   ; 純量式乘加，a/b 必須「已經在自己
 在 **gfx942（CDNA3）**，VALU 與 MFMA **走同一個 issue port**：
 
 - MFMA 佔住這個發射視窗時，一般 `v_add` / `v_fma` **發不出去（被擋）** → GEMM 的位址計算是 VALU，被擋著就形成
-  pipeline bubble（內部文件宣稱矩陣單元利用率因此只有約 **62%**）。
-- 但 **SALU、VMEM load、LDS `ds_read` 走別的 pipe**，MFMA 執行期間**仍可發射** → 這就是 prefetch 能塞進 MFMA
-  空檔藏延遲的原因。issue port 的 ISA 細節見 [../isa/mfma-deep-dive.md §7.3](../isa/mfma-deep-dive.md#73-issue-port為什麼-mfma-擋-valu卻不擋-ldsvmem)。
+pipeline bubble（內部文件宣稱矩陣單元利用率因此只有約 **62%**）。
+- 但 **SALU、VMEM load、LDS** `ds_read` **走別的 pipe**，MFMA 執行期間**仍可發射** → 這就是 prefetch 能塞進 MFMA
+空檔藏延遲的原因。issue port 的 ISA 細節見 [../isa/mfma-deep-dive.md §7.3](../isa/mfma-deep-dive.md#73-issue-port為什麼-mfma-擋-valu卻不擋-ldsvmem)。
 
 ```mermaid
 flowchart TD
@@ -255,15 +288,19 @@ flowchart TD
     MEM -. "走別的 pipe，可與 MFMA 並行（prefetch 藏延遲）" .- MC
 ```
 
+
+
 > 廚房比喻：issue port 是「傳菜窗口」，VALU 和 Matrix Core 是**兩個不同的廚師**——遞大菜單（MFMA）時普通菜單（VALU）
 > 遞不進去（共用窗口），但食材庫（VGPR）兩人共用；另一個窗口（SALU / VMEM / LDS）可同時遞單。
+
+
 
 ### VALU vs SALU：判準是「值在 64 個 lane 之間一不一樣」
 
 - **值 64 lane 都一樣（uniform）→ SALU**：便宜（一次算一個共用值）、省 VGPR、走獨立 pipe。SALU **不只做控制流**，
-  也做所有 uniform 的算術（共用位址基底、stride、迴圈計數、kernel 參數）。
+也做所有 uniform 的算術（共用位址基底、stride、迴圈計數、kernel 參數）。
 - **值每 lane 不同 → 只能 VALU**：per-thread 位址、`tid` 推出的 index、逐元素資料——這些 SALU 物理上做不到
-  （它只能產生「一個給整 wave 的值」）。
+（它只能產生「一個給整 wave 的值」）。
 
 對照 `asm/example03_mfma`：`s_lshl_b32 s14, s3, 5`（tile 基底來自 workgroup id，整 wave 一樣 → SALU）vs
 `v_lshrrev_b32 v1, 4, v0`（`v0` 是 tid，每 lane 不同 → VALU）。所以位址通常「共用基底用 SALU 算、再用 VALU 加上
@@ -271,11 +308,15 @@ per-lane 的 tid 部分」。
 
 ### VALU 在實務上都在做什麼
 
+> ❓ **你問過（2026-07）**：Matrix Core 是不是只做矩陣 MAC，epilogue / 其他非矩陣運算都是 VALU/SALU？—— 對。**Matrix Core 只做** `D=C+A×B`；epilogue（alpha/beta、bias、activation、型別轉換）與所有非矩陣 operator 都是 **VALU / SALU / VMEM**。**唯一例外**是 **MXFP 的 per-block scale 被融進** `V_MFMA_SCALE_`***、由 Matrix Core 順手乘進去**（見 [../isa/mfma-deep-dive.md §3.2](../isa/mfma-deep-dive.md#32-mxfp-的硬體入口-v_mfma_scale_)）。
+
 即使在 matmul kernel 裡，matrix core 只佔那幾條 `v_mfma`，其餘幾乎全是 VALU：
 
-1. **GEMM 內的膠水**：位址計算、index、型別轉換、prefetch offset（`example03` 滿螢幕的 `v_*` 都是這類）。
+1. **GEMM 內的膠水**：位址計算、index、型別轉換、prefetch offset（`example03` 滿螢幕的 `v_`* 都是這類）。
 2. **非矩陣的 operator**：activation（ReLU/GELU）、bias/residual add、LayerNorm/RMSNorm、softmax、alpha/beta 縮放、
-   quantization scale、reduction——這些多為逐元素、memory-bound，是 transformer 裡「不是 matmul」的那一大半。
+  quantization scale、reduction——這些多為逐元素、memory-bound，是 transformer 裡「不是 matmul」的那一大半。
+
+
 
 ## 一個 lane 裡有什麼：per-lane vs per-wave vs per-CU（釐清 lane ≠ register）
 
@@ -284,11 +325,13 @@ per-lane 的 tid 部分」。
 64 lane 共用同一份」。下表按「歸屬範圍」把 CU 內的狀態分清（gfx942 / CDNA3，數字出處
 [../internal_docs/cdna3-mi300-architecture-and-isa.md §3.2](../internal_docs/cdna3-mi300-architecture-and-isa.md)）：
 
-| 範圍 | 有哪些 / 數量 | 說明 |
-| ---- | ---------- | ---- |
-| **per-lane（每 lane 各一份）** | **Arch VGPR 256 個 + AGPR 256 個**（各 32-bit，合計 2 KiB）、EXEC 的 1 bit、VCC 的 1 bit、一條（邏輯）ALU 通道 | 真正屬於單一 work-item 的 |
-| **per-wave（64 lane 共用）** | **SGPR 104 個**（S0–S103）、PC、EXEC(64-bit)、VCC(64-bit)、SCC(1-bit)、M0(32-bit) | 純量與控制狀態，64 lane 看到同一份；**不是每 lane 各一份** |
-| **per-CU（整個 CU 共用）** | LDS 64 KB、L1 32 KB、Matrix Core、scheduler | 更外層的共用資源 |
+
+| 範圍                       | 有哪些 / 數量                                                                                  | 說明                                     |
+| ------------------------ | ----------------------------------------------------------------------------------------- | -------------------------------------- |
+| **per-lane（每 lane 各一份）** | **Arch VGPR 256 個 + AGPR 256 個**（各 32-bit，合計 2 KiB）、EXEC 的 1 bit、VCC 的 1 bit、一條（邏輯）ALU 通道 | 真正屬於單一 work-item 的                     |
+| **per-wave（64 lane 共用）** | **SGPR 104 個**（S0–S103）、PC、EXEC(64-bit)、VCC(64-bit)、SCC(1-bit)、M0(32-bit)                 | 純量與控制狀態，64 lane 看到同一份；**不是每 lane 各一份** |
+| **per-CU（整個 CU 共用）**     | LDS 64 KB、L1 32 KB、Matrix Core、scheduler                                                  | 更外層的共用資源                               |
+
 
 ```mermaid
 flowchart TD
@@ -298,22 +341,59 @@ flowchart TD
     Wave --> Lane["lane ×64（per-lane 各一份）：VGPR×256 + AGPR×256（2KiB）、EXEC/VCC 各 1 bit、1 條邏輯 ALU 通道"]
 ```
 
+
+
 > 這也解釋了為何 `s_*`（SALU、操作 SGPR）沒有 lane：SGPR 本來就是 wave 共用的；「64 lane × 各自 VGPR」那套只屬於
 > 向量世界（VALU / Matrix Core / VMEM）。MFMA 把矩陣攤在「lane × VGPR」二維座標上的細節見
 > [../isa/mfma-deep-dive.md §4](../isa/mfma-deep-dive.md#4-register-layout64-個-lane-怎麼持有-abd)。
+
+
+
+### lane 是「邏輯單位」，不是一顆運算單元（VALU / Matrix Core 的 datapath 各自獨立）
+
+> ❓ **你問過（2026-07）**：lane 是硬體單元還是軟體單元？VALU 和 Matrix Core 共不共用 lane？—— 見本節（lane 是邏輯單位；兩者共用 register file + lane 索引 + issue port，但運算電路各自獨立）。
+
+承上——`lane` 是**邏輯（架構）單位：一個 work-item 的槽位／索引**（本頁把它定義為「最小 logical worker」），
+**不是某一顆運算電路**。這點釐清了一個很常見的糾結：「VALU 和 Matrix Core 到底共不共用 lane？」
+
+**這個問法本身是分類錯誤**——lane 不是可以被「共用或不共用」的硬體，它是大家共同**指涉**的那組 work-item 槽位。
+正確的拆法是把「資料住哪」「怎麼被發射」「運算電路」三件事分開：
+
+
+| 東西                               | 是什麼                | VALU 與 Matrix Core 的關係                                                                                                  |
+| -------------------------------- | ------------------ | ----------------------------------------------------------------------------------------------------------------------- |
+| **lane（work-item 槽位）**           | 邏輯索引：第幾個 work-item | **共同指涉**（都以 lane 為單位處理資料，不是「共用一顆硬體」）                                                                                    |
+| **register file（VGPR/AGPR）**     | 實體儲存，按 lane 切分     | **共用**（兩者讀寫同一份 per-lane 暫存器）                                                                                            |
+| **VALU 運算電路（SIMD16 ALU）**        | 逐 lane 純量算術        | **VALU 自己的 datapath**                                                                                                   |
+| **Matrix Core 運算電路（4×1×4 外積陣列）** | 矩陣乘加               | **MC 自己的 datapath**（結構和 ALU 完全不同，見 [../isa/mfma-deep-dive.md §7](../isa/mfma-deep-dive.md#7-matrix-core-微架構與-dataflow)） |
+| **issue port**                   | 發射閘門               | gfx942 **共用**（MFMA 擋 VALU，見上面〈issue port〉小節）                                                                            |
+
+
+> ⚠️ 常見誤解要**反過來記**：不是「運算單元共用、datapath 不同」，而是
+> **「運算電路（datapath）各自獨立，但 register file + lane 索引 + issue port 共用」**。
+> VALU 的 ALU 陣列和 Matrix Core 的外積陣列是**兩套不同的實體電路**；它們共用的是「資料住哪（暫存器，按 lane 切分）」
+> 與「怎麼被發射（issue port）」。
+
+連「實體寬度」都不同，更說明 lane 只是邏輯概念：**VALU 邏輯 64 lane、實體只有 SIMD16（跑 4 拍算完一個 wave）**；
+**Matrix Core 不是「64 條 ALU lane」，而是 4×1×4 外積陣列**那種完全不同的結構。同一組 lane 的資料，餵給不同單元時
+對應到的實體電路根本不一樣——所以 lane 是「work-item 的邏輯身分」，各單元「用什麼 datapath 消化這些 lane」才是各自的設計。
 
 ### lane / CU / XCD 數量換算（MI300X / MI350）
 
 「一個 CU 有幾條 lane」有兩種算法，別混：
 
-| 算法 | 每 CU | 全 GPU |
-| ---- | ----- | ------ |
-| **實體向量 ALU lane**（一 cycle 能算幾條；= 4 SIMD × 16） | 64 | MI300X：304 × 64 = **19,456**；MI350：256 × 64 = **16,384** |
+
+| 算法                                                       | 每 CU | 全 GPU                                                    |
+| -------------------------------------------------------- | ---- | -------------------------------------------------------- |
+| **實體向量 ALU lane**（一 cycle 能算幾條；= 4 SIMD × 16）            | 64   | MI300X：304 × 64 = **19,456**；MI350：256 × 64 = **16,384** |
 | **最多常駐 work-item**（能同時掛幾個，= 32 wave × 64；維度 B occupancy） | 2048 | MI300X：304 × 2048 ≈ **62 萬**；MI350：256 × 2048 ≈ **52 萬** |
+
 
 - CU 數：**MI300X = 8 XCD × 38 活躍 CU = 304 CU**；**MI350 系列 = 8 × 32 = 256 CU**（實體更多，關掉部分做良率）。
 - ⚠️ repo 未逐字給「每 CU 幾個 Matrix Core / SALU」；依「每 SIMD 一份」的結構推得約各 4 個/CU。確定的是 4 SIMD/CU、
-  VALU 為 SIMD16。矩陣**吞吐**（非單元數）見 [../internal_docs/cdna3-mi300-architecture-and-isa.md §2.2](../internal_docs/cdna3-mi300-architecture-and-isa.md) Table 1。
+VALU 為 SIMD16。矩陣**吞吐**（非單元數）見 [../internal_docs/cdna3-mi300-architecture-and-isa.md §2.2](../internal_docs/cdna3-mi300-architecture-and-isa.md) Table 1。
+
+
 
 ## 硬體限制規範速查（CDNA4 / CDNA5 / NVIDIA 對照）
 
@@ -401,9 +481,9 @@ flowchart TD
   - **wave scheduler**（≈ NVIDIA warp scheduler）在 SIMD 內「逐 cycle 階段」挑 ready 的 wave 發指令，**利用**這些常駐 wave 藏延遲。
   - ACE（前端派工）與 SE（後端 CU 分群）是兩條並存的軸、都源自 GCN，別混——差別見 [硬體實體階層補充](#硬體實體階層補充xcd--shader-engine--cuse-是什麼和-ace-差在哪)。
 - **兩池不同記憶體**：
-  - **LDS 是「每個 CU 一塊、4 個 SIMD 共用」**
-  - **register file 則是「每個 SIMD 私有」**
-  - 這也是為什麼 register 和 LDS 是兩池完全不同的資源（見下方 occupancy 清單）。
+  - **LDS 是「每個 CU 一塊、4 個 SIMD 共用」**——一個 block 拿到的 shared memory 是**該 block 內所有 wave 共用一塊**（不是每個 wave 平分，見 [§Thread Block 的常見誤解補充](#thread-block--work-group一群可合作的-threads)）。
+  - **register file 則是「每個 SIMD 私有」**——按 wave 撥給每個常駐 wave 各自一份。
+  - 這也是為什麼 register 和 LDS 是兩池完全不同的資源（**LDS 按 workgroup 算、register 按 wave 算**，見下方 occupancy 清單 ③ vs ①②）。
 
 
 
@@ -424,6 +504,46 @@ flowchart TD
 
 > 注意最後一列：2048 是「寬度 64」乘上「深度 32」得來的，剛好示範了 A 和 B 是相乘、
 > 而不是同一個數字——這正是最容易搞混的地方。
+
+**別把「一個 CU 最多 32 個 wave」誤讀成「一個 workgroup 最多 32 個 wave」。** 上表的 **32 是「一個 CU 能容納的 wave 總數」**（4 SIMD × 8 slot），是**整個 CU**的容量、可由**多個 workgroup 共住**；它**不是**單一 workgroup 的上限。**一個 workgroup 的上限是 16 個 wave**，因為卡在更早的一道限制：**最大 workgroup size = 1024 work-item**（HIP/CUDA 的 `maxThreadsPerBlock`），1024 ÷ 64 = 16 wave（此上限的由來見 [§Thread Block](#thread-block--work-group一群可合作的-threads)）。兩個數字分屬不同層級，別混：
+
+| 數字          | 是什麼                        | 誰的上限                  | 由何決定                        |
+| ----------- | -------------------------- | --------------------- | --------------------------- |
+| **16 wave** | 一個 **workgroup** 最多幾個 wave | 單一 workgroup          | 最大 workgroup size 1024 ÷ 64 |
+| **32 wave** | 一個 **CU** 最多常駐幾個 wave      | 整個 CU（可含多個 workgroup） | 4 SIMD × 8 slot             |
+
+所以那 32 個 slot 是留給**多個 workgroup 共住**的：例如 2 個滿載的 1024-thread workgroup（各 16 wave）剛好住滿 32；或更多個小 workgroup。也正因為 **16 < 32**，**「wave slot 數量」這一項永遠不會讓「單一 workgroup 塞不下一個 CU」**（延伸見下方〈當一個 CU/SIMD 裝不下一個 workgroup 的所有 wave〉一節）。
+
+世代差異：CDNA5（gfx1250）改成 Wave32、每 SIMD 16 slot，數字會變，但「workgroup 上限 < CU 容量」這個關係不變。
+
+
+
+### wave 切換為何「零成本」：狀態常駐、不做存/還原（vs CPU context switch）
+
+維度 B 說「一個 SIMD 最多常駐 8 個 wave」，很多人接著會問兩個問題：**這 8 個 wave 沒被發指令時，狀態存在哪？切換要不要開銷？** 這裡一次講清楚，並破除一個 CPU 帶來的直覺誤解。
+
+先給結論：**GPU 的 wave 切換是「零成本」的——8 個 wave 的狀態從頭到尾一直放在晶片上，切換時根本不用存、也不用還原。**
+
+**狀態放哪（分兩塊，都在晶片上）**：對照 [§一個 lane 裡有什麼](#一個-lane-裡有什麼per-lane-vs-per-wave-vs-per-cu釐清-lane--register) 的歸屬表——
+
+- **向量狀態（per-lane）**：VGPR / AGPR，住在**每個 SIMD 私有的 register file**（見 [硬體階層圖](#硬體階層與排程單位圖含維度-a--b--c--派工發令單位) 標注的「register file 每個 SIMD 私有」）。這是體積最大的一塊。
+- **純量 + 控制狀態（per-wave）**：SGPR、PC（program counter）、EXEC、VCC、SCC、M0。wave scheduler 真正掌握的是「輪替所需的少量資訊」——每個 wave 的 PC 走到哪、現在 ready 還是卡住（scoreboard）——它靠這些每 cycle 挑一個 ready wave 發指令，**不搬**那一大坨 VGPR。
+
+> ⚠️ **常見誤解補充：別用 CPU 的 context switch 想像 GPU 的 wave 切換。**
+>
+> - **CPU context switch**：只有一套 register，換 thread 時要把舊 thread 的 register **存到記憶體**、再把新 thread 的 **載回來** → 有明顯開銷。
+> - **GPU wave 切換**：register file 在 wave 上場（dispatch）那一刻就**預先切成 8 份、每個 wave 各佔一塊**；常駐期間各自的 VGPR/SGPR **原封不動地一直佔著**。切換只是 scheduler 把「發指令的對象」從 wave A 換成 wave B，兩邊 register 都還在原地，**沒有任何存/還原動作** → 可做到 cycle 級即時切換。
+>
+> 比喻：CPU 像一張桌子輪流給人用（換人要收走再擺上）；GPU 像**一次給 8 個人各一張自己的桌子**，要誰工作就喊誰，桌上東西誰都不用動。
+>
+> **代價 → 直接連到 occupancy**：因為 8 個 wave 的 register 必須**同時**塞進同一個 register file，所以「每個 wave 用越少 VGPR/SGPR → 能同時常駐越多 wave」。這正是下面 [Occupancy 限制清單](#occupancy-限制清單實際能跑幾個-wave-取最小值) 裡 ①VGPR / ②SGPR 兩項的由來。（wave 的邏輯寬度 64 vs SIMD 實體寬度 16 是另一回事，見下一小節。）
+
+> ⚠️ **常見誤解補充：常駐的 8 個 wave 通常來自「同一個 kernel」，不是「不同程式」。** 疊 wave 的目的是**藏延遲**（某個 wave 卡在等記憶體時，切去跑同 kernel 的另一個 wave），不是像 CPU 那樣讓不同程式分時共享。所以同一個 SIMD 上的 8 個 wave，正常情況是：
+>
+> - **同一個 workgroup 的多個 wave**：一個 block 被完整放進一個 CU（見 [§Thread Block](#thread-block--work-group一群可合作的-threads)），切成的 wave 分散到 4 個 SIMD——例如 1024-thread block = 16 wave，每個 SIMD 就有 4 個來自同一 workgroup 的 wave。
+> - **同一個 kernel、不同 workgroup 的 wave**：一個 CU 可同時常駐多個 block（只要資源夠），它們可能屬不同 workgroup 但**同一個 kernel**。
+>
+> 不同 kernel / 程式的 wave 併存，只在 **concurrent kernel execution**（多 stream、且單一 kernel 填不滿 CU）時才發生，屬例外——細節見 [§併發與派工](#併發與派工hw-queueacevs-cuwgp)。大 GEMM 這種一份 kernel 就吃滿所有 CU 的工作，根本輪不到別的 kernel 進來共處。
 
 
 
@@ -592,7 +712,43 @@ occupancy 不是由單一因素決定，而是下列所有限制**同時作用�
 - ①②③④ 由你的 kernel 用量決定（寫得越省，能塞越多）。
 - ⑤⑥⑦ 是**寫死的硬體天花板**：就算資源用超少，也不可能超過 ⑤ 的 wave 上限。
 - ⑦ 的確切 barrier 數量 AMD 官方未明列；正常大小 block（如 256 threads）幾乎不會踩到，
-只有「大量迷你 block」才會耗盡 ⑥⑦。實務上用 profiler（`rocprof-compute`）看到底卡在哪一項。
+只有「大量迷你 block」才會耗盡 ⑥⑦。
+- 實務上用 profiler（`rocprof-compute`）看到底卡在哪一項。
+
+
+
+### 一個 CU/SIMD 裝不下一個 workgroup 的所有 wave 怎麼辦？
+
+先講一個和 CPU 很不一樣的前提，再分兩種情況——結論完全不同。
+
+**前提：workgroup 是「全有或全無」，而且不能搬家。** 兩條鐵律：
+
+1. 一個 workgroup 必須整個放進**同一個 CU**（見 [總圖對照關鍵](#總圖軟體抽象-vs-硬體實體)），因為 LDS 共享、`s_barrier` 同步用的硬體資源綁在單一 CU。
+2. 一個 workgroup 的**所有 wave 必須「同時」常駐**，一旦上場就原地佔資源直到整個 workgroup 跑完——GPU **沒有** CPU 那種把 wave 狀態存到記憶體、之後再還原的 context switch（見 [§wave 切換為何零成本](#wave-切換為何零成本狀態常駐不做存還原vs-cpu-context-switch)）。所以採 **gang scheduling（整團一起上，或整團都不上）**；否則 `__syncthreads()` 會死鎖——barrier 要等所有 wave 到齊，但有些 wave 根本還沒被 launch。
+
+因此「裝不下」**不能靠分時輪流**解決，只有下面兩條路：
+
+**情況 A：連「一份」都塞不進一個 CU → kernel 根本不啟動（launch 失敗）。**
+
+- wave slot 幾乎不會是元兇：單一 workgroup 上限 16 wave < CU 的 32 slot（見上面 [§數量關係表](#數量關係表把三軸的數字串起來以-cdna3--cdna4-為例) 下方「16 vs 32」的釐清）。
+- 真正的元兇是 **VGPR/SGPR 或 LDS**：每個 wave 要的 register 太多，多到「連這一個 workgroup 的所有 wave 都塞不進 register file」；或要求的 shared memory 超過一個 CU 的 LDS 容量（gfx942 = 64KB）→ runtime 直接回報 `too many resources requested for launch`。這是**硬錯誤**，解法是改小 blockDim / 減每 thread 的 register / 減 LDS 用量。
+
+**情況 B：一份塞得下，只是塞不下「多份」同時跑 → 正常運作，只是 occupancy 下降。**
+
+- SPI（派工器）上場前先檢查資源：這個 CU 現在剩的 wave slot / VGPR / SGPR / LDS 夠不夠再接一個 workgroup？夠就派進去併存；不夠就**排隊等**某個 CU 上的 workgroup 跑完、釋放資源，再上場。
+- 結果不是報錯，而是同時併存的 wave 變少 → 藏延遲的本錢變少（某 wave 卡在等記憶體時沒有足夠別的 wave 可切）→ 變慢但結果正確。這正是上面 [Occupancy 限制清單](#occupancy-限制清單實際能跑幾個-wave-取最小值) 的 `min()` 裡某一項（①②③⑤）先見底。
+
+
+|       | 情況 A：一份都塞不下                            | 情況 B：塞得下一份、塞不下多份          |
+| ----- | -------------------------------------- | ------------------------- |
+| 原因    | 單一 workgroup 的 VGPR/LDS 超過一個 CU 物理容量   | 資源被現有 workgroup 佔用，新的排隊   |
+| 硬體反應  | **launch 失敗**（`too many resources...`） | 正常，少併存幾個                  |
+| 對你的影響 | kernel 跑不起來                            | occupancy 下降 → 變慢，但結果正確   |
+| 誰擋下的  | runtime / compiler（launch 時）           | SPI 派工器（排隊調度）             |
+| 解法    | 改小 blockDim / 減 register / 減 LDS       | 調 tuning 換 occupancy（或接受） |
+
+
+> 補一個常見混淆：「一個 SIMD 最多 8 個 wave」講的是**併存深度**（維度 B），不是「一個 workgroup 一定佔滿 8 個」。1024-thread workgroup（16 wave）會被**攤到 4 個 SIMD**、每個 SIMD 放 4 個（見 [§wave 切換為何零成本](#wave-切換為何零成本狀態常駐不做存還原vs-cpu-context-switch) 的常駐來源說明），每個 SIMD 還剩 4 個 slot 可給同 kernel 的其他 workgroup。所以 wave 是「分散到 4 個 SIMD」，不是「擠在一個 SIMD」。
 
 
 
@@ -623,6 +779,8 @@ occupancy 不是由單一因素決定，而是下列所有限制**同時作用�
 > workgroup。所以「幾條 stream 能並行派工」的硬上限約等於 `ACE 數 × 每 ACE 的 HQD 數`（例如 CDNA4 XCD 圖上
 > 4 ACE × 8 HQD = 32 個 queue 插槽）；當軟體 queue 數 > HQD 數時，HWS 負責動態 map/unmap。這也是為什麼架構
 > 圖的 `Global Resources` 那塊會同時畫 HWS 與 ACE×N（每個 ACE 下掛 HQD0-7）。
+
+
 
 ### 誰限制什麼（困惑的根源：「工作」大小不同）
 
@@ -706,9 +864,7 @@ SE 為何要存在、SE 和 ACE 差在哪。
 **SE（Shader Engine）＝把一大堆 CU 切成好管理的小群的積木。** 一個 XCD 幾十顆 CU 不會平鋪掛在單一
 派工器下，而是分成幾個 SE。四個動機：
 
-1. **分派頻寬（主因）**：每個 SE 有自己的 wavefront 分派器（GCN/RDNA 稱 **SPI**）。若整個 XCD 只有
-
-一個分派器餵 38 顆 CU，fan-out 太大會塞車；切成 ~4 組、各餵 ~9 顆，**分派得以平行化**。這也解釋了為何前面派工圖裡的「SPI」**不是全 GPU 一個，而是每個 SE 一個**。
+1. **分派頻寬（主因）**：每個 SE 有自己的 wavefront 分派器（GCN/RDNA 稱 **SPI**）。若整個 XCD 只有一個分派器餵 38 顆 CU，fan-out 太大會塞車；切成 ~4 組、各餵 ~9 顆，**分派得以平行化**。這也解釋了為何前面派工圖裡的「SPI」**不是全 GPU 一個，而是每個 SE 一個**。
 2. **佈線局部性**：控制訊號 / 仲裁 / 局部快取的線越短越好（影響時脈、功耗）；分小群、共用近距離資源。
 3. **共用固定功能**：同組 CU 共用某些資源（如 CDNA3「相鄰兩 CU 共用 64KB 指令 cache」；繪圖 GPU 上 SE 還各帶 rasterizer）。
 4. **模組化 / 良率**：設計一個 SE 積木再複製，壞的關掉做良率備援。
