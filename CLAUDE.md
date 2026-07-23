@@ -22,6 +22,53 @@ prior context; explanations must build up from the basics.
   callout idea. When a point carries multiple facts, use a plain lead sentence followed by a
   bullet list instead of a multi-line blockquote.
 
+## Experiment execution, conclusion, and downgrade discipline
+
+### Wait for complete evidence
+
+- Do not write a final experiment report, finalize interpretation, or mark an implementation
+  complete while any required run, data collection, simulation, or background job is still
+  running, missing, or unverified.
+- Report final metrics only from final result files cross-checked against raw artifacts. Do not
+  use partial, interim, or still-changing output as the final result.
+- Independent work may continue while jobs run, but the gated result, verdict, report, and
+  completion status must wait. If an early report is explicitly required, label it
+  `partial` / `in-progress` and list every pending run and unavailable conclusion.
+
+### Do not over-conclude
+
+- A hypothesis and expected direction come before the result, but remain hypotheses until
+  multiple repeated and diverse workloads provide convergent evidence.
+- Never declare a winner or a component irrelevant from one dataset, a few narrow workloads,
+  a single metric, or an unexplained result. If reachable evidence is too narrow or does not
+  converge, the verdict is `inconclusive`.
+- Reason forward from the original design purpose: explain what a component or effect is for
+  and what omitting it could cost. A local observation such as "unused on this path" or "no
+  effect in this run" is evidence about that scope only, not proof that it is unimportant.
+  Record omitted-but-relevant effects as tracked gaps.
+- Before accepting a result, check confounders, setup artifacts, workload coverage, assumptions,
+  and a plausible mechanism. State the measurement boundary, sample size, repetitions, metrics,
+  and what the result cannot support.
+
+### Downgrades require the user's decision
+
+- Never autonomously downgrade an experiment or implementation. A downgrade includes reducing
+  workloads, runs, seeds, metrics, validation, acceptance criteria, or scope; replacing an
+  original baseline with a proxy; skipping a milestone; or converting a planned confirmation
+  into a smoke test, pilot, exploratory run, or weaker claim.
+- When a downgrade may be needed, pause that decision and give the user a decision packet:
+  1. the experiment design and setup;
+  2. the experiment goal and planned evidence;
+  3. completed, running, and missing work;
+  4. the problem encountered, supporting evidence, and root cause if known;
+  5. why a downgrade is being considered and how it changes statistical power, comparability,
+     acceptance criteria, and allowed claims;
+  6. alternatives that preserve the original plan, with expected time, resource, and risk;
+  7. a recommendation, clearly separated from the user's final choice.
+- Until the user chooses, mark the step `blocked-awaiting-user-decision`; do not silently apply
+  the downgrade or interpret partial evidence as final. If approved, record the user's decision,
+  rationale, changed scope, and limitations. Approval to downgrade never permits over-claiming.
+
 # Code reference rule
 
 - Cite every concrete code location as a markdown link with a line anchor, using a path
