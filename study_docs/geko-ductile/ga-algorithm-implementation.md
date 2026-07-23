@@ -128,11 +128,11 @@ class Population(np.ndarray, Sequence):
 重點：
 
 - `Population` **直接繼承** `np.ndarray`，所以可以 `pop[mask]`、`pop[indices]`、切片，元素是 `Individual`。
-- `pop.names`（gene 名清單）**不是** `Population` 上的 `@property`——那個 property 只定義在 `Individual`（`tuple(self.X.keys())`）。`Population` 的 `names` 是在 numpy 的 hook `__array_finalize__`（每次新建/view/切片/merge 都會被呼叫）裡設成實例屬性：`self.names = obj[0].names`，也就是**從族群裡第一個 `Individual` 複製**過來。而 `Population.__new__` / `merge` 會強制**全族群 names 必須一致**（否則 `raise ValueError`），所以「抄第一個」就代表整個族群。這也是 §2.3 `diversity()` 裡 `self.names` 的來源。
+- `pop.names`（gene 名清單）**不是** `Population` 上的 `@property`——那個 property 只定義在 `Individual`（`tuple(self.X.keys())`）。`Population` 的 `names` 是在 numpy 的 hook `__array_finalize__`（每次新建/view/切片/merge 都會被呼叫）裡設成實例屬性：`self.names = obj[0].names`，也就是**從族群裡第一個** `Individual` **複製**過來。而 `Population.__new__` / `merge` 會強制**全族群 names 必須一致**（否則 `raise ValueError`），所以「抄第一個」就代表整個族群。這也是 §2.3 `diversity()` 裡 `self.names` 的來源。
 - `pop.F` 是一個 property：**讀**會把每個 individual 的 `F` 收集成向量；**寫**（`pop.F = 向量`）會把分數逐一塞回去。`pop.G` 同理，但 setter 是 `ind.G = scores[:, i]`（把 scores 的**第 i 欄**給第 i 個 individual，見 §5 為何是欄）。
 - `pop.ary`：把整批染色體攤成一個 `[n_ind, n_params]` 的整數矩陣，給 diversity / crossover 用。
 - `pop.argsort()` 回傳**由大到小**（`np.argsort(self)[::-1]`）的 index；`pop.sort()` 就是 fitness 高的排前面。
-- `pop.diversity()`：用 `scipy` 的 `pdist` 算**兩兩染色體的 hamming 距離平均**——白話就是「這群候選彼此有多不一樣」。全都長一樣 → 0（快收斂/早熟），差異大 → 接近 1。這個值是 termination 與族群自適應的重要訊號（§6）。**逐行拆解、逐 gene 模式（`reduce=False`）與數字例子見 §2.3。**
+- `pop.diversity()`：用 `scipy` 的 `pdist` 算**兩兩染色體的 hamming 距離平均**——白話就是「這群候選彼此有多不一樣」。全都長一樣 → 0（快收斂/早熟），差異大 → 接近 1。這個值是 termination 與族群自適應的重要訊號（§6）。**逐行拆解、逐 gene 模式（**`reduce=False`**）與數字例子見 §2.3。**
 - `pop.unique()`：用 pandas `drop_duplicates` 去掉重複染色體。
 
 > 一句話：
@@ -158,11 +158,15 @@ def diversity(self, reduce=True, metric="hamming"):
     return dict(zip(self.names, div))
 ```
 
+
+
 #### 先解釋三個名詞
 
 - `pdist`**（scipy 的 pairwise distance）**：一句話＝「給我一個 `[m, n]` 矩陣（`m` 列、每列是一個 `n` 維向量），我幫你算出**所有兩兩配對**的距離」。它回傳的**不是** `m×m` 方陣，而是一條長度 `C(m,2) = m*(m-1)/2` 的**壓縮一維陣列**（只存上三角、不含對角線與重複配對）。例：`m=3` → 回傳 3 個配對距離，對應 `(0,1)、(0,2)、(1,2)`。後面的 `.mean()` 就是把這些配對距離平均成一個數。
 - `hamming`**（漢明距離）**：兩條**等長**向量「**有幾成的位置不一樣**」——注意是**比例（0~1）**，不是「差幾個」的絕對數。例：`[0,1,2]` vs `[0,9,2]`，3 個位置只有中間那格不同 → `1/3 ≈ 0.333`。它**只在乎「相不相等」**，不在乎差多少（`1` vs `9` 和 `1` vs `2` 都只算「不一樣」，各記 1）。為什麼多樣性偏偏用 hamming 而不用歐氏距離，見 [ga-faq-clarifications.md](ga-faq-clarifications.md) Q14。
 - `reduce`**這個詞**：＝「**歸約 / 把一堆值收斂成更少（通常一個）值**」，就是 functional programming 的 reduce / fold（也跟 §5 `update` 的 `reduce_fn` 是同一個字）。這裡：`reduce=True`＝把整個族群壓成**一個**總多樣性分數；`reduce=False`＝不壓，保留「**每個 gene 各自一個**多樣性」的明細。
+
+
 
 #### 逐行拆解
 
@@ -175,37 +179,43 @@ def diversity(self, reduce=True, metric="hamming"):
   - `pdist(...).mean()` 對這一欄算兩兩距離平均。因為每個「向量」只有 1 維，hamming 只會是 0（兩個 index 相等）或 1（不等），所以這個平均＝「**這個 gene 在族群裡，有幾成的配對彼此不同**」。
   - `dict(zip(self.names, div))`：把每個 gene 名對應到它自己的多樣性，回傳 `{gene名: 多樣性}` 的 dict。
 
+
+
 #### `x[:, None]` 不是「壓成一維」，而是「把一維補成二維」
 
-這是很容易看反的一點。逐 gene 模式裡，`x` **本來就是一維** `(n_ind,)`（某個 gene 在所有個體上的值）。`pdist` 規定輸入必須是二維 `[m, n]`，所以 `x[:, None]` 只是**加一個長度 1 的欄軸**，把 `(n_ind,)` 變成 `(n_ind, 1)`——**內容一個都沒少，只是換個形狀來滿足 `pdist` 的介面**。而且逐 gene 模式**一次只餵一個 gene** 進去，各欄各算各的，不會有「不同 gene 混在一起比」的問題。
+這是很容易看反的一點。逐 gene 模式裡，`x` **本來就是一維** `(n_ind,)`（某個 gene 在所有個體上的值）。`pdist` 規定輸入必須是二維 `[m, n]`，所以 `x[:, None]` 只是**加一個長度 1 的欄軸**，把 `(n_ind,)` 變成 `(n_ind, 1)`——**內容一個都沒少，只是換個形狀來滿足** `pdist` **的介面**。而且逐 gene 模式**一次只餵一個 gene** 進去，各欄各算各的，不會有「不同 gene 混在一起比」的問題。
 
 #### 一個具體數字例子
 
 假設族群有 3 條染色體、2 個 gene（`g0`、`g1`），`X = [[0,1], [0,2], [1,1]]`。
 
-**`reduce=True`（整體）**——`pdist(X, "hamming").mean()`：
+`reduce=True`**（整體）**——`pdist(X, "hamming").mean()`：
 
-| 配對 | 逐位置比對 | hamming（比例） |
-| --- | --- | --- |
-| 染0 `[0,1]` vs 染1 `[0,2]` | 位0同(0=0)、位1異(1≠2) | 1/2 = 0.5 |
-| 染0 `[0,1]` vs 染2 `[1,1]` | 位0異(0≠1)、位1同(1=1) | 1/2 = 0.5 |
-| 染1 `[0,2]` vs 染2 `[1,1]` | 位0異、位1異 | 2/2 = 1.0 |
+
+| 配對                       | 逐位置比對             | hamming（比例） |
+| ------------------------ | ----------------- | ----------- |
+| 染0 `[0,1]` vs 染1 `[0,2]` | 位0同(0=0)、位1異(1≠2) | 1/2 = 0.5   |
+| 染0 `[0,1]` vs 染2 `[1,1]` | 位0異(0≠1)、位1同(1=1) | 1/2 = 0.5   |
+| 染1 `[0,2]` vs 染2 `[1,1]` | 位0異、位1異           | 2/2 = 1.0   |
+
 
 平均 = `(0.5 + 0.5 + 1.0) / 3 ≈ 0.667` → **整體多樣性 ≈ 0.667**。
 
-**`reduce=False`（逐 gene）**——對 `X.T` 每一欄各算一次：
+`reduce=False`**（逐 gene）**——對 `X.T` 每一欄各算一次：
 
-| gene | 該 gene 在 3 個個體的值 | 配對距離 | 平均 |
-| --- | --- | --- | --- |
-| `g0` | `[0, 0, 1]` | (0,0)=0、(0,1)=1、(0,1)=1 | 2/3 ≈ 0.667 |
-| `g1` | `[1, 2, 1]` | (1,2)=1、(1,1)=0、(2,1)=1 | 2/3 ≈ 0.667 |
+
+| gene | 該 gene 在 3 個個體的值 | 配對距離                    | 平均          |
+| ---- | ---------------- | ----------------------- | ----------- |
+| `g0` | `[0, 0, 1]`      | (0,0)=0、(0,1)=1、(0,1)=1 | 2/3 ≈ 0.667 |
+| `g1` | `[1, 2, 1]`      | (1,2)=1、(1,1)=0、(2,1)=1 | 2/3 ≈ 0.667 |
+
 
 回傳 `{"g0": 0.667, "g1": 0.667}`。（此例兩個 gene 剛好都 0.667 只是巧合；一般各 gene 會不同。）
 
 #### `reduce=True` vs `reduce=False`：兩種模式各在幹嘛用
 
-- **`reduce=True`（整體純量）＝回答「整個族群收斂了沒」的單一訊號。** 這是主迴圈實際用的——每代呼叫 `pop.diversity()` 走的就是這條（§4 步驟 ③、log 的 `diversity` 欄），餵進 `termination()` 判早熟、並在 `diversity < div_thr` 時觸發 `low_diversity` decay 加速收斂（§6.1、§6.2）。
-- **`reduce=False`（逐 gene 明細）＝回答「是哪些 gene 已經收斂、哪些還在探索」。** 可拿來**診斷「某個關鍵維度（例如 `MatrixInstruction`）是不是過早塌縮成單一值」**——若某 gene 的多樣性早早掉到 0，代表族群在那個維度已經不再探索。這正呼應 §10 `ranked_round_robin` 想「刻意維持 MI 多樣性、避免整族群塌縮到單一 MI」的動機。
+- `reduce=True`**（整體純量）＝回答「整個族群收斂了沒」的單一訊號。** 這是主迴圈實際用的——每代呼叫 `pop.diversity()` 走的就是這條（§4 步驟 ③、log 的 `diversity` 欄），餵進 `termination()` 判早熟、並在 `diversity < div_thr` 時觸發 `low_diversity` decay 加速收斂（§6.1、§6.2）。
+- `reduce=False`**（逐 gene 明細）＝回答「是哪些 gene 已經收斂、哪些還在探索」。** 可拿來**診斷「某個關鍵維度（例如** `MatrixInstruction`**）是不是過早塌縮成單一值」**——若某 gene 的多樣性早早掉到 0，代表族群在那個維度已經不再探索。這正呼應 §10 `ranked_round_robin` 想「刻意維持 MI 多樣性、避免整族群塌縮到單一 MI」的動機。
 
 > 延伸的觀念澄清（屬於「為什麼能這樣算」而非「怎麼算」）另見 [ga-faq-clarifications.md](ga-faq-clarifications.md)：**為什麼所有染色體能逐位置比對、gene 數會不會不同**（Q13）、**為什麼用 hamming 而非歐氏距離**（Q14）、**演化改的是 gene 還是 gene 的值**（Q15）。
 
@@ -219,8 +229,8 @@ def diversity(self, reduce=True, metric="hamming"):
 
 ```python
 # space.py，SearchSpace.__init__（節錄）
-self.sizes  = {k: len(v) for k, v in space.items()}   # 每個 gene 有幾個候選
-self.map    = {k: v for k, v in space.items()}        # index -> 真實值（還原用）
+self.sizes  = {k: len(v) for k, v in space.items()}       # 每個 gene 有幾個候選
+self.map    = {k: v for k, v in space.items()}            # index -> 真實值（還原用）
 self.space  = {k: list(range(len(v))) for k, v in space.items()}  # gene 用整數表示
 self.n_perms = math.prod(v for v in self.sizes.values())  # 總組合數（= grid 會窮舉的量）
 ```
@@ -343,8 +353,10 @@ def sample(self, size, p=None, iter_mul=1, reuse=False):
 
 §3.4、§3.5、§8.1 已分別講了「複合 gene 怎麼展開」「gene 名怎麼長出來」「程式碼怎麼跑」。這裡補一個最容易搞混、卻沒被正面講清楚的問題：
 
-> **常見誤會：`paramGroups` 是不是「`forkParams` 的組合／排列」？**
+> **常見誤會：**`paramGroups` **是不是「**`forkParams` **的組合／排列」？**
 > **不是。** 它們是**兩種不同的輸入結構**，處理方式也不同。`paramGroups` 不是「GA 去組合 `forkParams`」，而是**「使用者事先把必須成套的參數綁成好幾套合法組合，GA 只負責挑第幾套」**。
+
+
 
 #### `forkParams`＝各參數各掃各的，GA 自由排列組合
 
@@ -376,15 +388,19 @@ paramGroups:
 
 #### 一張表看懂差別
 
-| | `forkParams` | `paramGroups` |
-| --- | --- | --- |
-| 資料結構 | dict：`{參數: [候選值...]}` | list：`[ [套餐A, 套餐B...], ... ]` |
-| 參數關係 | 彼此獨立，GA 自由笛卡兒積 | 一套內的參數必須綁在一起 |
-| 變成什麼 gene | 每個參數各一個獨立 gene | 每個「多選項」群組一個複合 gene `group_i` |
-| gene 的 index 意義 | 選這個參數的第幾個候選值 | 選這個群組的第幾套組合 |
-| 只有一種選擇時 | —（本來就至少列一個值） | 降級成 `constantParams` 常數，不進 GA（`X` 裡不會有） |
 
-> 一句話：**`paramGroups` 跟「組合」有關沒錯，但不是「GA 去組合 `forkParams`」，而是「使用者事先把必須成套的參數綁成好幾套合法組合（套餐），GA 只挑第幾套」。`forkParams` 才是「各參數各掃各的、GA 自由排列組合」。** 兩者最後都變成 `X` 裡的 gene，但一個是「單參數 gene」、一個是「整套組合的複合 gene `group_i`」。
+|                 | `forkParams`          | `paramGroups`                           |
+| --------------- | --------------------- | --------------------------------------- |
+| 資料結構            | dict：`{參數: [候選值...]}` | list：`[ [套餐A, 套餐B...], ... ]`           |
+| 參數關係            | 彼此獨立，GA 自由笛卡兒積        | 一套內的參數必須綁在一起                            |
+| 變成什麼 gene       | 每個參數各一個獨立 gene        | 每個「多選項」群組一個複合 gene `group_i`            |
+| gene 的 index 意義 | 選這個參數的第幾個候選值          | 選這個群組的第幾套組合                             |
+| 只有一種選擇時         | —（本來就至少列一個值）          | 降級成 `constantParams` 常數，不進 GA（`X` 裡不會有） |
+
+
+> 一句話：`paramGroups` **跟「組合」有關沒錯，但不是「GA 去組合** `forkParams`**」，而是「使用者事先把必須成套的參數綁成好幾套合法組合（套餐），GA 只挑第幾套」。**`forkParams` **才是「各參數各掃各的、GA 自由排列組合」。** 兩者最後都變成 `X` 裡的 gene，但一個是「單參數 gene」、一個是「整套組合的複合 gene `group_i`」。
+
+
 
 ## 4. `optimize()`：演化主迴圈逐步拆解
 
@@ -424,23 +440,17 @@ for gen in range(gen_start, self.n_gen + 1):
 
 **初始化**：`space.sample(pop_size)` 生出 `pop`（一個 `Population`，`shape = [pop_size, n_params]`，每格是整數 gene）。若太難採樣（`MaxIterationsReached`）就退而求其次用半數族群、加大採樣預算、沿用 cache。
 
-**① evaluate（真實 benchmark）**：`self.space.transform(pop)` 把整批染色體翻成 `[dict, dict, ...]`（真實參數），交給 `evaluate`。`evaluate` 就是 backend 傳進來的 `_evaluate`（§8.2），回傳 `scores`，形狀 `[n_sizes, n_individuals]`——**列是 problem size、欄是候選**。若只有一個 size 回傳一維，補成二維。
+1. **evaluate（真實 benchmark）**：`self.space.transform(pop)` 把整批染色體翻成 `[dict, dict, ...]`（真實參數），交給 `evaluate`。`evaluate` 就是 backend 傳進來的 `_evaluate`（§8.2），回傳 `scores`，形狀 `[n_sizes, n_individuals]`——**列是 problem size、欄是候選**。若只有一個 size 回傳一維，補成二維。
+2. **update（更新最佳 + 算 fitness）**：見 §5，這步同時決定 `best`（歷代最佳，MOO 時是「每個 size 各一個冠軍」）並把 `pop.F`、`old_pop.F` 算成可比較的相對分數。回傳的 `f_max` = 各 size 冠軍 GFLOPS 的平均。
+3. **統計**：
+    - `n_valid = (scores > 0).max(0).sum()`：對每個候選，看它「在任一 size 上有效」就算 1，加總 = 這代有幾個有效候選。累加進 `n_evals`（總評估數）。
+    - `f_avg`：所有**有效**分數（`>0`）的平均 GFLOPS（忽略非法/失敗的 `-1`）。
+    - `diversity`：族群多樣性（§2.2）。
+4. **termination**：把 `f_avg / f_max / diversity` 餵進 `termination()`，若最近幾代都沒進步就 `raise StopIteration`（§6）。這步也順便做**族群大小自適應**（調 `self.pop_size`）。
+5. **survival**：`old_pop = survival(old_pop, pop, pop_size)`——把「上一輪存活池 `old_pop`」與「這代 `pop`」合併，取 fitness 前 `pop_size` 個當**新存活池**（§7）。這是精英得以跨代存活的機制。
+6. **mating**：`pop = mating(old_pop, pop_size)`——**從存活池**選父母、雜交、突變、過濾，產出**下一代** `pop`（§9）。注意下一代 `pop` 全是新子代；存活的優者是透過 `old_pop` 在下一輪 survival 再被合併回來。
 
-**② update（更新最佳 + 算 fitness）**：見 §5，這步同時決定 `best`（歷代最佳，MOO 時是「每個 size 各一個冠軍」）並把 `pop.F`、`old_pop.F` 算成可比較的相對分數。回傳的 `f_max` = 各 size 冠軍 GFLOPS 的平均。
-
-**③ 統計**：
-
-- `n_valid = (scores > 0).max(0).sum()`：對每個候選，看它「在任一 size 上有效」就算 1，加總 = 這代有幾個有效候選。累加進 `n_evals`（總評估數）。
-- `f_avg`：所有**有效**分數（`>0`）的平均 GFLOPS（忽略非法/失敗的 `-1`）。
-- `diversity`：族群多樣性（§2.2）。
-
-**④ termination**：把 `f_avg / f_max / diversity` 餵進 `termination()`，若最近幾代都沒進步就 `raise StopIteration`（§6）。這步也順便做**族群大小自適應**（調 `self.pop_size`）。
-
-**⑤ survival**：`old_pop = survival(old_pop, pop, pop_size)`——把「上一輪存活池 `old_pop`」與「這代 `pop`」合併，取 fitness 前 `pop_size` 個當**新存活池**（§7）。這是精英得以跨代存活的機制。
-
-**⑥ mating**：`pop = mating(old_pop, pop_size)`——**從存活池**選父母、雜交、突變、過濾，產出**下一代** `pop`（§9）。注意下一代 `pop` 全是新子代；存活的優者是透過 `old_pop` 在下一輪 survival 再被合併回來。
-
-**⑦ checkpoint**：把 gen、族群、RNG 狀態 pickle 存檔（§10）。
+**checkpoint**：把 gen、族群、RNG 狀態 pickle 存檔（§10）。
 
 跑完（或提前停）後收尾：
 
