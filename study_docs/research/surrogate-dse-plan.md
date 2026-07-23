@@ -16,9 +16,10 @@ flowchart TD
   prop --> main["主線 (原#2): surrogate 暖啟動 GA (注入點 B, 偏重採樣)"]
   prop --> supp["支線 (原#1): analytics / Origami 假設驗證 (最低風險, 備援)"]
   prop --> fut["未來延伸 (原#3): 跨 codegen / 跨架構重用 (gated)"]
-  main --> expA["EXP-A 核心: 模型加權採樣 vs 均勻, 量省下的評估"]
-  main --> expB["EXP-B: max-min/加權 fitness ↔ regression 保護"]
-  supp --> expC["EXP-C: 抽樣量化 Origami 選最佳 tile 假設"]
+  main --> exp0["EXP-0 gate (先跑): 0a baseline 浪費量測 + 0b 靜態 vs 加寬 profile"]
+  exp0 -->|"有 headroom 才主攻"| expA["EXP-A 核心: 模型加權採樣 vs 均勻, 量省下的評估"]
+  main --> expB["EXP-B: max-min/加權 fitness ↔ regression 保護 (與 EXP-0 並行)"]
+  supp --> expC["EXP-C: 抽樣量化 Origami 選最佳 tile 假設 (與 EXP-0 並行)"]
   fut -.->|"資料可得才啟動"| later["gated: 跨版本/跨架構資料"]
 ```
 
@@ -43,17 +44,28 @@ flowchart TD
 
 ### 1.4 研究問題
 
-1. 能否用便宜的分析 / surrogate 模型「指導」GA，在**保住 top-1 / top-k** 的前提下顯著**減少實測評估次數**？
+> **前置框架修正（「加速 vs 品質」不是二選一）**：在 Ductile 的真實條件下——**固定評估預算**（`pop_size × n_gen ≈ 512 × 30 ≈ 1.5 萬`次、每次都是真編譯 + 有噪音的 GPU 實測、且 metaheuristic 無最佳保證、有 stagnation 早停）——**sample-efficiency 是單一槓桿**，可讀成「同品質、更少評估」（速度）或「同預算、更好的 `best`」（品質）。**「定位到最佳解附近」正是拉這根槓桿的手段本身**，所以你不可能只要品質而不要速度，它們是同一個改善的兩面。對 offline maintainer 而言，省下的評估也不是「省等待時間」，而是**換成覆蓋率**（同一 GPU-hours 能 tune 更多 tile/dtype/arch）。因此 RQ1 的「減少實測評估」與「提升品質」是同一目標的兩種讀法。
+
+1. 能否用便宜的分析 / surrogate 模型「指導」GA，在**保住 top-1 / top-k** 的前提下顯著**減少實測評估次數**（＝在固定預算下拿到更好的 `best`）？
 2. 注入方式該用「**硬縮範圍**」還是「**軟性偏重**」？在**模型出錯時**，如何仍保留 GA 逃脫能力（不被模型偏誤鎖死）？
 3. 模型要多細才夠？Roofline 級（只給 compute/memory-bound regime 與上界）夠不夠，還是要 Origami analytical / Formocast simulation / learned surrogate 才能真的縮到 config 粒度？
+  - **分裂式答案（本次討論收斂）**：range-shaping 的兩半需要**不同模型**。「在**已觀測過**的合法值裡集中機率」可用便宜的 **data-driven surrogate**；但要評分「**從沒 benchmark 過**的合法值」（例如 `GRVW=32`、稀疏的 `DepthU/WGM` 點）則**超出 surrogate 的訓練支撐**，是外插問題，須改用**分析 / 物理模型**（Origami / roofline 類，能從硬體第一原理推）。所以「模型要多細」不是單一答案，而是依「集中已觀測」vs「擴到未觀測」分流。
 
 ## 2. 方法：把模型接進 GA（暖啟動）
 
 ### 2.1 現狀 gap（為什麼這塊是開放的）
 
 - 目前 **tuning 層（Ductile GA）與 selection 層（Origami/Formocast）是解耦的**：Origami/Formocast 的效能模型只用來「從既有 kernel 挑一個」，**沒有回饋給 GA「該在哪個範圍、往哪偏重搜」**（見 [../geko-ductile/ga-faq-clarifications.md](../geko-ductile/ga-faq-clarifications.md) Q18、[../origami/ecosystem-and-formocast.md](../origami/ecosystem-and-formocast.md)）。
-- Ductile 的搜尋範圍來自 `--convert-config` 的**靜態規則** + 專家 **hw profile**，**不是 per-shape 的模型預測**（見 [../geko-ductile/ga-algorithm-implementation.md](../geko-ductile/ga-algorithm-implementation.md) §3.5）。
+- Ductile 的搜尋範圍來自 `--convert-config` 的**靜態規則** + 專家 **hw profile**，**不是 per-shape 的模型預測**——此點已由程式碼證實：GEKO `config_generator` 用**人工寫死的 per-arch/per-dtype profile**（`fork_params/hw_profiles/gfx942`），對所有 shape 套同一套（見 [../geko-ductile/ga-algorithm-implementation.md](../geko-ductile/ga-algorithm-implementation.md) 第 3.5 節末的 `--convert-config` 實作說明）。
 - → 「用便宜模型指導 GA 搜尋、減少實測評估」在 production **尚未走過**，正是研究線的切入點。
+
+**釐清「外擴到 TensileLite range 外」到底指什麼（三層 range，本次討論收斂）**：把「範圍」拆成三層才不會混淆——
+
+1. **GA profile 實際在搜的靜態窄清單**：GEKO GA profile（如 GRVW 的 GA 子集）當下餵給 GA 的候選。
+2. **`ValidParameters` 的可編譯合法域**：`KernelWriterAssembly._initKernel` 能編出來的值（GRVW = `[-2,-1,1,2,3,4,6,8,16,32]`）。**這是硬天花板。**
+3. **物理可實現域**：合法域內仍有 VGPR/LDS 限制會殺掉部分組合（`valid` 過濾）。
+
+「外擴到 TensileLite 外」因此拆成兩件事：**（可行且有價值）第 1→第 2 層**——per-shape 重納「合法但被 profile 省略的值」（如 `GRVW=16/32`、更多 `WGM/DepthU` 點）；**（不可行）超出第 2 層**——如 `GRVW=5`，gene 是「可編譯候選清單的整數索引」，域外值 `_initKernel` 直接 raise、fitness 無定義，**任何搜尋/模型都碰不到**，要真外擴只能改 kernel generator（codegen 工程，不在本研究線 scope）。這呼應 [../geko-ductile/ga-faq-clarifications.md](../geko-ductile/ga-faq-clarifications.md) Q17 的 hard boundary。
 
 ### 2.2 兩個注入點
 
@@ -62,10 +74,16 @@ flowchart TD
 | **A. 改候選清單（硬縮/擴範圍）** | 用模型預測後直接砍/加每個 gene 的候選值，像「更聰明的 `--convert-config`」 | **高風險**：模型錯 → 剪掉真最佳值 → GA 永遠拿不到（hard boundary，見 [../geko-ductile/ga-faq-clarifications.md](../geko-ductile/ga-faq-clarifications.md) Q17）。適合先做「只擴不砍」的保守版 |
 | **B. 軟性偏重採樣權重（推薦先做）** | 用模型預測設 sampling `weights`/`probs`（[../geko-ductile/ga-algorithm-implementation.md](../geko-ductile/ga-algorithm-implementation.md) §6.4 的現成 hook），甚至偏重 mutation（§11.2） | **較安全**：只「偏重」不「硬剪」，模型錯了 GA 仍能靠 mutation 逃出。改動最小、不動 GA 核心 |
 
+**A 與 B 其實統一成同一機制「per-shape 動態 range-shaping」（本次討論收斂）**：注入點 A 的「擴」半（候選清單成員）+ 注入點 B 的「偏重」半（採樣權重）是**同一件事的兩面**——為某個 shape「重納哪些合法值 + 往哪集中機率」。這也把 §1.4 研究者的「定位」與「擴範圍」兩個直覺統一起來，取代現行「一份靜態清單套所有 shape」。但要注意兩個代價：
+
+- **「擴」不是免費的**：加 gene 候選會改變其 cardinality，可能觸發 `ga.py` 的 `large_space` 分支把 `pop_size` 撐大（`max_sp_sz × 1.15`，見 [../geko-ductile/ga-algorithm-implementation.md](../geko-ductile/ga-algorithm-implementation.md) §6.2），且在固定預算下必然**稀釋**搜尋（空間變大、評估數不變）。所以「擴 + 集中」只有在**集中帶來的收益 > 擴大空間的稀釋代價**時才淨賺——這正是要用 EXP-0b（§5）實測的 crux。
+- **「擴到未觀測的合法值」要用分析模型、不是 data-driven surrogate**：被省略的合法值在 surrogate 訓練支撐之外（見 §1.4 RQ3 的分裂式答案）。
+
 ### 2.3 設計原則
 
 - **biasing not pruning（偏重而非硬剪）**：warm-start metaheuristic 的黃金原則。因為 gene 是硬邊界（Q17），硬剪會把模型誤差直接變成 GA 的天花板；軟性偏重則保留「模型看走眼時」的探索能力。
 - **最小改動接入**：`weights` / `weight_beta → probs` 這個 hook **已存在**，predictor 只要輸出「每個 gene 各候選的偏好權重」即可餵入，**不必改 GA 核心**——符合研究線「不動正職維護的 Ductile / GEKO 核心」的邊界。
+- **警惕與 Ductile 自身收斂機制打架（機制級風險，本次討論收斂）**：warm-start 把初始族群集中在模型預測附近，會**由建構上降低初始多樣性**。而 Ductile 對低多樣性的反應是**加速收斂、不是增加探索**：`diversity < div_thr`（0.5）會切到 `low_diversity` decay 把 `pop_size` 更快縮小（見 [../geko-ductile/ga-algorithm-implementation.md](../geko-ductile/ga-algorithm-implementation.md) §6.2），再加上 `f_avg` 與 `f_max` 停滯即早停（§6.1）。所以一個**自信卻偏錯**的模型可能造成「低初始多樣性 → 更快縮群 → 更早 stagnation 終止 → 鎖進模型 basin，且比均勻 baseline 花更少評估」——**變成「更快但更差」**。這不是泛泛的 premature convergence，而是與 Ductile 具體收斂機制的交互，**必須實測（見 §5 EXP-A 的 sub-measurement），不能假設**。緩解手段：ε-uniform 保底探索（§3.2 點 3）+ 模型影響力隨世代退火（§3.2 點 4），並只用 held-out 真實 benchmark 驗證。
 
 ## 3. 對接團隊 pipeline：切入點 / 循環依賴 / 邊界
 
@@ -129,6 +147,26 @@ flowchart TD
 
 > 每個實驗規格：**假設 / 要用的資料 / 步驟 / 評估 metric / baseline / 風險**。metric 定義一律見 §4.2。前置知識（E1/E5/E6/E7）見 [knowledge-plan.md](knowledge-plan.md)。
 
+> **先跑 EXP-0（gating，本次討論收斂）**：EXP-A / 擴範圍構想「有沒有腿」由兩個**比 tune 一個 tile 便宜得多**的量測共同決定，應在投入訓 surrogate 之前先跑。理由：warm-start 的價值不能事先假設（見 §2.3 的打架風險），也不能事先否定——它是「一個便宜量測的函數」。EXP-B/C 是**低變異、近乎獨立**的並行賭注，**與 EXP-0 並行推進、不必等 gate**。
+
+### EXP-0a（gating）— baseline 評估浪費量測
+
+- **假設**：現行 cold GA 在固定 ~1.5 萬預算下，有可觀比例的評估落在無用區、或搆不到「預算內最佳」——若成立，warm-start 才有 headroom。**注意天花板不是 90–98% OOB**（那是選擇層/窄 profile 的數字，與 GA 搜尋效率是不同分母），要直接量搜尋層的浪費。
+- **要用的資料**：只需 GA log（`best` 隨評估/世代的軌跡、diversity 軌跡），不必訓任何模型。
+- **步驟**：因為「預算內最佳」不可直接觀測，用兩個便宜代理——(a) **seed 變異**：同一 shape 多個 seed 跑 cold GA，看最終 `best` 的變異（變異大 ⇒ 沒穩定收斂 ⇒ warm-start 有空間）；(b) **預算延伸**：把預算拉到 2–3×，看 `best` 是否還在爬（還在爬 ⇒ 1.5 萬預算把品質留在桌上，好的起點能更快搆到）。
+- **評估 metric**：`best` 的 seed-變異、預算延伸的邊際增益曲線。
+- **baseline**：現況 cold（均勻採樣）GA。
+- **風險/判讀**：若兩個代理都顯示「浪費小、已穩定收斂」→ warm-start 天花板低，EXP-A 應降級;反之則 EXP-A 上升為主攻。**此實驗同時 gate EXP-A 排名 + 驗證整條 thesis。**
+
+### EXP-0b（gating）— 靜態 vs 加寬 profile A/B
+
+- **假設**：GEKO 靜態 GA profile 省略了部分合法值（如 `GRVW=16/32`、稀疏 `WGM/DepthU` 點）；若對 hot shape「重納這些合法值」能找到更好的 `best`，則 per-shape 擴範圍有 headroom（否則靜態 profile 已夠、擴只是稀釋）。
+- **要用的資料**：同一組 hot shape，分別用「靜態 GA profile」與「加寬（重納省略合法值）的 profile」跑 GA。
+- **步驟**：(1) 取 GEKO GA profile 為 baseline；(2) 按 `ValidParameters` 合法域重納被省略的值成加寬 profile；(3) 兩者各跑 GA（同預算）；(4) 比較 `best` 與達到同等 `best` 的評估數。
+- **評估 metric**：加寬 profile 的 `best` uplift、以及是否被固定預算稀釋（達同等 `best` 是否反而更慢）。
+- **baseline**：靜態 GA profile 的 `best`。
+- **風險**：加寬可能觸發 `large_space` pop 膨脹（§2.2），需一併記錄 eval 成本；若 uplift 為零 ⇒ 擴範圍構想無腿，聚焦「集中」半即可。
+
 ### EXP-A（核心）— 模型加權採樣暖啟動 GA
 
 - **假設**：用模型預測設 GA sampling `weights`，可在**保住 top-1** 的前提下，比均勻採樣**少 X% 評估 / 世代**達到同等 `best`。
@@ -137,6 +175,7 @@ flowchart TD
 - **評估 metric**：省下的評估次數、top-k 命中率、tuning-time vs quality 取捨曲線。
 - **baseline**：均勻採樣 GA（＝現況 Ductile）。
 - **風險**：predictor 偏誤 → 守 biasing-not-pruning（軟性偏重、保留 mutation 逃脫，§2.3）；若拿 Origami 當模型，注意循環依賴（§3.2）。
+- **必做 sub-measurement（量「更快但更差」的打架風險，§2.3）**：除了比「達同等 `best` 的評估數」，還要追蹤——(1) **diversity 軌跡**（warm-start 組是否更早跌破 `div_thr`）；(2) **實際 gen-count-to-termination**（是否比均勻 baseline 更早 stagnation 早停）；(3) **收斂 basin identity**（warm-start 的 `best` 是否落在與均勻 baseline 不同、且更差的山頭）。若出現「更早終止 + 更差 basin」即坐實打架，需加大 ε-uniform 保底或退火（§3.2）。
 
 ### EXP-B — max-min / 加權 fitness ↔ regression 保護
 
