@@ -484,6 +484,8 @@ example03 的做法最保守：K 迴圈結束後直接 `s_nop 15` 兩次（L166-
 > 這就是讀 TensileLite `.s` 時看到「一批 `ds_read` → 一批 `v_mfma` → 又一批 `ds_read`」交錯的原因：不是隨機
 > 排列，而是刻意用 prefetch 去蓋 MFMA 的延遲。`s_waitcnt`（vmcnt / lgkmcnt）與計數器語意見
 > [cdna3 §3.6](../internal_docs/cdna3-mi300-architecture-and-isa.md) 與 [gfx942-isa-reference.md](gfx942-isa-reference.md)。
+>
+> **TensileLite 端怎麼決定這個交錯**（兩層排程器、SIA=0/1/2/3、`s_waitcnt` 的 count-based 算法）見 [../hipblaslt/instruction-scheduling-and-latency.md](../hipblaslt/instruction-scheduling-and-latency.md)。
 
 ---
 

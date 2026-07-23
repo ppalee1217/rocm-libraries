@@ -135,6 +135,8 @@ flowchart TD
 
 這是 KernelWriter 最精華、也最難的部分：怎麼把 global load、LDS write、LDS read、MFMA **交錯排在一起**，讓記憶體搬運與計算重疊，藏住延遲。
 
+> **本節是概觀。** 想深入「SIA=0/1/2/3 各自怎麼排、指令怎麼被選出來、`s_waitcnt` 怎麼算、以及一個 SIA=3 迭代長什麼樣（含 tuning 旋鈕如何逐格影響產出）」，見專篇 [instruction-scheduling-and-latency.md](instruction-scheduling-and-latency.md)。
+
 ### 兩層排程器
 
 註解（[L623–L652](../../projects/hipblaslt/tensilelite/Tensile/KernelWriter.py#L623)）點明 Tensile 用**兩層排程**：

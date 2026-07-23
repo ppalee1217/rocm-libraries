@@ -17,7 +17,7 @@ Component 檔」的地圖，否則會迷失在數萬行 Python 裡。
   - `MAC_*.py`：發 MFMA / FMA（連結 mfma-deep-dive.md）
   - `LocalRead.py` / `TensorDataMover.py`：LDS↔VGPR、global→LDS 搬運
   - `GlobalWriteBatch.py`：輸出 tile 寫回 HBM
-  - `SIA.py` / `CustomSchedule.py`：指令排程（prefetch / 交錯）
+  - `SIA.py` / `CustomSchedule.py`：指令排程（prefetch / 交錯）——SIA=0/1/2/3 語意、兩層排程器、waitcnt 算法的深入說明見 [instruction-scheduling-and-latency.md](instruction-scheduling-and-latency.md)
   - `GSU.py` / `LSU.py` / `StreamK.py`：K 切分與 persistent kernel 排程
 - 「我要改 prefetch / 排程 / read-write / MFMA 發射」分別動哪個檔
 

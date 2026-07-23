@@ -243,7 +243,7 @@ Cijk_Alik_Bljk_HHS_BH_HA_S_SAV_UserArgs_MT128x96x64_MI16x16x1_SN_..._MIWT2_6_...
 - **依你的 K 調整 `DepthU`** — compute-bound / 大 K 用較大值(128、160);memory-bound / 小 K 用較小值(32、64)。
 - **`TransposeLDS` 與 `LdsPadA`/`LdsPadB` 至關重要** — 它們控制 LDS bank conflict,影響很大。
 - **`PrefetchGlobalRead` / `PrefetchLocalRead`** — 試試 0/1/2(注意 `PrefetchLocalRead: 2` 在某些設定下可能產生不正確的 kernels)。
-- **`ScheduleIterAlg`** — 通常 `1` 與 `3` 最佳。
+- **`ScheduleIterAlg`** — 通常 `1` 與 `3` 最佳。SIA=0/1/2/3 各自在 codegen 端排出什麼、以及它怎麼與 PGR/PLR 一起驅動兩層排程器，見 [../hipblaslt/instruction-scheduling-and-latency.md](../hipblaslt/instruction-scheduling-and-latency.md)。
 - **監控溫度** — 使用 `SleepPercent`(25–50)+ `NumWarmups`,以避免長時間執行時因 throttling 造成的偏差。
 
 ### People / contact(相關人員 / 聯絡人)

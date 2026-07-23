@@ -44,6 +44,8 @@
 | `WorkGroupMapping`（`WGM`） / `WorkGroupMappingXCC` | tile→CU/XCD 的排序（L2 局部性） | 進階；搭 `ClusterDim` |
 | `1LDSBuffer` | 單/雙 LDS buffer | 0/1 |
 
+> 這些旋鈕在 codegen 端**實際怎麼改變指令排程與 latency-hiding**（`ScheduleIterAlg` 0/1/2/3 各排出什麼、PGR/PLR 如何餵進兩層排程器、`s_waitcnt` 怎麼算、指令怎麼被選出來），見 [instruction-scheduling-and-latency.md](instruction-scheduling-and-latency.md)。
+
 ## MatrixInstruction 與 tile 階層
 
 9 元素中，前段（`M,N,K,B,MIBlockM`）多由硬體 + 型別固定，**真正自由的常是後四個**

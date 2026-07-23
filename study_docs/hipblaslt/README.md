@@ -169,7 +169,7 @@ flowchart LR
 
 延伸：想深入「一個 workgroup 該算多大的輸出塊」這個最關鍵的 tuning 旋鈕——MacroTile 是什麼、怎麼由 `ThreadTile`/`WorkGroup`/`MatrixInstruction` 推導、為什麼調它會牽動 register/LDS/occupancy，以及怎麼 tune——見 [macrotile-tuning.md](macrotile-tuning.md)（搭配 [gemm-optimization.md](gemm-optimization.md) 與 [tuning-config-reference.md](tuning-config-reference.md) 一起讀）。
 
-想深入 codegen 最內層（kernel 組語**怎麼一條一條被寫出來**）：先看 [kernelwriter-implementation.md](kernelwriter-implementation.md)（導演/執筆者分工），再看 [rocisa.md](rocisa.md)（rocisa 積木庫本身：指令物件、`Module` 樹、Nanobind 綁定、怎麼新增一條指令、與 StinkyTofu 的橋接）。
+想深入 codegen 最內層（kernel 組語**怎麼一條一條被寫出來**）：先看 [kernelwriter-implementation.md](kernelwriter-implementation.md)（導演/執筆者分工），再看 [rocisa.md](rocisa.md)（rocisa 積木庫本身：指令物件、`Module` 樹、Nanobind 綁定、怎麼新增一條指令、與 StinkyTofu 的橋接）。想專門搞懂「**底層怎麼排 ISA 指令、怎麼決定用哪些指令、藏 latency 的 strategy**」（含 `ScheduleIterAlg` 0/1/2/3 語意、`s_waitcnt` 算法、與 tuning 旋鈕的因果鏈），見 [instruction-scheduling-and-latency.md](instruction-scheduling-and-latency.md)。
 
 想拉高一層看 **hipBLASLt / TensileLite / StinkyTofu / origami / GEKO（含 Ductile）彼此如何交互**（誰在建置時、誰在執行時、誰呼叫誰），見 [component-interactions/README.md](component-interactions/README.md)。
 
