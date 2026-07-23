@@ -49,8 +49,9 @@ Origami 用分析式延遲模型「不跑就估」挑最快 config；Formocast �
 （內嵌於 Origami）。Origami 白話導讀見 [origami/README.md](origami/README.md)。
 - **MatrixInstruction** — 9 元素 `[M,N,K,B,MIBlockM,WaveTileM,WaveTileN,WaveM,WaveN]`，決定 tile 幾何。
 - **MacroTile / WaveTile / MI tile** — 三層 tile：workgroup 級 / 單 wave 級 / 單硬體指令（16×16）級。
-- **DepthU** — K 方向 unroll 深度（大 K 用大值，小 K 用小值）。
-- **GlobalSplitU（GSU）/ LocalSplitU** — 把 K 切給多 workgroup / wave，輸出端需 reduction/atomic。
+- **DepthU** — K 方向 unroll 深度（大 K 用大值，小 K 用小值）。LDS 一次只放 DepthU 深的 K 切片，不是整條 K。
+- **bpe（bytes per element）** — 每個元素的位元組數：FP32=4、FP16/BF16=2、FP8/BF8=1、FP4=0.5。用來把「元素數」換算成「byte 數」（如 `LDS ≈ DepthU × MacroTile × bpe`）；型別越小佔的 LDS/VGPR/頻寬越少。
+- **GlobalSplitU（GSU）/ LocalSplitU** — 把 K 切給多 workgroup / wave，輸出端需 reduction/atomic。GSU 用於 M/N 太小、平面切不出足夠 workgroup（瘦長矩陣、K 很大）時，靠拆 K 產生更多平行塊鋪滿 CU。詳見 [hipblaslt/tensilelite-pipeline.md](hipblaslt/tensilelite-pipeline.md) 的 GSU Q&A。
 - **ProblemType vs Problem** — `ProblemType` 是問題「規格」（op/型別/transpose/bias…）；`Problem` 是一組
 具體 `[M,N,Batch,K]`。
 - **epilogue** — GEMM 主乘累加後融合的尾段運算（bias、GELU/ReLU/Swish、scaling 等），會選到不同 solution family。它不是某種特殊模式，而是**任何 GEMM kernel 本來就有的尾段**：主迴圈在暫存器累加出純 `A*B` 後，epilogue 在把結果寫回 global memory「之前」順手做 `α·acc + β·C`、加 bias、套 activation、型別轉換，全程只花一趟記憶體來回（`β=0` 還會直接跳過讀舊 C）。深入白話推導見 [hipblaslt/gemm-optimization.md](hipblaslt/gemm-optimization.md) 的〈GEMM 公式語意〉。
