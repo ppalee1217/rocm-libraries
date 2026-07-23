@@ -59,9 +59,12 @@
 - [x] Ductile 的染色體具體包含哪些 gene、`--convert-config` 擴張了哪些值域
   - gene：`DepthU`, `GlobalReadVectorWidthA/B`, `NonTemporalA/B/C/D`, `StaggerU`, `WorkGroupMapping`, `StreamK`, `VectorWidthA/B` 等（每個參數/離散選項一個 gene）。
   - `--convert-config` 擴張例：GRVW `[2,8]→[-1,-2,2,3,4,6,8]`；`NumElementsPerBatchStore`、`NonTemporal*`、`StaggerU`、`WorkGroupMapping/XCC` 改為更廣的離散集合。細節見 [ductile-tensilelite-tuning.md](../internal_docs/ductile-tensilelite-tuning.md) §3.2。
+  - **擴值實作已定位（2026-07-22 程式碼查證）**：真正決定「擴哪些/擴多少」的 in-repo 邏輯在 **GEKO config generator**（branch `origin/users/pkamd/geko_pr`）：`projects/hipblaslt/utilities/geko/geko/config_generator/fork_params/hw_profiles/gfx942/optimization_param.py`。機制＝**兩套 per-arch profile**（`GFX942Params` heuristic 窄 vs `GFX942GAParams` GA 寬，由 `config["GA"]` 切換），多數參數硬寫寬離散清單，GRVW 則由 `_compute_grvw()` 依資料型別 byte 數的 dword/dwordx4 約束算 `[-1,-2] + valid[min..max]`（fp16 → `[-1,-2,2,3,4,6,8]`）。**這是靜態 per-arch/per-dtype 規則、不看 per-shape、不跑模型**——正是研究主線要補的縫。逐行拆解見 [../geko-ductile/ga-algorithm-implementation.md](../geko-ductile/ga-algorithm-implementation.md) 3.5 節末的 `--convert-config` 實作說明。
 - [x] GEKO `--tune` 的實際流程與輸出（`build_*/3_LibraryLogic`、`final_libs/`）
   - 流程：configure（解析 log→分 GEMM type→產 tensilelite config）→ optimize（GA via Ductile 跨 GPU tune→merge→benchmark→filter）→ integrate（`TensileMergeLibrary` 回寫→rebuild）。
   - 輸出：`optimizations/build_*/3_LibraryLogic/*.yaml`（per-GEMM logic）→ merge 成 `libs/`→ 篩選後 `final_libs/gfx*_*.yaml`。細節見 [gemm-kernel-optimization-geko.md](../internal_docs/gemm-kernel-optimization-geko.md)。
-- [ ] Ductile / GEKO / TuningDriver repo 是否可取得（07-08 與 mentor 確認）
-  - 已知：GEKO 隨 hipBLASLt checkout 提供，位於 `projects/hipblaslt/utilities/geko`（不需另外 clone）。**待確認：** Ductile / TuningDriver 是否在同 repo 或需另外授權。
+- [x] Ductile / GEKO / TuningDriver repo 是否可取得（07-08 與 mentor 確認；2026-07-22 程式碼查證補齊）
+  - **GEKO**：位於 `projects/hipblaslt/utilities/geko`，在 branch `origin/users/pkamd/geko_pr`（隨 hipBLASLt checkout 提供，不需另外 clone）。
+  - **Ductile GA 引擎**：在 branch `origin/ductile_integration` 的 `projects/hipblaslt/tensilelite/Tensile/ductile/`（GA 引擎）與 `Tensile/backends/ductile_backend.py`（與 TensileLite 串接）；不在 develop / working tree。
+  - **`--convert-config` CLI flag**：把上述兩個 branch 的 hipblaslt 樹 grep 過皆**查無**此字串 → 屬**外部 Ductile `TuningDriver`**（不在本 repo）。但其「值域擴張」的等價邏輯在 GEKO config_generator（見上一則）。**待確認：** 外部 TuningDriver 本身是否需另外授權。
 - [ ] 我的研究切角與正職工作的邊界（避免重疊）

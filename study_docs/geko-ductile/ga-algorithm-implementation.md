@@ -312,6 +312,27 @@ def sample(self, size, p=None, iter_mul=1, reuse=False):
 
 （用 `--convert-config` 時這些 gene 的**值域會被撐大**，例如 `GlobalReadVectorWidthA/B` 從 `[2,8]` → `[-1,-2,2,3,4,6,8]`，但 gene 名不變。）
 
+#### `--convert-config` 擴值的真實實作在哪、怎麼決定「擴哪些/擴多少」
+
+上面那句常被誤讀成「GA 自己會把值域外插撐大」。**其實不是**——GA 全程只在「建 `SearchSpace` 時就凍結的整數 index 清單」裡跳（§3.1、§11.2），**擴值發生在 GA 開跑之前的 config 產生階段**。經程式碼查證，這個擴值邏輯的 in-repo 實作在 **GEKO 的 config generator**（branch `origin/users/pkamd/geko_pr`）：`projects/hipblaslt/utilities/geko/geko/config_generator/fork_params/hw_profiles/gfx942/optimization_param.py`。機制有三個重點：
+
+1. **兩套 profile，用 `config["GA"]` 切換**（`fork_params/__init__.py` 的 factory）：`GFX942Params`（heuristic，範圍窄、且隨矩陣尺寸變）vs `GFX942GAParams`（GA，範圍寬、探索性）。所謂「擴值後的 config」就是**切到 GA profile**，不是把某個 list 加長。同一參數兩套 profile 給的清單不同——例如 GRVW，heuristic 只給 `[4//dsz, 16//dsz]`（fp16 → `[2,8]`），GA profile 則給下面算出的寬清單。
+
+2. **GRVW 例子由 `_compute_grvw()` 算出來**（不是硬寫）：
+
+   ```python
+   def _compute_grvw(self):
+       valid = (1, 2, 3, 4, 6, 8, 16)          # 候選母體
+       dsz = dataSize[self._gt.data_type]       # 每元素 byte 數
+       min_grvw = max(1, int(4 / dsz))          # 下限：湊滿一個 dword(4B)
+       max_grvw = min(max(valid), int(16 / dsz))# 上限：塞滿 dwordx4(16B)
+       return [-1, -2] + list(valid[valid.index(min_grvw):valid.index(max_grvw)+1])
+   ```
+
+   代 fp16（`dsz=2`）：`min=2`、`max=8` → 從 `valid` 切出 `(2,3,4,6,8)`，再固定 prepend `[-1,-2]` → **`[-1,-2,2,3,4,6,8]`**，精確重現本註記的例子。所以「擴哪些值」＝從一個母體按**資料型別的 dword/dwordx4 硬體約束**切片、再補上 `-1/-2` 兩個自動 sentinel（意義見 §3.5）；換 fp8/fp32 上下限就不同。其餘參數（`WorkGroupMapping`、`DepthU`、`StaggerU`…）在 GA profile 多半是**硬寫的寬離散清單**。
+
+3. **字面的 `--convert-config` CLI flag 不在本 repo**：把 `ductile_integration` 與 `geko_pr` 兩個 branch 的 hipblaslt 樹都 grep 過，`--convert-config` 字串皆查無 → 它屬於**外部 Ductile `TuningDriver`**。但 GEKO 的 config_generator 就是它的**in-repo 等價實作**（把 ForkParameters 值域撐寬給 GA）。重點結論：**擴值是「人工寫死的 per-arch/per-dtype 靜態規則」，不看 per-shape、不跑模型**——這正是研究線（[../research/surrogate-dse-plan.md](../research/surrogate-dse-plan.md) §2.1）想補的縫。
+
 補一個常被忽略的細節：就算某參數進了 `X`，若它的**候選數** `< 2`（只有一個值可選），mutation 會把它的突變機率設成 0（§11.2，`self.space.size(k) < 2` 的 gene weight 設 0），所以它實質上固定不動。真正「會演化」的 gene 是候選數 ≥ 2 的那些。
 
 > 一句話：**gene 名 = 你這次 tuning YAML 的** `forkParams` **key（多選項** `paramGroups` **會多出** `group_i` **複合 gene）；規則是「在** `forkParams` **裡、且有 >1 候選值的參數才是 gene，只有單一選擇的會降級成** `constantParams` **常數」。文件裡的** `DepthU`**、**`GlobalReadVectorWidthA/B` **只是常見範例，不是固定清單。**
