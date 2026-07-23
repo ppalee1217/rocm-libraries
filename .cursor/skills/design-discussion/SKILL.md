@@ -139,6 +139,31 @@ Main agent 是透明 relay，不得把自己的偏好偽裝成另一方意見。
 - 遵守目標文件既有語言、格式與 repo 文件規範。
 - 不覆蓋無關的使用者變更。
 
+## 多 milestone 實驗的文件生命週期
+
+當目標是由多個 milestone / step 組成的研究或實驗計畫時，parent plan 是 Step 0 的唯一 target document；從其中明確列出的 milestone 派生出的設計文件與實驗報告，視為同一目標的受控交付物，不需逐一詢問路徑。
+
+1. **規劃階段：每個 milestone / step 各建一份設計文件**
+   - parent plan 必須提供文件索引、執行順序、dependency、gate、目前狀態與設計文件連結。
+   - 每份設計文件至少要直白說明：
+     - 實驗假設是什麼，以及什麼觀察會推翻它。
+     - 實驗預期目標是什麼；成功、失敗、降級各代表什麼。
+     - 實驗結果能說明什麼、不能說明什麼，避免超出 evidence boundary。
+     - 實作範圍、輸入、輸出、變因、control、固定條件與 measurement boundary。
+     - 可執行步驟、程式或設定修改點、artifact / logging schema、驗證方法。
+     - acceptance criteria、falsification condition、停止條件與下一步決策。
+     - 預期可能遇到的狀況、診斷證據、處理方法與無法排除時的降級方案。
+   - 尚未執行的實驗只能寫 hypothesis、protocol 與預期判讀；不得捏造數字、結果或已解決狀況。
+2. **執行完成後：另建該步驟的完整實驗報告**
+   - 報告與設計文件分開保存，不用事後結果覆寫 preregistered design。
+   - 只有實驗已實際完成才建立報告；未完成時由 parent plan / design doc 記錄狀態與 blocker。
+   - 報告至少包含：原始假設、預期目標、實際環境與 revision、相對設計的偏差、實際結果、結果能與不能支持的結論、遇到的狀況、root cause、解決方法、未解問題、可重現指令與 artifacts、後續決策。
+   - negative / inconclusive result 也必須建立報告，不可只報成功案例；若證據不足，明確標成 underpowered 或 inconclusive。
+3. **可追溯性**
+   - 每份 design 要連回 parent plan，並預先指定未來 report 路徑。
+   - 每份 report 要連回對應 design，逐項回答原 acceptance criteria 與 falsification conditions。
+   - 若執行中修改 hypothesis、metric 或門檻，保留原設計並在 report 記錄變更時間、理由與影響，不可把事後門檻偽裝成預註冊條件。
+
 ## 完成條件
 
 只有以下條件全數成立才算完成：
@@ -148,6 +173,7 @@ Main agent 是透明 relay，不得把自己的偏好偽裝成另一方意見。
 - Factual crux 已以可取得的證據查核，或明確列為未驗證。
 - A、B 都明確確認同一份 candidate consensus。
 - Main agent 已把 unified design 寫回唯一、正確的 target document。
+- 若為多 milestone 實驗，parent plan 已建立完整索引，且每個 milestone / step 都有可執行的獨立設計文件與預先指定的 report 路徑。
 
 最後以繁體中文簡述：
 
