@@ -1,6 +1,6 @@
 ---
 name: design-discussion
-description: Uses two independent GPT-5.6 Sol subagents to deliberate experiment or implementation design, cross-examine each other's assumptions and evidence, and confirm a shared conclusion before the main agent records the resulting plan in the corresponding document. Use for experiment design, architecture or approach selection, hypothesis validation strategy, ambiguous result interpretation, and other consequential design-direction decisions. Do not use for lookups, mechanical edits, implementation execution, or choices with an obvious conventional default.
+description: Uses two independent GPT-5.6 Sol subagents to deliberate experiment or implementation design, repeatedly cross-examine assumptions and evidence until both explicitly confirm one consensus, and preserve the resulting decision for the governing design and experiment report. Use for experiment design, architecture or approach selection, hypothesis validation strategy, ambiguous result interpretation, unexpected implementation or verification design issues, and other consequential design-direction decisions. Do not use for lookups, mechanical edits, implementation execution, or choices with an obvious conventional default.
 ---
 
 # Design Discussion

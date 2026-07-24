@@ -35,20 +35,64 @@ prior context; explanations must build up from the basics.
   completion status must wait. If an early report is explicitly required, label it
   `partial` / `in-progress` and list every pending run and unavailable conclusion.
 
-### Verify every milestone before starting the next
+### Close every indexed checkpoint before starting the next
 
-- When a specification defines ordered or dependent milestones, work on exactly one active
-  milestone at a time: implement it, independently verify it, fix and re-verify it, and only
-  then consider a downstream milestone.
-- Do not ask one implementer to build multiple milestones and verify them only after the batch.
-  Do not modify downstream milestone files speculatively while an upstream milestone is still
-  unverified.
-- `CHANGES_REQUIRED`, `BLOCKED`, `FAIL`, missing evidence, or a still-running verification stops
-  that dependency path. Advance only after the current milestone verifier returns `PASS`, or
-  along a different branch that the design explicitly authorizes from a verified gate outcome.
-- A broad request such as "implement all milestones" authorizes the full sequence, not a single
-  batch implementation. Preserve a separate baseline, scope, plan, evidence set, and verdict for
-  every milestone.
+- The execution unit is one stable checkpoint explicitly indexed by the authoritative parent
+  experiment plan. `step` and `milestone` are aliases only when they refer to that indexed
+  checkpoint; a command, repair iteration, day, stage, or subtask is not automatically a new
+  checkpoint.
+- The parent plan and its explicitly linked checkpoint design form the authoritative bundle.
+  Before execution, uniquely resolve the checkpoint ID, goal, dependency/gate, acceptance and
+  evidence boundary, report or blocker target, status/outcome vocabulary, implementation
+  whitelist, and delivery/commit whitelist. If any of these are materially ambiguous, stop and
+  clarify or amend the design instead of inventing them.
+- At the start of every checkpoint, read and record the current committed repository rule and
+  `implement-verify-loop` revision. The latest rule is the orchestration and completion floor;
+  it does not silently rewrite scientific hypotheses or thresholds. Align a conflicting locked
+  design through a traceable amendment or new effective lock before execution.
+- Work on exactly one active checkpoint at a time. Give it two independent plans, a fresh
+  implementer, and a fresh verifier; repair and re-verify until the verifier returns a valid
+  technical `PASS`. A broad request to implement all checkpoints authorizes the sequence, not a
+  batched implementation or batched verification.
+- Technical `PASS` enters `VERIFIED_PENDING_CLOSEOUT`; it is not checkpoint completion. The main
+  agent must then publish the checkpoint's formal experiment report, update the authoritative
+  parent plan, obtain the verifier's read-only `CLOSEOUT_ACK`, commit exactly the checkpoint
+  delivery whitelist, and audit the resulting commit. Only then mark `CHECKPOINT_COMPLETE` and
+  start a dependent checkpoint.
+- The repository owner has authorized one isolated checkpoint closure commit for each
+  `implement-verify-loop` checkpoint in this experiment sequence. Do not ask again for that
+  commit. This authority does not include push, unrelated workflows, unrelated dirty changes,
+  or files outside the frozen delivery whitelist.
+- Positive, negative, and inconclusive scientific outcomes all require the formal report and
+  closure commit when execution and evidence integrity pass. A predeclared durable `BLOCKED`
+  state may create only its specified blocker memo and blocked-state commit; it is not a formal
+  experiment report, does not complete the checkpoint, and does not unlock dependents.
+  `skipped_by_gate` or `not_activated` checkpoints get no fabricated report or commit of their
+  own; record them in the upstream checkpoint's report, parent update, and closure commit.
+- `CHANGES_REQUIRED`, transient evidence requests, `BLOCKED`, missing evidence, a still-running
+  verification, a missing report/parent update, a failed closeout audit, or a failed commit stops
+  that dependency path. Never modify downstream checkpoint files speculatively.
+- Preserve separate baselines, Plan-A/Plan-B, evidence, adjudication, report, delivery manifest,
+  verdict, and closure audit for every checkpoint. Keep transient `agent_run/` evidence out of
+  the commit and preserve unrelated user changes and pre-existing index entries.
+
+### Make every checkpoint report a durable decision record
+
+- The committed report must be self-contained. Restate the frozen oracle and evidence boundary;
+  record exact commands, working directories, exit codes, raw artifact hashes, every
+  implement/verify iteration, findings, repairs, deviations, actual outcome, verified gate, and
+  what the evidence can and cannot support.
+- For every agent-decided issue, record the trigger, affected invariant, material alternatives,
+  supporting and opposing evidence, assumptions, participants, decision, rationale and
+  trade-offs, implementation/measurement/gate/claim impact, resolution, remaining uncertainty,
+  and why user review was or was not required.
+- When `design-discussion` was used, also synthesize both reviewers' substantive objections,
+  accepted and rejected alternatives, shared consensus, and both explicit `AGREE` responses.
+  Do not paste raw chat or private chain-of-thought. A link to ignored transient evidence is not
+  a substitute for the durable report.
+- Do not embed a closure commit's own SHA, a `SELF` placeholder, or a delivery-manifest hash in
+  the tracked report or parent plan. Link the commit through stable checkpoint/report identity,
+  commit trailers, Git history, the transient post-commit audit, and the final handoff.
 
 ### GPU and ROCm execution environment
 
@@ -78,11 +122,37 @@ prior context; explanations must build up from the basics.
   and a plausible mechanism. State the measurement boundary, sample size, repetitions, metrics,
   and what the result cannot support.
 
+### Resolve unexpected design issues by consensus before escalating
+
+- When implementation or verification exposes an unplanned consequential design issue, do not
+  immediately ask the user to choose a repair and do not let the main agent decide alone. Use
+  `design-discussion` with two additional fresh GPT-5.6 Sol xhigh subagents that receive the
+  same evidence and neutral prompt.
+- Keep the two original reviewer threads independent for their first pass, then relay their
+  complete positions, cross-examine factual assumptions, gather missing repo/artifact evidence,
+  and revise one candidate consensus until both explicitly return `AGREE`. Do not impose an
+  arbitrary debate-round limit or treat silence, majority, or the main agent's preference as
+  consensus.
+- If the consensus preserves the original plan, frozen goal, acceptance criteria, planned
+  evidence, report target, checkpoint DAG/gates, approved whitelist/authority invariants, and
+  claim boundary, record the adjudication and continue without asking the user again.
+- Ask the user to review only when consensus at any point proves that continuing requires
+  breaking or modifying the original plan or authority. A plan change includes a changed goal,
+  acceptance threshold, evidence source, report target, checkpoint order/gate, preregistered
+  fixture/measurement boundary, approved whitelist, immutable lock/lifecycle invariant, or
+  allowed claim.
+- `CHANGES_REQUIRED` alone is not a plan change. A plan-preserving in-scope repair, fresh rerun,
+  correctly isolated test harness, or explicitly designed negative branch does not require
+  repeated human approval.
+- This consensus rule cannot invent the user's initial intent or grant missing authority for
+  commit/push, credentials, external-system writes, dependency installation, container
+  mutation, or other platform-required approvals.
+
 ### Downgrades require the user's decision
 
 - Never autonomously downgrade an experiment or implementation. A downgrade includes reducing
   workloads, runs, seeds, metrics, validation, acceptance criteria, or scope; replacing an
-  original baseline with a proxy; skipping a milestone; or converting a planned confirmation
+  original baseline with a proxy; skipping a checkpoint; or converting a planned confirmation
   into a smoke test, pilot, exploratory run, or weaker claim.
 - When a downgrade may be needed, pause that decision and give the user a decision packet:
   1. the experiment design and setup;

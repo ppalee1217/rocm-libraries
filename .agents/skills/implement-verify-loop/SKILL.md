@@ -1,14 +1,17 @@
 ---
 name: implement-verify-loop
 description: >-
-  Implements and verifies exactly one scoped milestone at a time with four
-  GPT-5.6 Sol subagents: two independent planners, a fresh implementer, and an
-  independent verifier. For a multi-milestone specification, repeat the entire
-  plan → implement → verify/fix loop sequentially for each dependency-ready
-  milestone; never start or modify a downstream milestone before the current
-  milestone passes independent verification. Use for experiments or scoped
-  milestones with complete acceptance criteria. Do not use for design
-  decisions, trivial edits, or ambiguous goals.
+  Implements, independently verifies, reports, and commits exactly one stable
+  checkpoint indexed by an authoritative parent experiment plan, using two
+  independent planners, a fresh implementer, and a fresh verifier. Routes
+  consequential design issues through two additional fresh design-discussion
+  subagents until both confirm one consensus. For a multi-checkpoint
+  experiment, repeats the full plan → implement → verify/fix → report → parent
+  update → closeout audit → commit loop sequentially; never starts downstream
+  work before the active checkpoint is committed and audited. Use for
+  experiment checkpoints with complete acceptance criteria and report targets.
+  Do not use for initial design, rules maintenance, trivial edits, or ambiguous
+  goals.
 ---
 
 # Implement and Verify Loop
