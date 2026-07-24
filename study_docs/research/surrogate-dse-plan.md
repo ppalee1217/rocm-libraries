@@ -1,211 +1,537 @@
-# Surrogate-assisted DSE 研究計畫（執行計畫）
+# Formocast-Factorized Ductile Guidance — Stage-Gated Internship Research Charter
 
-> **狀態：方向已收斂**——主線＝用便宜模型暖啟動 GA 搜尋以減少 tuning 評估（見 §1）。本檔是**執行計畫**（方向、方法、實驗、metric、紀律）；**知識前置**（要先學什麼、順序、優先級）見 [knowledge-plan.md](knowledge-plan.md)。（原本綁定的 8 週 roadmap 時程已 deprecated，本檔不再引用其日期。）
+> **文件角色：**研究 charter（研究問題、範圍、證據邊界與可宣稱結論的唯一權威）。
 >
-> **平台範圍：** 資料集、predictor、analytics 全部**鎖定 MI300（gfx942 / CDNA3）**——所有 benchmark 資料都在這顆卡上生成。**MI350（gfx950 / CDNA4）為後續 migrate 目標**，跨架構泛化屬未來延伸（§1.3）。官方規格見 [../isa/spec-sources.md](../isa/spec-sources.md)。
+> **狀態：**`stage_gated_roadmap_approved`／`pre_empirical`。完整 internship roadmap 已收斂，但 Stage 1 尚未開始；GPU、frozen YAML 與 mapping gate 仍未通過。
+>
+> **檔名說明：**`surrogate-dse-plan.md` 是為維持既有連結而保留的歷史檔名。Stage 1–3不訓練 self-trained surrogate；主要模型是 **Formocast**。Learned residual只有 Stage 4 trigger與data gate同時通過才啟動。
+>
+> **執行規格：**所有 sample counts、公式、門檻、seeds、artifacts 與 Stage 1–4 stop rules 只以 [ductile-origami-warmstart-experiment-plan.md](ductile-origami-warmstart-experiment-plan.md) 為準。若兩份文件衝突，本 charter 決定研究 scope／claim，experiment plan 決定執行 protocol。
+>
+> **Legacy override：**`ductile-origami-warmstart/designs/` 下既有 M00–M09 全部是 pre-pivot designs，現統一標為 `legacy / superseded_pending_redesign / do_not_execute`。各檔內的 `draft`、`not_started` 或 `blocked` 只保留歷史意義，不再授予執行權威。
 
-## 0. 研究命題與定位
+---
 
-**命題**：GEMM tuning 現行靠 grid search 笛卡兒積窮舉 benchmark 建表；每次 codegen / config 一改就要重跑，成本高、擴展慢。**用 prediction / surrogate 降低評估成本、加快 DSE**，並量化「省下多少評估、DSE 加速多少」。（與 NPU tile-level DSE 的 profiling-reuse 命題同構。）
+## 0. 一句話定位與 north star
 
-**定位**：本研究是**離線、資料驅動**的建模與分析——**不寫 kernel、不改 codegen、不動正職維護的 Ductile/GEKO 核心**，只用既有 / 自產 benchmark 資料做 offline 建模。知識前置與學習順序見 [knowledge-plan.md](knowledge-plan.md)。
+先在一個由 **frozen generated YAML** 鎖定的 gfx942 non-StreamK Ductile residual search space 中，檢驗：
+
+> **Formocast 對 whole config 的 physics-based 效能訊號，經過 per-gene factorization 後，能否在保留既有 YAML groups／weights 的前提下，為尚未加權的 residual genes 提供額外的第 0 代（Gen0）候選品質；若不能，訊號究竟消失在哪一層？**
+
+Stage 1 回答上述 **factorization／initialization mechanism**。只有它通過後，研究才依序擴張到：
+
+1. **Stage 2 — short-horizon persistence：**Gen0 優勢能否保留到固定 10-generation horizon；
+2. **Stage 3 — bounded held-out replication：**凍結的 guidance procedure 能否在兩個新 fixed-tile regimes重現；
+3. **Stage 4 — conditional learned residual surrogate：**只有 predictor-specific failure、oracle-positive 且資料足夠時，才研究 learned residual能否補足 Formocast。
+
+因此完整研究不是只做 Gen0，但也不是完整 GA speedup、production integration 或 deployment 專案。
+
+白話說：Formocast 會替「整組 kernel 參數」打分，但 Ductile 現成 hook 只能分別替「每個 gene 的每個值」設定初始抽樣機率。本研究要回答的是：**把整體評分拆成各 gene 偏好後，還剩多少真的有用的資訊？**
+
+---
+
+## 1. Pivot 與 supersession record
+
+### 1.1 被取代的舊命題
+
+本檔舊版與舊實驗計畫曾同時包含：
+
+- self-trained surrogate／Origami／Formocast 暖啟動 GA；
+- Injection A 候選範圍 widening；
+- non-StreamK 與 StreamK 雙 cohort；
+- 完整 GA headroom、長 horizon、multi-tile 與 held-out confirmation；
+- 「減少 tuning evaluations／端到端 speedup」作主要成果。
+
+這些方向不是都沒有研究價值，而是**對短期 internship 過大，且其中數項已與核心團隊既有或正在規劃的工作相鄰**。繼續把它們包成單一主線，會讓研究問題、baseline 與可宣稱結果失真。
+
+### 1.2 促成 pivot 的新證據
+
+1. **GEKO 已有 problem-dependent Gen0 heuristic**
+   - `origin/users/pkamd/geko_pr` 的 pinned commit `ce7b5e7754a342c464cd0470a9a3c9009b9a8fe4` 中，`config_sections_generator.py::_build_ductile()` 已依 problem sizes、TilesPerCU、granularity 與 GSU 產生 `group_0` costs，寫入 Ductile `weights`。
+   - 這證明「problem-dependent initial guidance」已存在；但 branch code 存在**不等於**目標 gfx942 workflow 已部署。
+
+2. **Formocast whole-config pre-screen 已存在**
+   - `SolutionIterator.cpp` 已用 Formocast ranking 與 `PredictionThreshold` 決定哪些 solutions 進入 benchmark。
+   - 因此本研究不能再宣稱「首次用模型降低 tuning 成本」。
+
+3. **核心團隊另有 active GA 改善項目**
+   - [AIHPBLAS-2810](https://amd-hub.atlassian.net/browse/AIHPBLAS-2810)：Open/P1，size sampling 與 multiple-size iteration allocation。
+   - [AIHPBLAS-2791](https://amd-hub.atlassian.net/browse/AIHPBLAS-2791)：Open/P1，hierarchical／iterative MT/CMS tuning。
+   - 它們不是本研究的 factorized residual guidance，但構成必須避開的 scope boundary。
+
+4. **舊完整驗證超出目前 access 與時間條件**
+   - 目前尚未由本研究 artifact 證明可用 gfx942 slot、actual generated YAML 與完整 Formocast mapping。
+   - 在這些 gate 未過前，24 shapes、multi-seed confirmation 與 deployment claim 都不合理。
+
+### 1.3 新決策
+
+本研究保留「physics model 能否幫助 Ductile initialization」的核心興趣，並採 stage-gated 擴張：
+
+- Stage 1：一個 gfx942、non-StreamK、單一 dtype/layout 的 bounded residual space；
+- Stage 2：同一 development cluster 的 10-generation persistence；
+- Stage 3：兩個預註冊新 clusters 的 bounded replication；
+- Stage 4：嚴格條件式 predictor-substitution branch；
+- 每一階段都有獨立 stop、failure 與 mentor-facing claim，不把後續 stages 當無條件承諾。
+
+### 1.4 決策產生方式
+
+2026-07-24 依 `/design-discussion` 進行：
+
+1. 兩個 fresh GPT-5.6 Sol subagents 以相同 prompt 獨立提案；
+2. 三輪交互詰問，處理文件 authority、sampling estimand、leakage、oracle 與 Gen0 重現性；
+3. 修正 set-backed population 不應依賴 iteration order 的問題；
+4. 兩方對同一份 candidate consensus 明確 `AGREE`。
+
+代理共識是降低盲點的 process metadata；技術權威仍來自 repo code、frozen artifacts、真實 benchmark 與預註冊 protocol。
+
+### 1.5 Scope expansion review
+
+同日再次依 `/design-discussion` 檢討「七日 MVP 是否被誤寫成整個 internship 終點」：
+
+1. 兩個 fresh subagents 獨立提出完整 staged roadmap；
+2. 交互詰問 5 vs 10 generations、fresh-seed conditioning、held-out denominator 與 surrogate data floor；
+3. 統一採用 Stage 1 → Stage 2 → Stage 3 主線，以及 oracle-positive 才能啟動的 Stage 4；
+4. 兩方對修正後共識明確 `AGREE`。
+
+這次修正不推翻 Stage 1 嚴謹性，而是把它恢復成**第一道 gate**，不再當成整份研究的天花板。
+
+---
+
+## 2. 研究問題與假設
+
+### RQ1 — Whole-config model signal 是否存在？
+
+在 frozen residual space 與指定 sizes 上，Formocast ranking 是否和真實 GFLOPS ranking 有足夠一致性，值得繼續做 factorization？
+
+### RQ2 — Factorization 保留了多少訊號？
+
+將 whole-config model benefit 邊際化成 per-gene probabilities 後，是否仍能提高真實高品質 config 的 prior mass？
+
+### RQ3 — 是否有超越 existing heuristic 的增量？
+
+在所有 existing YAML `group_i` 結構與 weights 完全保留時，只對 ungrouped、currently-unweighted residual genes 加 Formocast guidance，是否優於：
+
+- existing guidance 本身；
+- 相同 entropy、但 candidate labels 被打亂的 control？
+
+### RQ4 — Offline prior 能否穿過真實 sampler？
+
+即使 offline factorized prior 對準高品質區，經過 validity rejection、population 內去重與有限 `pop=64` 抽樣後，actual Gen0 是否仍有方向性改善？
+
+### RQ5 — Gen0 訊號是否具有短期 persistence？
+
+在同一 development cluster、固定 candidate space 與五個全新 paired seeds 下，Formocast residual guidance 是否能改善 Gen0 後固定 10 generations 的 quality-vs-complete-evaluations，而不被 existing guidance迅速追平？
+
+### RQ6 — Frozen procedure 是否能 bounded replication？
+
+不改 eligibility、hyperparameters、factorization、metrics 與 gates，只讓 label-blind algorithm在新 cluster產生自己的 genes／weights時，能否在兩個預註冊 held-out fixed-MT／MTDU regimes重現 short-horizon directional benefit？
+
+### RQ7 — Predictor failure 是否可由 learned residual補足？
+
+只有當 cross-fitted oracle證明 factorized main effects存在、但 Formocast predictor未捕捉時，cluster-held-out learned residual是否能縮小與 oracle的差距？
+
+### 假設階梯
+
+> 在至少一個 bounded gfx942 non-StreamK residual space 中，Formocast whole-config signal 能經 factorization 與 actual Ductile Gen0 sampler 保留，並提供超越 existing guidance 與 same-entropy shuffled control 的候選品質訊號。
+
+若上述 Stage 1 假設成立，再依序檢驗：
+
+- 訊號可保留到10-generation early-search horizon；
+- 凍結後 procedure 可在兩個新 regimes重現；
+- predictor-specific failure可由 learned residual補足。
+
+每一層都是獨立假設，不是預期結果；上層失敗時不得直接沿用下層 claim。
+
+---
+
+## 3. 機制與模型角色
+
+```mermaid
+flowchart LR
+  yaml["Frozen generated YAML\nspace / groups / weights / reduce_fn"]
+  draw["Valid accepted occurrences"]
+  model["Formocast whole-config scores"]
+  marginal["Residual-gene factorization"]
+  weights["Existing groups preserved\n+ residual weights"]
+  gen0["Actual Ductile Gen0\npop=64"]
+  judge["Real GFLOPS judgment"]
+
+  yaml --> draw --> model --> marginal --> weights --> gen0 --> judge
+  yaml --> weights
+```
+
+### 3.1 Formocast
+
+- **Primary physics model**。
+- 適用 non-StreamK。
+- 可見較多 Tensile-specific metadata，因此有機會區分 fixed tile 後的 residual configs。
+- 「看得到欄位」不代表 ranking 必然準；必須通過 model coverage、sensitivity 與 real-score gate。
+
+### 3.2 Origami estimation
+
+- 只作 sensitivity／ranking reference。
+- estimation model 忽略多個 `tensile_params_t` backend-specific fields；fixed tile 後可能缺乏 residual-gene 辨識力。
+- 本輪不替 Origami 建正式 treatment arm。
+
+### 3.3 GEKO／actual YAML guidance
+
+- 所有 existing `group_i` 結構、candidate order 與 YAML-provided weights 都是受保護 baseline。
+- 本研究不拆 group、不重排、不覆寫 existing weights。
+- Formocast 只可新增 manifest 明列的 ungrouped、currently-unweighted residual-gene entries。
+
+### 3.4 Self-trained surrogate
+
+- 不是 Stage 1–3 treatment，只保留為嚴格條件式 Stage 4。
+- 原因是短期內還沒有足夠 gfx942 labels、shape-level holdout 與 leakage 防線。
+- 只有 Formocast predictor失敗、cross-fitted oracle顯示 factorized main effects存在，且四-cluster data floor可滿足時，learned residual才成為有證據支持的分支。
+
+### 3.5 Guidance 與 judgment 分離
+
+- Formocast 與 model-only samples只能建立 guidance。
+- 真實 GFLOPS 只用於 D5 judgment、cross-fitted diagnostic oracle 與 D6 evaluation。
+- 一旦 real-score pool 建立或解封，gene list、hyperparameters 與 weights 都不得修改；否則必須開新 protocol version 與獨立 judgment pool。
+
+---
+
+## 4. Scope 與 non-goals
+
+### 4.1 In scope
+
+- gfx942／MI300X。
+- non-StreamK。
+- 一種由 frozen YAML 決定的 dtype/layout。
+- 同一 frozen search space 中兩或三個 sizes。
+- Whole-config Formocast ranking。
+- Per-gene factorization。
+- Existing heuristic + residual guidance。
+- Stage 1：`n_gen=1` actual Gen0 directional pilot。
+- Stage 2：同一 development cluster、`n_gen=10` 的 short-horizon persistence。
+- Stage 3：兩個新 fixed-MT／MTDU clusters 的 bounded held-out replication。
+- Stage 4：oracle-positive、data-sufficient 時的 learned residual predictor analysis。
+- Failure mechanism localization。
+
+### 4.2 Explicitly out of scope
+
+- Injection A、候選 widening／hard pruning。
+- StreamK cohort。
+- 跨 codegen／跨架構 transfer。
+- Fitness、mutation、selection、survival 或 GA core 修改。
+- Kernel、codegen、IR 修改。
+- Natural-stop formal panel、basin 或完整 convergence study。
+- 24-shape／production-scale multi-cluster confirmation。
+- Production deployment、owner adoption 或 merge 建議。
+- Regression tier policy、tile-selection policy 或 Origami heuristic 修改。
+
+### 4.3 Stage-gated timeboxes
+
+- Stage 1：最多七個 hands-on工作日。
+- Stage 2：target四日、hard cap五日。
+- Stage 3：hard cap七日。
+- Stage 4：hard cap五日，且不是必跑 stage。
+- 每個 stage entry前必須確認能完成完整 arms／seeds／clusters，並保留至少一個 report工作日與 failure buffer。
+- 資源不足時輸出 partial／inconclusive，不靠縮 seeds、arms、horizon或clusters保留原 claim。
+- D1–D2 access／artifact／mapping gate 未過：停止 empirical work，不以 CPU-only 結果冒充效能研究。
+
+---
+
+## 5. 與核心團隊工作的邊界
+
+### 5.1 Active scope boundaries
+
+- [AIHPBLAS-2810](https://amd-hub.atlassian.net/browse/AIHPBLAS-2810)：size sampling、minimum set、multiple-size iteration allocation。
+- [AIHPBLAS-2791](https://amd-hub.atlassian.net/browse/AIHPBLAS-2791)：hierarchical／iterative MT/CMS tuning。
+
+本研究固定這些搜尋策略，不重作其 intervention；只問 residual-gene physics prior 是否能穿過現成 Gen0 hook。
+
+### 5.2 Existing／historical related work
+
+- [AIHPBLAS-1922](https://amd-hub.atlassian.net/browse/AIHPBLAS-1922)：Done，`PredictionThreshold`。
+- [Tuning with Formocast](https://amd.atlassian.net/wiki/spaces/MLSE/pages/1308395122)：TensileLite whole-config model-assisted tuning 流程。
+- [Difference between Origami and Formocast](https://amd.atlassian.net/wiki/spaces/MLSE/pages/1304199634)：Formocast／Origami 模型角色與 integration。
+- [AIHPBLAS-2572](https://amd-hub.atlassian.net/browse/AIHPBLAS-2572)：Discarded，Ductile tile prioritization during initialization。
+- [AIHPBLAS-2864](https://amd-hub.atlassian.net/browse/AIHPBLAS-2864)：Discarded，MTTuning initial population sampling flexibility。
+
+Discarded 不等於 active plan；Done 不應由本研究重新實作。
+
+### 5.3 Bounded absence
+
+- [NA GEMM Tech Exchange/Sync](https://amd.atlassian.net/wiki/spaces/MLSE/pages/1694009253)、[Q2 Roadmap](https://amd.atlassian.net/wiki/spaces/AIG/pages/1687743031) 與 [meeting 摘要](../meeting_notes/GEMM-Optimization-Roadmap-Origami-Tile-Selection-摘要.md) 在已檢查內容中未明列「Formocast whole-config score → residual-gene factorization → Ductile Gen0」。
+- 這只能寫成「在已審查 artifacts 中未明列」，不能推導「核心團隊絕對沒有人做」。
+
+---
+
+## 6. Stage-gated internship roadmap
+
+數值與公式只以 [experiment protocol](ductile-origami-warmstart-experiment-plan.md) 為準。
 
 ```mermaid
 flowchart TD
-  prop["研究命題: 用便宜模型降低 tuning 評估成本"]
-  prop --> main["主線 (原#2): surrogate 暖啟動 GA (注入點 B, 偏重採樣)"]
-  prop --> supp["支線 (原#1): analytics / Origami 假設驗證 (最低風險, 備援)"]
-  prop --> fut["未來延伸 (原#3): 跨 codegen / 跨架構重用 (gated)"]
-  main --> exp0["EXP-0 gate (先跑): 0a baseline 浪費量測 + 0b 靜態 vs 加寬 profile"]
-  exp0 -->|"有 headroom 才主攻"| expA["EXP-A 核心: 模型加權採樣 vs 均勻, 量省下的評估"]
-  main --> expB["EXP-B: max-min/加權 fitness ↔ regression 保護 (與 EXP-0 並行)"]
-  supp --> expC["EXP-C: 抽樣量化 Origami 選最佳 tile 假設 (與 EXP-0 並行)"]
-  fut -.->|"資料可得才啟動"| later["gated: 跨版本/跨架構資料"]
+  s1["Stage 1\nGen0 mechanism"]
+  s2["Stage 2\n10-gen persistence"]
+  s3["Stage 3\n2 held-out clusters"]
+  s4["Stage 4\nlearned residual"]
+  report["Mentor report"]
+  block["Blocker memo"]
+
+  s1 -->|"mechanism positive"| s2
+  s1 -->|"blocked"| block
+  s1 -->|"predictor failure + oracle positive + data gate"| s4
+  s1 -->|"other negative / inconclusive"| report
+  s2 -->|"persistence positive"| s3
+  s2 -->|"washout / regression / inconclusive"| report
+  s3 --> report
+  s3 -.->|"predictor heterogeneity + oracle positive + data gate"| s4
+  s4 --> report
 ```
 
-## 1. 方向：主線 / 支線 / 未來延伸
+### 6.1 Stage 1 — Gen0 mechanism
 
-> 方向已收斂（原本「三切角 + 決策樹、kickoff 選一個」已定案）：**主線做原切角 #2**、**支線用原切角 #1 當最低風險備援**、**原切角 #3 為未來延伸**。mentor kickoff 仍會確認假設與 metric，但工作方向已定。
+- 保留現有七日 D1–D7 exact protocol。
+- 回答 model signal、factorization 與 actual Gen0。
+- 只有 `D6_MECHANISM_POSITIVE` 可進 Stage 2。
 
-### 1.1 主線（原 #2）— surrogate-assisted warm-start of GA `已選定`
+### 6.2 Stage 2 — Short-horizon persistence
 
-- 用便宜模型（analytical / surrogate）指導 GA 的採樣（偏重、pre-screen），在保住 top-1/top-k 前提下減少實測評估。**方法見 §2、落地見 §3、實驗見 §5（EXP-A/B）**。
-- 為何選它：最貼近命題、可行性高，且正對準團隊「2–3 小時/tile」痛點（§3）。
+- 同一 development cluster，G／F／S 三臂。
+- 固定 `n_gen=10, period=0`。
+- 五個全部 fresh paired seeds；Stage 1 seeds只作 selected-seed diagnostic。
+- Primary 是 Gen0 後、事前固定 complete-evaluation support上的 best-so-far log-quality AUC。
+- 第五代只作 blinded operational checkpoint；不依結果決定是否延長到第十代。
 
-### 1.2 支線（原 #1）— 搜尋空間 analytics / completeness `備援 · 最低風險`
+### 6.3 Stage 3 — Bounded held-out replication
 
-- 純分析：feature importance、landscape 平滑度、completeness 指標（`SWDEV-477426` scope 2/4），以及「Origami 選到最佳 tile」假設驗證（§5 EXP-C）。
-- 定位：主線若卡住（資料不足 / 雜訊太大）可退到這條**純分析**，風險最低；產出也能回饋主線的 feature 設計。
+- 兩個預註冊新 fixed-MT／MTDU clusters，每 cluster兩個 sizes。
+- Stage 1／2 cluster是 development，不進 held-out denominator。
+- Guidance algorithm與所有 thresholds凍結；只允許 label-blind deterministic output隨 cluster改變。
+- 每 cluster先做 D5-equivalent audit，通過才跑10-generation G／F／S。
+- 兩個 clusters都保留在成功分母，不能只報通過者。
 
-### 1.3 未來延伸（原 #3）— 跨 codegen / 跨架構 profiling 重用 `gated`
+### 6.4 Stage 4 — Conditional learned residual
 
-- codegen 改版前後效能排序保留度 → correction / transfer model → 量「重用舊 profiling 能省多少 re-profiling」；同一套思路可延伸 **gfx942 → gfx950 / MI350** 的跨架構重用。
-- 前提：**能取得跨 codegen 版本的 benchmark 資料**才啟動（kickoff 確認）；本階段仍鎖定 gfx942 單一架構。
+只在以下條件同時成立時啟動：
 
-### 1.4 研究問題
+- Formocast predictor failure；
+- cross-fitted oracle穩定支持 factorized main effects；
+- existing／shuffled controls顯示仍有可學增量；
+- 已有至少三個合格 clusters，且能在五日 cap內取得一個 prospective sealed fourth cluster。
 
-> **前置框架修正（「加速 vs 品質」不是二選一）**：在 Ductile 的真實條件下——**固定評估預算**（`pop_size × n_gen ≈ 512 × 30 ≈ 1.5 萬`次、每次都是真編譯 + 有噪音的 GPU 實測、且 metaheuristic 無最佳保證、有 stagnation 早停）——**sample-efficiency 是單一槓桿**，可讀成「同品質、更少評估」（速度）或「同預算、更好的 `best`」（品質）。**「定位到最佳解附近」正是拉這根槓桿的手段本身**，所以你不可能只要品質而不要速度，它們是同一個改善的兩面。對 offline maintainer 而言，省下的評估也不是「省等待時間」，而是**換成覆蓋率**（同一 GPU-hours 能 tune 更多 tile/dtype/arch）。因此 RQ1 的「減少實測評估」與「提升品質」是同一目標的兩種讀法。
+預設只做 cluster-held-out ranking／factorization，不跑 actual GA。若不足四 clusters，直接記 `FT-SURROGATE-DATA-INSUFFICIENT`。
 
-1. 能否用便宜的分析 / surrogate 模型「指導」GA，在**保住 top-1 / top-k** 的前提下顯著**減少實測評估次數**（＝在固定預算下拿到更好的 `best`）？
-2. 注入方式該用「**硬縮範圍**」還是「**軟性偏重**」？在**模型出錯時**，如何仍保留 GA 逃脫能力（不被模型偏誤鎖死）？
-3. 模型要多細才夠？Roofline 級（只給 compute/memory-bound regime 與上界）夠不夠，還是要 Origami analytical / Formocast simulation / learned surrogate 才能真的縮到 config 粒度？
-  - **分裂式答案（本次討論收斂）**：range-shaping 的兩半需要**不同模型**。「在**已觀測過**的合法值裡集中機率」可用便宜的 **data-driven surrogate**；但要評分「**從沒 benchmark 過**的合法值」（例如 `GRVW=32`、稀疏的 `DepthU/WGM` 點）則**超出 surrogate 的訓練支撐**，是外插問題，須改用**分析 / 物理模型**（Origami / roofline 類，能從硬體第一原理推）。所以「模型要多細」不是單一答案，而是依「集中已觀測」vs「擴到未觀測」分流。
+任何 stage失敗都停止該 branch；只有明確的 oracle-positive predictor failure可轉 Stage 4。不得靠降低門檻、改 genes或重調 weights重用同一 judgment pool。
 
-## 2. 方法：把模型接進 GA（暖啟動）
+---
 
-### 2.1 現狀 gap（為什麼這塊是開放的）
+## 7. Canonical failure taxonomy
 
-- 目前 **tuning 層（Ductile GA）與 selection 層（Origami/Formocast）是解耦的**：Origami/Formocast 的效能模型只用來「從既有 kernel 挑一個」，**沒有回饋給 GA「該在哪個範圍、往哪偏重搜」**（見 [../geko-ductile/ga-faq-clarifications.md](../geko-ductile/ga-faq-clarifications.md) Q18、[../origami/ecosystem-and-formocast.md](../origami/ecosystem-and-formocast.md)）。
-- Ductile 的搜尋範圍來自 `--convert-config` 的**靜態規則** + 專家 **hw profile**，**不是 per-shape 的模型預測**——此點已由程式碼證實：GEKO `config_generator` 用**人工寫死的 per-arch/per-dtype profile**（`fork_params/hw_profiles/gfx942`），對所有 shape 套同一套（見 [../geko-ductile/ga-algorithm-implementation.md](../geko-ductile/ga-algorithm-implementation.md) 第 3.5 節末的 `--convert-config` 實作說明）。
-- → 「用便宜模型指導 GA 搜尋、減少實測評估」在 production **尚未走過**，正是研究線的切入點。
+以下 ID 與語意由本 charter 唯一定義；experiment report 必須選用，而不可自行改名。
 
-**釐清「外擴到 TensileLite range 外」到底指什麼（三層 range，本次討論收斂）**：把「範圍」拆成三層才不會混淆——
+### `FT-BLOCKED-ACCESS`
 
-1. **GA profile 實際在搜的靜態窄清單**：GEKO GA profile（如 GRVW 的 GA 子集）當下餵給 GA 的候選。
-2. **`ValidParameters` 的可編譯合法域**：`KernelWriterAssembly._initKernel` 能編出來的值（GRVW = `[-2,-1,1,2,3,4,6,8,16,32]`）。**這是硬天花板。**
-3. **物理可實現域**：合法域內仍有 VGPR/LDS 限制會殺掉部分組合（`valid` 過濾）。
+無已排定 gfx942 slot、可信 frozen YAML 或可執行環境。這是 blocker，不是模型失敗。
 
-「外擴到 TensileLite 外」因此拆成兩件事：**（可行且有價值）第 1→第 2 層**——per-shape 重納「合法但被 profile 省略的值」（如 `GRVW=16/32`、更多 `WGM/DepthU` 點）；**（不可行）超出第 2 層**——如 `GRVW=5`，gene 是「可編譯候選清單的整數索引」，域外值 `_initKernel` 直接 raise、fitness 無定義，**任何搜尋/模型都碰不到**，要真外擴只能改 kernel generator（codegen 工程，不在本研究線 scope）。這呼應 [../geko-ductile/ga-faq-clarifications.md](../geko-ductile/ga-faq-clarifications.md) Q17 的 hard boundary。
+### `FT-BLOCKED-MAPPING`
 
-### 2.2 兩個注入點
+必要 metadata 只能靠猜、sentinel 未解析、candidate order／field parity 無法確認。這是 mapping blocker。
 
-| 注入點 | 做法 | 風險 / 評估 |
-| --- | --- | --- |
-| **A. 改候選清單（硬縮/擴範圍）** | 用模型預測後直接砍/加每個 gene 的候選值，像「更聰明的 `--convert-config`」 | **高風險**：模型錯 → 剪掉真最佳值 → GA 永遠拿不到（hard boundary，見 [../geko-ductile/ga-faq-clarifications.md](../geko-ductile/ga-faq-clarifications.md) Q17）。適合先做「只擴不砍」的保守版 |
-| **B. 軟性偏重採樣權重（推薦先做）** | 用模型預測設 sampling `weights`/`probs`（[../geko-ductile/ga-algorithm-implementation.md](../geko-ductile/ga-algorithm-implementation.md) §6.4 的現成 hook），甚至偏重 mutation（§11.2） | **較安全**：只「偏重」不「硬剪」，模型錯了 GA 仍能靠 mutation 逃出。改動最小、不動 GA 核心 |
+### `FT-MODEL-RANK`
 
-**A 與 B 其實統一成同一機制「per-shape 動態 range-shaping」（本次討論收斂）**：注入點 A 的「擴」半（候選清單成員）+ 注入點 B 的「偏重」半（採樣權重）是**同一件事的兩面**——為某個 shape「重納哪些合法值 + 往哪集中機率」。這也把 §1.4 研究者的「定位」與「擴範圍」兩個直覺統一起來，取代現行「一份靜態清單套所有 shape」。但要注意兩個代價：
+Whole-config Formocast ranking 無法通過 bounded real-score gate。結論只限該 frozen regime。
 
-- **「擴」不是免費的**：加 gene 候選會改變其 cardinality，可能觸發 `ga.py` 的 `large_space` 分支把 `pop_size` 撐大（`max_sp_sz × 1.15`，見 [../geko-ductile/ga-algorithm-implementation.md](../geko-ductile/ga-algorithm-implementation.md) §6.2），且在固定預算下必然**稀釋**搜尋（空間變大、評估數不變）。所以「擴 + 集中」只有在**集中帶來的收益 > 擴大空間的稀釋代價**時才淨賺——這正是要用 EXP-0b（§5）實測的 crux。
-- **「擴到未觀測的合法值」要用分析模型、不是 data-driven surrogate**：被省略的合法值在 surrogate 訓練支撐之外（見 §1.4 RQ3 的分裂式答案）。
+### `FT-MODEL-MARGINAL`
 
-### 2.3 設計原則
+Whole ranking 有訊號，model marginals 失敗，但 cross-fitted oracle marginals成功：模型 attribution／marginalization 沒有保留真實 main effects。
 
-- **biasing not pruning（偏重而非硬剪）**：warm-start metaheuristic 的黃金原則。因為 gene 是硬邊界（Q17），硬剪會把模型誤差直接變成 GA 的天花板；軟性偏重則保留「模型看走眼時」的探索能力。
-- **最小改動接入**：`weights` / `weight_beta → probs` 這個 hook **已存在**，predictor 只要輸出「每個 gene 各候選的偏好權重」即可餵入，**不必改 GA 核心**——符合研究線「不動正職維護的 Ductile / GEKO 核心」的邊界。
-- **警惕與 Ductile 自身收斂機制打架（機制級風險，本次討論收斂）**：warm-start 把初始族群集中在模型預測附近，會**由建構上降低初始多樣性**。而 Ductile 對低多樣性的反應是**加速收斂、不是增加探索**：`diversity < div_thr`（0.5）會切到 `low_diversity` decay 把 `pop_size` 更快縮小（見 [../geko-ductile/ga-algorithm-implementation.md](../geko-ductile/ga-algorithm-implementation.md) §6.2），再加上 `f_avg` 與 `f_max` 停滯即早停（§6.1）。所以一個**自信卻偏錯**的模型可能造成「低初始多樣性 → 更快縮群 → 更早 stagnation 終止 → 鎖進模型 basin，且比均勻 baseline 花更少評估」——**變成「更快但更差」**。這不是泛泛的 premature convergence，而是與 Ductile 具體收斂機制的交互，**必須實測（見 §5 EXP-A 的 sub-measurement），不能假設**。緩解手段：ε-uniform 保底探索（§3.2 點 3）+ 模型影響力隨世代退火（§3.2 點 4），並只用 held-out 真實 benchmark 驗證。
+### `FT-HOOK-EXPRESSIVENESS`
 
-## 3. 對接團隊 pipeline：切入點 / 循環依賴 / 邊界
+Cross-fitted oracle factorized marginals也失敗：真實優勢可能主要來自 epistasis，現有獨立 per-gene hook 表達力不足。
 
-> 來源：對照 [../meeting_notes/GEMM-Optimization-Roadmap-Origami-Tile-Selection-摘要.md](../meeting_notes/GEMM-Optimization-Roadmap-Origami-Tile-Selection-摘要.md)（performance team roadmap 會議），把 §2 的抽象方向落到團隊**實際 pipeline** 上。
+### `FT-PLUMBING`
 
-### 3.1 他們用 Origami 在哪、我們的切入點在哪（重要區分）
+Target weights 與 actual realized frequencies／canonical proposal set 不一致，或 `SearchSpace.map` 與 weight vector 對齊錯誤。
 
-- 團隊**已是 model-assisted 範式**，但 Origami 用在兩個**上游/下游**位置，都**不是**「暖啟動 GA 的參數搜索」：
-  - **尺寸 → tile 的 mapping**（會議 §3.3 step 2）：決定「tune 哪些尺寸、固定哪個 tile」。
-  - **tile selection 的 100k×1k 效能矩陣**（會議 §4.2 step 2）：決定「library 放哪些 tile」。
-- 一旦 tile 固定、尺寸選定，進到「用 GA tune 代表 kernel」（會議 §3.3 step 4）時，**GA 對其餘 kernel 參數的搜索仍是「完整搜索 + 真實 benchmark 當 fitness」，沒有用 Origami 去 pre-screen 或偏重採樣**。
-- → **本研究線的注入點 B（§2.2）正好落在他們「還沒用模型」的這一段**，直接對準他們自陳的成本 baseline：這條「macro tile tuning workflow」＝固定 tile、多尺寸 GA tune，**單 GPU 約 2–3 小時/tile**（會議 §3.2；workflow grounding 見 [knowledge-plan.md](knowledge-plan.md) E10）。
+### `FT-GEN0-MECHANISM`
 
-### 3.2 循環依賴警告 + 初步解法
+Sampler realization 正常、offline gate也通過，但 actual Gen0 品質沒有改善。這是有限抽樣或 Gen0 mechanism failure，不自動歸因 plumbing。
 
-**警告**：Origami 已被用在 mapping + tile selection；若再塞進 GA warm-start，同一模型的偏誤會被**第三次放大**。故務必守 §2.3 的 biasing-not-pruning，並保留真實 bench 抽樣當防線（與會議 §3.3 step 5 的獨立 benchmark、Q2 的 tiered 驗證同精神）。
+### `FT-HEURISTIC-SATURATION`
 
-> **關鍵洞察（為什麼這 issue 沒有想像中致命）**：GA 的 fitness 是**實測 GFLOPS**——模型只影響「**往哪找**（採樣偏重）」，不決定「**留下誰**（survival/selection）」。所以循環依賴主要傷的是**效率**（浪費評估在模型偏好區、少探盲區），**不是正確性**；只要不硬剪（biasing not pruning），實測 fitness 最終會糾正模型的錯誤偏重。真正致命的是「用模型**同時指導搜尋又評判結果**」，下面第 2 點就是在切斷這條。
+Formocast residual guidance 不勝 existing YAML guidance／GEKO branch proxy：既有 heuristic 已捕捉主要訊號，額外模型沒有增量。
 
-**初步可能解法（先記著，做到這塊時再細化、可再討論）**：
+### `FT-ENTROPY-ONLY`
 
-1. **用自訓 surrogate、而非重用 Origami 做 warm-start**（最乾淨）：本研究本來就會訓一個 data-driven surrogate；用它偏重 GA，而 Origami 只留在上游 mapping/selection，**兩者非同一模型，循環就不成立**。
-2. **guidance 與 judgment 分離**：無論用哪個模型偏重搜尋，**驗證一律用 held-out 的真實 benchmark**，絕不用模型評判自己的結果（避免自我確認迴圈）。
-3. **保底探索（ε-uniform）**：強制固定比例（如 10–20%）的採樣維持均勻/隨機，不受模型權重影響——保證模型盲區永遠有覆蓋。是 biasing-not-pruning 的一個具體旋鈕。
-4. **模型影響力隨世代退火**：前期強偏重（快速起步）、後期退回均勻，讓實測驅動的演化接手、把模型偏誤甩掉。
-5. **自適應信任**：跑的過程監控「模型 top 候選 vs 實測 GFLOPS」的落差；若模型推薦持續在實測落敗，就自動調降模型權重。
-6. **以 §5 EXP-C 圈出可信 regime**：EXP-C（抽樣量化 Origami 假設）本身就是這個 issue 的天然解——**只在 EXP-C 驗證過 Origami 可信的 regime 套用偏重，在已知不可信的 regime 退回均勻**。這把 EXP-C 從「支線分析」接成「循環依賴的緩解手段」。
+Formocast 不勝 same-entropy shuffled：效果只能歸因於集中機率，而非 physics direction。
 
-### 3.3 邊界：哪些團隊問題**不在**本研究線（scoping guardrail）
+### `FT-WASHOUT-UNTESTED`
 
-- **regression 分級政策**（會議 Q2）：屬產品 / 客戶 context 的價值判斷，非演算法問題；我方最多提供「帶硬約束的加權多目標 fitness」**機制**（見 EXP-B），但分幾層、閾值多少要團隊拍板。
-- **新架構 cold-start 推導 tile**（會議 Q3，Grimlock）：無 benchmark 資料 → data-driven surrogate 直接失效；需要**不吃 per-arch 資料的物理 / 硬體模型**（Origami/Formocast 類），不是本（data-driven）研究線的範圍。也正是 Q17「hard boundary」的極端案例——連候選範圍本身都未知。
-- **greedy tile selection**（會議 §4）：屬**次模集合覆蓋**問題，greedy 已是對的工具（有近似保證），**不該硬套 GA**。
+Stage 1 Gen0 有改善，但 Stage 2 尚未完成。這是暫態狀態，Stage 2結束後必須改成更具體結果。
 
-## 4. 資料集與評估
+### `FT-PERSISTENCE-WASHOUT`
 
-### 4.1 資料集 schema（三方向共用地基）
+Stage 1 Gen0 positive，但 Stage 2 的 post-Gen0 AUC、late retention或 Formocast-vs-shuffled gate失敗。
 
-來源：`Tensile/bin/Tensile` 產出的 `2_BenchmarkData/*.csv`，經 pipeline 正規化（也可用 GEKO `--search`）。
+### `FT-SHORT-HORIZON-REGRESSION`
 
-| 欄位群 | 內容 | 備註 |
-| --- | --- | --- |
-| gene（特徵） | `DepthU`、`MatrixInstruction`、`WorkGroup(Mapping)`、`GlobalReadVectorWidth`、`StaggerU`、`PrefetchGlobalRead/LocalRead`、`GlobalSplitU`… | 只取**自由 gene**，避免用衍生量造成共線性（見 knowledge-plan E2） |
-| problem | `M,N,K,batch`、`dtype`、transpose | shape 描述 |
-| label | `GFLOPS`（fitness） | 取中位數、固定 iteration 降噪 |
-| （選配）counter | rocprof-compute 抓的 HBM BW%、VALU busy… | 供 feature / 分析 |
-| 環境 | GPU（固定 **gfx942 / MI300**）、ROCm、driver、iteration、config 版本 | 可重現、避免跨環境不可比 |
+Stage 2 early-search AUC正向，但第十代獨立重測品質未通過 noise-derived non-inferiority。
 
-切分原則：**按 shape / config 分組切 train/val**（避免 leakage），非隨機切列。
+### `FT-EVALUATION-SUPPORT`
 
-### 4.2 評估 metric（單一來源，全檔共用）
+Stage 2／3 formal run無法達到事前鎖定的 complete-evaluation support，且不符合 technical replacement規則。
 
-- **rank correlation**（Spearman / Kendall）：predictor 排序 gene 的能力。
-- **top-k 命中率**：pre-screen / 加權後保住真正 top-1 / top-k 的比例。
-- **省下的評估次數**：達到同等 quality 下，比純窮舉 / 均勻採樣少跑多少 benchmark。
-- **efficiency vs ideal**（Solution Selection Metrics `744174730`）：相對 best-of-pool 的效率。
-- **tuning-time vs quality 取捨曲線**：研究主線的核心圖。
-- 對照參考：Formocast 的 `PredictionThreshold`（用模型縮短 tuning）——本研究偏「用模型**偏重 GA 採樣**」，而非「用模型**直接取代** benchmark」。
+### `FT-REGIME-HETEROGENEITY`
 
-## 5. 實驗（主線第一批，full-spec）
+Stage 3兩個 held-out clusters結果不一致；只能報適用邊界，不能平均成 replication success。
 
-> 每個實驗規格：**假設 / 要用的資料 / 步驟 / 評估 metric / baseline / 風險**。metric 定義一律見 §4.2。前置知識（E1/E5/E6/E7）見 [knowledge-plan.md](knowledge-plan.md)。
+### `FT-BOUNDED-REPLICATION`
 
-> **先跑 EXP-0（gating，本次討論收斂）**：EXP-A / 擴範圍構想「有沒有腿」由兩個**比 tune 一個 tile 便宜得多**的量測共同決定，應在投入訓 surrogate 之前先跑。理由：warm-start 的價值不能事先假設（見 §2.3 的打架風險），也不能事先否定——它是「一個便宜量測的函數」。EXP-B/C 是**低變異、近乎獨立**的並行賭注，**與 EXP-0 並行推進、不必等 gate**。
+Stage 3凍結 procedure在兩個預註冊 clusters均重現 short-horizon directional benefit。
 
-### EXP-0a（gating）— baseline 評估浪費量測
+### `FT-SURROGATE-DATA-INSUFFICIENT`
 
-- **假設**：現行 cold GA 在固定 ~1.5 萬預算下，有可觀比例的評估落在無用區、或搆不到「預算內最佳」——若成立，warm-start 才有 headroom。**注意天花板不是 90–98% OOB**（那是選擇層/窄 profile 的數字，與 GA 搜尋效率是不同分母），要直接量搜尋層的浪費。
-- **要用的資料**：只需 GA log（`best` 隨評估/世代的軌跡、diversity 軌跡），不必訓任何模型。
-- **步驟**：因為「預算內最佳」不可直接觀測，用兩個便宜代理——(a) **seed 變異**：同一 shape 多個 seed 跑 cold GA，看最終 `best` 的變異（變異大 ⇒ 沒穩定收斂 ⇒ warm-start 有空間）；(b) **預算延伸**：把預算拉到 2–3×，看 `best` 是否還在爬（還在爬 ⇒ 1.5 萬預算把品質留在桌上，好的起點能更快搆到）。
-- **評估 metric**：`best` 的 seed-變異、預算延伸的邊際增益曲線。
-- **baseline**：現況 cold（均勻採樣）GA。
-- **風險/判讀**：若兩個代理都顯示「浪費小、已穩定收斂」→ warm-start 天花板低，EXP-A 應降級;反之則 EXP-A 上升為主攻。**此實驗同時 gate EXP-A 排名 + 驗證整條 thesis。**
+Stage 4少於四個合格 independent clusters，或 prospective fourth cluster無法在 cap內取得。
 
-### EXP-0b（gating）— 靜態 vs 加寬 profile A/B
+### `FT-SURROGATE-NO-GAIN`
 
-- **假設**：GEKO 靜態 GA profile 省略了部分合法值（如 `GRVW=16/32`、稀疏 `WGM/DepthU` 點）；若對 hot shape「重納這些合法值」能找到更好的 `best`，則 per-shape 擴範圍有 headroom（否則靜態 profile 已夠、擴只是稀釋）。
-- **要用的資料**：同一組 hot shape，分別用「靜態 GA profile」與「加寬（重納省略合法值）的 profile」跑 GA。
-- **步驟**：(1) 取 GEKO GA profile 為 baseline；(2) 按 `ValidParameters` 合法域重納被省略的值成加寬 profile；(3) 兩者各跑 GA（同預算）；(4) 比較 `best` 與達到同等 `best` 的評估數。
-- **評估 metric**：加寬 profile 的 `best` uplift、以及是否被固定預算稀釋（達同等 `best` 是否反而更慢）。
-- **baseline**：靜態 GA profile 的 `best`。
-- **風險**：加寬可能觸發 `large_space` pop 膨脹（§2.2），需一併記錄 eval 成本；若 uplift 為零 ⇒ 擴範圍構想無腿，聚焦「集中」半即可。
+Nested cluster-held-out learned residual未穩定優於 Formocast／shuffled，或未縮小與 oracle的差距。
 
-### EXP-A（核心）— 模型加權採樣暖啟動 GA
+### `FT-INCONCLUSIVE`
 
-- **假設**：用模型預測設 GA sampling `weights`，可在**保住 top-1** 的前提下，比均勻採樣**少 X% 評估 / 世代**達到同等 `best`。
-- **要用的資料**：§4 dataset（gene[+problem] → GFLOPS）訓 predictor；GA 在**留出的 shape**上跑（勿與訓練 shape 重疊，避免 leakage）。
-- **步驟**：(1) 訓 predictor（knowledge-plan E6）；(2) 把預測轉成「每個 gene 各候選的偏好權重」餵 §6.4 的 `weights`/`probs` hook（注入點 B，§2.2）；(3) 跑「均勻採樣 GA」vs「模型加權 GA」兩組；(4) 記錄兩組達到同等 `best` 所需的評估數 / 世代數。
-- **評估 metric**：省下的評估次數、top-k 命中率、tuning-time vs quality 取捨曲線。
-- **baseline**：均勻採樣 GA（＝現況 Ductile）。
-- **風險**：predictor 偏誤 → 守 biasing-not-pruning（軟性偏重、保留 mutation 逃脫，§2.3）；若拿 Origami 當模型，注意循環依賴（§3.2）。
-- **必做 sub-measurement（量「更快但更差」的打架風險，§2.3）**：除了比「達同等 `best` 的評估數」，還要追蹤——(1) **diversity 軌跡**（warm-start 組是否更早跌破 `div_thr`）；(2) **實際 gen-count-to-termination**（是否比均勻 baseline 更早 stagnation 早停）；(3) **收斂 basin identity**（warm-start 的 `best` 是否落在與均勻 baseline 不同、且更差的山頭）。若出現「更早終止 + 更差 basin」即坐實打架，需加大 ε-uniform 保底或退火（§3.2）。
+Noise、support、coverage、importance ESS、unique configs 或兩-regime evidence 不足。不得用 point estimate 強判。
 
-### EXP-B — max-min / 加權 fitness ↔ regression 保護
+---
 
-- **假設**：把 GA 的 fitness 從 average（`np.mean`）換成 **max-min（minimax）或保護尺寸加權**，能**天生保護最差尺寸**，把團隊最頭痛的 regression 保護（會議 Q2「uncharted territory」）**部分內化進 fitness**，且對平均 uplift 的犧牲可接受。
-- **要用的資料**：一個含**多尺寸**的 config 的 benchmark 結果（§4），能算「每個尺寸相對 best-of-pool 的效率」。
-- **步驟**：(1) 在同一族群/資料上，分別用 average、max-min、加權三種 `reduce_fn`（[../geko-ductile/ga-algorithm-implementation.md](../geko-ductile/ga-algorithm-implementation.md) §5、§6.3）；(2) 比較各自選出的解在「最差尺寸」與「平均」上的表現。
-- **評估 metric**：最差尺寸的保護程度（min efficiency vs ideal）對比平均 uplift 的取捨曲線。
-- **baseline**：average fitness（＝團隊現況；他們明說「只需改 fitness function 就能換」）。
-- **風險**：max-min 可能過度保守（壓低平均）；需用取捨曲線呈現，而非單點。
+## 8. Claim ladder、success 與 falsification
 
-### EXP-C（支線 / analytics）— 量化「Origami 選到最佳 tile」假設
+### 8.1 Stage 1 — Gen0 mechanism
 
-- **假設**：團隊 tile selection / mapping 的地基假設「runtime Origami 會選到最佳 tile」（會議 §4.3）**在多數 regime 成立、但在某些 regime 會崩**，且可被抽樣量化。
-- **要用的資料**：一個**可負擔的抽樣子集**（無法跑完整 100k×1k），對這些點同時有 Origami 預測與真實 bench。
-- **步驟**：(1) 抽樣一批 (problem, tile)；(2) 真實 bench 得 ground truth；(3) 算 Origami 相對 ground truth 的 rank correlation / top-1 命中率；(4) 分 regime（size 級距、compute/memory-bound）畫出假設成立/崩壞地圖。
-- **評估 metric**：rank correlation、top-1 命中率（分 regime）。
-- **baseline**：假設「Origami＝完美」時的 top-1（即 100%）作對照，量化落差。
-- **風險**：抽樣偏差 → 抽樣要涵蓋多種 regime；此實驗只**量化**假設，不改 Origami（改 heuristics 屬正職）。
+只有全部 pre-registered gates 通過，才能寫：
 
-## 6. 研究迭代日紀律
+> 在指定 frozen YAML、gfx942 non-StreamK、一種 dtype/layout、指定 sizes、bounded real-score pool 與三個 paired sampler seeds 下，Formocast-factorized residual prior 對 Gen0 candidate quality 提供超越 existing guidance／proxy 與 same-entropy shuffled control 的方向性增量，值得進一步驗證。
 
-一次只改一個變因（特徵 / 模型 / 資料切分 / pre-screen 比例）→ 在 held-out validation 算 metric（§4.2）→ 對照 baseline → 記錄 hypothesis / 改動 / 數字 / 結論。避免 leakage 與過擬合。
+### 8.2 Stage 2 — Short-horizon persistence
 
-- **每日自我檢核**：(1) 這次改善是在按 shape/config 分組切的 validation 上、且非 leakage 造成的嗎？(2) metric 是否真的對應下游用途（tuning 只需排序 / 選 top-k 對，不是最小化絕對 GFLOPS 誤差）？
+只有 Stage 2 gate通過，才能寫：
 
-## 7. 需自己產出（empirical，無法代填）
+> 在同一 development cluster與五個全新 paired seeds下，Formocast-factorized initialization的增量保留到固定10-generation horizon，並改善 Gen0後 early-search quality-vs-complete-evaluations，且 final quality未超出 noise-based退步界線。
 
-> 以下要**實跑**才會有，不在本計畫代填：
+這仍不是 system speedup或 convergence confirmation。
 
-- [ ] pipeline 的可貼指令 + `dataset.csv` 的實際欄位（跑過 grid / GEKO `--search` 後補）。
-- [ ] baseline predictor（線性 / RF / xgboost）的初始數字（rank-corr / top-k）。
-- [ ] 三個實驗的結果圖表（取捨曲線、feature importance、Origami 假設 regime 地圖）。
-- [ ] mentor kickoff 敲定的假設 / 成功 metric 定案（若與 §1/§5 有出入，以 kickoff 為準）。
+### 8.3 Stage 3 — Bounded replication
+
+只有兩個預註冊 held-out clusters都通過，才能寫：
+
+> 凍結後的 guidance procedure在兩個新 gfx942 non-StreamK fixed-tile regimes中重現方向性 short-horizon benefit。
+
+必須使用「bounded replication」，不得寫成 MI300X workload generalization。
+
+### 8.4 Stage 4 — Predictor substitution
+
+只有 prospective fourth-cluster或合格 nested cluster-held-out結果通過，才能寫：
+
+> Learned residual predictor在 cluster-held-out judgment中，比 Formocast更能恢復 oracle顯示可 factorize的效能訊號。
+
+### 8.5 允許的負向結論
+
+負向結果必須指出 §7 中的層次，例如：
+
+- 模型 ranking 不足；
+- factorization 丟失 main effect；
+- epistasis 超出 hook 表達力；
+- GEKO heuristic 已飽和；
+- 模型效果只是 entropy concentration。
+
+「模型沒用」不是合格結論。
+
+### 8.6 禁止的措辭
+
+本 internship roadmap 不得宣稱：
+
+- 加速 Ductile tuning；
+- 改善 GA convergence；
+- production／deployment ready；
+- 對 MI300X workloads 一般化；
+- 勝過 native `PredictionThreshold`；
+- 跨架構有效；
+- owner／核心團隊應採用。
+
+### 8.7 Study modes 對 claim 的限制
+
+- `ready_actual_yaml_guidance`：可回答完整 bounded RQ，但仍不得稱 deployed incumbent，除非另有部署證據。
+- `degraded_branch_proxy_only`：只能寫 branch-proxy mechanism evidence；完整 RQ 記為 `not evaluated under actual YAML`。
+- `blocked_no_comparable_heuristic`：不可判 `FT-HEURISTIC-SATURATION`。
+
+---
+
+## 9. Evidence boundary 與 open dependencies
+
+尚未由 empirical artifacts 解決：
+
+- actual generated YAML 的位置、hash、來源與 generator revision；
+- actual weights 是否存在及其 provenance；
+- fixed MT 還是 MTDU、DepthU 是否自由；
+- dtype/layout 與可共用同一 search space 的 sizes；
+- Formocast mapping coverage、score ties 與 throughput；
+- `F_valid` 在 cap 內的 unique catalog 大小與 multiplicity concentration；
+- gfx942 slot、measurement noise 與可用 GPU-hours；
+- branch proxy 是否能只改 weights、不改 candidate space；
+- Stage 2十代完整 panel的實際 evaluation／GPU成本；
+- 兩個同 dtype/layout、可預註冊且真正不同的 held-out clusters；
+- Stage 4是否已有三個具 inclusion metadata的合格 clusters；
+- 剩餘 internship工作日是否足以完成下一個完整 stage；
+- 核心團隊是否有未公開的相同 prototype。
+
+所有未解項都必須由 D1–D2 contract 決定；不得由舊文件 defaults 或研究者猜測代填。
+
+---
+
+## 10. Legacy M00–M09 authority override
+
+下列檔案保留原路徑與歷史正文供追溯，但已追加 legacy metadata／banner，且**不得執行**：
+
+- [M00 — Study contract / observability](ductile-origami-warmstart/designs/m00-study-contract-observability-design.md)
+- [M01 — Step-0 integration gate](ductile-origami-warmstart/designs/m01-step0-integration-gate-design.md)
+- [M02 — Guidance plumbing](ductile-origami-warmstart/designs/m02-guidance-plumbing-design.md)
+- [M03 — EXP-0a cold headroom](ductile-origami-warmstart/designs/m03-exp0a-cold-headroom-design.md)
+- [M04 — EXP-0b widening](ductile-origami-warmstart/designs/m04-exp0b-widening-gate-design.md)
+- [M05 — EXP-C ranking/oracle](ductile-origami-warmstart/designs/m05-expc-ranking-oracle-design.md)
+- [M06 — EXP-1 injection B](ductile-origami-warmstart/designs/m06-exp1-injection-b-design.md)
+- [M07 — EXP-2 A-safe+B](ductile-origami-warmstart/designs/m07-exp2-a-safe-b-factorial-design.md)
+- [M08 — EXP-3 multi-shape](ductile-origami-warmstart/designs/m08-exp3-multishape-design.md)
+- [M09 — Overall confirmation](ductile-origami-warmstart/designs/m09-overall-confirmation-design.md)
+
+統一狀態：
+
+- `design_authority: none`
+- `lifecycle: legacy / superseded_pending_redesign`
+- `execution: do_not_execute`
+- `future_action: redesign only after parent-level user confirmation`
+
+Legacy檔案保留原路徑與歷史正文，但已加不可執行 banner／metadata；新舊對照與 staged milestone入口見 [designs/README.md](ductile-origami-warmstart/designs/README.md)。
+
+---
+
+## 11. Document 與 report lifecycle
+
+- 本 charter 是研究 scope／claim 的唯一權威。
+- [Stage-Gated Experimental Protocol](ductile-origami-warmstart-experiment-plan.md) 是執行數值與 artifacts 的唯一權威。
+- D1–D2 access／artifact／mapping blocked 才建立：
+  - `ductile-origami-warmstart/reports/gen0-factorization-blocker-memo.md`
+- Stage 1 D5 或 D6 已形成 empirical evidence，不論 positive、negative 或 inconclusive，都建立：
+  - `ductile-origami-warmstart/reports/gen0-factorization-mvp-report.md`
+- Stage 2：
+  - `ductile-origami-warmstart/reports/short-horizon-persistence-report.md`
+- Stage 3：
+  - `ductile-origami-warmstart/reports/bounded-regime-replication-report.md`
+- Stage 4：
+  - `ductile-origami-warmstart/reports/learned-residual-surrogate-report.md`
+  - 若資料 gate未過，改為 `learned-residual-data-insufficiency-memo.md`
+- 現在不建立空白 report。
+- 每個 stage只有 entry gate通過才建立該 stage的 lock artifact與執行文件。
+- Canonical milestone index、dependency graph與criterion IDs見 [experiment plan 的 milestone authority](ductile-origami-warmstart-experiment-plan.md#milestone-authorityindex-與-lifecycle)。
+- 現已建立 S00、S10–S13、S40 designs；S20、S30–S31、S41維持 `planned_not_created`，接近上游gate才實例化。
+- 每個實際執行並terminal的 milestone都要有對應 evidence report／decision artifact；stage rollup只負責跨 milestone claim。
+
+---
+
+## 12. 目前下一步
+
+執行 [Stage-Gated Experimental Protocol](ductile-origami-warmstart-experiment-plan.md) 的 Stage 1 D1–D2 entry gate；在 Stage 1通過前，不啟動 Stage 2–4，也不產生任何 Formocast uplift、Gen0 improvement 或 speedup 結論。

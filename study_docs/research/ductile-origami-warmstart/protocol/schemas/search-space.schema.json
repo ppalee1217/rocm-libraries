@@ -1,0 +1,36 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://amd.example/m00/search-space.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "scenario_id", "ordered_genes", "ordered_shape_ids", "search_space_sha256"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "scenario_id": {"enum": ["fixed_horizon", "early_stop", "checkpoint_resume", "adversarial_ledger"]},
+    "ordered_genes": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "values"],
+        "properties": {
+          "name": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"},
+          "values": {
+            "type": "array",
+            "minItems": 2,
+            "uniqueItems": true,
+            "items": {"type": "number"}
+          }
+        }
+      }
+    },
+    "ordered_shape_ids": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "pattern": "^cpu-fixture-[a-z0-9-]+$"}
+    },
+    "search_space_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

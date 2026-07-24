@@ -1,15 +1,24 @@
 ---
 milestone_id: M03
 title: EXP-0a cold baseline 與 headroom
-design_status: draft
-execution_status: blocked
-outcome: not_available
+lifecycle: legacy
+design_authority: none
+design_status: superseded
+execution_status: do_not_execute
+outcome: superseded
+historical_design_status: draft
+historical_execution_status: blocked
+historical_outcome: not_available
+superseded_by: []
+retirement_reason: cold-headroom and long-horizon convergence thesis removed from active internship scope
 depends_on: [M00, M01.ALL]
 cohorts: [nonstreamk, streamk]
 planned_report_paths:
   - ../reports/m03-exp0a-cold-headroom-nonstreamk-report.md
   - ../reports/m03-exp0a-cold-headroom-streamk-report.md
 ---
+
+> ⚠️ **LEGACY／RETIRED／DO NOT EXECUTE：**本檔的 cold-headroom／30→90 generation thesis 已退出 active scope，沒有直接 replacement。請讀 [design index](README.md) 與現行 parent protocol。
 
 # M03 — EXP-0a cold baseline 與 headroom 設計
 

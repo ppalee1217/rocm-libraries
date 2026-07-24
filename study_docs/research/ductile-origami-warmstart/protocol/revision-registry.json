@@ -1,0 +1,145 @@
+{
+  "entries": [
+    {
+      "allowed_deviation_id": null,
+      "kind": "parent_commit",
+      "materialized_sha256": null,
+      "object_id": "8ff9ef002457ac4f11f5f5fe3f60c858d554806c",
+      "path": null,
+      "revision_id": "parent-repository"
+    },
+    {
+      "allowed_deviation_id": null,
+      "kind": "locked_commit",
+      "materialized_sha256": null,
+      "object_id": "5d6bdc8a6438b5fc73a96e46a907f9a5b1cd4e39",
+      "path": null,
+      "revision_id": "locked-ductile"
+    },
+    {
+      "allowed_deviation_id": "SPDX_ONLY",
+      "kind": "imported_blob",
+      "materialized_sha256": "88aa76da91fc1aef2dbc683159c6b9d9a30bb0b4c2eb9dfa841808acf4652d43",
+      "object_id": "2c0e0e17cde81b7e2d4df7afd34225c2f44d27ed",
+      "path": "projects/hipblaslt/tensilelite/Tensile/ductile/__init__.py",
+      "revision_id": "ductile-package"
+    },
+    {
+      "allowed_deviation_id": "SPDX_ONLY",
+      "kind": "imported_blob",
+      "materialized_sha256": "187d88977d5271eecdf7a7a2c88e31e6dd4fb349fbdbe534d078382ee4d0b764",
+      "object_id": "51b127c8bfd9d2ed4f5fcc488db6bbcd06f3679a",
+      "path": "projects/hipblaslt/tensilelite/Tensile/ductile/algorithm/__init__.py",
+      "revision_id": "ductile-algorithm-package"
+    },
+    {
+      "allowed_deviation_id": "M00_OBSERVER_TERMINATION",
+      "kind": "imported_blob",
+      "materialized_sha256": "9482141c38bd95fa4b601a9a73112dcfc2ea4c2fe82eb7c54ea04e99fb9de33a",
+      "object_id": "de47028571bba928ec7f4184e1f1085c7ab86280",
+      "path": "projects/hipblaslt/tensilelite/Tensile/ductile/algorithm/ga.py",
+      "revision_id": "ductile-ga"
+    },
+    {
+      "allowed_deviation_id": "M00_DEEP_MERGE",
+      "kind": "imported_blob",
+      "materialized_sha256": "7850928faa208bf4ffe6e8a33b7bd522c1c1cf5ebdb3c5bd44e8a1df7eac2560",
+      "object_id": "7bfe80353c1ce3b45156207895af2cd6311b43da",
+      "path": "projects/hipblaslt/tensilelite/Tensile/ductile/config/__init__.py",
+      "revision_id": "ductile-config"
+    },
+    {
+      "allowed_deviation_id": "SPDX_ONLY",
+      "kind": "imported_blob",
+      "materialized_sha256": "af1609bedb7d7475de9051786b0c6c41ca3918543a240a1f49d3638d29d80dc4",
+      "object_id": "dacc78a3de71a402b8af6d202400453014a2852d",
+      "path": "projects/hipblaslt/tensilelite/Tensile/ductile/config/defaults.yaml",
+      "revision_id": "ductile-defaults"
+    },
+    {
+      "allowed_deviation_id": "SPDX_ONLY",
+      "kind": "imported_blob",
+      "materialized_sha256": "a0c520e155773387ed226cad689e762d9513411880ccea94dcb6f559b53a9885",
+      "object_id": "0f4635e68e5a5cbd7bdd0863bda9b6871f15b934",
+      "path": "projects/hipblaslt/tensilelite/Tensile/ductile/core/__init__.py",
+      "revision_id": "ductile-core-package"
+    },
+    {
+      "allowed_deviation_id": "SPDX_ONLY",
+      "kind": "imported_blob",
+      "materialized_sha256": "5f6494d0d745a20330242f31e6c0688571346269842b6ccea54fc7e7559ded8a",
+      "object_id": "57bdafef3107e2743bba2974454695f6802c07cf",
+      "path": "projects/hipblaslt/tensilelite/Tensile/ductile/core/crossover.py",
+      "revision_id": "ductile-crossover"
+    },
+    {
+      "allowed_deviation_id": "SPDX_ONLY",
+      "kind": "imported_blob",
+      "materialized_sha256": "e09a19ed7e04a622958120438bd131616174c49e9115b042c5f8fb321cbca9a9",
+      "object_id": "23fa8cee97e3cbdb319727867550fefe83ec2d8e",
+      "path": "projects/hipblaslt/tensilelite/Tensile/ductile/core/mating.py",
+      "revision_id": "ductile-mating"
+    },
+    {
+      "allowed_deviation_id": "SPDX_ONLY",
+      "kind": "imported_blob",
+      "materialized_sha256": "c9a759f5d0c8be607cf4d3d4c52592d1a345ecb5edbcb38f28e3cff9bc631696",
+      "object_id": "2ac40281a6a25d457e541630409e9a21368c4e46",
+      "path": "projects/hipblaslt/tensilelite/Tensile/ductile/core/mutation.py",
+      "revision_id": "ductile-mutation"
+    },
+    {
+      "allowed_deviation_id": "M00_HAMMING_LAZY_PANDAS",
+      "kind": "imported_blob",
+      "materialized_sha256": "19365c724f4014196cc4d6d0bc869c77fbbc4aacea46e7d1f21e0d1a05a237df",
+      "object_id": "a2cf3615e9ec66d6121dbada07cc45e2f77b377b",
+      "path": "projects/hipblaslt/tensilelite/Tensile/ductile/core/population.py",
+      "revision_id": "ductile-population"
+    },
+    {
+      "allowed_deviation_id": "M00_LAZY_SCIPY",
+      "kind": "imported_blob",
+      "materialized_sha256": "5782610b31eaff7e47ce5db5f2f58f929a88198a8623cf8b122e67133418eaf5",
+      "object_id": "e0488914d94975a764bc23a4ba85506a11830c69",
+      "path": "projects/hipblaslt/tensilelite/Tensile/ductile/core/selection.py",
+      "revision_id": "ductile-selection"
+    },
+    {
+      "allowed_deviation_id": "M00_NOOP_TQDM",
+      "kind": "imported_blob",
+      "materialized_sha256": "7f63af21d82c0f5942f3824ecb484956c2ff27a834e8ee696afc1e28a414f69e",
+      "object_id": "315d39b2fd5b714736145dff9ac1bf1e196bf61f",
+      "path": "projects/hipblaslt/tensilelite/Tensile/ductile/core/space.py",
+      "revision_id": "ductile-space"
+    },
+    {
+      "allowed_deviation_id": "SPDX_ONLY",
+      "kind": "imported_blob",
+      "materialized_sha256": "0c4947ca12e6584c00f44016b25df6727d0bb1c0c9363b8826954a7ae82ef9ff",
+      "object_id": "c29d65207aef344ddd072dfd9e0eb5acf3f3aff6",
+      "path": "projects/hipblaslt/tensilelite/Tensile/ductile/core/survival.py",
+      "revision_id": "ductile-survival"
+    },
+    {
+      "allowed_deviation_id": "SPDX_ONLY",
+      "kind": "imported_blob",
+      "materialized_sha256": "1013014823ad58a385276a7a05c497368313fcdd6f884d655f7cb8c986f9ff70",
+      "object_id": "20661eb7e178b2eda0636feff6ef194dd8bde6b2",
+      "path": "projects/hipblaslt/tensilelite/Tensile/ductile/utils/__init__.py",
+      "revision_id": "ductile-utils-package"
+    },
+    {
+      "allowed_deviation_id": "SPDX_ONLY",
+      "kind": "imported_blob",
+      "materialized_sha256": "7cddffb3684fa54b7c4a729a4ea19d35e29e81e585cc830c6559713cac07682c",
+      "object_id": "0884b55a689c2bc0a59600bac887dead3df26deb",
+      "path": "projects/hipblaslt/tensilelite/Tensile/ductile/utils/logger.py",
+      "revision_id": "ductile-logger"
+    }
+  ],
+  "m00_source_set": {
+    "path_count": 34,
+    "sha256": "74620d4c52df9d8b2180708d4c089c1f5cc05d427b3275690920072eb308f1cb"
+  },
+  "schema_version": "1.0"
+}

@@ -1,15 +1,23 @@
 ---
 milestone_id: M05
 title: EXP-C 模型 ranking 與 oracle marginals gate
-design_status: draft
-execution_status: blocked
-outcome: not_available
+lifecycle: legacy
+design_authority: none
+design_status: superseded
+execution_status: do_not_execute
+outcome: superseded
+historical_design_status: draft
+historical_execution_status: blocked
+historical_outcome: not_available
+superseded_by: [S12]
 depends_on: [M00, M01.ALL, M02.FUNCTIONAL]
 cohorts: [nonstreamk, streamk]
 planned_report_paths:
   - ../reports/m05-expc-ranking-oracle-nonstreamk-report.md
   - ../reports/m05-expc-ranking-oracle-streamk-report.md
 ---
+
+> ⚠️ **LEGACY／DO NOT EXECUTE：**本檔是 pre-pivot ranking／oracle設計，不具執行權威。Active replacement：[S12](staged/s12-stage1-real-score-ranking-oracle-audit-design.md)。請先讀 [design index](README.md) 與現行 parent protocol。
 
 # M05 — EXP-C 模型 ranking 與 oracle marginals gate 設計
 

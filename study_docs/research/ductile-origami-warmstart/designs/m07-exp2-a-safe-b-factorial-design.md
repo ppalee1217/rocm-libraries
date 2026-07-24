@@ -1,15 +1,24 @@
 ---
 milestone_id: M07
 title: EXP-2 A-safe 與 injection B factorial
-design_status: draft
-execution_status: blocked
-outcome: not_available
+lifecycle: legacy
+design_authority: none
+design_status: superseded
+execution_status: do_not_execute
+outcome: superseded
+historical_design_status: draft
+historical_execution_status: blocked
+historical_outcome: not_available
+superseded_by: []
+retirement_reason: Injection A and A-safe factorial explicitly excluded from active scope
 depends_on: [M04, M06]
 cohorts: [nonstreamk, streamk]
 planned_report_paths:
   - ../reports/m07-exp2-a-safe-b-factorial-nonstreamk-report.md
   - ../reports/m07-exp2-a-safe-b-factorial-streamk-report.md
 ---
+
+> ⚠️ **LEGACY／RETIRED／DO NOT EXECUTE：**A-safe／Injection A factorial 已退出 active scope，沒有 replacement。請讀 [design index](README.md) 與現行 parent protocol。
 
 # M07 — EXP-2 A-safe 與 injection B factorial 設計
 

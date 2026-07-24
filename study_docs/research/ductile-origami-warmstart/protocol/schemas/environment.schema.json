@@ -1,0 +1,51 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://amd.example/m00/environment.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "os", "python", "packages", "cwd", "argv", "contract_sha256", "revision_sha256", "gpu_probed", "rocm_probed", "environment_variables_captured"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "os": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["system", "release", "machine"],
+      "properties": {
+        "system": {"type": "string", "minLength": 1},
+        "release": {"type": "string", "minLength": 1},
+        "machine": {"type": "string", "minLength": 1}
+      }
+    },
+    "python": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["version", "executable"],
+      "properties": {
+        "version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+"},
+        "executable": {"type": "string", "pattern": "^/"}
+      }
+    },
+    "packages": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["numpy", "joblib", "PyYAML", "jsonschema", "pandas"],
+      "properties": {
+        "numpy": {"type": "string", "minLength": 1},
+        "joblib": {"type": "string", "minLength": 1},
+        "PyYAML": {"type": "string", "minLength": 1},
+        "jsonschema": {"type": "string", "minLength": 1},
+        "pandas": {"type": "string", "minLength": 1}
+      }
+    },
+    "cwd": {"type": "string", "pattern": "^/"},
+    "argv": {"type": "array", "items": {"type": "string"}},
+    "contract_sha256": {"$ref": "#/definitions/sha"},
+    "revision_sha256": {"$ref": "#/definitions/sha"},
+    "gpu_probed": {"const": false},
+    "rocm_probed": {"const": false},
+    "environment_variables_captured": {"const": false}
+  },
+  "definitions": {
+    "sha": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

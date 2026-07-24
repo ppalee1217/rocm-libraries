@@ -1,310 +1,1661 @@
-# Ductile 引入 Origami/Formocast 暖啟動 — 實作實驗計畫（gfx942 / MI300X）
+# gfx942 Non-StreamK Factorized Guidance — Stage-Gated Experimental Protocol
 
-> **這份文件是什麼**：把 [surrogate-dse-plan.md](surrogate-dse-plan.md) 的主線（用便宜模型暖啟動 GA、減少實測評估）落到 **gfx942 / MI300X 上的可執行實作實驗**。母計畫講「方向、方法、metric、紀律」；本檔講「**要做哪些實驗、用什麼順序、每步怎麼量、什麼條件才算贏／才算被推翻**」。
+> **文件角色：**可執行 staged experiment protocol。所有公式、常數、sample counts、seeds、artifacts、Stage 1–4 schedule 與 stop rules 以本檔為唯一權威。
 >
-> **結論來源**：本計畫由 **兩個彼此獨立的 GPT-5.6 Sol subagents（A、B）** 依 `/design-discussion` 流程，經開場立場 → 交互詰問 → 候選共識三輪產生，最後 **A、B 皆明確 `AGREE`**。關鍵 factual crux（Origami 輸出粒度、Ductile `weights` hook、GA 收斂機制、injection A 候選清單）由 orchestrator 直接查核 branch 程式碼確認（見 §1.1）。
+> **研究 scope／claim authority：**[Formocast Factorized Gen0 Guidance Feasibility Study — Research Charter](surrogate-dse-plan.md)。
 >
-> **平台範圍**：鎖定 **MI300X（gfx942 / CDNA3）**；MI350（gfx950）為後續 migrate 目標，本計畫不處理。
+> **狀態：**`staged_protocol_approved / execution_not_started / stage1_blocked_until_D1-D2_lock`。本檔不表示已取得 GPU、actual YAML、mapping parity 或任何 uplift；Stage 2–4 也不是無條件承諾。
+>
+> **Legacy override：**`ductile-origami-warmstart/designs/` 下既有 M00–M09 已由 research charter 統一標為 `legacy / superseded_pending_redesign / do_not_execute`。本 protocol 取代舊 warm-start system protocol；本輪不修改或執行那些 milestone designs。
+>
+> **平台：**gfx942／MI300X、non-StreamK、單一 dtype/layout。檔名中的 `origami-warmstart` 為歷史名稱；primary model 是 Formocast，Origami estimation 只作 reference。Stage 1 是七日 Gen0 gate；只有通過後才可依序進 Stage 2 persistence 與 Stage 3 bounded replication，Stage 4 surrogate 是嚴格條件分支。
 
 ---
 
-## 0. 一句話定位與現況
+## Milestone authority、index 與 lifecycle
 
-**命題**：用 Origami/Formocast 的效能預測來「指導」Ductile GA 的搜尋（**擴候選清單 + 偏重初始採樣**），看能否在**保住品質**的前提下**用更少實測評估**達到同等或更好的 tuning 結果。
+> 導航與 legacy migration：[designs/README.md](ductile-origami-warmstart/designs/README.md)。
+>
+> 新 designs 位於 `ductile-origami-warmstart/designs/staged/`；舊 M00–M09 保留原位但無執行權威。
 
-**現況（重要，先講白話）**：這是一個**要被實測證明的假說，不是已成定局的整合**。在拿到 held-out 確認結果之前，**不得宣稱有 uplift**。而且——
+### Authority order
 
-- 本機目前 `rocminfo` **看不到 gfx942 GPU**（只有 CPU agent）；
-- 外部 `TuningDriver`（提供 `--convert-config` 的正式入口）**取得與授權尚未確認**。
+1. Research charter：scope、claim ladder、non-goals、canonical failure taxonomy。
+2. 本 experiment plan：scientific criterion IDs、公式、數值、samples、seeds、go/stop。
+3. Milestone design：implementation handoff、artifact checklist、entry／exit evidence；不得複製 parent數值 protocol。
+4. Lock artifact：把 milestone綁定到特定 parent hash、inputs、revisions與seeds。
+5. Report：記錄 observed evidence與decision，不得反向修改 criterion。
 
-所以本檔現階段是**可執行的實作計畫**，其第一步（§2 Step-0）就是把這些前置條件逐項驗證通過；**Step-0 未過，不進 GPU 實驗、不下任何效能結論**。
+### Canonical milestone slots
 
-### 0.1 範圍邊界（scope guardrail）
+| ID | Responsibility | Design status | Execution status | Design |
+| --- | --- | --- | --- | --- |
+| S00 | Evidence contract／lineage／observability foundation | draft | not_started | [design](ductile-origami-warmstart/designs/staged/s00-evidence-contract-lineage-observability-design.md) |
+| S10 | Stage 1 access／artifact／mapping／noise gate | draft | not_started | [design](ductile-origami-warmstart/designs/staged/s10-stage1-entry-access-mapping-gate-design.md) |
+| S11 | Stage 1 model-only factorization／guidance lock | draft | gated | [design](ductile-origami-warmstart/designs/staged/s11-stage1-model-only-factorization-design.md) |
+| S12 | Stage 1 D5 real-score／oracle audit | draft | gated | [design](ductile-origami-warmstart/designs/staged/s12-stage1-real-score-ranking-oracle-audit-design.md) |
+| S13 | Stage 1 actual Gen0 mechanism | draft | gated | [design](ductile-origami-warmstart/designs/staged/s13-stage1-actual-gen0-mechanism-design.md) |
+| S20 | Stage 2 H10 persistence | planned_not_created | gated | `designs/staged/s20-stage2-h10-persistence-design.md` |
+| S30 | Stage 3 held-out registry／procedure freeze | planned_not_created | gated | `designs/staged/s30-stage3-heldout-registry-freeze-design.md` |
+| S31 | Stage 3 two-cluster bounded replication | planned_not_created | gated | `designs/staged/s31-stage3-bounded-replication-design.md` |
+| S40 | Stage 4 activation／data-sufficiency gate | draft | gated | [design](ductile-origami-warmstart/designs/staged/s40-stage4-surrogate-activation-gate-design.md) |
+| S41 | Stage 4 nested learned-residual analysis | planned_not_created | gated | `designs/staged/s41-stage4-learned-residual-analysis-design.md` |
 
-| 允許動的 | 明確不動 |
+`planned_not_created` 是 parent slot狀態，不是虛構的 `design_status`。只有檔案真正建立後才進入 design lifecycle。
+
+### Dependency graph
+
+```mermaid
+flowchart TD
+  start["Roadmap start"]
+  s00["S00 Evidence foundation"]
+  s10["S10 Stage 1 entry"]
+  s11["S11 Guidance lock"]
+  s12["S12 D5 audit"]
+  s13["S13 Actual Gen0"]
+  s20["S20 H10 persistence"]
+  s30["S30 Registry / freeze"]
+  s31["S31 Bounded replication"]
+  s40["S40 Surrogate activation"]
+  s41["S41 Learned residual"]
+
+  start --> s00
+  start -. "access / YAML discovery may begin" .-> s10
+  s00 -->|"evidence interface ready"| s10
+  s00 --> s11
+  s10 -->|"GO or DEGRADED_PROXY"| s11
+  s11 -->|"S1_GUIDANCE_LOCKED"| s12
+  s12 -->|"D5_PASS"| s13
+  s13 -->|"D6_MECHANISM_POSITIVE"| s20
+  s20 -->|"S2_DIRECTIONAL_PERSISTENCE_POSITIVE"| s30
+  s30 -->|"S3_REGISTRY_PROCEDURE_LOCKED"| s31
+  s12 -. "predictor failure + oracle positive" .-> s40
+  s31 -. "predictor heterogeneity + oracle positive" .-> s40
+  s40 -->|"S4_ACTIVATE"| s41
+```
+
+### Stable criterion IDs
+
+Milestone designs只能引用下列 parent IDs，不得自行改門檻：
+
+- `S00_EVIDENCE_READY`
+- `S1_ENTRY_GO`
+- `S1_ENTRY_DEGRADED_PROXY`
+- `S1_ENTRY_BLOCKED`
+- `S1_GUIDANCE_LOCKED`
+- `D5_PASS`
+- `D5_BORDERLINE_INCONCLUSIVE`
+- `D5_FAIL`
+- `D6_MECHANISM_POSITIVE`
+- `S2_DIRECTIONAL_PERSISTENCE_POSITIVE`
+- `S3_REGISTRY_PROCEDURE_LOCKED`
+- `S3_BOUNDED_REPLICATION_POSITIVE`
+- `S4_TRIGGER_ELIGIBLE`
+- `S4_DATA_GATE_PASS`
+- `S4_ACTIVATE`
+- `S4_LEARNED_RESIDUAL_POSITIVE`
+- research charter中的全部 `FT-*`
+
+語意：
+
+- `S00_EVIDENCE_READY`：observer neutrality、checkpoint/resume parity、lineage lock與artifact reconciliation全部通過。
+- `S1_ENTRY_GO`：§2 entry gates通過，且 actual YAML guidance可追溯。
+- `S1_ENTRY_DEGRADED_PROXY`：§2 entry gates通過，但只能使用 exact-space GEKO branch proxy。
+- `S1_ENTRY_BLOCKED`：§2.8任一 hard stop成立。
+- `S1_GUIDANCE_LOCKED`：§4–§5 model-only frame、gene decisions、weights、shuffle與hash在 real labels前完成鎖定。
+- `S3_REGISTRY_PROCEDURE_LOCKED`：§16的兩primary slots、reserve、denominator、frozen procedure與完整budget均在任何 Stage 3 score前鎖定。
+- `S4_TRIGGER_ELIGIBLE`：§18.1 predictor-specific failure成立，且§18.2禁止 patterns均不存在。
+- `S4_DATA_GATE_PASS`：§18.3四-cluster data floor與prospective fourth-cluster規則通過。
+- `S4_ACTIVATE`：前兩項同時通過，授權建立 S41。
+- `S4_LEARNED_RESIDUAL_POSITIVE`：§19.4 cluster-held-out learned residual同時勝 Formocast／shuffled並縮小 oracle gap。
+
+### Lifecycle
+
+- `design_status`: `draft | approved | locked | superseded`
+- `execution_status`: `not_started | gated | ready | running | blocked | completed | cancelled`
+- `outcome`: `not_evaluated | positive | negative | inconclusive | blocked | not_activated | superseded`
+
+只有 `design_status=locked` 且 `execution_status=ready` 可產生 outcome-bearing evidence。`approved` 只代表設計審查完成，不代表可執行。
+
+### Stage 3 reserve cutover
+
+Primary cluster slots、最多一個 technical reserve與優先序必須同時預鎖。Reserve只可因 access、artifact或 deterministic mapping technical failure替換，而且 replacement decision必須發生在該 slot 第一筆 Formocast score及第一筆 real label之前。Scoring開始後的 D5 fail、coverage不足、inconclusive、無 eligible genes、oracle或GA negative都不得替換；固定 denominator仍是兩個 slots。
+
+### Stage 4 data-qualified cluster
+
+`qualified_for_stage4_data` 與 `D5_PASS` 是不同欄位。Stage 4資料資格不要求 D5 pass，但至少要求：
+
+- independent search-space cluster ID與 pre-label selection provenance；
+- frozen mapping／revision；
+- 至少256 unique judgment configs與兩個 sizes；
+- inclusion probabilities／analysis weights；
+- correctness、coverage與lineage完整；
+- 無 leakage或 outcome-driven amendment。
+
+Mapping靠猜、coverage／correctness不完整或judgment pool不足者不具資格。
+
+## Part I — Stage 1：七日 Gen0 mechanism protocol
+
+> 本檔原有 D1–D7 嚴謹性完整保留。Part I 的數值、公式、locks 與 gates 不因新增後續 stages 而降低。
+
+## 0. Stage 1 objective 與完成定義
+
+### 0.1 Objective
+
+在 frozen generated YAML 定義的 residual search space 中：
+
+1. 量 Formocast whole-config ranking 是否有真實訊號；
+2. 將訊號 factorize 成 ungrouped residual-gene probabilities；
+3. 保留所有 existing YAML groups／weights；
+4. 比較 existing guidance、Formocast residual guidance 與 same-entropy shuffled guidance；
+5. 只有 offline gates 通過時，才用 actual Ductile `requested pop=64, n_gen=1` 測 Gen0；constructor-resolved population 必須在 real labels前鎖定。
+
+### 0.2 Stage 1 能回答什麼
+
+- Formocast 是否看得到 bounded residual space 的效能差異；
+- Whole-config signal 是否能被獨立 per-gene hook 表達；
+- 是否有超越 existing guidance／GEKO branch proxy 的 Gen0 增量；
+- 失敗位於 mapping、model、factorization、sampler 或 heuristic saturation 哪一層。
+
+### 0.3 Stage 1 不能單獨回答什麼
+
+- 完整 GA convergence 或 tuning speedup；
+- `n_gen>1` 後是否保留 Gen0 改善；此問題由 Stage 2回答；
+- production deployment／adoption；
+- 兩個新 fixed-tile regimes能否重現；此問題由 Stage 3回答；
+- MI300X workload-level 泛化；
+- StreamK、跨架構；
+- learned residual surrogate是否能補 predictor failure；只有 Stage 4 data/trigger gate通過才研究。
+
+### 0.4 完成狀態
+
+- `completed_positive`：D5 與 D6 mechanism-positive criteria 全過。
+- `completed_negative`：取得有效 empirical evidence，但某一預註冊 gate 失敗。
+- `completed_inconclusive`：noise、support、coverage、importance ESS 或樣本範圍不足。
+- `blocked`：D1–D2 access／artifact／mapping gate 未過。
+
+---
+
+## 1. Authority、locks 與不可變規則
+
+### 1.1 Authority
+
+- Scope、non-goals、failure taxonomy、claim boundary：research charter。
+- 數值 protocol、公式、artifacts、stop rules：本檔。
+- Frozen YAML 與 pinned code revisions：執行期間的實物權威。
+- 實際 `soo/reduce_fn`、groups、candidate order 與 weights：只能由 frozen generated YAML／resolved config 取得，不得由 defaults 推定。
+
+### 1.2 Lock points
+
+在任何 real GFLOPS artifact 建立或解封前，必須 hash-lock：
+
+- frozen YAML 與 provenance；
+- source revisions；
+- search-space map、groups、candidate order；
+- sizes；
+- model-only frame generation seeds；
+- eligible／guided gene list；
+- `alpha`、`epsilon`、`lambda` 與 weights；
+- shuffled permutation bundle；
+- D5 strata、sample IDs、fold IDs；
+- measurement 與 correctness protocol。
+
+看到 real GFLOPS 後不得修改上述項目。若必須修改：
+
+1. 保留原 protocol 與原結果；
+2. append amendment，記錄時間、理由與影響；
+3. 原 D5 pool降級為 development data；
+4. 另取未看過的 judgment pool，否則不得重新宣稱 gate pass。
+
+### 1.3 Pinned code requirement
+
+至少凍結：
+
+- Ductile `ga.py`、`space.py`、`mutation.py` 與 validity code；
+- GEKO config generator；
+- TensileLite solution resolution／`getSizeMapping()`；
+- Origami／Formocast；
+- experiment runner／analysis code。
+
+目前 workspace 中的工作樹狀態不能直接當正式 revision；執行前須保存 commit SHA、patch hash 或完整 source checksum。
+
+---
+
+## 2. D1–D2 entry gate
+
+### 2.1 Frozen generated YAML
+
+保存 byte-for-byte copy、SHA-256、來源、生成命令與 generator revision，並解析：
+
+- architecture、dtype、layout、transpose；
+- non-StreamK 身分；
+- problem sizes；
+- fixed MacroTile 或 MTDU；
+- `DepthU` 是 fixed、ungrouped free gene 或 grouped member；
+- 全部 `group_i` 及其 candidate order；
+- 全部 existing weights；
+- `weight_beta`；
+- ungrouped free genes；
+- `soo` 與 resolved `reduce_fn`；
+- correctness／validation 設定。
+
+手工重建 YAML 不可冒稱 actual artifact。
+
+### 2.2 Existing groups 的保護規則
+
+所有 existing `group_i`：
+
+- 不拆解；
+- 不重排 candidate；
+- 不修改 YAML-provided weights；
+- 不將 group 內欄位另外當 residual genes；
+- 即使 group 沒有 weights，也保持 YAML 原本的 grouped sampling semantics。
+
+Formocast guidance只可作用於 manifest 明列的：
+
+- ungrouped；
+- currently-unweighted；
+- frozen free genes。
+
+### 2.3 Ten-config canonical mapping corpus
+
+依 config hash／candidate boundary 的預註冊規則選 10 configs，至少涵蓋：
+
+- group 候選邊界；
+- residual gene 候選邊界；
+- auto／sentinel 值；
+- DepthU、GSU、GRVW／VectorWidth、PGR、occupancy 等適用欄位；
+- 至少一個可能被 Formocast reject 的 case。
+
+每筆保存：
+
+- raw candidate；
+- resolved solution；
+- `SizeMapping`／model input；
+- 每欄 provenance；
+- config hash；
+- mapping status／failure reason。
+
+以下欄位不得猜值或用無證據 default：
+
+- occupancy；
+- effective GSU；
+- `MathClocksUnrolledLoop`；
+- unresolved `-1/-2` sentinel；
+- 任何 backend-specific required metadata。
+
+Derived mapping 可接受，但必須：
+
+- deterministic、total、reproducible；
+- 有 canonical direct／derived path；
+- 相同 input 與 size 產生相同 model input；
+- 逐欄 parity／round-trip 可稽核；
+- dependency 寫入 mapping manifest。
+
+多個 gene values 若映射成完全相同的 Formocast input，視為 model tie，不得捏造 sensitivity。
+
+### 2.4 Size registry
+
+優先選三個：
+
+- 來自同一 frozen YAML；
+- 共享完全相同 search-space hash、groups、candidate order 與 baseline weights；
+- 不使用 Formocast score挑選；
+- 依事前 workload 規則覆蓋 small-K／transition／large-K 或等價 utilization regimes。
+
+若只有兩個合法 sizes：
+
+- study mode標 `two_regime_pilot`；
+- 所有「至少 2/3 sizes」改成「2/2 sizes」；
+- claim明確降級。
+
+不得拿不同 search space 的第三個 size湊數。
+
+### 2.5 GPU access 與 smoke
+
+D2結束前必須：
+
+- 已排定 MVP期間可用的 gfx942 slot；
+- generate／compile／benchmark smoke成功；
+- nonzero correctness／validation；
+- environment、ROCm、driver、clock／power policy可記錄；
+- 能執行 D3–D6 所需的 measurement protocol。
+
+只有「未來可能拿到 GPU」不算通過。
+
+### 2.6 Noise pilot
+
+由 10-config mapping corpus按 canonical config hash預選 3 anchors，不得依 model／GFLOPS選：
+
+1. 每 anchor 在全部 sizes 做 7 次獨立重測；
+2. 每次依 actual `reduce_fn` 得 aggregate quality `Q_ar`；
+3. 調整 timed iterations，目標為 config-level repeat CV 的 P95 ≤ 0.5%；
+4. iteration escalation cap 必須在 treatment benchmark 前鎖定；
+5. cap後仍不穩定：D6 `noise_blocked`。
+
+定義：
+
+```text
+d_ar        = abs(log(Q_ar) - median_r(log(Q_ar)))
+delta_noise = exp(P95({d_ar})) - 1
+```
+
+`delta_noise` 在 D5 unblind 前鎖定，用作 D6 median-quality guardrail。
+
+### 2.7 D1–D2 study mode
+
+#### `ready_actual_yaml_guidance`
+
+- Actual frozen YAML 含有可追溯 existing weights。
+- 可回答完整 bounded RQ。
+- 除非另有 deployment 證據，仍不得稱 production incumbent。
+
+#### `degraded_branch_proxy_only`
+
+- Actual YAML 沒有 weights；
+- pinned GEKO commit能在**完全相同** space、groups、candidate order 下只新增 weights；
+- 只能回答 GEKO branch-proxy mechanism 問題；
+- 完整 RQ記為 `not_evaluated_under_actual_yaml`。
+
+#### `blocked_no_comparable_heuristic`
+
+- Actual weights不存在；
+- branch proxy無法只改weights而保持其他條件相同；
+- 不得判 existing-heuristic saturation。
+
+### 2.8 D1–D2 hard stop
+
+任一成立即停止 empirical work：
+
+- frozen YAML provenance不足；
+- mapping需猜 required metadata；
+- actual／proxy candidate order無法對齊；
+- D2前沒有已排定 gfx942 slot；
+- smoke／correctness失敗；
+- 剩餘可工作時間少於5日。
+
+輸出 [blocker memo](#111-report-paths)，不得建立假裝執行過的 MVP report。
+
+---
+
+## 3. 三種分布與分析單位
+
+### 3.1 `pi_nominal`
+
+Frozen YAML／hook 定義的每個 key 的 product probabilities：
+
+- 有 weight 的 key：依實際 `weight_beta` 轉成 probabilities；
+- 無 weight 的 key：uniform；
+- existing groups保持其單一 categorical key；
+- 尚未經 validity 或 population 去重。
+
+### 3.2 `pi_valid`
+
+單一 nominal draw通過 `valid_fn` 後的 accepted-occurrence distribution：
+
+```text
+pi_valid(x) = pi_nominal(x | valid_fn(x) = true)
+```
+
+`sample_chunk()` 先保存 valid occurrences，之後 `SearchSpace.sample()` 才加入 `IndividualSet`。所以 duplicate valid occurrences 屬於 `pi_valid` 的 multiplicity，不可先去重再假裝等權。
+
+### 3.3 `Pi_gen0,P0`
+
+令 `P0` 為 Ductile constructor在 frozen search space上解析後的 initial population size；requested value是64，但 runtime可能依 gene cardinality調整。`SearchSpace.sample(P0)` 產生 `P0`-config joint population distribution：
+
+- 先 per-key categorical draw；
+- validity filter；
+- population內由 `IndividualSet` 去重；
+- 同 config 可在不同 populations重現。
+
+`Pi_gen0,P0` 不是 `P0` 個獨立 `pi_valid` draws。本研究：
+
+- 用 `pi_valid` 建 model marginals 與 D5 finite-frame audit；
+- 用 exact `pop=P0` CPU replay描述 operational sampler；
+- 用 D6 的三個新 populations測 actual endpoint。
+
+### 3.4 Analysis units
+
+- D5：256 個 unique configs；每 config 的所有 size observations綁在一起。
+- 三 sizes時有 768 config×size observations，但不是 768 個獨立 workloads。
+- D6：一個 `pop=P0` population是 joint realization；三 paired seeds只有三次方向性 evidence。
+
+---
+
+## 4. Model-only valid occurrence frame
+
+### 4.1 Global frame `F_valid`
+
+使用 pinned `sample_chunk` 等價路徑，在加入 `IndividualSet` 前收集 valid occurrences：
+
+- default target／hard cap：8,192 accepted occurrences；
+- duplicate occurrences保留；
+- 每 occurrence保存 occurrence ID、seed／chunk、raw config、resolved config hash、validity provenance；
+- 不因看到 GFLOPS結果追加 occurrences。
+
+可在 4,096 occurrences後依 model-only stability提早停止，但只能在：
+
+- 所有可能 eligible genes 已通過或明確未通過 §5 criteria；
+- 兩個預鎖 disjoint halves產生相同 guided-gene set；
+- 各 guided gene 的 best／worst pair均一致；
+- global `lambda`選擇一致。
+
+否則繼續到8,192 cap。Cap後仍不穩定的 gene維持uniform。
+
+### 4.2 Deduplicated model catalog
+
+依 canonical config hash去重只為節省 mapping／Formocast scoring：
+
+- 每 unique config只需 resolve／score一次；
+- 保存 multiplicity `m_i`；
+- 保存所有 occurrence IDs；
+- analysis時恢復 occurrence multiplicity。
+
+若 complete、scoreable unique catalog少於256：
+
+- 原 D5 design `blocked_or_underpowered`；
+- 不得把 duplicate occurrences當不同 configs補足；
+- 不得降低256門檻後仍聲稱照原protocol完成。
+
+### 4.3 Model scoring
+
+每 unique config對全部 sizes取得：
+
+- resolved Formocast model input；
+- latency／status；
+- mapping與scoring time；
+- rejection reason；
+- score ties；
+- model revision。
+
+Whole-config Formocast coverage以 `F_valid` occurrence mass計算，也並報 unique-config coverage。
+
+### 4.4 Conditional top-up
+
+對 eligible residual `(gene g, value v)`：
+
+1. 固定 `X_g=v`；
+2. 其他 keys依 `pi_nominal` 抽；
+3. 通過同一 `valid_fn`；
+4. accepted occurrences保留 multiplicity；
+5. 只用於該 `(g,v)` conditional mean；
+6. 不進 global frame、whole-ranking audit或 D5 strata。
+
+每 value：
+
+- hard minimum：128 accepted conditional occurrences；
+- precision／stability不足時可加到256 hard cap；
+- cap後仍不足：該 gene維持uniform。
+
+---
+
+## 5. Model-sensitive residual genes 與 weights
+
+### 5.1 Eligibility
+
+一個 key必須同時是：
+
+- frozen free key；
+- ungrouped；
+- currently unweighted；
+- cardinality > 1；
+- direct或deterministic derived mapping complete；
+- 每 candidate value model coverage ≥95%。
+
+Existing `group_i` 一律不 eligible。
+
+### 5.2 Model benefit
+
+對每 size `s`：
+
+```text
+r_s(x) = Formocast latency percentile rank in F_valid  # 0 is best
+b_s(x) = 1 - r_s(x)                                   # larger is better
+```
+
+依 actual YAML objective聚合：
+
+```text
+b(x) = actual_reduce_fn({b_s(x)})
+```
+
+若 `reduce_fn` 與 benefit aggregation 語意無法無歧義對齊，D1–D2 必須在 protocol lock中寫出 resolved function與單元測試；不可由名稱猜測。
+
+### 5.3 Shrinkage conditional mean
+
+以 accepted-occurrence multiplicity計權：
+
+```text
+mu_gv = (sum b_i + alpha * global_mean_g) / (n_gv + alpha)
+alpha = 32
+```
+
+- `alpha=32` 是 minimum support 128 的 25%；
+- support增加到256時仍固定32；
+- global frame與對應 conditional top-up使用同一 target conditional distribution；
+- top-up只補該 cell，不當 whole-frame row。
+
+### 5.4 Model-sensitive hard criteria
+
+定義：
+
+```text
+S_g = max_v(mu_gv) - min_v(mu_gv)
+```
+
+只有全部成立才 guidance：
+
+1. 每 value accepted-occurrence support ≥128；
+2. 每 value model coverage ≥95%；
+3. `S_g ≥ 0.05` percentile-benefit units；
+4. 2,000 次 within-gene permutation，observed `S_g` > null P95；
+5. 2,000 次 model-only bootstrap 中，固定 best-vs-worst contrast 的 95% interval half-width ≤0.025；
+6. 同一 best／worst pair重現率 ≥90%；
+7. best-vs-worst方向至少2/3 sizes一致；two-regime時2/2。
+
+判讀：
+
+- 90%以上：eligible for guidance；
+- 80–90%：`borderline_model_sensitivity`，維持uniform；
+- 80%以下：`unstable`，維持uniform。
+
+若 support 128未過 precision／stability，可加到256；仍未過不得降低 criteria。
+
+### 5.5 Probability construction
+
+固定：
+
+```text
+epsilon = 0.20
+alpha   = 32
+```
+
+對 guided gene：
+
+```text
+q_g(v) = exp(lambda * (mu_gv - min_v(mu_gv))) / Z_g
+p_g(v) = epsilon / |V_g| + (1 - epsilon) * q_g(v)
+Hnorm  = H(p_g) / log(|V_g|)
+```
+
+所有 guided genes共用單一 global `lambda`：
+
+- 固定 grid `{0, 0.25, 0.50, ..., 8.00}`；
+- 選最大 `lambda`，使所有 guided genes 的 `Hnorm ≥0.80`；
+- 完全不讀 real GFLOPS；
+- 若無 gene通過或 `lambda=0`，factorized guidance停止，不進 D5 treatment gate。
+
+### 5.6 Hook cost conversion
+
+依 frozen actual `weight_beta`：
+
+```text
+w_g(v) = -log(p_g(v)) / weight_beta
+```
+
+要求：
+
+- `SearchSpace.map[g]` candidate order逐項等於 weight vector order；
+- probability round-trip與normalization測試通過；
+- NaN／Inf／missing value fail closed；
+- guided gene list、`lambda`、weights、candidate order與hash在 real GFLOPS前鎖定。
+
+### 5.7 Same-entropy shuffled control
+
+- 所有 existing groups／weights完全不動；
+- 對每個 guided residual gene，將同一 probability multiset做預鎖 deterministic non-identity label permutation；
+- 保持 candidate cardinality、nominal entropy、`epsilon` floor與 guided gene數；
+- permutation seeds／bundles在 real GFLOPS前鎖定；
+- validity／dedup後的 realized entropy另行報告。
+
+---
+
+## 6. D3–D5 real-score finite-frame audit
+
+### 6.1 Real-score pool
+
+從 deduplicated model catalog抽固定256 unique configs。
+
+建立 strata：
+
+1. 對 scoreable configs依 aggregate Formocast score排序；
+2. 依 occurrence multiplicity切成10個 weighted deciles；
+3. sampling-only ties用 canonical config hash stable tie-break；
+4. metric計算保留真實 ties／midranks；
+5. unscored／rejected configs獨立為第11 stratum，不可靜默刪除。
+
+Allocation：
+
+- 依各 stratum occurrence mass做 largest-remainder proportional allocation至256；
+- 每個非空 stratum至少1個；
+- 若 quota > unique `N_h`，該層 census，剩餘 quota按同一規則重分；
+- stratum內對 unique config做 simple random sampling without replacement；
+- 保存 `stratum_id, N_h, n_h, rho_i=n_h/N_h`。
+
+### 6.2 Measurement
+
+每個 selected config在全部 sizes：
+
+- generate／compile／benchmark；
+- 使用鎖定 warmup／timed iterations；
+- 保存 raw timings、GFLOPS、correctness、failure reason；
+- arm／config順序依預鎖 randomized schedule；
+- measurement failure不事後 replacement。
+
+三 sizes時：
+
+- 256 unique configs；
+- 768 config×size observations；
+- primary bootstrap／permutation單位仍是 config。
+
+### 6.3 Baseline design weight
+
+對 selected unique config `i`：
+
+```text
+W_0i = m_i / rho_i
+```
+
+其中：
+
+- `m_i`：`F_valid` occurrence multiplicity；
+- `rho_i`：stratified sampling inclusion probability。
+
+Primary estimand只限 frozen `F_valid` empirical accepted-occurrence frame。
+
+### 6.4 Alternative prior mass
+
+對 alternative arm `a`：
+
+```text
+r_a(x_i) = pi_nominal,a(x_i) / pi_nominal,0(x_i)
+W_ai     = W_0i * r_a(x_i)
+
+M_a(T) = sum_i W_ai * I(x_i in real_top_decile_T)
+         / sum_i W_ai
+```
+
+- Validity function相同，因此未知 valid normalization在 self-normalization中抵消；
+- preserved groups在 density ratio中相消；
+- `epsilon` floor確保 baseline support overlap；
+- YAML baseline `r_0=1`。
+
+每 arm必報：
+
+```text
+importance_ESS = (sum W_ai)^2 / sum(W_ai^2)
+max_normalized_weight
+```
+
+若 `importance_ESS < 25`，該 arm prior-mass gate為 `inconclusive`，不得以 point estimate通過。
+
+### 6.5 Metrics
+
+Primary：
+
+- design-weighted aggregate Spearman（weighted midranks後的 weighted Pearson）；
+- design-weighted real top-decile cutoff；
+- top-decile overlap／lift；
+- arm-specific real-top-decile prior mass。
+
+Secondary：
+
+- raw unweighted versions；
+- per-size Spearman／lift；
+- Kendall；
+- ties／distinct score counts；
+- model／measurement coverage；
+- occurrence concentration、max multiplicity、Kish effective sample size；
+- compile／mapping／scoring cost。
+
+Bootstrap：
+
+- 在各 stratum內以 config為block重抽；
+- 同一 config的全部 size outcomes一起移動；
+- 不把768 rows視為獨立。
+
+Permutation null：
+
+- 以 config為整體 permutation unit；
+- 保留同 config的全部 size outcomes；
+- 規則與次數在 protocol lock中保存。
+
+### 6.6 Coverage／rejection gate
+
+同時要求：
+
+- `F_valid` occurrence-mass complete Formocast coverage ≥95%；
+- D5 planned real measurements coverage ≥95%；
+- unscored／failed rows保留；
+- 對 planned count ≥10 的 gene/value，rejection rate不得比 overall高超過10 percentage points。
+
+低於門檻：
+
+- 不使用 missing-weight adjustment救回；
+- 記 `FT-INCONCLUSIVE` 或 mapping／model coverage failure；
+- 不進 D6。
+
+### 6.7 D5 pass／borderline／fail
+
+全部成立才 `D5_PASS`：
+
+1. Coverage／rejection gate通過；
+2. aggregate Spearman ≥0.25；
+3. aggregate top-decile lift ≥2× random；
+4. 至少2/3 sizes的 Formocast ranking方向為正；two-regime時2/2；
+5. existing／proxy + Formocast residual prior mass高於 existing／proxy baseline；
+6. Formocast prior mass高於 same-entropy shuffled；
+7. 每個相關 arm importance ESS ≥25；
+8. 沒有 correctness failure。
+
+`D5_BORDERLINE_INCONCLUSIVE`：
+
+- Spearman在 `[0.20, 0.25)`；或
+- lift在 `[1.5, 2.0)`；或
+- support／ESS／coverage只差門檻但不能無偏補足。
+
+Borderline不進 D6；不得調參後重用同 pool。
+
+`D5_FAIL`：
+
+- 低於 borderline；或
+- factorized prior不勝 baseline／shuffled；或
+- cross-fitted oracle顯示 hook expressiveness不足。
+
+所有 threshold都是 engineering triage，不是統計保證。報告必須包含 raw overlap counts、ties、coverage、permutation null與 bootstrap interval。
+
+### 6.8 Cross-fitted oracle diagnosis
+
+使用5-fold config-level cross-fitting：
+
+- fold assignment在 real scores解封前，依 config hash與D5 stratum固定；
+- 同 config的所有 occurrences／sizes在同一 fold；
+- occurrence multiplicity用於 fold balance與 analysis；
+- 每 fold用其他80% configs建立 real-score oracle marginals；
+- 只在 held-out fold判斷 factorized main effects；
+- training fold缺 candidate support時標 `not_estimable`，不得用 model value補。
+
+Oracle只用來區分：
+
+- Formocast marginalization失敗；
+- factorized hook expressiveness不足。
+
+Oracle不進 required D6 arms。GPU有餘裕時才允許 outcome-informed、`diagnostic_only` 的 full-pool oracle arm；它不參與 success claim。
+
+---
+
+## 7. D6 actual Gen0 endpoint
+
+只有 `D5_PASS` 才執行。
+
+### 7.1 Formal arms
+
+#### Arm U — Uniform／no guidance
+
+- 保留 group結構；
+- 停用所有 optional sampling weights；
+- 只作 no-guidance ablation。
+
+#### Arm G — Existing guidance／GEKO proxy
+
+- `ready_actual_yaml_guidance`：使用 actual YAML weights。
+- `degraded_branch_proxy_only`：使用 pinned、space-equivalent GEKO branch proxy。
+
+#### Arm F — Existing + Formocast residual
+
+- Arm G完全不變；
+- 只新增 §5 通過的 residual-gene weights。
+
+#### Arm S — Existing + same-entropy shuffled residual
+
+- Arm G完全不變；
+- residual probabilities使用 §5.7 permutation bundle。
+
+### 7.2 GA configuration
+
+固定：
+
+```text
+requested pop_size = 64
+n_gen    = 1
+period   = 0
+seeds    = 3 paired sampler seeds
+```
+
+在 formal proposals前必須保存 `resolved_initial_pop_size=P0` 與 constructor decision：
+
+- 若 `P0=64`，照原 protocol執行；
+- 若 `P0!=64`，在任何 real labels前 append amendment，所有 arms共用同一 `P0`，replay／proposal counts／resource caps與 claim wording全部按 `P0`更新；
+- 不得在看到 treatment quality後修改 `P0`；
+- 各代 actual population size都須記錄，不能用 nominal 64推算 evaluation成本。
+
+Repo code已查核：
+
+- weights只用於 initial `space.sample(..., p=self.probs)`；
+- `n_gen=1` 只執行一次 population evaluation；
+- mutation新值在後續仍均勻，但本 MVP不進後續世代。
+
+### 7.3 Proposal lock 與 benchmark union
+
+1. 先為全部 `arm × seed`產生 `P0` proposal slots；
+2. 保存 raw indices、resolved configs、config hashes與 multiplicity；
+3. 每個 config canonical serialize；
+4. population重現性用「config hashes排序後的 canonicalized config-set hash」比較；
+5. 不依賴 set-backed population iteration order；
+6. 所有 proposals hash-lock後才 benchmark；
+7. 對跨 arms／seeds 的 deduplicated union量測一次；
+8. 結果依 proposal multiplicity回填所有 slots。
+
+`ordering mismatch`只指：
+
+- `SearchSpace.map` candidate order；
+- weight vector order；
+- resolved candidate mapping；
+
+不指 Python set iteration order。
+
+### 7.4 CPU sampler replay envelope
+
+Benchmark前，每個正式 arm執行2,000個 exact `SearchSpace.sample(P0)` replay populations：
+
+- 使用與三個 formal seeds分離的 prelocked seeds；
+- pin `n_jobs`、sampler revision、validity code hash；
+- 保存 valid attempts、duplicates、fill failures；
+- per-gene realized frequencies；
+- normalized entropy；
+- population diversity；
+- pairwise Hamming diversity。
+
+定義：
+
+```text
+T_freq = max_g 0.5 * sum_v abs(
+           formal_frequency_g(v) - replay_mean_frequency_g(v)
+         )
+```
+
+從 replay pseudo-panels建立三-seed panel的 P99：
+
+- frequency discrepancy；
+- entropy；
+- diversity；
+- invalid／duplicate／attempt counts。
+
+判讀：
+
+- same seed／same weights／same space的 canonicalized config-set hash不一致：`FT-PLUMBING`；
+- `SearchSpace.map`／weight order不一致：`FT-PLUMBING`；
+- 單一 formal seed超出 P99：`plumbing_suspect`，先audit並做含／不含該seed的敏感度；
+- 同 arm至少2/3 seeds超出 P99：arm invalid，不得解讀 quality；
+- realization正常但quality無增益：`FT-GEN0-MECHANISM`，不叫 plumbing。
+
+### 7.5 Endpoint
+
+D5 weighted audit定義 real top-decile aggregate-quality cutoff `T_D5`。
+
+Primary：
+
+```text
+Gen0 top-decile hit rate
+= proposal slots with aggregate quality >= T_D5
+  / valid proposal slots
+```
+
+Secondary：
+
+- population median aggregate quality；
+- best aggregate quality；
+- unique count／duplicate count；
+- validity／correctness；
+- realized entropy／diversity；
+- 對 D5 pool的 overlap；
+- mapping／compile／benchmark cost。
+
+Best完全是 secondary，不可替代 median guardrail。
+
+### 7.6 Median-quality noise guardrail
+
+每 paired seed比較 Arm F 與 Arm G：
+
+```text
+median_quality_F / median_quality_G >= 1 / (1 + delta_noise)
+```
+
+至少2/3 seeds通過。
+
+`delta_noise`只可來自 §2.6 noise pilot，不得看 arm results後修改。
+
+### 7.7 Mechanism-positive criteria
+
+全部成立才 `D6_MECHANISM_POSITIVE`：
+
+1. Arm F 相對 Arm G 的 top-decile hit-rate paired delta，至少2/3 seeds >0；
+2. Arm F 相對 Arm S 的 paired delta，至少2/3 seeds >0；
+3. Median-quality noise guardrail至少2/3 seeds通過；
+4. proposal set hash、candidate order、weights與space hashes一致；
+5. replay envelope無systematic anomaly；
+6. 無新增 validity／correctness failure。
+
+三 seeds只支持 directional mechanism evidence，不執行顯著性檢定，不宣稱 speedup。
+
+---
+
+## 8. Operational failure mapping
+
+實驗報告依 research charter的 canonical taxonomy：
+
+| 觀察 | 結果 ID |
 | --- | --- |
-| injection A：**只擴不砍**每個 gene 的候選清單（widen-only） | kernel / codegen / IR |
-| injection B：用模型預測設 per-gene 採樣 `weights`（現成 hook） | GA operator（crossover/mutation/selection/survival）本體 |
-| 讀取 Origami/Formocast 分數、產生 `weights`、選擇要擴的合法值 | GA 的 fitness 機制（仍是實測 GFLOPS） |
+| 無 GPU／YAML／artifact | `FT-BLOCKED-ACCESS` |
+| Mapping需猜值或 parity失敗 | `FT-BLOCKED-MAPPING` |
+| Whole ranking gate失敗 | `FT-MODEL-RANK` |
+| Whole rank好、model marginal差、oracle好 | `FT-MODEL-MARGINAL` |
+| Cross-fitted oracle也差 | `FT-HOOK-EXPRESSIVENESS` |
+| Target／realized frequencies或candidate order不符 | `FT-PLUMBING` |
+| Realization正常但Gen0無增益 | `FT-GEN0-MECHANISM` |
+| Formocast不勝 existing／proxy | `FT-HEURISTIC-SATURATION` |
+| Formocast不勝 shuffled | `FT-ENTROPY-ONLY` |
+| Gen0好但後續未知 | `FT-WASHOUT-UNTESTED` |
+| Noise／support／ESS／coverage不足 | `FT-INCONCLUSIVE` |
 
-> 白話：我們只改「**GA 從哪裡開始找、往哪偏重找**」，不改「**它怎麼判斷誰好（實測 GFLOPS）**」，也不生新 kernel。這條界線讓「模型出錯」最多只浪費一些評估，不會污染正確性。
+不得以「模型沒用」取代層級判讀。
 
 ---
 
-## 1. 為什麼這個接法可行（已查核的關鍵事實）
+## 9. D1–D7 schedule
 
-### 1.1 orchestrator 直接查核的 branch 程式碼證據
+### D1 — Artifact 與 environment
 
-這幾點決定了整個計畫成不成立，已逐一在 branch 程式碼上確認（非只讀文件）：
+- Frozen YAML provenance／hash；
+- source revision lock；
+- search-space／groups／weights manifest；
+- gfx942 booking；
+- generate／compile／benchmark smoke。
 
-1. **Origami 是「整個 config」層級評分，不是 per-gene**：`shared/origami/include/origami/origami.hpp:93` 的 `rank_configs(problem, hardware, const std::vector<config_t>& configs, model)` 吃一整包 `config_t`、回傳依效能排序的 `prediction_result_t`。→ 所以要餵 per-gene 的 `weights`，**必須先把 config 層分數邊際化成 per-gene**（§4 的核心機制）。
-2. **injection B 的 hook 天生就吃 per-gene per-candidate 權重**：`origin/ductile_integration` 的 `ductile/algorithm/ga.py:58-59,131-144`，`GA.__init__(weights: list[dict[str, list[float]]], weight_beta=0.25)`；對每個 `{gene: w}` 會檢查 `space.sizes[k] == len(w)`（一個候選一個權重），再做 `w = np.exp(-weight_beta*(w - w.min())); probs[k] = w/w.sum()`。**關鍵語意：`w` 越小 → 機率越高（`w` 是「成本」）**，所以 Origami/Formocast 預測的 latency 可以**直接當成本代入**。`space.py:17` 的 `sample_chunk` 用 `rng.choice(s, p=p.get(k, None))` 逐 gene 採樣。
-3. **「更快但更差」的收斂機制真實存在**：`ga.py:53` `div_thr=0.5`、`:115` `large_space` decay、`:190` `f_avg/f_max` 停滯就 `StopIteration`、`:192-194` `diversity < div_thr` 切 `low_diversity` decay。→ 暖啟動壓低初始多樣性，**可能**觸發更快縮群 + 更早停 + 鎖進較差山頭（§6 專門量這件事）。
-4. **injection A 就是改候選清單、不碰 codegen**：`origin/users/pkamd/geko_pr` 的 `.../hw_profiles/gfx942/optimization_param.py:343-484`，`GFX942GAParams`（寬）vs `GFX942Params`（窄）；`_compute_grvw()` 回 `[-1,-2] + list(valid[min..max])`（`valid=(1,2,3,4,6,8,16)`——注意 GEKO 的 GA profile GRVW **靜態上限只到 16**，而 `ValidParameters` 的硬天花板是 `[-2,-1,1,2,3,4,6,8,16,32]`）、`DepthU=[32,64,128,256,512,1024]`、`WorkGroupMappingXCC=[1,2,4,8,16]`。
+### D2 — Mapping、sizes 與 protocol lock
 
-### 1.2 兩個 hard boundary（決定「只擴不砍」）
+- 10-config mapping corpus；
+- size registry；
+- noise pilot；
+- study mode；
+- model-only／replay seeds；
+- 所有 model-sensitive constants與analysis rules lock。
 
-- **gene 是候選清單的整數索引**：清單外的值 `_initKernel` 會 raise、fitness 無定義，**任何搜尋都碰不到**（[../geko-ductile/ga-faq-clarifications.md](../geko-ductile/ga-faq-clarifications.md) Q17）。→ 硬砍候選＝把模型誤差變成 GA 的天花板，所以 injection A **正式版只擴不砍**。
-- **`weights` 只影響「初始採樣」**：`mutation` 選新值仍是均勻抽（`ductile/core/mutation.py`、[../geko-ductile/ga-algorithm-implementation.md](../geko-ductile/ga-algorithm-implementation.md) §11.2）。→ **不宣稱有「逐世代退火」能力**；模型影響天然集中在第 0 代，之後由實測 GFLOPS 演化接手。
+**D2 hard decision：**`GO`、`DEGRADED_PROXY` 或 `BLOCKED`。
 
-### 1.3 Milestone 文件索引與執行狀態
+### D3 — Model-only frame
 
-> 白話：本檔保留「研究全貌與共同門檻」；每個 milestone 另有一份可直接交給後續實作者的 design。實驗真正完成後才建立 report，**現在不建立空白報告、不預填結果**。
+- `F_valid` accepted occurrences；
+- deduplicated catalog；
+- Formocast scoring；
+- conditional top-ups；
+- model-sensitive gene decisions；
+- weights／shuffled bundle hash-lock。
 
-狀態分三欄記，避免「文件寫完」被誤認為「實驗成功」：
+任何 real GFLOPS artifact在此 lock完成前都不得建立或解封。
 
-- `design status`：`draft / approved / locked / superseded`
-- `execution status`：`not_started / ready / running / blocked / completed / skipped_by_gate`
-- `outcome`：`not_available / positive / negative / inconclusive`
+### D4 — Real-score pool
 
-| ID | Milestone / design | Dependency / 目前狀態 | 完成後才建立的 report |
-| --- | --- | --- | --- |
-| M00 | [Study contract 與 observability harness](ductile-origami-warmstart/designs/m00-study-contract-observability-design.md) | 無；`not_started` | `reports/m00-study-contract-observability-report.md` |
-| M01 | [Step-0 環境、整合、baseline、noise gate](ductile-origami-warmstart/designs/m01-step0-integration-gate-design.md) | M00；`blocked`（無可見 gfx942、TuningDriver unknown） | `reports/m01-step0-integration-gate-report.md` |
-| M02 | [Config→model→per-gene weights plumbing](ductile-origami-warmstart/designs/m02-guidance-plumbing-design.md) | M00 + M01.SW；`not_started` | `reports/m02-guidance-plumbing-report.md` |
-| M03 | [EXP-0a cold baseline / headroom](ductile-origami-warmstart/designs/m03-exp0a-cold-headroom-design.md) | M01.ALL；`blocked` | `reports/m03-exp0a-cold-headroom-{cohort}-report.md` |
-| M04 | [EXP-0b widen-only gate](ductile-origami-warmstart/designs/m04-exp0b-widening-gate-design.md) | M01.ALL；`blocked` | `reports/m04-exp0b-widening-gate-{cohort}-report.md` |
-| M05 | [EXP-C ranking / oracle marginals gate](ductile-origami-warmstart/designs/m05-expc-ranking-oracle-design.md) | M01.ALL + M02.FUNCTIONAL；`blocked` | `reports/m05-expc-ranking-oracle-{cohort}-report.md` |
-| M06 | [EXP-1 injection B](ductile-origami-warmstart/designs/m06-exp1-injection-b-design.md) | M02.COST + M03 + M05；`blocked` | `reports/m06-exp1-injection-b-{cohort}-report.md` |
-| M07 | [EXP-2 A-safe+B factorial](ductile-origami-warmstart/designs/m07-exp2-a-safe-b-factorial-design.md) | M04 + M06；`blocked`，A 被淘汰時 `skipped_by_gate` | `reports/m07-exp2-a-safe-b-factorial-{cohort}-report.md` |
-| M08 | [EXP-3 multi-shape / winner lock](ductile-origami-warmstart/designs/m08-exp3-multishape-design.md) | M07 通過或 B-only lock；`blocked` | `reports/m08-exp3-multishape-{cohort}-report.md` |
-| M09 | [Overall held-out confirmation](ductile-origami-warmstart/designs/m09-overall-confirmation-design.md) | M08 + winner lock + holdout seal；`blocked` | `reports/m09-overall-confirmation-{cohort}-report.md` |
+- D5 strata／inclusion manifest；
+- 256-config generate／compile／benchmark；
+- correctness與measurement coverage；
+- raw result freeze。
 
-`{cohort}` 分別是 `nonstreamk`、`streamk`；完成哪個 cohort 才建立哪份報告。兩者共用同一 design 與 criteria schema，但 manifest、結果與結論獨立。
+### D5 — Audit 與 decision
 
-```mermaid
-flowchart TD
-  m00["M00 contract / telemetry"]
-  m01sw["M01.SW build + mapping smoke"]
-  m01all["M01.ALL gfx942 + baseline + YAML + noise"]
-  m02f["M02.FUNCTIONAL mapping / weights"]
-  m02c["M02.COST guidance feasibility"]
-  m03["M03 EXP-0a"]
-  m04["M04 EXP-0b"]
-  m05["M05 EXP-C"]
-  m06["M06 EXP-1"]
-  m07["M07 EXP-2"]
-  m08["M08 EXP-3 + winner lock"]
-  m09["M09 final holdout"]
-  m00 --> m01sw --> m01all
-  m00 --> m02f
-  m01sw --> m02f
-  m01all --> m03
-  m01all --> m04
-  m01all --> m05
-  m02f --> m05
-  m03 --> m02c
-  m02c --> m06
-  m03 --> m06
-  m05 --> m06
-  m04 --> m07
-  m06 --> m07
-  m07 --> m08
-  m04 -. "A 被淘汰：B-only" .-> m08
-  m06 -. "B-only lock" .-> m08
-  m08 --> m09
+- Weighted ranking／lift；
+- prior-mass density-ratio analysis；
+- importance ESS；
+- cross-fitted oracle；
+- `PASS`、`BORDERLINE`、`FAIL` 或 `INCONCLUSIVE`。
+
+只有 `PASS` 進 D6。
+
+### D6 — Actual Gen0
+
+- 2,000-population CPU replay per arm；
+- formal proposal lock；
+- benchmark union；
+- endpoint／guardrail／failure attribution。
+
+### D7 — Report
+
+- Positive、negative 或 inconclusive：MVP report；
+- D1–D2 blocked：blocker memo；
+- 不建立空白 report；
+- 不在本輪展開新 milestone designs。
+
+---
+
+## 10. Artifact contract
+
+Logical artifacts至少包括：
+
+### Protocol／environment
+
+- `study-manifest.json`
+- `protocol-lock.json`
+- `environment-and-revision-manifest.json`
+- `amendments.jsonl`
+
+### Frozen inputs
+
+- `frozen-generated.yaml`
+- `frozen-generated.sha256`
+- `yaml-provenance.json`
+- `search-space-manifest.json`
+- `size-registry.json`
+
+### Mapping／model-only
+
+- `canonical-mapping-10.jsonl`
+- `valid-occurrences.parquet`
+- `resolved-config-catalog.parquet`
+- `model-scores.parquet`
+- `conditional-topups.parquet`
+- `model-sensitive-gene-decisions.json`
+
+### Weights／controls
+
+- `marginals.parquet`
+- `weights.yaml`
+- `shuffled-permutation-manifest.json`
+- `probability-roundtrip-results.json`
+
+### D5
+
+- `real-score-pool-manifest.json`
+- `real-scores.parquet`
+- `oracle-fold-manifest.json`
+- `crossfit-oracle-results.parquet`
+- `d5-gate-summary.json`
+
+### D6
+
+- `sampler-replay-summary.parquet`
+- `gen0-proposals.jsonl`
+- `gen0-proposal-lock.sha256`
+- `gen0-deduplicated-union.parquet`
+- `gen0-results.parquet`
+- `d6-decision.json`
+
+每個 artifact須帶：
+
+- schema version；
+- source／protocol revision；
+- input hashes；
+- environment ID；
+- creation timestamp；
+- complete／partial／rejected status；
+- failure reason。
+
+大型 raw artifacts可存在外部 artifact root；repo report保存 immutable URI、hash、schema與重現指令。
+
+---
+
+## 11. Report lifecycle 與允許措辭
+
+### 11.1 Report paths
+
+D1–D2 access／artifact／mapping blocked：
+
+`study_docs/research/ductile-origami-warmstart/reports/gen0-factorization-blocker-memo.md`
+
+D5 或 D6 已形成 empirical evidence，不論 positive、negative 或 inconclusive：
+
+`study_docs/research/ductile-origami-warmstart/reports/gen0-factorization-mvp-report.md`
+
+現在不建立空白檔。
+
+### 11.2 Positive wording
+
+只允許：
+
+> 在指定 frozen YAML、gfx942 non-StreamK、一種 dtype/layout、指定 sizes、bounded D5 audit 與三個 paired sampler seeds 下，Formocast-factorized residual guidance 對 Gen0 candidate quality 提供方向性增量，值得擴大驗證。
+
+### 11.3 Negative wording
+
+必須使用 §8 result ID，說明：
+
+- 哪個 gate失敗；
+- 證據支持什麼；
+- 不能支持什麼；
+- 是否值得後續改 predictor、改 hook或停止。
+
+### 11.4 Proxy wording
+
+`degraded_branch_proxy_only` 必須包含：
+
+- pinned GEKO commit；
+- exact space／order parity evidence；
+- `branch proxy` 字樣；
+- `primary RQ not evaluated under actual YAML`。
+
+禁止：
+
+- incumbent；
+- deployed；
+- production baseline；
+- beats original Ductile。
+
+---
+
+## 12. Current execution checklist
+
+- [ ] Frozen generated YAML with provenance
+- [ ] Pinned Ductile／GEKO／TensileLite／Formocast revisions
+- [ ] Actual `group_i`／weights／candidate order confirmed
+- [ ] Actual `soo/reduce_fn` confirmed
+- [ ] 10-config mapping parity passed
+- [ ] Two or three same-space sizes locked
+- [ ] gfx942 slot booked
+- [ ] Smoke／correctness passed
+- [ ] Noise pilot and `delta_noise` locked
+- [ ] Study mode recorded
+- [ ] Real GFLOPS remains sealed until model-only lock
+
+在上述 entry conditions 完成前，本 protocol只是一份預註冊設計，不代表實驗已 ready 或已產生結果。
+
+---
+
+## Part II — Stage 2：Short-Horizon Persistence Protocol
+
+Stage 2不是無條件延長。只有 Stage 1 `D6_MECHANISM_POSITIVE` 才可建立 Stage 2 lock artifact。
+
+## 13. Stage 2 objective 與 entry
+
+### 13.1 Objective
+
+> Gen0 的增量是否能穿過後續 mutation／selection transitions，在固定10-generation horizon中改善 early-search quality-vs-complete-evaluations，而不是被 existing guidance快速追平？
+
+這一階段測 **persistence／early evaluation efficiency**，不是完整 convergence或 system speedup。
+
+### 13.2 Entry requirements
+
+全部成立才 `S2_READY`：
+
+- Stage 1 `D6_MECHANISM_POSITIVE`；
+- mapping、plumbing、correctness與sampler replay無未解 anomaly；
+- frozen YAML、space、sizes、groups、weights、model revision、guided genes、`alpha/epsilon/lambda`、`reduce_fn`全部不變；
+- 五個 Stage 2 formal paired seeds在 Stage 1 unblind前預鎖，或由 protocol hash deterministic派生，且與 Stage 1 seeds完全 disjoint；
+- 完整 G／F／S × 5 seeds × H10 GPU與時間 cap已確認；
+- 保留至少一個 report工作日與10% measurement failure buffer；
+- requested／resolved initial population與 adaptive population semantics已記錄。
+
+Stage 1三個 selected seeds可延長作 continuity diagnostic，但：
+
+- 不計入 Stage 2五個 formal pairs；
+- 不與 fresh seeds混報成八個 independent seeds；
+- 不參與任何 4/5、3/5 gate。
+
+### 13.3 Formal arms
+
+- **G：**existing YAML guidance／GEKO branch proxy。
+- **F：**G + frozen Formocast residual guidance。
+- **S：**G + frozen same-entropy shuffled residual guidance。
+
+Uniform arm已在 Stage 1完成 no-guidance ablation，不再支付10-generation成本。
+
+---
+
+## 14. Stage 2 fixed-horizon execution
+
+### 14.1 Configuration
+
+```text
+n_gen       = 10
+period      = 0
+formal arms = G / F / S
+paired seeds = 5 fresh seeds
 ```
 
-共同文件規則：
+- 第1代是 initial population evaluation；
+- 第2–10代提供9次後續 transitions；
+- 不修改 size sampling、per-size iterations、fitness、mutation、selection或survival；
+- 每代保存 proposal set、complete fitness matrix、best-so-far、population size、diversity、decay mode、invalid／duplicate／fill status。
 
-- M00 設計唯一可執行的 `protocol/experiment-contract.yaml`；runner 讀 contract，Markdown 只顯示 criterion key／非權威快照。
-- hypothesis、metric、threshold、censored estimand 與 analysis rule 必須在**第一次用它判斷 treatment 前**鎖定；事後只能 append amendment，不能回寫成「原本就這樣」。
-- M08 的 development-judgment sizes 與 M09 final holdout 完全分離。
-- 每份 report 要逐項回答對應 design 的 acceptance/falsification，包含 negative／inconclusive 結果、遇到的狀況、root cause 與解法。
+### 14.2 Generation-5 checkpoint
 
----
+Generation 5只可作：
 
-## 2. Step-0：前置存取 / 授權 / 整合 gate（**必過才進 GPU 實驗**）
+- environment／resource health checkpoint；
+- checkpoint integrity與resume parity；
+- 最終 report中的 immediate-washout descriptive estimand。
 
-> 白話：先確認「機器在、程式能整合建置、baseline 定義乾淨、Formocast 拿得到正確 metadata、量測噪音可控」，否則後面全部數字都不可信。
+禁止：
 
-1. **硬體**：`rocminfo` 明確顯示 `gfx942`（確認 MI300X、CU 數、device id）；取得獨占 GPU 或至少記錄同機負載/時脈/溫度；記錄 ROCm / driver / firmware；跑一個「單 kernel 產生 → 編譯 → benchmark」smoke test。
-2. **凍結三個 revision 並整合建置**：Ductile `origin/ductile_integration`、GEKO `origin/users/pkamd/geko_pr`、Origami/Formocast working-tree HEAD。建可重現 integration build；跑 Ductile unit tests、GEKO config-generator tests、Origami/Formocast tests（含 gfx942 prediction）。
-3. **外部 TuningDriver 向 owner 確認**：artifact 位置、`--convert-config` 是否仍是正式入口、license / 內部使用權、其輸出是否等同 `GFX942GAParams`。
-4. **驗證參數轉換鏈**：Ductile full config → Tensile derived solution → `origami::config_t`；`-1/-2` 這類 auto sentinel 必須先解析成實際值，不能原封餵進 unsigned 欄位；Formocast 需要的 metadata（occupancy、effective GSU、`MathClocksUnrolledLoop`）必須來自真正的 `ContractionSolution::getSizeMapping()`。
-5. **確認 production 的 fitness 聚合**：`soo` / `reduce_fn` **要從實際生成的 YAML 讀**，不可由 defaults 推定。（證據矛盾：`defaults.yaml` 是 `soo=False → np.max`；但 `bf16_tn_multi_size_single_kernel.yaml` 是 `soo:true → np.mean`；會議摘要 §3.4 又說 macro-tile workflow 用 average。）所有比較 arm 必須固定成**同一種 fitness**。
-6. **噪音 pilot**：先 5 warmup + 20 timed iterations 取 median；若重測 CV > 0.5% 就加 iteration；**所有最終冠軍另做 7 次獨立重測**。
+- 解封 G／F／S comparative quality後決定是否跑 generation 6–10；
+- H5漂亮才延長；
+- H5不漂亮就停、卻仍把H10 survivors當正式樣本。
 
-**目前狀態**：Step-0 **未通過**（無可見 gfx942、TuningDriver 未確認）→ 本檔只設計、不執行、不下結論。
+正式 Stage 2從 entry即承諾 H10。若資源事前只夠H5，只能另標：
 
----
+`S2_H5_RESOURCE_BOUNDED_PILOT`
 
-## 3. Baseline 命名規則（避免把 proxy 講成 original）
+它不能通過正式 Stage 2，也不能進 Stage 3。
 
-> 為什麼要立規則：若外部 TuningDriver 拿不到，只能用 GEKO profile 近似；此時**任何「贏過原始 Ductile」的措辭都會失真**。
+### 14.3 Checkpoint／resume
 
-- 只有**重現了外部 TuningDriver 輸出**（且 `weights=None`）的 cold 跑，才可稱 **「original Ductile cold uniform baseline」**。
-- 否則一律稱 **「Ductile-on-GEKO gfx942 GA-profile cold proxy baseline（`geko_pr`）」**；結果只能寫 **「beats the GEKO-profile proxy」**，**不可寫「beats original Ductile」**——除非 owner 書面確認兩者語意等價。
+若分段執行：
 
----
+- 先通過 continuous-vs-resume equivalence test；
+- checkpoint保存 population、old population、RNG、stats、decay state、evaluation count與lineage hashes；
+- resume不得 reseed或重建population；
+- paired G／F／S blocks在相近 environment epoch執行。
 
-## 4. 核心機制：把 config 層分數轉成 per-gene 權重
+Parity無法證明時改用 continuous H10 run。
 
-### 4.1 模型選擇：Formocast 為主、Origami estimation 為對照
+### 14.4 Complete candidate evaluation
 
-| 模型 | 角色 | 理由 |
-| --- | --- | --- |
-| **Formocast**（simulation） | **主要 guidance 模型**（non-StreamK） | 讀取 Ductile 實際要調的較多參數（`DepthU`、GSU、`PrefetchGlobalRead`、GRVW、VectorWidth、DTV）。macro tile 固定後，這些才是真正的自由度 |
-| **Origami**（estimation） | **快速對照臂** + **StreamK cohort 的模型** | 快、支援 StreamK；但 macro tile 固定後，可能對大量剩餘 gene 無辨識力（給不出區別） |
-| self-trained surrogate | **僅循環依賴診斷 / oracle**，非主模型 | 未觀測合法值屬外插問題，physics-based 模型較合理 |
+一個 candidate只有全部成立才計入 primary evaluation axis：
 
-- **cohort 分離**：non-StreamK（Formocast）與 StreamK（Origami）是**兩個獨立 cohort**，各自要**獨立通過相同驗收**，之後才可稱「routed Origami/Formocast system」。
-- **循環依賴緩解**（Origami 已用於上游 mapping/selection）：**判斷一律用 held-out 真實 benchmark**、加 **shuffled-weight control**、先過 **EXP-C ranking gate**。
+- 全部鎖定 sizes完成；
+- correctness通過；
+- 依 frozen `reduce_fn`可產生 aggregate quality；
+- config identity與arm/seed lineage完整。
 
-### 4.2 統一的邊際化程序（config 分數 → per-gene `weights`）
+Compile failure、缺 size或invalid仍須保存，但不能當作低成本「已完成 evaluation」。
 
-> 白話：Origami/Formocast 只會替「一整組 config」打分，但 hook 要的是「每個 gene 的每個候選值各一個權重」。做法是——**大量抽合法 config 打分，再把分數依『某個 gene 取某個值』分組平均**，得到「這個值平均而言好不好」，轉成偏重權重。
+### 14.5 Prelocked support `U_floor`
 
-1. **目標分布**：baseline 候選清單的均勻乘積分布，條件化於 `_initKernel-valid`。
-2. **抽樣（global-uniform + conditional top-up）**：
-   - 先抽 global-uniform 的合法整組 config（pilot **1,024**；dev/confirm **8,192**），為每個 shape 建立「模型 latency 的經驗百分位 CDF」。
-   - 再對每個 `(gene g, value v)` 做 **conditional top-up**：固定 `X_g=v`、其餘均勻抽，補到足夠 support（pilot 每 `(g,v)` **≥64**；dev/confirm **≥256**）。
-   - 每 shape / cluster 上限 **32,768** 次模型評分；top-up 樣本只用於它自己的 `(g,v)`；因目標條件分布一致，**用 unit weight，不需 importance correction**。
-3. **效用**：`r_i =` config latency 的百分位 rank（0 最好）；`u_i = exp(-λ r_i)`。
-4. **條件 shrinkage mean**：`μ̂_{g,v} = (Σ u_i + α·ū) / (n_{g,v} + α)`；`q_{g,v} = μ̂_{g,v} / Σ_v μ̂_{g,v}`。
-5. **ε-uniform 保底**：`p_{g,v} = ε/|V_g| + (1-ε)·q_{g,v}`。
-6. **餵 hook**：`w_{g,v} = -log(p_{g,v}) / weight_beta`，順序**嚴格依 `SearchSpace.map[g]`**，寫進 `Backend.Config.weights`（候選清單仍由 `forkParams` 提供）。
-7. **超參數 λ、α、ε**：在 development 上調、**holdout 前凍結**（dev grid：`λ∈{2,4,8}`、`ε∈{0.1,0.2,0.3}`、`α∈{1..16}`）。
-8. **Bootstrap 95% LCB 不當機率用**（避免把不確定性偷渡成隱性 pruning）；只用於：(i) A-safe 新值 admission、(ii) marginal 穩定度回報、(iii) ranking gate。
-9. **多 shape**：先算每個 config 的 per-shape 效用，用該 run **實際的 `reduce_fn`** 聚合（`np.max→max`、`np.mean→mean`），再邊際化。
-10. 模型**無法映射 / 完全不敏感**的 gene → 維持 uniform。
+Stage 2 entry、任何 Stage 2 labels產生前，依 Stage 1 telemetry、resolved population、complete-evaluation rate與 frozen GA semantics鎖定：
 
-**主要失敗模式（誠實記錄）**：per-gene 獨立邊際會**丟失 gene 間相關性（epistasis）**——可能產生「每個值單看都好、組起來卻差」的 Frankenstein config。防線見 §4.3。
-
-### 4.3 Epistasis 的處置（已定案：純 factorized）
-
-- 主設計**純 factorized**：**不把 pairwise / joint 分布餵給獨立的 per-gene `probs` hook**（結構上無法忠實還原）。
-- 允許的緩解**僅限**：既有 `group_i`（保住已知硬耦合）、ε-uniform、`_initKernel` validity filter、實測 GFLOPS selection、shuffled-weight control、dev-only 的 real-score **oracle marginals**。
-- **判準**：若連 oracle factorized marginals 都幫不上 GA → 結論是「**現有 factorized injection-B hook 表達力不足**」。whole-individual pre-screening 是**另一條 injection path、本輪 scope 外**（不可偷渡進正式 treatment）。
-
-### 4.4 Injection A 的正式定義（widen-only）
-
-- **定義**：`V_A(s) = V_0 ∪ {model-selected legal extras}`，**永遠保留全部 `V_0`**。新值需滿足：(i) 不在 `V_0`；(ii) 取得足夠合法 conditional completions；(iii) enrichment 相對 `V_0`-mean 的 bootstrap 95% LCB > 1；(iv) **每 gene 最多加 2 個**；(v) 仍分到 ε-uniform 機率。多 shape 的新值來自 **cluster-level 聚合後的 whole-config 效用**（不是無限制的 per-shape union），並套每 gene 上限。
-- **A-hard（真的刪值）永不當 GPU arm、永不上線**：只做 offline oracle-deletion check（保留覆蓋 95% model mass 的最少候選）——若會刪掉任一 remeasured champion、或 attainable median 掉 >1%、或刪掉 >5% 的 top-1% 真實 config → **永久否決 hard pruning**。通過也只代表「此 dev pool 沒抓到問題」，不證明 held-out 安全。
-
----
-
-## 5. 實驗流程：小 → 大 → 總驗證
-
-```mermaid
-flowchart TD
-  s0["Step-0 gate: 硬體/整合/授權/metadata/noise (必過)"]
-  s0 --> e0a["EXP-0a: cold baseline + 浪費量測 (3 pilot -> 12 dev)"]
-  s0 --> e0b["EXP-0b: static vs widened profile (gate injection A)"]
-  s0 --> ec["EXP-C: 模型 ranking gate + oracle marginals"]
-  e0a --> e1["EXP-1: 小型 injection B (1 -> 3 shapes)"]
-  ec --> e1
-  e0b --> e2["EXP-2: A-safe + B factorial"]
-  e1 --> e2
-  e2 --> e3["EXP-3: multi-shape (固定 tile x 15 sizes -> 3 tiles)"]
-  e3 --> conf["總驗證: 鎖定 winner -> >=24 held-out shapes + >=4 clusters"]
+```text
+U_floor = 每個 arm × fresh seed 在 Gen0 後
+          必須提供的共同 complete-evaluation support
 ```
 
-> 分工：**EXP-0a/0b/C 是便宜的 gate**（在投入完整 GA 前判斷「有沒有腿」）；**EXP-1→2→3 逐步擴大**；最後**總驗證**在封存的 held-out 真實 workload 上判成敗。
+要求：
 
-### EXP-0a — cold baseline 與浪費量測
-
-- **假設**：cold GA 在固定 ~1.5 萬預算內有 seed 不穩定，或 30 代後仍有可取得的 headroom（成立才有暖啟動空間）。
-- **資料**：3 個 pilot → 12 個 dev **真實 hot shape**（由 `summary.csv` runtime 貢獻排序選出，**不可由 Origami 選**），涵蓋 compute/memory-bound、small-K、transpose、skinny/square。
-- **步驟**：`weights=None`、`V_0`、defaults（`pop=512/n_gen=30/period=5/div_thr=0.5`）、**≥5 paired seeds**；另外 `period=0` 固定 horizon 跑 `n_gen=30/60/90`（1×/2×/3× 預算曲線，**這是診斷、不是 baseline 本身**）。
-- **metric**：`best` vs 實際 `n_evals` 的 anytime 曲線、seed IQR/CV、30→90 邊際增益、invalid/dup rate、「最後一次 ≥1% 改善後還花了多少 % 評估」、diversity/pop/termination 軌跡。
-- **gate**：若 ≥80% dev shape 的 seed-spread <1% **且** 30→90 增益 <1% → headroom 太低 → 降級（只做最小 B smoke test）。
-
-### EXP-0b — static vs widened profile（gate injection A）
-
-- **假設**：`V_0` 漏掉了合法且有用的值。
-- **步驟**：`V_0` vs `Vwide`（由 `ValidParameters` 建，但**一律經 `_initKernel` filter**——注意 `ValidParameters` 列出 ≠ 對該 dtype 合法，真正判準是 `_initKernel`）；一次只擴一組（GRVW → DepthU → WGM）再測 union；同 seeds，比**相同實際 `n_evals`**。
-- **A-gate**：若所有新增 family 都沒有 ≥1% median uplift、只造成稀釋 → **淘汰 injection A、只留 B**。
-- **注意**：候選 cardinality 改變會影響 adaptive population（`large_space`/`low_diversity`），**不能只比世代數**。
-
-### EXP-C — 模型 ranking gate + oracle marginals
-
-- **步驟**：在 dev shape 上實測 256 個整組 config；算 Origami、Formocast 的 Spearman / Kendall / top-10% recall / top-decile lift。
-- **通過門檻**：median Spearman **≥0.25** **且** top-decile lift **≥2× random**。
-- **oracle marginals（診斷用）**：用真實分數建 factorized marginals，定位失敗來源——(a) 模型 whole-config 排名差、(b) 排名好但邊際化失真、(c) hook 本身表達力不足。
-- **falsify**：Origami、Formocast **都過不了** → **本輪 model-guided thesis 停止**，不浪費完整 GA 預算。
-
-### EXP-1 — 小型 injection B（1 → 3 shape）
-
-- **arm**：`B0` uniform；**shuffled-weight control**（把模型權重在候選間隨機重排、保持相同 entropy，用來排除「任意集中初始族群都會變快」）；`Origami-B`；`Formocast-B`。
-- **步驟**：先 plumbing smoke（`pop=64/n_gen=5/period=0`）驗管線，再用完整設定、**≥5 paired seeds**、配對且隨機化執行順序。
-- **通過**：相對 `B0`，median `E99` **少 ≥15%**、最終 verified GFLOPS **≥99%**，且**贏過 shuffled control**。
-
-### EXP-2 — A-safe + B factorial
-
-- **arm**：`V0+uniform`、`V0+B`、`A-safe+uniform`、`A-safe+B`、`Vwide+uniform`（稀釋對照）。
-- **保留 A 的條件**：`A-safe+B` 相對 `V0+B` 再降 `E99` **≥15%** **或** matched-budget GFLOPS uplift **≥1%**，且品質不退 >1%；否則**只否證 A**（不影響 B）。
-
-### EXP-3 — multi-shape 擴張
-
-- 固定 macro tile、**15 個 guidance sizes** → 再擴到 **3 個 tile**；每個 tuned kernel 另在 **100 個獨立真實 sizes** 上驗證（tuning / judgment shape 完全分離，對齊會議 §3.2–3.3）。
-- **報告**：per-shape efficiency、geomean、**P10**、worst-case、regression shape 數——**不能只報平均**。
-
-### 總驗證（overall confirmation）
-
-- **看 holdout 前先鎖定唯一 winner**：若 `A-safe+B` 相對 `B` 再省 ≥5% 評估且無品質/invalid 問題 → 選 `A-safe+B`；否則選 `B` 並結論「A 無增益」。
-- **protocol**：**≥24 個封存真實 shape**（分層）+ **≥4 個封存 multi-shape cluster**；primary = `period=0` 固定預算、比相同實際 `n_evals` 的品質；operational secondary = 原 `period=5`（量真實早停 + wall time）；隨機交錯、同 GPU/時脈/iteration；冠軍 7× median + 數值正確性檢查；**hierarchical bootstrap 以 shape 為 cluster**。
-- **seeds**：預設 **5 paired**，預先訂好「CI 寬度超過門檻就升到 10」的規則；**shape 是主要推論單位**（seed 不可假裝成獨立 shape）。
+- Primary一律積分到同一 `U_floor`；
+- 任一 formal run未達 `U_floor` → `FT-EVALUATION-SUPPORT`／inconclusive；
+- 不得事後下修；
+- observed per-pair minimum只作support報告與預註冊敏感度分析。
 
 ---
 
-## 6. 「更快但更差」子量測（每個 warm-start arm 必做）
+## 15. Stage 2 estimands、gate 與 failure
 
-> 為什麼單獨列：暖啟動可能「評估更少、結果卻更差」（低初始多樣性 → 更快縮群 → 更早停 → 鎖進較差山頭）。這不是泛泛的 premature convergence，是與 Ductile 具體機制的交互，**必須實測**。
+### 15.1 Primary AUC
 
-- **每代記錄**：diversity + 第一次跌破 `div_thr=0.5` 的世代；population size + decay mode；實際 `n_evals`；`f_avg`/`f_max`；termination 世代/原因/wall time；best config。
-- **basin 判定**：先以「**完全解析後的 categorical config**」做初步分群（normalized Hamming 只當粗略輔助）。要宣稱「**不同且更差的 basin**」，**必須**對去重後冠軍做「one-gene 鄰域實測 + deterministic local ascent」確認；沒有這個預算，只能稱「**不同 config cluster**」，不可稱「basin」。
+對 arm `a`、fresh paired seed `r`：
+
+```text
+Q_a,r(u)
+= Gen0 結束後新增 u 個 complete evaluations時，
+  截至當下的 best-so-far aggregate quality
+
+A_a,r
+= (1 / U_floor) * integral[0,U_floor] log(Q_a,r(u)) du
+```
+
+- 使用 generation-end right-continuous step function；
+- 不使用 candidate／set iteration order製造 batch內假 anytime曲線。
+
+Primary paired deltas：
+
+```text
+Delta_FG,r = A_F,r - A_G,r
+Delta_FS,r = A_F,r - A_S,r
+```
+
+### 15.2 Stage 2 positive gate
+
+`S2_DIRECTIONAL_PERSISTENCE_POSITIVE` 要求全部成立：
+
+1. 五個 fresh paired panels均有效且達 `U_floor`；
+2. `Delta_FG > 0` 至少4/5，且 paired median >0；
+3. `Delta_FS > 0` 至少4/5，且 paired median >0；
+4. H10／`U_floor` endpoint的 F best-so-far > G 至少3/5；
+5. Final independently verified aggregate quality：
+
+   ```text
+   Q_F / Q_G >= 1 / (1 + delta_noise)
+   ```
+
+   至少4/5；
+6. 無 correctness、plumbing、mapping或 systematic fill failure。
+
+Diversity是 diagnostic。只有當 decline伴隨：
+
+- 未達 `U_floor`；
+- population fill failure；或
+- final non-inferiority失敗；
+
+才構成 premature-convergence evidence。
+
+### 15.3 Secondary／diagnostic metrics
+
+- H5 immediate persistence／washout；
+- Gen1／3／5／10 trajectory；
+- D5預鎖 target的 right-censored time-to-target；
+- RMST through `U_floor`；
+- target achievement；
+- raw generation-10 outcome；
+- diversity／per-gene diversity；
+- population decay、invalid、duplicates；
+- 由固定H10 trace重建的 counterfactual `period=5` stop point。
+
+Counterfactual natural stop只作 diagnostic，不是實際wall-time證據。
+
+### 15.4 Stage 2 failure IDs
+
+- `FT-PERSISTENCE-WASHOUT`：Gen0 positive，但 F-G／F-S AUC或late retention失敗。
+- `FT-SHORT-HORIZON-REGRESSION`：AUC正向，但 final verified non-inferiority失敗。
+- `FT-EVALUATION-SUPPORT`：formal run未達事前 `U_floor`。
+- `FT-ENTROPY-ONLY`：F不勝S。
+- `FT-PLUMBING`、`FT-INCONCLUSIVE` 與 correctness failure沿用 Stage 1。
+
+Stage 1的 `FT-WASHOUT-UNTESTED` 在 Stage 2結束後必須改成具體結果。
+
+### 15.5 Stage 2 time／resource cap
+
+- hands-on target：4工作日；
+- hard cap：5工作日，包含分析與 decision report；
+- entry前依 actual resolved population、adaptive decay與 `C` sizes鎖 proposal與 candidate×size request cap；
+- nominal `3×5×10×64` 只能作 requested-population參考，不是正式GPU cap；
+- 不得只完成部分 arms／seeds後仍判 positive。
+
+Report：
+
+`study_docs/research/ductile-origami-warmstart/reports/short-horizon-persistence-report.md`
 
 ---
 
-## 7. 驗收標準與否證條件
+## Part III — Stage 3：Bounded Held-Out Regime Replication
 
-> 兩條**互斥**路徑；**所有門檻都是「預註冊的研究門檻」，尚待 owner 確認為團隊採用政策**（團隊目前唯一有文件的政策是「geomean uplift >3% 才 merge」，critical-shape 容忍度仍是 "uncharted"）。
->
-> 參考量：`Q_cold,s =` cold `B0` 在相同最大預算下最終重測 GFLOPS 的 median；`N@99%Qcold =` 首次達到 `0.99·Q_cold` 的實際評估數（未達視為 right-censored）。
+## 16. Stage 3 entry、freeze 與 clusters
 
-### Route 1 — tuning 效率改善（以下**全部**成立才可宣稱「暖啟動加速 Ductile tuning」）
+### 16.1 Entry
 
-1. `N@99%Qcold` point estimate **少 ≥20%**，且 shape-clustered bootstrap 95% LB **少 ≥10%**。
-2. 最終 GFLOPS geomean ratio 的 95% LB **≥0.99**（非劣）。
-3. 每個 preregistered critical shape 的 median regression **≤3%**，且全 shape 的 **P10 ratio ≥0.98**。
-4. end-to-end wall-clock（**含**模型評分 / mapping / validity sampling / 編譯 / benchmark）**省 ≥15%**，且 95% CI LB > 0。
-5. 無新增數值正確性失敗。
-6. natural-stop arm **無**經確認的 faster-but-worse basin。
-7. **贏過 same-entropy shuffled control**（不是只贏 uniform）。
+只有正式 `S2_DIRECTIONAL_PERSISTENCE_POSITIVE` 可進 Stage 3。
 
-### Route 2 — 固定預算下的 kernel 品質提升（**只在 Route 1 速度未過時**）
+`S2_H5_RESOURCE_BOUNDED_PILOT` 不具 entry權。
 
-- matched-budget GFLOPS uplift **≥1%** 且 95% CI LB > 0，並仍滿足 Route 1 的 (2)/(3)/(5)/(6)。
-- **必須**寫成「same-budget quality uplift」，**絕不可**當成 tuning speedup，也不能用它救回 combined 速度 claim。
+### 16.2 Cluster registry
 
-### 否證條件（falsification）
+在任何 Stage 3 model／real scores前鎖定：
 
-- Origami、Formocast **都過不了** EXP-C ranking gate → 本輪 model-guided thesis 停止。
-- 模型 marginals 失敗、但 oracle marginals 成功 → **否證該模型，不否證 hook**。
-- oracle marginals 也失敗 → **否證現有 factorized injection-B hook**。
-- `A-safe+B` 相對 `B` 無增益、或增加 invalid/dilution → **只否證 injection A**。
-- 鎖定 winner 在 holdout 上 **Route 1、Route 2 皆未過** → 否證「Origami/Formocast + Ductile 有 measurable improvement」。
-- 任何正確性 regression、或持續的 faster-but-worse basin → **阻擋 deployment**，不論省了多少評估。
-- 兩個模型可**各自獨立失敗**，不自動否決另一個。
+- 兩個新 fixed-MT／fixed-MTDU clusters；
+- 每 cluster恰好兩個、共享相同 search space的 sizes；
+- 同 gfx942、non-StreamK、dtype/layout；
+- selection provenance與非Formocast、非結果導向規則；
+- 一個 optional technical reserve cluster（若資源允許）。
+
+Stage 1／2 cluster是 development，不算 held-out。
+
+Technical reserve只能替換：
+
+- access不可用；
+- artifact損壞；
+- mapping無法建立；
+
+不能因 D5／GA結果不好而替換。
+
+### 16.3 Frozen procedure
+
+從 Stage 2凍結：
+
+- Formocast revision與mapping；
+- eligibility／sensitivity algorithm；
+- `alpha=32`、`epsilon=0.20`；
+- lambda grid、entropy／support／coverage thresholds；
+- factorization與shuffle；
+- D5 sampling／analysis／oracle；
+- Stage 2 AUC、`U_floor`決定規則與gates；
+- arms、H10與failure taxonomy；
+- source／protocol／analysis hashes。
+
+新 cluster可由同一 label-blind deterministic algorithm輸出不同：
+
+- eligible gene list；
+- model-only marginals；
+- lambda結果；
+- weights。
+
+這不算 retuning。看到該 cluster real labels後的 manual exception會使它降為 development，失去 held-out資格。
 
 ---
 
-## 8. 殘餘不確定性與風險（已記錄，非阻擋）
+## 17. Stage 3 per-cluster protocol 與 gate
 
-- 本機目前**無可見 gfx942**；所有 runtime 數字尚未驗證。
-- 外部 `TuningDriver` 位置 / 授權未知；repo 內只找到文件引用。
-- production `soo`/`reduce_fn` 待從**實際生成 YAML** 查證（不可由 defaults 推定）。
-- Ductile gene → `config_t`/`tensile_params_t` 的完整逐欄映射尚未驗證。
-- Formocast 在 gfx942 真實 Ductile 搜尋空間上的 ranking 品質**未量化**；MI350 的約 +5% 是 **selection 層**數字，**不能**當 gfx942 GA warm-start 的 effect-size 先驗。
-- **GPU 預算風險**：能否支撐 ≥24 shapes / 5 seeds / 4 clusters 未知。**若不足，降級結論強度（標為 underpowered pilot），不得降門檻後仍宣稱 confirmatory success。**
-- **根本表達力風險**：per-gene 邊際無法表達 epistasis；這是 factorized injection-B 的天生上限（§4.3 已定緩解與判準）。
+### 17.1 Per-cluster execution
+
+每個預註冊 cluster：
+
+1. mapping／access／noise gate；
+2. model-only frame與 frozen guidance algorithm；
+3. 256 unique configs ×2 sizes 的 D5-equivalent audit；
+4. D5 fail／inconclusive仍保留在兩-cluster denominator，但不跑GA；
+5. D5 pass才執行：
+   - G／F／S；
+   - `n_gen=10, period=0`；
+   - 3個 fresh paired seeds；
+   - Stage 2相同 AUC、support、late retention、non-inferiority與correctness rules。
+
+### 17.2 Bounded replication positive
+
+`S3_BOUNDED_REPLICATION_POSITIVE` 要求：
+
+- 2/2 clusters無 outcome-driven amendment；
+- 2/2 D5 pass；
+- 每 cluster F-G與F-S AUC至少2/3 seeds正；
+- 每 cluster H10 late retention至少2/3正；
+- 每 cluster final verified non-inferiority至少2/3；
+- 無 correctness／plumbing failure。
+
+判讀：
+
+- 一正一負：`FT-REGIME-HETEROGENEITY`；
+- 兩者都負：bounded replication否證；
+- 任一 access／mapping blocked：整體 inconclusive；
+- 只完成一個 cluster：只能稱 `single-cluster transfer pilot`。
+
+兩個 sizes是同一 cluster內 repeated conditions，不是兩個 independent generalization units。
+
+### 17.3 Stage 3 time／resource cap
+
+- hard cap：7工作日；
+- entry前鎖完整兩-cluster D5與GA budget；
+- GPU cap依 Stage 2實際消耗與兩-cluster request估算，不靠cache／dedup的樂觀節省啟動；
+- 保留 report工作日與10% failure buffer。
+
+Report：
+
+`study_docs/research/ductile-origami-warmstart/reports/bounded-regime-replication-report.md`
 
 ---
 
-## 9. 結論來源與後續
+## Part IV — Stage 4：Conditional Learned Residual Surrogate
 
-- **產生方式**：dual-agent（GPT-5.6 Sol A、B）獨立開場 → 交互詰問 → 候選共識，**A、B 皆 `AGREE`**；factual crux 由 orchestrator 查核 branch 程式碼（§1.1）。
-- **交互詰問改變/強化的關鍵點**：(1) config→per-gene 從兩種抽樣法收斂為「global-uniform + conditional top-up、unit weight」單一程序；(2) epistasis 定案為「純 factorized + oracle-marginals gate」，pairwise 不偷渡進獨立 hook；(3) A-hard 收斂為「只做 offline oracle check、不花 GPU、不上線」；(4) baseline 命名規則統一（proxy 不得簡稱 original）；(5) 驗收收斂為速度/品質兩條互斥路徑 + 明確 falsification。
-- **Milestone 細化方式**：第二輪 `/design-discussion` 再由兩個 fresh GPT-5.6 Sol agents 對「文件拆分、dependency、observability、mapping、censoring、correctness、report lifecycle」獨立提案並交互詰問，修正門檻鎖定時點、correctness default 的分層事實與 censored metric 命名後，A、B 再次皆 `AGREE`；結果寫入 §1.3 與 M00–M09 十份 design。
-- **後續（需實跑補齊，本計畫不代填）**：Step-0 各項的實測結果；EXP-0a/0b/C 的 gate 數字；EXP-1/2/3 的取捨曲線與 per-shape 報告；mentor / owner 對門檻（20%/1%/3%）與 TuningDriver 授權的定案。
+## 18. Stage 4 trigger 與 data gate
+
+### 18.1 可啟動 patterns
+
+只有 predictor-specific failure且 cross-fitted oracle支持 factorized main effects時可啟動，例如：
+
+- `FT-MODEL-RANK`，但 oracle ranking／prior mass穩定；
+- `FT-MODEL-MARGINAL`，且 oracle明顯優於 G／shuffled；
+- Stage 3 predictor heterogeneity，但失敗 cluster的 oracle仍支持同一 hook。
+
+### 18.2 不得啟動
+
+- `FT-BLOCKED-ACCESS`／`FT-BLOCKED-MAPPING`；
+- `FT-HOOK-EXPRESSIVENESS`；
+- `FT-PLUMBING`；
+- `FT-GEN0-MECHANISM`；
+- `FT-PERSISTENCE-WASHOUT`；
+- premature convergence／short-horizon regression；
+- `FT-HEURISTIC-SATURATION`；
+- 單純 noise／coverage不足。
+
+更換 predictor不能修復上述問題。
+
+### 18.3 Formal data floor
+
+至少：
+
+- 4個 independent search-space clusters；
+- 每 cluster ≥256 unique measured configs；
+- 每 cluster ≥2 sizes；
+- 總計 ≥1,024 unique configs／2,048 config×size labels；
+- inclusion probabilities、correctness、mapping與coverage完整。
+
+若已有3個合格 clusters，可在 mentor另批資源與5日cap內新增**最多一個** prospective sealed fourth cluster：
+
+- selection rule與cluster ID在labels前鎖定；
+- 不依前三clusters結果挑容易成功的regime；
+- 只取得label pool，不跑GA；
+- 第四cluster labels不得回流調參後再當test。
+
+若現有少於3個，或第四cluster無法在cap內取得：
+
+`FT-SURROGATE-DATA-INSUFFICIENT`
+
+不得補收2–3個clusters、不得row-random split、不得把sizes當clusters。
+
+---
+
+## 19. Stage 4 model／split／claim contract
+
+### 19.1 Research question
+
+> Learned residual predictor能否在完全 unseen cluster中，恢復 Formocast未捕捉、但 oracle顯示可 factorize的效能訊號？
+
+### 19.2 Model boundary
+
+- 一個預指定 lightweight residual predictor；
+- 目標例如 `log(real latency) - log(Formocast latency)` 或等價 rank correction；
+- 不做廣泛 model zoo；
+- model family與有限 hyperparameter grid在 outer labels解封前鎖定；
+- factorization與hook沿用 Stage 1 frozen algorithm。
+
+### 19.3 Split invariants
+
+- Outer：leave-one-entire-cluster-out；
+- Inner：只在 outer-training clusters做 cluster-grouped selection；
+- 同 cluster的sizes、repeats、duplicates、derived rows都在同 fold；
+- preprocessing、feature selection、calibration只fit inner-training；
+- D5 inclusion weights帶入training與evaluation；
+- 禁止 random row split。
+
+若恰有3個既有＋1個 prospective sealed cluster：
+
+- Primary：前三clusters完成model／hyperparameter selection後，第四cluster作 untouched prospective test；
+- LOCO只作 secondary sensitivity。
+
+### 19.4 Stage 4 endpoint
+
+Primary比較：
+
+- Formocast whole ranking；
+- learned residual ranking；
+- cross-fitted oracle ceiling；
+- learned factorized prior vs Formocast prior vs same-entropy shuffled。
+
+成功需在 cluster-held-out judgment中：
+
+- learned residual穩定優於 Formocast；
+- 同時優於 same-entropy shuffled；
+- 與 oracle的差距縮小；
+- 沒有使用 outer labels重選features／genes／thresholds。
+
+預設不跑 actual GA。只有另有第五個 prospectively sealed cluster與 fresh mentor gate，才可設計 actual GA validation；不屬於預設 internship承諾。
+
+### 19.5 Stage 4 timebox
+
+- hard cap：5工作日；
+- 預設不新增超過一個 label-only cluster；
+- 資料 gate未過立即停止，不用較弱 split救回。
+
+Report：
+
+- 完成 analysis：`study_docs/research/ductile-origami-warmstart/reports/learned-residual-surrogate-report.md`
+- Data gate未過：`study_docs/research/ductile-origami-warmstart/reports/learned-residual-data-insufficiency-memo.md`
+
+---
+
+## 20. Cross-stage resource、claim 與 lifecycle rules
+
+### 20.1 Resource reservation
+
+每個 stage entry前：
+
+- 保留至少1工作日或剩餘可工作時間15%作最終 synthesis，取較大者；
+- 保留已確認GPU allocation的10%作noise／failed-measurement buffer；
+- 確認完整 formal panel可在cap內完成；
+- 不因已開始就縮 seeds／arms／clusters後沿用原 claim。
+
+### 20.2 Claim ladder
+
+- Stage 1：bounded Gen0 mechanism evidence。
+- Stage 2：single-development-cluster H10 early-search persistence／evaluation efficiency。
+- Stage 3：two-held-out-regime bounded replication。
+- Stage 4：cluster-held-out predictor substitution。
+
+任何階段都不得宣稱：
+
+- system／end-to-end speedup；
+- full GA convergence；
+- MI300X workload generalization；
+- production／deployment readiness；
+- owner adoption。
+
+### 20.3 Stage branching
+
+- Stage 1 positive → Stage 2。
+- Stage 2 positive → Stage 3。
+- Stage 1／3 predictor-specific failure + oracle positive + data gate → Stage 4。
+- Hook、plumbing、Gen0、washout、regression、heuristic-saturation failures → 停止該 intervention branch。
+- Negative／inconclusive也必須建立對應report，不只記成功案例。
+
+### 20.4 Owner-led future handoff
+
+只有 Stage 3成功且核心團隊有興趣後，才可把以下列為 handoff idea：
+
+- long-horizon／natural-stop confirmation；
+- 更多 workloads／24-shape validation；
+- end-to-end wall-time accounting；
+- productization／deployment review。
+
+它們不是 internship stage，也不恢復舊 M00–M09權威。
+
+### 20.5 Stage-specific artifacts
+
+Stage 2至少保存：
+
+- `stage2-protocol-lock.json`
+- `stage2-fresh-seed-manifest.json`
+- `stage2-u-floor.json`
+- `stage2-checkpoint-parity.json`
+- `stage2-trajectories.parquet`
+- `stage2-champion-remeasurements.parquet`
+- `stage2-decision.json`
+
+Stage 3至少保存：
+
+- `stage3-cluster-registry.json`
+- `stage3-freeze-manifest.json`
+- 每cluster的 mapping／D5／weights／trajectory artifacts
+- `stage3-heldout-denominator.json`
+- `stage3-decision.json`
+
+Stage 4至少保存：
+
+- `stage4-trigger-evidence.json`
+- `stage4-cluster-data-registry.json`
+- `stage4-prospective-cluster-lock.json`（若適用）
+- `stage4-outer-inner-split-manifest.json`
+- `stage4-model-contract.json`
+- `stage4-predictions.parquet`
+- `stage4-decision.json`
+
+所有 stage-specific artifacts沿用 §1 的hash、lineage與append-only amendment規則。
+
+### 20.6 Milestone lifecycle
+
+本輪只更新 parent roadmap與protocol：
+
+- 既有 M00–M09仍是 `legacy / do_not_execute`；
+- 不逐份重寫；
+- 使用者確認本 staged roadmap後，再以 fresh `/design-discussion` 決定是否建立新的 S1–S4 milestone docs。

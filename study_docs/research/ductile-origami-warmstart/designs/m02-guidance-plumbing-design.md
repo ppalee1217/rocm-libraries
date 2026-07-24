@@ -1,14 +1,22 @@
 ---
 milestone_id: M02
 title: Config 到模型再到 per-gene weights 的 guidance plumbing
-design_status: draft
-execution_status: not_started
-outcome: not_available
+lifecycle: legacy
+design_authority: none
+design_status: superseded
+execution_status: do_not_execute
+outcome: superseded
+historical_design_status: draft
+historical_execution_status: not_started
+historical_outcome: not_available
+superseded_by: [S11]
 depends_on: [M00, M01.SW]
 cohorts: [common]
 planned_report_paths:
   - ../reports/m02-guidance-plumbing-report.md
 ---
+
+> ⚠️ **LEGACY／DO NOT EXECUTE：**本檔是 pre-pivot 歷史設計，不具執行權威。Active replacement：[S11](staged/s11-stage1-model-only-factorization-design.md)。請先讀 [design index](README.md) 與現行 parent protocol。
 
 # M02 — Guidance plumbing 設計
 

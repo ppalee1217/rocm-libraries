@@ -1,15 +1,23 @@
 ---
 milestone_id: M09
 title: Overall held-out confirmation
-design_status: draft
-execution_status: blocked
-outcome: not_available
+lifecycle: legacy
+design_authority: none
+design_status: superseded
+execution_status: do_not_execute
+outcome: superseded
+historical_design_status: draft
+historical_execution_status: blocked
+historical_outcome: not_available
+superseded_by: [S30, S31]
 depends_on: [M08, winner_lock, holdout_seal]
 cohorts: [nonstreamk, streamk]
 planned_report_paths:
   - ../reports/m09-overall-confirmation-nonstreamk-report.md
   - ../reports/m09-overall-confirmation-streamk-report.md
 ---
+
+> ⚠️ **LEGACY／DO NOT EXECUTE：**本檔只保留 denominator／negative-reporting／holdout discipline 的歷史概念；active destinations為 planned S30／S31。24-shape、wall-time與production confirmation已退休為owner-led future handoff。請讀 [design index](README.md)。
 
 # M09 — Overall held-out confirmation 設計
 

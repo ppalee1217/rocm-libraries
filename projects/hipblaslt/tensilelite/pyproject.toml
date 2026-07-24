@@ -66,6 +66,7 @@ license = {text = "MIT"}
 dependencies = [
     "packaging",
     "pyyaml",
+    "jsonschema>=3.2",
     "msgpack",
     "joblib>=1.4.0",
     "simplejson",

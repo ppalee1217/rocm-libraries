@@ -1,0 +1,324 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://amd.example/m00/ga-event.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "sequence", "event_id", "kind", "generation", "payload", "payload_sha256"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "sequence": {"type": "integer", "minimum": 0},
+    "event_id": {"type": "string", "pattern": "^(event|observer)-[0-9]{6}$"},
+    "kind": {
+      "enum": [
+        "run_started", "run_interrupted", "run_finished", "generation_started", "generation_finished",
+        "compile_started", "compile_finished", "benchmark_started", "benchmark_finished",
+        "subprocess_started", "subprocess_finished", "candidate_terminal",
+        "fitness_vector", "generation_stats", "checkpoint_written",
+        "initial_population", "resume_loaded", "proposal_batch", "fitness_matrix",
+        "termination_updated", "termination", "final_champion"
+      ]
+    },
+    "generation": {"type": ["integer", "null"], "minimum": 0},
+    "payload": {"type": "object"},
+    "payload_sha256": {"$ref": "#/definitions/sha"}
+  },
+  "allOf": [
+    {"if": {"properties": {"kind": {"const": "run_started"}}}, "then": {"properties": {"payload": {"$ref": "#/definitions/run_started"}}}},
+    {"if": {"properties": {"kind": {"const": "run_interrupted"}}}, "then": {"properties": {"payload": {"$ref": "#/definitions/run_interrupted"}}}},
+    {"if": {"properties": {"kind": {"const": "run_finished"}}}, "then": {"properties": {"payload": {"$ref": "#/definitions/run_finished"}}}},
+    {"if": {"properties": {"kind": {"const": "generation_started"}}}, "then": {"properties": {"payload": {"$ref": "#/definitions/generation_started"}}}},
+    {"if": {"properties": {"kind": {"const": "generation_finished"}}}, "then": {"properties": {"payload": {"$ref": "#/definitions/generation_finished"}}}},
+    {"if": {"properties": {"kind": {"enum": ["compile_started", "benchmark_started"]}}}, "then": {"properties": {"payload": {"$ref": "#/definitions/candidate_stage_started"}}}},
+    {"if": {"properties": {"kind": {"enum": ["compile_finished", "benchmark_finished"]}}}, "then": {"properties": {"payload": {"$ref": "#/definitions/candidate_stage_finished"}}}},
+    {"if": {"properties": {"kind": {"const": "subprocess_started"}}}, "then": {"properties": {"payload": {"$ref": "#/definitions/subprocess_started"}}}},
+    {"if": {"properties": {"kind": {"const": "subprocess_finished"}}}, "then": {"properties": {"payload": {"$ref": "#/definitions/subprocess_finished"}}}},
+    {"if": {"properties": {"kind": {"const": "candidate_terminal"}}}, "then": {"properties": {"payload": {"$ref": "#/definitions/candidate_terminal"}}}},
+    {"if": {"properties": {"kind": {"const": "fitness_vector"}}}, "then": {"properties": {"payload": {"$ref": "#/definitions/fitness_matrix"}}}},
+    {"if": {"properties": {"kind": {"const": "generation_stats"}}}, "then": {"properties": {"payload": {"oneOf": [{"$ref": "#/definitions/external_stats"}, {"$ref": "#/definitions/observer_stats"}]}}}},
+    {"if": {"properties": {"kind": {"const": "checkpoint_written"}}}, "then": {"properties": {"payload": {"oneOf": [{"$ref": "#/definitions/external_checkpoint"}, {"$ref": "#/definitions/observer_checkpoint"}]}}}},
+    {"if": {"properties": {"kind": {"const": "initial_population"}}}, "then": {"properties": {"payload": {"$ref": "#/definitions/proposals"}}}},
+    {"if": {"properties": {"kind": {"const": "resume_loaded"}}}, "then": {"properties": {"payload": {"$ref": "#/definitions/resume_loaded"}}}},
+    {"if": {"properties": {"kind": {"const": "proposal_batch"}}}, "then": {"properties": {"payload": {"$ref": "#/definitions/proposals"}}}},
+    {"if": {"properties": {"kind": {"const": "fitness_matrix"}}}, "then": {"properties": {"payload": {"$ref": "#/definitions/fitness_matrix_observer"}}}},
+    {"if": {"properties": {"kind": {"const": "termination_updated"}}}, "then": {"properties": {"payload": {"$ref": "#/definitions/termination_updated"}}}},
+    {"if": {"properties": {"kind": {"const": "termination"}}}, "then": {"properties": {"payload": {"$ref": "#/definitions/termination"}}}},
+    {"if": {"properties": {"kind": {"const": "final_champion"}}}, "then": {"properties": {"payload": {"$ref": "#/definitions/final_champion"}}}}
+  ],
+  "definitions": {
+    "sha": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "candidate_id": {"type": "string", "pattern": "^(g[0-9]{4}-c[0-9]{4}-[0-9a-f]{12}|p[0-5])$"},
+    "candidate_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/definitions/candidate_id"}},
+    "shape_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^cpu-fixture-[a-z0-9-]+$"}},
+    "index_config": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["a", "b", "c"],
+      "properties": {
+        "a": {"type": "integer", "minimum": 0},
+        "b": {"type": "integer", "minimum": 0},
+        "c": {"type": "integer", "minimum": 0}
+      }
+    },
+    "value_config": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["a", "b", "c"],
+      "properties": {
+        "a": {"type": "number"},
+        "b": {"type": "number"},
+        "c": {"type": "number"}
+      }
+    },
+    "run_started": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["run_id", "scenario_id", "observer_enabled", "expected_stages", "shape_ids"],
+      "properties": {
+        "run_id": {"type": "string", "pattern": "^[a-z0-9_-]+$"},
+        "scenario_id": {"enum": ["fixed_horizon", "early_stop", "checkpoint_resume", "adversarial_ledger"]},
+        "observer_enabled": {"type": "boolean"},
+        "expected_stages": {"const": ["compile", "benchmark", "subprocess"]},
+        "shape_ids": {"$ref": "#/definitions/shape_ids"}
+      }
+    },
+    "run_finished": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["complete", "termination_reason", "final_generation"],
+      "properties": {
+        "complete": {"const": true},
+        "termination_reason": {"enum": ["fixed_horizon", "early_stop", "ledger_complete"]},
+        "final_generation": {"type": "integer", "minimum": 1}
+      }
+    },
+    "run_interrupted": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["complete", "next_generation", "checkpoint_path", "checkpoint_sha256"],
+      "properties": {
+        "complete": {"const": false},
+        "next_generation": {"type": "integer", "minimum": 2},
+        "checkpoint_path": {"const": "checkpoints/ga.checkpoint"},
+        "checkpoint_sha256": {"$ref": "#/definitions/sha"}
+      }
+    },
+    "generation_started": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["candidate_ids", "candidate_set_sha256"],
+      "properties": {
+        "candidate_ids": {"$ref": "#/definitions/candidate_ids"},
+        "candidate_set_sha256": {"$ref": "#/definitions/sha"}
+      }
+    },
+    "generation_finished": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["candidate_set_sha256"],
+      "properties": {"candidate_set_sha256": {"$ref": "#/definitions/sha"}}
+    },
+    "candidate_stage_started": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["stage_id", "candidate_id"],
+      "properties": {
+        "stage_id": {"type": "string", "minLength": 1},
+        "candidate_id": {"$ref": "#/definitions/candidate_id"}
+      }
+    },
+    "candidate_stage_finished": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["stage_id", "candidate_id", "status", "duration_ns"],
+      "properties": {
+        "stage_id": {"type": "string", "minLength": 1},
+        "candidate_id": {"$ref": "#/definitions/candidate_id"},
+        "status": {"enum": ["success", "failure"]},
+        "duration_ns": {"type": "integer", "minimum": 0}
+      }
+    },
+    "subprocess_started": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["stage_id", "invocation_id", "argv", "cwd", "input_sha256"],
+      "properties": {
+        "stage_id": {"type": "string", "pattern": "^invocation-[0-9]{4}$"},
+        "invocation_id": {"type": "string", "pattern": "^invocation-[0-9]{4}$"},
+        "argv": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+        "cwd": {"type": "string", "pattern": "^/"},
+        "input_sha256": {"$ref": "#/definitions/sha"}
+      }
+    },
+    "subprocess_finished": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["stage_id", "invocation_id", "status", "duration_ns", "exit_code", "stdout_path", "stdout_sha256", "stderr_path", "stderr_sha256"],
+      "properties": {
+        "stage_id": {"type": "string", "pattern": "^invocation-[0-9]{4}$"},
+        "invocation_id": {"type": "string", "pattern": "^invocation-[0-9]{4}$"},
+        "status": {"enum": ["success", "failure"]},
+        "duration_ns": {"type": "integer", "minimum": 0},
+        "exit_code": {"type": "integer"},
+        "stdout_path": {"type": "string", "pattern": "^subprocess/invocation-[0-9]{4}\\.stdout\\.jsonl$"},
+        "stdout_sha256": {"$ref": "#/definitions/sha"},
+        "stderr_path": {"type": "string", "pattern": "^subprocess/invocation-[0-9]{4}\\.stderr\\.txt$"},
+        "stderr_sha256": {"$ref": "#/definitions/sha"}
+      }
+    },
+    "candidate_terminal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["candidate_id", "classification"],
+      "properties": {
+        "candidate_id": {"$ref": "#/definitions/candidate_id"},
+        "classification": {"enum": ["invalid", "duplicate", "compile_failed", "benchmark_failed", "partial", "complete"]},
+        "config_id": {"$ref": "#/definitions/sha"},
+        "config": {"$ref": "#/definitions/value_config"},
+        "duplicate_of_candidate_id": {"$ref": "#/definitions/candidate_id"},
+        "duplicate_of_config_id": {"$ref": "#/definitions/sha"}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"classification": {"const": "duplicate"}}, "required": ["classification"]},
+          "then": {"required": ["config_id", "config", "duplicate_of_candidate_id", "duplicate_of_config_id"]},
+          "else": {
+            "not": {
+              "anyOf": [
+                {"required": ["config_id"]},
+                {"required": ["config"]},
+                {"required": ["duplicate_of_candidate_id"]},
+                {"required": ["duplicate_of_config_id"]}
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "fitness_matrix": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["candidate_ids", "shape_ids", "dtype", "shape", "values", "data_sha256"],
+      "properties": {
+        "candidate_ids": {"$ref": "#/definitions/candidate_ids"},
+        "shape_ids": {"$ref": "#/definitions/shape_ids"},
+        "dtype": {"const": "<f8"},
+        "shape": {"type": "array", "minItems": 2, "maxItems": 2, "items": {"type": "integer", "minimum": 1}},
+        "values": {"type": "array", "minItems": 1, "items": {"type": "array", "minItems": 1, "items": {"type": "number"}}},
+        "data_sha256": {"$ref": "#/definitions/sha"}
+      }
+    },
+    "fitness_matrix_observer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["dtype", "shape", "values", "data_sha256"],
+      "properties": {
+        "dtype": {"const": "<f8"},
+        "shape": {"type": "array", "minItems": 2, "maxItems": 2, "items": {"type": "integer", "minimum": 1}},
+        "values": {"type": "array", "minItems": 1, "items": {"type": "array", "minItems": 1, "items": {"type": "number"}}},
+        "data_sha256": {"$ref": "#/definitions/sha"}
+      }
+    },
+    "external_stats": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["f_avg", "f_max", "diversity", "population_size", "decay_mode"],
+      "properties": {
+        "f_avg": {"type": "number"},
+        "f_max": {"type": "number"},
+        "diversity": {"type": "number", "minimum": 0, "maximum": 1},
+        "population_size": {"type": "integer", "minimum": 1},
+        "decay_mode": {"enum": ["none", "large_space", "low_diversity"]}
+      }
+    },
+    "observer_stats": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["legacy_n_evals", "f_avg", "f_max", "diversity", "per_gene_diversity", "population_size", "decay_mode"],
+      "properties": {
+        "legacy_n_evals": {"type": "integer", "minimum": 0},
+        "f_avg": {"type": "number"},
+        "f_max": {"type": "number"},
+        "diversity": {"type": "number", "minimum": 0, "maximum": 1},
+        "per_gene_diversity": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["gene", "value"],
+            "properties": {
+              "gene": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"},
+              "value": {"type": "number", "minimum": 0, "maximum": 1}
+            }
+          }
+        },
+        "population_size": {"type": "integer", "minimum": 1},
+        "decay_mode": {"enum": ["none", "large_space", "low_diversity"]}
+      }
+    },
+    "external_checkpoint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["checkpoint_path", "checkpoint_sha256", "generation"],
+      "properties": {
+        "checkpoint_path": {"const": "checkpoints/ga.checkpoint"},
+        "checkpoint_sha256": {"$ref": "#/definitions/sha"},
+        "generation": {"type": "integer", "minimum": 1}
+      }
+    },
+    "observer_checkpoint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path_name"],
+      "properties": {"path_name": {"type": "string", "minLength": 1}}
+    },
+    "proposals": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ordered_indices", "ordered_configs"],
+      "properties": {
+        "ordered_indices": {"type": "array", "minItems": 1, "items": {"$ref": "#/definitions/index_config"}},
+        "ordered_configs": {"type": "array", "minItems": 1, "items": {"$ref": "#/definitions/value_config"}}
+      }
+    },
+    "resume_loaded": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["next_generation", "population_indices", "legacy_n_evals"],
+      "properties": {
+        "next_generation": {"type": "integer", "minimum": 2},
+        "population_indices": {"type": "array", "minItems": 1, "items": {"$ref": "#/definitions/index_config"}},
+        "legacy_n_evals": {"type": "integer", "minimum": 0}
+      }
+    },
+    "termination_updated": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["next_population_size", "decay_mode"],
+      "properties": {
+        "next_population_size": {"type": "integer", "minimum": 1},
+        "decay_mode": {"enum": ["none", "large_space", "low_diversity"]}
+      }
+    },
+    "termination": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reason", "detail"],
+      "properties": {
+        "reason": {"enum": ["fixed_horizon", "early_stop"]},
+        "detail": {"type": "string", "minLength": 1}
+      }
+    },
+    "final_champion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["configs", "fitness", "fitness_dtype", "fitness_sha256"],
+      "properties": {
+        "configs": {"type": "array", "minItems": 1, "items": {"$ref": "#/definitions/value_config"}},
+        "fitness": {"type": "array", "minItems": 1, "items": {"type": "number"}},
+        "fitness_dtype": {"const": "<f8"},
+        "fitness_sha256": {"$ref": "#/definitions/sha"}
+      }
+    }
+  }
+}

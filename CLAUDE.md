@@ -35,6 +35,34 @@ prior context; explanations must build up from the basics.
   completion status must wait. If an early report is explicitly required, label it
   `partial` / `in-progress` and list every pending run and unavailable conclusion.
 
+### Verify every milestone before starting the next
+
+- When a specification defines ordered or dependent milestones, work on exactly one active
+  milestone at a time: implement it, independently verify it, fix and re-verify it, and only
+  then consider a downstream milestone.
+- Do not ask one implementer to build multiple milestones and verify them only after the batch.
+  Do not modify downstream milestone files speculatively while an upstream milestone is still
+  unverified.
+- `CHANGES_REQUIRED`, `BLOCKED`, `FAIL`, missing evidence, or a still-running verification stops
+  that dependency path. Advance only after the current milestone verifier returns `PASS`, or
+  along a different branch that the design explicitly authorizes from a verified gate outcome.
+- A broad request such as "implement all milestones" authorizes the full sequence, not a single
+  batch implementation. Preserve a separate baseline, scope, plan, evidence set, and verdict for
+  every milestone.
+
+### GPU and ROCm execution environment
+
+- Run every GPU- or ROCm-dependent command only inside the Docker container named exactly
+  `perlee`. This includes hardware probes and ROCm builds/tests/tools such as `rocminfo`,
+  `rocm_agent_enumerator`, `hipcc`, `amdclang++`, `rocprof`, kernel generation, compilation,
+  benchmarks, and correctness/noise runs. Do not run these commands on the host.
+- Target only `perlee` in Docker commands. Never enumerate, inspect, enter, start, stop, restart,
+  pause, unpause, rename, remove, copy to/from, or otherwise touch any other user's container.
+- Do not start, stop, restart, recreate, or mutate the `perlee` container itself without the
+  user's explicit approval. Dependency installation remains a separate human gate.
+- If `perlee` is unavailable, stopped, lacks the repository mount or GPU access, or rejects the
+  command, stop and ask the user. Never substitute the host or another container.
+
 ### Do not over-conclude
 
 - A hypothesis and expected direction come before the result, but remain hypotheses until

@@ -1,0 +1,310 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://amd.example/m00/experiment-contract.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "study", "platform", "revisions", "data_roles", "baseline", "measurement", "search", "guidance", "statistics", "criteria", "correctness", "locks"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "study": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["study_id", "protocol_version", "parent_plan_path", "m00_design_path", "base_contract_policy", "amendment_chain_path"],
+      "properties": {
+        "study_id": {"const": "ductile-origami-warmstart"},
+        "protocol_version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+        "parent_plan_path": {"$ref": "#/definitions/repo_path"},
+        "m00_design_path": {"$ref": "#/definitions/repo_path"},
+        "base_contract_policy": {"const": "immutable_after_first_use"},
+        "amendment_chain_path": {"$ref": "#/definitions/repo_path"}
+      }
+    },
+    "platform": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["target_architecture", "target_status", "m00_execution"],
+      "properties": {
+        "target_architecture": {"const": "gfx942"},
+        "target_status": {"const": "unverified_target"},
+        "m00_execution": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["execution_kind", "gpu_probe", "rocm_probe", "pythonhashseed"],
+          "properties": {
+            "execution_kind": {"const": "deterministic_cpu_fixture"},
+            "gpu_probe": {"const": "forbidden"},
+            "rocm_probe": {"const": "forbidden"},
+            "pythonhashseed": {"const": "0"}
+          }
+        }
+      }
+    },
+    "revisions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["registry_path", "component_states"],
+      "properties": {
+        "registry_path": {"$ref": "#/definitions/repo_path"},
+        "component_states": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["geko", "origami_formocast"],
+          "properties": {
+            "geko": {"const": "not_registered"},
+            "origami_formocast": {"const": "not_registered"}
+          }
+        }
+      }
+    },
+    "data_roles": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["roles", "guidance_access_roles", "judgment_role", "holdout_role"],
+      "properties": {
+        "roles": {
+          "type": "array",
+          "minItems": 5,
+          "maxItems": 5,
+          "uniqueItems": true,
+          "items": {"enum": ["pilot", "development", "development_guidance", "development_judgment", "final_holdout"]}
+        },
+        "guidance_access_roles": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "uniqueItems": true,
+          "items": {"enum": ["pilot", "development", "development_guidance"]}
+        },
+        "judgment_role": {"const": "development_judgment"},
+        "holdout_role": {"const": "final_holdout"}
+      }
+    },
+    "baseline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["registry_path", "claim_kinds", "evidence_policy"],
+      "properties": {
+        "registry_path": {"$ref": "#/definitions/repo_path"},
+        "claim_kinds": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "uniqueItems": true,
+          "items": {"enum": ["original_tuningdriver", "geko_gfx942_proxy"]}
+        },
+        "evidence_policy": {"const": "strict_provenance"}
+      }
+    },
+    "measurement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["downstream_gpu", "cpu_fixture"],
+      "properties": {
+        "downstream_gpu": {"$ref": "#/definitions/not_registered"},
+        "cpu_fixture": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["source", "timeout_seconds", "samples_per_shape", "shapes"],
+          "properties": {
+            "source": {"const": "deterministic_cpu_fixture"},
+            "timeout_seconds": {"type": "integer", "minimum": 1, "maximum": 30},
+            "samples_per_shape": {"const": 1},
+            "shapes": {
+              "type": "array",
+              "minItems": 2,
+              "uniqueItems": true,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["shape_id", "factor", "role"],
+                "properties": {
+                  "shape_id": {"type": "string", "pattern": "^cpu-fixture-[a-z0-9-]+$"},
+                  "factor": {"type": "number", "minimum": 0},
+                  "role": {"const": "non_comparative_fixture"}
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "search": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sampling_jobs", "max_iters", "mating_max_iters", "soo", "space", "operators", "scenarios"],
+      "properties": {
+        "sampling_jobs": {"const": 1},
+        "max_iters": {"type": "integer", "minimum": 1},
+        "mating_max_iters": {"type": "integer", "minimum": 1},
+        "soo": {"const": false},
+        "space": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "values"],
+            "properties": {
+              "name": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"},
+              "values": {
+                "type": "array",
+                "minItems": 2,
+                "uniqueItems": true,
+                "items": {"type": "number"}
+              }
+            }
+          }
+        },
+        "operators": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["selection", "crossover", "mutation", "survival"],
+          "properties": {
+            "selection": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["name", "k", "ratio", "elitism", "replacement"],
+              "properties": {
+                "name": {"const": "tournament"},
+                "k": {"type": "integer", "minimum": 2},
+                "ratio": {"type": "number", "exclusiveMinimum": 0, "maximum": 1},
+                "elitism": {"type": "number", "minimum": 0, "maximum": 1},
+                "replacement": {"type": "boolean"}
+              }
+            },
+            "crossover": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["name", "probability", "mode"],
+              "properties": {
+                "name": {"const": "ux"},
+                "probability": {"type": "number", "exclusiveMinimum": 0, "maximum": 1},
+                "mode": {"const": "random"}
+              }
+            },
+            "mutation": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["probability"],
+              "properties": {
+                "probability": {"type": "number", "exclusiveMinimum": 0, "maximum": 1}
+              }
+            },
+            "survival": {"const": "fitness"}
+          }
+        },
+        "scenarios": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {"$ref": "#/definitions/scenario"}
+        }
+      }
+    },
+    "guidance": {"$ref": "#/definitions/not_registered"},
+    "statistics": {"$ref": "#/definitions/not_registered"},
+    "criteria": {
+      "type": "array",
+      "minItems": 7,
+      "maxItems": 7,
+      "uniqueItems": true,
+      "items": {
+        "oneOf": [
+          {"$ref": "#/definitions/obs_criterion"},
+          {"$ref": "#/definitions/reconcile_criterion"},
+          {"$ref": "#/definitions/split_criterion"},
+          {"$ref": "#/definitions/baseline_criterion"},
+          {"$ref": "#/definitions/lock_criterion"},
+          {"$ref": "#/definitions/fal_criterion"},
+          {"$ref": "#/definitions/stop_criterion"}
+        ]
+      }
+    },
+    "correctness": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["cpu_fixture", "gpu"],
+      "properties": {
+        "cpu_fixture": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["parser", "finite_values_required"],
+          "properties": {
+            "parser": {"const": "strict_jsonl"},
+            "finite_values_required": {"const": true}
+          }
+        },
+        "gpu": {"$ref": "#/definitions/not_registered"}
+      }
+    },
+    "locks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["protocol_lock_path", "whitelist_path", "registry_paths", "protected_paths", "final_report_path", "report_lifecycle"],
+      "properties": {
+        "protocol_lock_path": {"$ref": "#/definitions/repo_path"},
+        "whitelist_path": {"$ref": "#/definitions/repo_path"},
+        "registry_paths": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["shape", "baseline", "revision"],
+          "properties": {
+            "shape": {"$ref": "#/definitions/repo_path"},
+            "baseline": {"$ref": "#/definitions/repo_path"},
+            "revision": {"$ref": "#/definitions/repo_path"}
+          }
+        },
+        "protected_paths": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "uniqueItems": true,
+          "items": {"$ref": "#/definitions/repo_path"}
+        },
+        "final_report_path": {"$ref": "#/definitions/repo_path"},
+        "report_lifecycle": {"const": "independent_verifier_only"}
+      }
+    }
+  },
+  "definitions": {
+    "repo_path": {"type": "string", "pattern": "^(?!/)(?!.*\\.\\.)[A-Za-z0-9_.\\-/]+$"},
+    "not_registered": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status"],
+      "properties": {"status": {"const": "not_registered"}}
+    },
+    "scenario": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["scenario_id", "seed", "pop_size", "n_gen", "period", "tolerance", "diversity_threshold", "split_generation", "evaluator_mode"],
+      "properties": {
+        "scenario_id": {"enum": ["fixed_horizon", "early_stop", "checkpoint_resume"]},
+        "seed": {"type": "integer", "minimum": 0},
+        "pop_size": {"type": "integer", "minimum": 3},
+        "n_gen": {"type": "integer", "minimum": 2},
+        "period": {"type": "integer", "minimum": 0},
+        "tolerance": {"type": "number", "minimum": 0},
+        "diversity_threshold": {"type": "number", "minimum": 0, "maximum": 1},
+        "split_generation": {"type": ["integer", "null"], "minimum": 1},
+        "evaluator_mode": {"enum": ["formula", "flat"]}
+      }
+    },
+    "criterion_base": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["criterion_id", "kind"],
+      "properties": {
+        "criterion_id": {"type": "string"},
+        "kind": {"enum": ["acceptance", "falsification", "stop"]}
+      }
+    },
+    "obs_criterion": {"allOf": [{"$ref": "#/definitions/criterion_base"}, {"properties": {"criterion_id": {"const": "M00.ACC.OBS-SEMANTICS"}, "kind": {"const": "acceptance"}}}]},
+    "reconcile_criterion": {"allOf": [{"$ref": "#/definitions/criterion_base"}, {"properties": {"criterion_id": {"const": "M00.ACC.RECONCILE"}, "kind": {"const": "acceptance"}}}]},
+    "split_criterion": {"allOf": [{"$ref": "#/definitions/criterion_base"}, {"properties": {"criterion_id": {"const": "M00.ACC.SPLIT-GUARD"}, "kind": {"const": "acceptance"}}}]},
+    "baseline_criterion": {"allOf": [{"$ref": "#/definitions/criterion_base"}, {"properties": {"criterion_id": {"const": "M00.ACC.BASELINE-GUARD"}, "kind": {"const": "acceptance"}}}]},
+    "lock_criterion": {"allOf": [{"$ref": "#/definitions/criterion_base"}, {"properties": {"criterion_id": {"const": "M00.ACC.CONTRACT-LOCK"}, "kind": {"const": "acceptance"}}}]},
+    "fal_criterion": {"allOf": [{"$ref": "#/definitions/criterion_base"}, {"properties": {"criterion_id": {"const": "M00.FAL.INSTRUMENTATION"}, "kind": {"const": "falsification"}}}]},
+    "stop_criterion": {"allOf": [{"$ref": "#/definitions/criterion_base"}, {"properties": {"criterion_id": {"const": "M00.STOP.MISSING-EVIDENCE"}, "kind": {"const": "stop"}}}]}
+  }
+}

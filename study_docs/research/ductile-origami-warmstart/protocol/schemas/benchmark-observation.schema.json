@@ -1,0 +1,49 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://amd.example/m00/benchmark-observation.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "observation_id", "run_id", "invocation_id", "candidate_id", "config_id", "shape_id", "generation", "sample_index", "outcome", "value", "failure_reason", "source", "generated_input_path", "generated_input_sha256", "stdout_path", "stdout_sha256", "stderr_path", "stderr_sha256", "duration_ns"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "observation_id": {"type": "string", "pattern": "^observation-[0-9]{6}$"},
+    "run_id": {"type": "string", "pattern": "^[a-z0-9_-]+$"},
+    "invocation_id": {"type": "string", "pattern": "^invocation-[0-9]{4}$"},
+    "candidate_id": {"type": "string", "pattern": "^(g[0-9]{4}-c[0-9]{4}-[0-9a-f]{12}|p[0-5])$"},
+    "config_id": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "shape_id": {"type": "string", "pattern": "^cpu-fixture-[a-z0-9-]+$"},
+    "generation": {"type": "integer", "minimum": 1},
+    "sample_index": {"const": 0},
+    "outcome": {"enum": ["success", "invalid", "duplicate", "compile_failed", "benchmark_failed", "partial"]},
+    "value": {"type": ["number", "null"]},
+    "failure_reason": {"type": ["string", "null"]},
+    "source": {"const": "deterministic_cpu_fixture"},
+    "generated_input_path": {"type": "string", "pattern": "^generated-inputs/(generation|invocation)-[0-9]{4}\\.json$"},
+    "generated_input_sha256": {"$ref": "#/definitions/sha"},
+    "stdout_path": {"type": "string", "pattern": "^subprocess/invocation-[0-9]{4}\\.stdout\\.jsonl$"},
+    "stdout_sha256": {"$ref": "#/definitions/sha"},
+    "stderr_path": {"type": "string", "pattern": "^subprocess/invocation-[0-9]{4}\\.stderr\\.txt$"},
+    "stderr_sha256": {"$ref": "#/definitions/sha"},
+    "duration_ns": {"type": "integer", "minimum": 0}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"outcome": {"const": "success"}}},
+      "then": {
+        "properties": {
+          "value": {"type": "number"},
+          "failure_reason": {"type": "null"}
+        }
+      },
+      "else": {
+        "properties": {
+          "value": {"type": "null"},
+          "failure_reason": {"type": "string", "minLength": 1}
+        }
+      }
+    }
+  ],
+  "definitions": {
+    "sha": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}
