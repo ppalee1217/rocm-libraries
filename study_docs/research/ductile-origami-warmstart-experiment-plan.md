@@ -1,53 +1,50 @@
-# gfx942 Non-StreamK Factorized Guidance — Stage-Gated Experimental Protocol
+# gfx942 Non-StreamK Factorized Guidance — Stage-Gated Experiment Plan
 
-> **文件角色：**可執行 staged experiment protocol。所有公式、常數、sample counts、seeds、artifacts、Stage 1–4 schedule 與 stop rules 以本檔為唯一權威。
+> **文件角色：**pre-registered experiment plan。所有公式、常數、sample counts、seeds、artifacts、Stage 1–4 schedule與stop rules以本檔為唯一數值權威。
 >
 > **研究 scope／claim authority：**[Formocast Factorized Gen0 Guidance Feasibility Study — Research Charter](surrogate-dse-plan.md)。
 >
-> **狀態：**`staged_protocol_approved / execution_not_started / stage1_blocked_until_D1-D2_lock`。本檔不表示已取得 GPU、actual YAML、mapping parity 或任何 uplift；Stage 2–4 也不是無條件承諾。
+> **狀態：**`pre_empirical / zero_lock / zero_completion`。十份checkpoint design已完成設計審查；S00尚未開始，其餘全部dependency-gated。目前沒有active runtime protocol、effective lock、formal report或empirical outcome。
 >
-> **Legacy override：**`ductile-origami-warmstart/designs/` 下既有 M00–M09 已由 research charter 統一標為 `legacy / superseded_pending_redesign / do_not_execute`。本 protocol 取代舊 warm-start system protocol；本輪不修改或執行那些 milestone designs。
+> **Zero-state warning：**退役的`protocol/` tracked files維持deleted；不得恢復、移植或重用M00 artifact、schema、hash、lock、registry、fixture或test。本輪不建立`protocol/`、`reports/`或runtime artifacts。
 >
-> **平台：**gfx942／MI300X、non-StreamK、單一 dtype/layout。檔名中的 `origami-warmstart` 為歷史名稱；primary model 是 Formocast，Origami estimation 只作 reference。Stage 1 是七日 Gen0 gate；只有通過後才可依序進 Stage 2 persistence 與 Stage 3 bounded replication，Stage 4 surrogate 是嚴格條件分支。
+> **平台：**gfx942／MI300X、non-StreamK、單一dtype/layout。檔名中的`origami-warmstart`為歷史名稱；primary model是Formocast，Origami estimation只作reference。Stage 1是七日Gen0 gate；只有通過後才依序進Stage 2 persistence與Stage 3 bounded replication，Stage 4 surrogate是嚴格條件分支。
 
 ---
 
-## Milestone authority、index 與 lifecycle
+## Checkpoint authority、index 與 lifecycle
 
-> 導航與 legacy migration：[designs/README.md](ductile-origami-warmstart/designs/README.md)。
->
-> 新 designs 位於 `ductile-origami-warmstart/designs/staged/`；舊 M00–M09 保留原位但無執行權威。
+> 唯一active導航與legacy archive入口：[checkpoint index](ductile-origami-warmstart/README.md)。
 
 ### Authority order
 
 1. Research charter：scope、claim ladder、non-goals、canonical failure taxonomy。
-2. 本 experiment plan：scientific criterion IDs、公式、數值、samples、seeds、go/stop。
-3. Milestone design：implementation handoff、artifact checklist、entry／exit evidence；不得複製 parent數值 protocol。
-4. Lock artifact：把 milestone綁定到特定 parent hash、inputs、revisions與seeds。
-5. Report：記錄 observed evidence與decision，不得反向修改 criterion。
+2. 本experiment plan：scientific criterion IDs、公式、數值、samples、seeds、go/stop與checkpoint DAG。
+3. Checkpoint design：implementation handoff、maximum boundary、artifact/evidence binding。
+4. Future effective lock：把committed authorities、Plan-B、exact whitelists、inputs、fixtures與seeds綁成不可變執行實例。
+5. Formal report：記錄verified evidence、outcome、decision與closeout，不得反向修改criterion。
 
-### Canonical milestone slots
+### Canonical checkpoint index
 
-| ID | Responsibility | Design status | Execution status | Design |
-| --- | --- | --- | --- | --- |
-| S00 | Evidence contract／lineage／observability foundation | draft | not_started | [design](ductile-origami-warmstart/designs/staged/s00-evidence-contract-lineage-observability-design.md) |
-| S10 | Stage 1 access／artifact／mapping／noise gate | draft | not_started | [design](ductile-origami-warmstart/designs/staged/s10-stage1-entry-access-mapping-gate-design.md) |
-| S11 | Stage 1 model-only factorization／guidance lock | draft | gated | [design](ductile-origami-warmstart/designs/staged/s11-stage1-model-only-factorization-design.md) |
-| S12 | Stage 1 D5 real-score／oracle audit | draft | gated | [design](ductile-origami-warmstart/designs/staged/s12-stage1-real-score-ranking-oracle-audit-design.md) |
-| S13 | Stage 1 actual Gen0 mechanism | draft | gated | [design](ductile-origami-warmstart/designs/staged/s13-stage1-actual-gen0-mechanism-design.md) |
-| S20 | Stage 2 H10 persistence | planned_not_created | gated | `designs/staged/s20-stage2-h10-persistence-design.md` |
-| S30 | Stage 3 held-out registry／procedure freeze | planned_not_created | gated | `designs/staged/s30-stage3-heldout-registry-freeze-design.md` |
-| S31 | Stage 3 two-cluster bounded replication | planned_not_created | gated | `designs/staged/s31-stage3-bounded-replication-design.md` |
-| S40 | Stage 4 activation／data-sufficiency gate | draft | gated | [design](ductile-origami-warmstart/designs/staged/s40-stage4-surrogate-activation-gate-design.md) |
-| S41 | Stage 4 nested learned-residual analysis | planned_not_created | gated | `designs/staged/s41-stage4-learned-residual-analysis-design.md` |
+| ID | Responsibility | Design | Execution | Checkpoint | Scientific outcome | Lock | Design | Formal report |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| S00 | Evidence contract／lineage／observability foundation | approved | not_started | DESIGN_APPROVED | not_evaluated | absent | [design](ductile-origami-warmstart/s00-evidence-contract-lineage-observability-design.md) | `reports/staged/s00-foundation-verification-report.md` |
+| S10 | Stage 1 access／artifact／mapping／noise gate | approved | gated | DESIGN_APPROVED | not_evaluated | absent | [design](ductile-origami-warmstart/s10-stage1-entry-access-mapping-gate-design.md) | `reports/staged/s10-stage1-entry-gate-report.md` |
+| S11 | Stage 1 model-only factorization／guidance lock | approved | gated | DESIGN_APPROVED | not_evaluated | absent | [design](ductile-origami-warmstart/s11-stage1-model-only-factorization-design.md) | `reports/staged/s11-stage1-model-only-factorization-report.md` |
+| S12 | Stage 1 D5 real-score／oracle audit | approved | gated | DESIGN_APPROVED | not_evaluated | absent | [design](ductile-origami-warmstart/s12-stage1-real-score-ranking-oracle-audit-design.md) | `reports/staged/s12-stage1-real-score-audit-report.md` |
+| S13 | Stage 1 actual Gen0 mechanism | approved | gated | DESIGN_APPROVED | not_evaluated | absent | [design](ductile-origami-warmstart/s13-stage1-actual-gen0-mechanism-design.md) | `reports/gen0-factorization-mvp-report.md` |
+| S20 | Stage 2 H10 persistence | approved | gated | DESIGN_APPROVED | not_evaluated | absent | [design](ductile-origami-warmstart/s20-stage2-h10-persistence-design.md) | `reports/short-horizon-persistence-report.md` |
+| S30 | Stage 3 held-out registry／procedure freeze | approved | gated | DESIGN_APPROVED | not_evaluated | absent | [design](ductile-origami-warmstart/s30-stage3-heldout-registry-freeze-design.md) | `reports/staged/s30-heldout-registry-freeze-report.md` |
+| S31 | Stage 3 two-cluster bounded replication | approved | gated | DESIGN_APPROVED | not_evaluated | absent | [design](ductile-origami-warmstart/s31-stage3-bounded-replication-design.md) | `reports/bounded-regime-replication-report.md` |
+| S40 | Stage 4 activation／data-sufficiency gate | approved | gated | DESIGN_APPROVED | not_evaluated | absent | [design](ductile-origami-warmstart/s40-stage4-surrogate-activation-gate-design.md) | `reports/staged/s40-stage4-activation-report.md` |
+| S41 | Stage 4 nested learned-residual analysis | approved | gated | DESIGN_APPROVED | not_evaluated | absent | [design](ductile-origami-warmstart/s41-stage4-learned-residual-analysis-design.md) | `reports/learned-residual-surrogate-report.md` |
 
-`planned_not_created` 是 parent slot狀態，不是虛構的 `design_status`。只有檔案真正建立後才進入 design lifecycle。
+`milestone`／`step`只有在指向上述ID時才是checkpoint alias。
 
-### Dependency graph
+### Strict dependency graph
 
 ```mermaid
 flowchart TD
-  start["Roadmap start"]
   s00["S00 Evidence foundation"]
   s10["S10 Stage 1 entry"]
   s11["S11 Guidance lock"]
@@ -59,11 +56,8 @@ flowchart TD
   s40["S40 Surrogate activation"]
   s41["S41 Learned residual"]
 
-  start --> s00
-  start -. "access / YAML discovery may begin" .-> s10
-  s00 -->|"evidence interface ready"| s10
-  s00 --> s11
-  s10 -->|"GO or DEGRADED_PROXY"| s11
+  s00 -->|"S00_EVIDENCE_READY"| s10
+  s10 -->|"S1_ENTRY_GO"| s11
   s11 -->|"S1_GUIDANCE_LOCKED"| s12
   s12 -->|"D5_PASS"| s13
   s13 -->|"D6_MECHANISM_POSITIVE"| s20
@@ -74,9 +68,11 @@ flowchart TD
   s40 -->|"S4_ACTIVATE"| s41
 ```
 
+S10不得與S00並行。`S1_ENTRY_DEGRADED_PROXY`、two-size mode、H5 pilot、single-cluster pilot或任何縮減方案必須先停在`blocked-awaiting-user-decision`；user未批准前沒有outgoing edge。
+
 ### Stable criterion IDs
 
-Milestone designs只能引用下列 parent IDs，不得自行改門檻：
+Checkpoint designs只能引用下列parent IDs，不得自行改門檻：
 
 - `S00_EVIDENCE_READY`
 - `S1_ENTRY_GO`
@@ -94,43 +90,66 @@ Milestone designs只能引用下列 parent IDs，不得自行改門檻：
 - `S4_DATA_GATE_PASS`
 - `S4_ACTIVATE`
 - `S4_LEARNED_RESIDUAL_POSITIVE`
-- research charter中的全部 `FT-*`
+- research charter中的全部`FT-*`
 
 語意：
 
 - `S00_EVIDENCE_READY`：observer neutrality、checkpoint/resume parity、lineage lock與artifact reconciliation全部通過。
-- `S1_ENTRY_GO`：§2 entry gates通過，且 actual YAML guidance可追溯。
-- `S1_ENTRY_DEGRADED_PROXY`：§2 entry gates通過，但只能使用 exact-space GEKO branch proxy。
-- `S1_ENTRY_BLOCKED`：§2.8任一 hard stop成立。
-- `S1_GUIDANCE_LOCKED`：§4–§5 model-only frame、gene decisions、weights、shuffle與hash在 real labels前完成鎖定。
-- `S3_REGISTRY_PROCEDURE_LOCKED`：§16的兩primary slots、reserve、denominator、frozen procedure與完整budget均在任何 Stage 3 score前鎖定。
-- `S4_TRIGGER_ELIGIBLE`：§18.1 predictor-specific failure成立，且§18.2禁止 patterns均不存在。
+- `S1_ENTRY_GO`：§2 entry gates通過，且actual YAML guidance可追溯。
+- `S1_ENTRY_DEGRADED_PROXY`：§2 entry gates通過，但只能使用exact-space GEKO branch proxy；另需user downgrade approval。
+- `S1_ENTRY_BLOCKED`：§2.8任一hard stop成立。
+- `S1_GUIDANCE_LOCKED`：§4–§5 model-only frame、gene decisions、weights、shuffle與hash在real labels前完成鎖定。
+- `S3_REGISTRY_PROCEDURE_LOCKED`：§16的兩primary slots、reserve、denominator、frozen procedure與完整budget均在任何Stage 3 score前鎖定。
+- `S4_TRIGGER_ELIGIBLE`：§18.1 predictor-specific failure成立，且§18.2禁止patterns均不存在。
 - `S4_DATA_GATE_PASS`：§18.3四-cluster data floor與prospective fourth-cluster規則通過。
-- `S4_ACTIVATE`：前兩項同時通過，授權建立 S41。
-- `S4_LEARNED_RESIDUAL_POSITIVE`：§19.4 cluster-held-out learned residual同時勝 Formocast／shuffled並縮小 oracle gap。
+- `S4_ACTIVATE`：前兩項同時通過，授權執行S41。
+- `S4_LEARNED_RESIDUAL_POSITIVE`：§19.4每個primary held-out unit的ranking、prior-mass與oracle-gap gates全部strictly通過。
 
-### Lifecycle
+### Separated lifecycle fields
 
-- `design_status`: `draft | approved | locked | superseded`
+- `design_status`: `draft | approved | superseded`
 - `execution_status`: `not_started | gated | ready | running | blocked | completed | cancelled`
-- `outcome`: `not_evaluated | positive | negative | inconclusive | blocked | not_activated | superseded`
+- `checkpoint_state`: `DESIGN_APPROVED | LOCKED_READY | RUNNING | VERIFIED_PENDING_CLOSEOUT | CHECKPOINT_COMPLETE | BLOCKED`
+- `scientific_outcome`: `not_evaluated | positive | negative | inconclusive | blocked | not_activated | skipped_by_gate`
+- `lock_state`: `absent | effective | superseded`
 
-只有 `design_status=locked` 且 `execution_status=ready` 可產生 outcome-bearing evidence。`approved` 只代表設計審查完成，不代表可執行。
+只有`lock_state=effective`、`execution_status=ready`與`checkpoint_state=LOCKED_READY`可開始產生outcome-bearing evidence。`approved`只代表設計審查完成。
+
+### Future checkpoint closeout contract
+
+每次只處理一個active checkpoint：
+
+1. 讀取committed repository rule、skill、charter、parent與design revisions。
+2. 將design maximum boundary縮成exact implementation與delivery whitelists。
+3. 由獨立planners建立Plan-A與frozen Plan-B。
+4. 建立effective lock；lock前不得產生outcome evidence。
+5. Fresh implementer實作，fresh verifier依Plan-B獨立驗證。
+6. `CHANGES_REQUIRED`只修active checkpoint並重驗；consequential issue先走`design-discussion`。
+7. Technical`PASS`只進`VERIFIED_PENDING_CLOSEOUT`。
+8. 建立self-contained formal report並更新parent的checkpoint-specific hunk。
+9. 原verifier給`CLOSEOUT_ACK`。
+10. Exact-path isolated commit與post-commit audit成功後才是`CHECKPOINT_COMPLETE`。
+
+Positive、negative與inconclusive在evidence integrity完整時都需report／closeout／commit。Durable`BLOCKED`不是完成；`skipped_by_gate`／`not_activated`只由上游checkpoint記錄，不建立自己的report或commit。
+
+### Downgrade user gates
+
+`DEGRADED_PROXY`、two-size／reduced-regime、S2 H5 resource-bounded pilot、single-cluster Stage 3 pilot，以及任何減少workloads、runs、seeds、metrics、validation、acceptance或scope的方案，都必須先產生完整decision packet並停在`blocked-awaiting-user-decision`。Diagnostic partial run不能滿足checkpoint或解鎖下游。
 
 ### Stage 3 reserve cutover
 
-Primary cluster slots、最多一個 technical reserve與優先序必須同時預鎖。Reserve只可因 access、artifact或 deterministic mapping technical failure替換，而且 replacement decision必須發生在該 slot 第一筆 Formocast score及第一筆 real label之前。Scoring開始後的 D5 fail、coverage不足、inconclusive、無 eligible genes、oracle或GA negative都不得替換；固定 denominator仍是兩個 slots。
+Primary cluster slots、最多一個technical reserve與優先序必須同時預鎖。Reserve只可因access、artifact或deterministic mapping technical failure替換，而且replacement decision必須發生在該slot第一筆Formocast score及第一筆real label之前。Scoring開始後的D5 fail、coverage不足、inconclusive、無eligible genes、oracle或GA negative都不得替換；固定denominator仍是兩個slots。
 
 ### Stage 4 data-qualified cluster
 
-`qualified_for_stage4_data` 與 `D5_PASS` 是不同欄位。Stage 4資料資格不要求 D5 pass，但至少要求：
+`qualified_for_stage4_data`與`D5_PASS`是不同欄位。Stage 4資料資格不要求D5 pass，但至少要求：
 
-- independent search-space cluster ID與 pre-label selection provenance；
+- independent search-space cluster ID與pre-label selection provenance；
 - frozen mapping／revision；
-- 至少256 unique judgment configs與兩個 sizes；
+- 至少256 unique judgment configs與兩個sizes；
 - inclusion probabilities／analysis weights；
 - correctness、coverage與lineage完整；
-- 無 leakage或 outcome-driven amendment。
+- 無leakage或outcome-driven amendment。
 
 Mapping靠猜、coverage／correctness不完整或judgment pool不足者不具資格。
 
@@ -218,6 +237,25 @@ Mapping靠猜、coverage／correctness不完整或judgment pool不足者不具�
 - experiment runner／analysis code。
 
 目前 workspace 中的工作樹狀態不能直接當正式 revision；執行前須保存 commit SHA、patch hash 或完整 source checksum。
+
+### 1.4 Future S00 protocol bootstrap
+
+目前不存在active runtime protocol。未來只有S00可第一次建立：
+
+```text
+protocol/v1/README.md
+protocol/v1/study-contract.yaml
+protocol/v1/amendment-ledger.jsonl
+protocol/v1/schemas/
+protocol/v1/locks/s00-foundation-lock.json
+```
+
+- Genesis使用全新identity與`parent_lock: null`。
+- 不得出現M00 version、hash、criterion、registry、path或migration provenance。
+- Schema／validator／lock writer與fresh deterministic fixtures先實作、先驗證；effective lock成立前不得產生outcome evidence。
+- S00 lock綁定committed charter、parent plan、S00 design、rule/skill revisions、Plan-B、exact whitelists、fixtures/seeds與report target。
+- Evidence開始後若schema、fixture或whitelist改變，必須append amendment、建立新lock並重跑，不得覆寫。
+- Git history中的retired protocol內容不得作template、compatibility target或PASS evidence。
 
 ---
 
@@ -308,6 +346,7 @@ Derived mapping 可接受，但必須：
 - study mode標 `two_regime_pilot`；
 - 所有「至少 2/3 sizes」改成「2/2 sizes」；
 - claim明確降級。
+- 在執行降級版前產生decision packet並停在`blocked-awaiting-user-decision`；user未批准時不得形成entry-gate outgoing edge。
 
 不得拿不同 search space 的第三個 size湊數。
 
@@ -981,7 +1020,7 @@ median_quality_F / median_quality_G >= 1 / (1 + delta_noise)
 - model-only／replay seeds；
 - 所有 model-sensitive constants與analysis rules lock。
 
-**D2 hard decision：**`GO`、`DEGRADED_PROXY` 或 `BLOCKED`。
+**D2 hard decision：**`GO`、`DEGRADED_PROXY` 或 `BLOCKED`。`DEGRADED_PROXY`與two-regime mode都要先通過parent-level user downgrade review，不能自動解鎖下一checkpoint。
 
 ### D3 — Model-only frame
 
@@ -1023,7 +1062,7 @@ median_quality_F / median_quality_G >= 1 / (1 + delta_noise)
 - Positive、negative 或 inconclusive：MVP report；
 - D1–D2 blocked：blocker memo；
 - 不建立空白 report；
-- 不在本輪展開新 milestone designs。
+- 依各自formal report與checkpoint closeout規則完成；不得以stage rollup取代未closeout的checkpoint。
 
 ---
 
@@ -1154,7 +1193,7 @@ D5 或 D6 已形成 empirical evidence，不論 positive、negative 或 inconclu
 - [ ] Study mode recorded
 - [ ] Real GFLOPS remains sealed until model-only lock
 
-在上述 entry conditions 完成前，本 protocol只是一份預註冊設計，不代表實驗已 ready 或已產生結果。
+在上述entry conditions完成前，本experiment plan只是一份預註冊設計，不代表實驗已ready或已產生結果。
 
 ---
 
@@ -1231,6 +1270,8 @@ Generation 5只可作：
 正式 Stage 2從 entry即承諾 H10。若資源事前只夠H5，只能另標：
 
 `S2_H5_RESOURCE_BOUNDED_PILOT`
+
+提出此downgrade時必須先產生decision packet並停在`blocked-awaiting-user-decision`。
 
 它不能通過正式 Stage 2，也不能進 Stage 3。
 
@@ -1449,7 +1490,7 @@ Technical reserve只能替換：
 - 一正一負：`FT-REGIME-HETEROGENEITY`；
 - 兩者都負：bounded replication否證；
 - 任一 access／mapping blocked：整體 inconclusive；
-- 只完成一個 cluster：只能稱 `single-cluster transfer pilot`。
+- 只完成一個 cluster：只能在user事前批准downgrade後稱`single-cluster transfer pilot`，且不能通過本checkpoint或解鎖任何原定downstream edge。
 
 兩個 sizes是同一 cluster內 repeated conditions，不是兩個 independent generalization units。
 
@@ -1524,41 +1565,86 @@ Report：
 
 ### 19.2 Model boundary
 
-- 一個預指定 lightweight residual predictor；
-- 目標例如 `log(real latency) - log(Formocast latency)` 或等價 rank correction；
-- 不做廣泛 model zoo；
-- model family與有限 hyperparameter grid在 outer labels解封前鎖定；
-- factorization與hook沿用 Stage 1 frozen algorithm。
+- 唯一model是inclusion-weighted ridge residual correction；
+- target固定為`log(real latency) - log(Formocast latency)`；
+- `ridge_lambda` grid固定為`{1e-4, 1e-3, 1e-2, 1e-1, 1, 10, 100}`；
+- intercept不penalize；
+- 不做model zoo；
+- factorization與hook沿用Stage 1 frozen algorithm。
+
+Feature manifest只能包含：
+
+- label-blind problem/config/gene fields；
+- Formocast inputs；
+- model-only outputs；
+- 在全部qualified clusters都有完整deterministic mapping的欄位。
+
+禁止features：
+
+- real scores或由real score衍生的欄位；
+- oracle outputs；
+- cluster ID、result ID或任何hash；
+- outcome-derived selection、coverage、rank或failure features。
+
+Preprocessing：
+
+- continuous transform／imputation／scaling只fit當前outer-training data；
+- categorical one-hot只使用training categories，另有explicit unknown bucket；
+- outer-test不參與feature selection、preprocessing或calibration。
+
+Inner model selection：
+
+- 每個validation cluster計算inclusion-weighted residual MSE；
+- objective是各validation cluster MSE的equal-cluster mean；
+- loss相同時選較大的`ridge_lambda`。
 
 ### 19.3 Split invariants
 
 - Outer：leave-one-entire-cluster-out；
 - Inner：只在 outer-training clusters做 cluster-grouped selection；
 - 同 cluster的sizes、repeats、duplicates、derived rows都在同 fold；
-- preprocessing、feature selection、calibration只fit inner-training；
+- preprocessing、feature selection、calibration只fit training data；
 - D5 inclusion weights帶入training與evaluation；
 - 禁止 random row split。
 
 若恰有3個既有＋1個 prospective sealed cluster：
 
-- Primary：前三clusters完成model／hyperparameter selection後，第四cluster作 untouched prospective test；
+- Primary：前三clusters完成model／hyperparameter selection後，第四cluster作untouched prospective test，且只有第四cluster判primary gate；
 - LOCO只作 secondary sensitivity。
+
+否則：
+
+- 所有LOCO outer clusters都是primary held-out units；
+- 每個primary unit都必須獨立通過全部§19.4 gates；
+- 不得跨units平均救回。
 
 ### 19.4 Stage 4 endpoint
 
-Primary比較：
+每個parent-designated primary held-out unit都分別判以下三項。
 
-- Formocast whole ranking；
-- learned residual ranking；
-- cross-fitted oracle ceiling；
-- learned factorized prior vs Formocast prior vs same-entropy shuffled。
+#### Ranking gate
 
-成功需在 cluster-held-out judgment中：
+- 使用frozen inclusion/design weights計算aggregate weighted Spearman；
+- prediction orientation是`-log(predicted latency)`；
+- real orientation是`log(aggregate quality)`；
+- learned必須strictly勝Formocast。
 
-- learned residual穩定優於 Formocast；
-- 同時優於 same-entropy shuffled；
-- 與 oracle的差距縮小；
-- 沒有使用 outer labels重選features／genes／thresholds。
+#### Prior-mass gate
+
+- 使用§6.4相同的self-normalized real-top-decile prior mass`M_a(T)`；
+- learned factorized prior必須strictly同時勝Formocast-factorized prior與same-entropy shuffled。
+
+#### Oracle-gap gate
+
+```text
+oracle_gap_a = max(0, M_oracle(T) - M_a(T))
+```
+
+Learned oracle gap必須strictly小於Formocast oracle gap。
+
+`S4_LEARNED_RESIDUAL_POSITIVE`要求每個primary held-out unit三項全部通過。Tie不算positive；required support或coverage缺失是inconclusive。沒有使用outer labels重選features／genes／thresholds是必要validity condition。
+
+不得自行加入effect margin、CI/significance requirement、x-of-y relaxation、oracle-gap ratio，或修改data floor、split、time cap與claim；任何此類變更都需user review。
 
 預設不跑 actual GA。只有另有第五個 prospectively sealed cluster與 fresh mentor gate，才可設計 actual GA validation；不屬於預設 internship承諾。
 
@@ -1570,8 +1656,8 @@ Primary比較：
 
 Report：
 
-- 完成 analysis：`study_docs/research/ductile-origami-warmstart/reports/learned-residual-surrogate-report.md`
-- Data gate未過：`study_docs/research/ductile-origami-warmstart/reports/learned-residual-data-insufficiency-memo.md`
+- S40 trigger／data gate（含data-insufficiency scientific negative）：`study_docs/research/ductile-origami-warmstart/reports/staged/s40-stage4-activation-report.md`
+- S41完成analysis：`study_docs/research/ductile-origami-warmstart/reports/learned-residual-surrogate-report.md`
 
 ---
 
@@ -1651,11 +1737,3 @@ Stage 4至少保存：
 - `stage4-decision.json`
 
 所有 stage-specific artifacts沿用 §1 的hash、lineage與append-only amendment規則。
-
-### 20.6 Milestone lifecycle
-
-本輪只更新 parent roadmap與protocol：
-
-- 既有 M00–M09仍是 `legacy / do_not_execute`；
-- 不逐份重寫；
-- 使用者確認本 staged roadmap後，再以 fresh `/design-discussion` 決定是否建立新的 S1–S4 milestone docs。

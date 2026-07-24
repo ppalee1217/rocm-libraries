@@ -1,22 +1,21 @@
 ---
-milestone_id: M00
+historical_milestone_id: M00
 title: Study contract 與 observability harness
 lifecycle: legacy
+archive_status: superseded
 design_authority: none
-design_status: superseded
 execution_status: do_not_execute
-outcome: superseded
 historical_design_status: draft
 historical_execution_status: not_started
 historical_outcome: not_available
-superseded_by: [S00]
-depends_on: []
-cohorts: [common]
-planned_report_paths:
+topic_successors: [S00]
+historical_depends_on: []
+historical_cohorts: [common]
+historical_planned_report_paths:
   - ../reports/m00-study-contract-observability-report.md
 ---
 
-> ⚠️ **LEGACY／DO NOT EXECUTE：**本檔是 pre-pivot 歷史設計，不具執行權威。Active replacement：[S00](staged/s00-evidence-contract-lineage-observability-design.md)。請先讀 [design index](README.md) 與現行 parent protocol。
+> ⚠️ **LEGACY／DEAD PROTOCOL／DO NOT EXECUTE：**本檔是 pre-pivot 歷史設計，不具執行權威。主題 successor：[S00](../s00-evidence-contract-lineage-observability-design.md)。請先讀唯一 active 入口 [README](../README.md)。
 
 # M00 — Study contract 與 observability harness 設計
 

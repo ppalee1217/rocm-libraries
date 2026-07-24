@@ -2,13 +2,13 @@
 
 > **文件角色：**研究 charter（研究問題、範圍、證據邊界與可宣稱結論的唯一權威）。
 >
-> **狀態：**`stage_gated_roadmap_approved`／`pre_empirical`。完整 internship roadmap 已收斂，但 Stage 1 尚未開始；GPU、frozen YAML 與 mapping gate 仍未通過。
+> **狀態：**`stage_gated_roadmap_approved / pre_empirical / zero_lock / zero_completion`。十份checkpoint design已完成設計審查；S00尚未開始，其餘全部dependency-gated。目前沒有active runtime protocol、effective lock、formal report或empirical outcome。
 >
 > **檔名說明：**`surrogate-dse-plan.md` 是為維持既有連結而保留的歷史檔名。Stage 1–3不訓練 self-trained surrogate；主要模型是 **Formocast**。Learned residual只有 Stage 4 trigger與data gate同時通過才啟動。
 >
-> **執行規格：**所有 sample counts、公式、門檻、seeds、artifacts 與 Stage 1–4 stop rules 只以 [ductile-origami-warmstart-experiment-plan.md](ductile-origami-warmstart-experiment-plan.md) 為準。若兩份文件衝突，本 charter 決定研究 scope／claim，experiment plan 決定執行 protocol。
+> **執行規格：**所有sample counts、公式、門檻、seeds、artifacts與Stage 1–4 stop rules只以[ductile-origami-warmstart-experiment-plan.md](ductile-origami-warmstart-experiment-plan.md)為準。若兩份文件衝突，本charter決定研究scope／claim，experiment plan決定數值與checkpoint DAG。
 >
-> **Legacy override：**`ductile-origami-warmstart/designs/` 下既有 M00–M09 全部是 pre-pivot designs，現統一標為 `legacy / superseded_pending_redesign / do_not_execute`。各檔內的 `draft`、`not_started` 或 `blocked` 只保留歷史意義，不再授予執行權威。
+> **Legacy override：**`ductile-origami-warmstart/legacy/`下的M00–M09全部是dead-protocol archive，統一為`legacy / design_authority:none / do_not_execute`。任何active-looking欄位都只保留為`historical_*`；不得重用其artifact、schema、hash、lock、registry、criterion、fixture或test。
 
 ---
 
@@ -94,6 +94,19 @@ Stage 1 回答上述 **factorization／initialization mechanism**。只有它通
 4. 兩方對修正後共識明確 `AGREE`。
 
 這次修正不推翻 Stage 1 嚴謹性，而是把它恢復成**第一道 gate**，不再當成整份研究的天花板。
+
+### 1.6 From-scratch governance reset
+
+同日的最新bundle-level`design-discussion`對十個checkpoint做完整交叉詰問，兩位reviewers對同一份S00／S10–S13／S20／S30–S31／S40–S41方案明確`AGREE`。本次reset：
+
+- 退役舊`protocol/`而不做migration；
+- 一次建立十份`approved` design，不保留planned-but-missing slots；
+- 採strict S00→S10→S11→S12→S13→S20→S30→S31主線與S12/S31→S40→S41條件分支；
+- 將design、execution、checkpoint、scientific outcome與lock狀態分離；
+- 把technical PASS與formal report、closeout、isolated commit明確分開；
+- 將S41固定為單一ridge residual analysis與cluster-held-out strict gates。
+
+各checkpoint的objections、採納／捨棄方案、理由與雙方`AGREE`保存在其active design。這是design approval，不是effective lock或empirical outcome。
 
 ---
 
@@ -262,7 +275,7 @@ Discarded 不等於 active plan；Done 不應由本研究重新實作。
 
 ## 6. Stage-gated internship roadmap
 
-數值與公式只以 [experiment protocol](ductile-origami-warmstart-experiment-plan.md) 為準。
+數值與公式只以[experiment plan](ductile-origami-warmstart-experiment-plan.md)為準。
 
 ```mermaid
 flowchart TD
@@ -483,55 +496,54 @@ Noise、support、coverage、importance ESS、unique configs 或兩-regime evide
 
 ---
 
-## 10. Legacy M00–M09 authority override
+## 10. Active checkpoint authority 與 legacy archive
 
-下列檔案保留原路徑與歷史正文供追溯，但已追加 legacy metadata／banner，且**不得執行**：
+唯一active入口是[checkpoint index](ductile-origami-warmstart/README.md)。十份design全部是`approved / lock_state:absent / scientific_outcome:not_evaluated`；只有S00是`execution_status:not_started`，其餘都是`gated`。
 
-- [M00 — Study contract / observability](ductile-origami-warmstart/designs/m00-study-contract-observability-design.md)
-- [M01 — Step-0 integration gate](ductile-origami-warmstart/designs/m01-step0-integration-gate-design.md)
-- [M02 — Guidance plumbing](ductile-origami-warmstart/designs/m02-guidance-plumbing-design.md)
-- [M03 — EXP-0a cold headroom](ductile-origami-warmstart/designs/m03-exp0a-cold-headroom-design.md)
-- [M04 — EXP-0b widening](ductile-origami-warmstart/designs/m04-exp0b-widening-gate-design.md)
-- [M05 — EXP-C ranking/oracle](ductile-origami-warmstart/designs/m05-expc-ranking-oracle-design.md)
-- [M06 — EXP-1 injection B](ductile-origami-warmstart/designs/m06-exp1-injection-b-design.md)
-- [M07 — EXP-2 A-safe+B](ductile-origami-warmstart/designs/m07-exp2-a-safe-b-factorial-design.md)
-- [M08 — EXP-3 multi-shape](ductile-origami-warmstart/designs/m08-exp3-multishape-design.md)
-- [M09 — Overall confirmation](ductile-origami-warmstart/designs/m09-overall-confirmation-design.md)
+Strict DAG：
 
-統一狀態：
+```text
+S00 -> S10 -> S11 -> S12 -> S13 -> S20 -> S30 -> S31
+                       \                         \
+                        +---- conditional ------> S40 -> S41
+```
 
-- `design_authority: none`
-- `lifecycle: legacy / superseded_pending_redesign`
-- `execution: do_not_execute`
-- `future_action: redesign only after parent-level user confirmation`
+M00–M09移入`ductile-origami-warmstart/legacy/`，只保留歷史正文：
 
-Legacy檔案保留原路徑與歷史正文，但已加不可執行 banner／metadata；新舊對照與 staged milestone入口見 [designs/README.md](ductile-origami-warmstart/designs/README.md)。
+- [M00](ductile-origami-warmstart/legacy/m00-study-contract-observability-design.md)
+- [M01](ductile-origami-warmstart/legacy/m01-step0-integration-gate-design.md)
+- [M02](ductile-origami-warmstart/legacy/m02-guidance-plumbing-design.md)
+- [M03](ductile-origami-warmstart/legacy/m03-exp0a-cold-headroom-design.md)
+- [M04](ductile-origami-warmstart/legacy/m04-exp0b-widening-gate-design.md)
+- [M05](ductile-origami-warmstart/legacy/m05-expc-ranking-oracle-design.md)
+- [M06](ductile-origami-warmstart/legacy/m06-exp1-injection-b-design.md)
+- [M07](ductile-origami-warmstart/legacy/m07-exp2-a-safe-b-factorial-design.md)
+- [M08](ductile-origami-warmstart/legacy/m08-exp3-multishape-design.md)
+- [M09](ductile-origami-warmstart/legacy/m09-overall-confirmation-design.md)
+
+它們統一是`design_authority:none / lifecycle:legacy / do_not_execute`。Successor只表示主題關聯，不表示artifact、criterion、schema、hash、lock、registry、fixture、test或outcome migration。
 
 ---
 
-## 11. Document 與 report lifecycle
+## 11. Document、lock、report 與 closeout lifecycle
 
-- 本 charter 是研究 scope／claim 的唯一權威。
-- [Stage-Gated Experimental Protocol](ductile-origami-warmstart-experiment-plan.md) 是執行數值與 artifacts 的唯一權威。
-- D1–D2 access／artifact／mapping blocked 才建立：
+- 本charter是研究scope／claim唯一權威。
+- [Experiment plan](ductile-origami-warmstart-experiment-plan.md)是數值、DAG、criteria與stop rules唯一權威。
+- Checkpoint design只給maximum boundary與evidence binding；future planning必須縮成exact whitelists。
+- Future effective lock生效前不得產生outcome-bearing evidence。
+- S10 hard access／artifact／mapping blocker才使用：
   - `ductile-origami-warmstart/reports/gen0-factorization-blocker-memo.md`
-- Stage 1 D5 或 D6 已形成 empirical evidence，不論 positive、negative 或 inconclusive，都建立：
-  - `ductile-origami-warmstart/reports/gen0-factorization-mvp-report.md`
-- Stage 2：
-  - `ductile-origami-warmstart/reports/short-horizon-persistence-report.md`
-- Stage 3：
-  - `ductile-origami-warmstart/reports/bounded-regime-replication-report.md`
-- Stage 4：
-  - `ductile-origami-warmstart/reports/learned-residual-surrogate-report.md`
-  - 若資料 gate未過，改為 `learned-residual-data-insufficiency-memo.md`
-- 現在不建立空白 report。
-- 每個 stage只有 entry gate通過才建立該 stage的 lock artifact與執行文件。
-- Canonical milestone index、dependency graph與criterion IDs見 [experiment plan 的 milestone authority](ductile-origami-warmstart-experiment-plan.md#milestone-authorityindex-與-lifecycle)。
-- 現已建立 S00、S10–S13、S40 designs；S20、S30–S31、S41維持 `planned_not_created`，接近上游gate才實例化。
-- 每個實際執行並terminal的 milestone都要有對應 evidence report／decision artifact；stage rollup只負責跨 milestone claim。
+- 十份checkpoint各有唯一formal report path，詳見active index。
+- S40 data insufficiency是formal scientific negative，寫入`reports/staged/s40-stage4-activation-report.md`；不建立data-insufficiency blocker memo。
+- `skipped_by_gate`／`not_activated`由上游report與closeout記錄，不建立自己的report或commit。
+- Positive、negative與inconclusive在evidence integrity完整時都需formal report、parent update、`CLOSEOUT_ACK`、isolated commit與post-commit audit。
+- Technical`PASS`只是`VERIFIED_PENDING_CLOSEOUT`；完成全部closeout後才是`CHECKPOINT_COMPLETE`。
+- 現在不建立空白report、placeholder lock、fake hash或compatibility stub。
+
+任何`DEGRADED_PROXY`、two-size／reduced-regime、H5 pilot、single-cluster pilot或其他縮減workloads/runs/seeds/metrics/validation/acceptance/scope的方案，必須先產生decision packet並停在`blocked-awaiting-user-decision`。Diagnostic partial run不會完成checkpoint或解鎖下游。
 
 ---
 
 ## 12. 目前下一步
 
-執行 [Stage-Gated Experimental Protocol](ductile-origami-warmstart-experiment-plan.md) 的 Stage 1 D1–D2 entry gate；在 Stage 1通過前，不啟動 Stage 2–4，也不產生任何 Formocast uplift、Gen0 improvement 或 speedup 結論。
+目前不是執行Stage 1 D1–D2；第一個可開始的checkpoint是S00。S00開始前須另行取得ordinary baseline commit授權，把intentional retired-protocol deletions與本authority/design bundle固定成stable committed baseline；該commit不是S00 closure。S00只能from scratch建立`protocol/v1/`，且只有完成`S00_EVIDENCE_READY`的formal closeout後才能開始S10。

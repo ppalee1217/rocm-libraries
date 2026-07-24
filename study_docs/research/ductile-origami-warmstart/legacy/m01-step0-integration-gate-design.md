@@ -1,22 +1,21 @@
 ---
-milestone_id: M01
+historical_milestone_id: M01
 title: Step-0 環境、整合、baseline 與噪音 gate
 lifecycle: legacy
+archive_status: superseded
 design_authority: none
-design_status: superseded
 execution_status: do_not_execute
-outcome: superseded
 historical_design_status: draft
 historical_execution_status: blocked
 historical_outcome: not_available
-superseded_by: [S10]
-depends_on: [M00]
-cohorts: [common]
-planned_report_paths:
+topic_successors: [S10]
+historical_depends_on: [M00]
+historical_cohorts: [common]
+historical_planned_report_paths:
   - ../reports/m01-step0-integration-gate-report.md
 ---
 
-> ⚠️ **LEGACY／DO NOT EXECUTE：**本檔是 pre-pivot 歷史設計，不具執行權威。Active replacement：[S10](staged/s10-stage1-entry-access-mapping-gate-design.md)。請先讀 [design index](README.md) 與現行 parent protocol。
+> ⚠️ **LEGACY／DEAD PROTOCOL／DO NOT EXECUTE：**本檔是 pre-pivot 歷史設計，不具執行權威。主題 successor：[S10](../s10-stage1-entry-access-mapping-gate-design.md)。請先讀唯一 active 入口 [README](../README.md)。
 
 # M01 — Step-0 環境、整合、baseline 與噪音 gate 設計
 

@@ -1,24 +1,23 @@
 ---
-milestone_id: M04
+historical_milestone_id: M04
 title: EXP-0b static profile 與 widen-only headroom
 lifecycle: legacy
+archive_status: superseded
 design_authority: none
-design_status: superseded
 execution_status: do_not_execute
-outcome: superseded
 historical_design_status: draft
 historical_execution_status: blocked
 historical_outcome: not_available
-superseded_by: []
-retirement_reason: Injection A and candidate widening explicitly excluded from active scope
-depends_on: [M00, M01.ALL]
-cohorts: [nonstreamk, streamk]
-planned_report_paths:
+topic_successors: []
+historical_retirement_reason: Injection A and candidate widening explicitly excluded from active scope
+historical_depends_on: [M00, M01.ALL]
+historical_cohorts: [nonstreamk, streamk]
+historical_planned_report_paths:
   - ../reports/m04-exp0b-widening-gate-nonstreamk-report.md
   - ../reports/m04-exp0b-widening-gate-streamk-report.md
 ---
 
-> ⚠️ **LEGACY／RETIRED／DO NOT EXECUTE：**本檔的 Injection A／widen-only 方向已明確退出 active scope，沒有 replacement。請讀 [design index](README.md) 與現行 parent protocol。
+> ⚠️ **LEGACY／DEAD PROTOCOL／RETIRED／DO NOT EXECUTE：**本檔的 Injection A／widen-only 方向已明確退出 active scope，沒有 successor。請讀唯一 active 入口 [README](../README.md)。
 
 # M04 — EXP-0b static profile 與 widen-only gate 設計
 

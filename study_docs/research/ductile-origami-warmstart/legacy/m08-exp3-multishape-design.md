@@ -1,23 +1,22 @@
 ---
-milestone_id: M08
+historical_milestone_id: M08
 title: EXP-3 multi-shape 擴張與 winner lock
 lifecycle: legacy
+archive_status: superseded
 design_authority: none
-design_status: superseded
 execution_status: do_not_execute
-outcome: superseded
 historical_design_status: draft
 historical_execution_status: blocked
 historical_outcome: not_available
-superseded_by: [S30, S31]
-depends_on: [M07_or_B_only_lock]
-cohorts: [nonstreamk, streamk]
-planned_report_paths:
+topic_successors: [S30, S31]
+historical_depends_on: [M07_or_B_only_lock]
+historical_cohorts: [nonstreamk, streamk]
+historical_planned_report_paths:
   - ../reports/m08-exp3-multishape-nonstreamk-report.md
   - ../reports/m08-exp3-multishape-streamk-report.md
 ---
 
-> ⚠️ **LEGACY／DO NOT EXECUTE：**本檔只保留 freeze／held-out hygiene 的歷史概念；active destinations為 planned S30／S31。舊 winner selection、15／100 sizes與multi-tile workflow不在active scope。請讀 [design index](README.md)。
+> ⚠️ **LEGACY／DEAD PROTOCOL／DO NOT EXECUTE：**本檔只保留 freeze／held-out hygiene 的歷史脈絡；主題 successors 為 [S30](../s30-stage3-heldout-registry-freeze-design.md)／[S31](../s31-stage3-bounded-replication-design.md)，不表示 artifact、criterion 或 outcome migration。請讀唯一 active 入口 [README](../README.md)。
 
 # M08 — EXP-3 multi-shape 擴張與 winner lock 設計
 

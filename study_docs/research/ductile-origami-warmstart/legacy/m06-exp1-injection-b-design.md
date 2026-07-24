@@ -1,23 +1,22 @@
 ---
-milestone_id: M06
+historical_milestone_id: M06
 title: EXP-1 injection B 小型暖啟動
 lifecycle: legacy
+archive_status: superseded
 design_authority: none
-design_status: superseded
 execution_status: do_not_execute
-outcome: superseded
 historical_design_status: draft
 historical_execution_status: blocked
 historical_outcome: not_available
-superseded_by: [S13, S20]
-depends_on: [M02.COST, M03, M05]
-cohorts: [nonstreamk, streamk]
-planned_report_paths:
+topic_successors: [S13, S20]
+historical_depends_on: [M02.COST, M03, M05]
+historical_cohorts: [nonstreamk, streamk]
+historical_planned_report_paths:
   - ../reports/m06-exp1-injection-b-nonstreamk-report.md
   - ../reports/m06-exp1-injection-b-streamk-report.md
 ---
 
-> ⚠️ **LEGACY／DO NOT EXECUTE：**本檔的 initial-weight／shuffled概念已重新切分至 [S13](staged/s13-stage1-actual-gen0-mechanism-design.md) 與 planned S20；舊 speedup／basin／調參設計無權威。請讀 [design index](README.md)。
+> ⚠️ **LEGACY／DEAD PROTOCOL／DO NOT EXECUTE：**本檔的 initial-weight／shuffled主題 successor 是 [S13](../s13-stage1-actual-gen0-mechanism-design.md) 與 [S20](../s20-stage2-h10-persistence-design.md)；這不表示 artifact、criterion 或 outcome migration。請讀唯一 active 入口 [README](../README.md)。
 
 # M06 — EXP-1 injection B 小型暖啟動設計
 

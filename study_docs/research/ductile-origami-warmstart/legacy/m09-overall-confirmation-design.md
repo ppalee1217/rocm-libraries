@@ -1,23 +1,22 @@
 ---
-milestone_id: M09
+historical_milestone_id: M09
 title: Overall held-out confirmation
 lifecycle: legacy
+archive_status: superseded
 design_authority: none
-design_status: superseded
 execution_status: do_not_execute
-outcome: superseded
 historical_design_status: draft
 historical_execution_status: blocked
 historical_outcome: not_available
-superseded_by: [S30, S31]
-depends_on: [M08, winner_lock, holdout_seal]
-cohorts: [nonstreamk, streamk]
-planned_report_paths:
+topic_successors: [S30, S31]
+historical_depends_on: [M08, winner_lock, holdout_seal]
+historical_cohorts: [nonstreamk, streamk]
+historical_planned_report_paths:
   - ../reports/m09-overall-confirmation-nonstreamk-report.md
   - ../reports/m09-overall-confirmation-streamk-report.md
 ---
 
-> ⚠️ **LEGACY／DO NOT EXECUTE：**本檔只保留 denominator／negative-reporting／holdout discipline 的歷史概念；active destinations為 planned S30／S31。24-shape、wall-time與production confirmation已退休為owner-led future handoff。請讀 [design index](README.md)。
+> ⚠️ **LEGACY／DEAD PROTOCOL／DO NOT EXECUTE：**本檔只保留 denominator／negative-reporting／holdout discipline 的歷史脈絡；主題 successors 為 [S30](../s30-stage3-heldout-registry-freeze-design.md)／[S31](../s31-stage3-bounded-replication-design.md)，不表示 artifact、criterion 或 outcome migration。請讀唯一 active 入口 [README](../README.md)。
 
 # M09 — Overall held-out confirmation 設計
 
