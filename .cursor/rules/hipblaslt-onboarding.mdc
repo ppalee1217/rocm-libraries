@@ -27,6 +27,27 @@ prior context; explanations must build up from the basics.
   callout idea. When a point carries multiple facts, use a plain lead sentence followed by a
   bullet list instead of a multi-line blockquote.
 
+## GEKO and Ductile source-branch authority
+
+- Treat GEKO and Ductile as codebases that remain authoritative on two separate remote
+  feature branches; do not assume that either one has been integrated into the current
+  checkout or that they share one authoritative revision.
+- Ductile source authority is `refs/remotes/origin/ductile_integration`; the currently
+  known pin is `5d6bdc8a6438b5fc73a96e46a907f9a5b1cd4e39`.
+- GEKO source authority is `refs/remotes/origin/users/pkamd/geko_pr`; the currently known
+  pin is `d32abacfd13579d1f523f035b7a10b0734c4ac47`.
+- The branch names and their separation are default repository knowledge. Exact commit
+  pins are checkpoint inputs: resolve and record both independently before work that
+  depends on them, because either remote-tracking ref may advance.
+- Never infer the Ductile revision from the GEKO branch, or the GEKO revision from the
+  Ductile branch. Incidental files reachable from the other branch, the current checkout,
+  merge ancestry, ignored caches, build products, or container contents do not replace
+  either source authority.
+- If an experiment combines both codebases, record the exact two source commits plus the
+  integration commit, patch, worktree, or archive identity used to combine them. Until
+  that evidence exists, describe them as separate-branch sources, not as an integrated
+  codebase.
+
 ## Experiment execution, conclusion, and downgrade discipline
 
 ### Wait for complete evidence

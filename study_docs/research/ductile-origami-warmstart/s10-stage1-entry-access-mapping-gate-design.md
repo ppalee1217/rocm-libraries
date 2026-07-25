@@ -115,6 +115,12 @@ Future lock：
 Inputs：
 
 - S00 evidence interface與effective lineage；
+- 兩個互相獨立的source authorities：Ductile
+  `refs/remotes/origin/ductile_integration`（目前已知pin
+  `5d6bdc8a6438b5fc73a96e46a907f9a5b1cd4e39`）與GEKO
+  `refs/remotes/origin/users/pkamd/geko_pr`（目前已知pin
+  `d32abacfd13579d1f523f035b7a10b0734c4ac47`）；future lock必須各自
+  resolve exact commit，不得由其中一個branch反推另一個revision；
 - candidate actual YAML／generator provenance；
 - mapping source revisions；
 - gfx942 reservation evidence；
@@ -137,6 +143,9 @@ Outputs：
 - sentinel、boundary、rejection與model-tie cases；
 - parent指定anchors與repeat noise measurement；
 - source、environment與artifact identities由S00 lineage承載；
+- GEKO branch中可達的附帶Ductile files、current checkout、cache、build或
+  container內容都不取代Ductile branch authority；若S10實際整合兩套source，
+  evidence必須另記integration commit／patch／worktree／archive identity；
 - real treatment labels與S11 guidance都尚不存在。
 
 S10只判「可否合法開始」，不判Formocast ranking、factorization或Gen0效果。

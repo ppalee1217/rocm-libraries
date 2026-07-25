@@ -31,9 +31,20 @@ S11為`not_activated`；S12、S13、S20及其他downstream checkpoints仍受gate
   `refs/remotes/origin/users/pkamd/geko_pr`
 - Pinned GEKO commit：
   `d32abacfd13579d1f523f035b7a10b0734c4ac47`
+- Separate Ductile source ref：
+  `refs/remotes/origin/ductile_integration`
+- Currently known Ductile commit：
+  `5d6bdc8a6438b5fc73a96e46a907f9a5b1cd4e39`
 - Existing GPU container：`perlee`
 - Push、dependency install、persistent container mutation、其他container、
   external-system write與whitelist expansion均未授權，也未執行。
+
+GEKO與Ductile在本研究中是兩個不同branch的source authorities，不能由其中一個
+revision推導另一個。以上Ductile commit是本次治理補記的currently known source
+pin，不是本次blocked discovery曾鎖定的S10 input，也不改寫當時H1／H2 evidence。
+GEKO Git graph中附帶的Ductile files只屬該GEKO object graph，不能取代獨立Ductile
+branch identity；未來recovery必須fresh resolve兩個refs並另記實際integration
+identity。
 
 Plan-B的early hard-blocker delivery恰為本memo、parent experiment plan、active
 README與S10 design四個paths。Complete-evidence branch的13個implementation paths與
@@ -101,9 +112,10 @@ Direct result：
 ### 3.3 Pinned source 與不相符候選
 
 Pinned GEKO objects可驗並包含generator、input normalizer、writer、
-`_build_ductile`、ordered weights與Ductile backend group expansion；因此H2 source
-identity為`PASS`。但「source有能力生成」不證明actual workflow曾以何input／command
-生成。
+`_build_ductile`、ordered weights與Ductile backend group expansion；因此H2只對
+GEKO source identity為`PASS`。GEKO object graph中能看見Ductile files不代表已鎖定
+獨立Ductile source authority；而「source有能力生成」也不證明actual workflow曾以
+何input／command生成。
 
 同一Git object graph中的tracked Ductile test YAML都位於
 `Tensile/Tests/common/ductile/gfx950/`。它們標示`gfx950`並明確skip `gfx942`；
@@ -172,11 +184,13 @@ H1單獨已足以觸發parent §2.8。H3／H4的未完成不會被改寫成額�
 1. actual generated `gfx942`、non-StreamK Ductile YAML exact bytes與source location；
 2. exact generation command、cwd與authoritative input bytes/hashes；
 3. generator commit與relevant Git blob identities；
-4. 可直接解析的architecture、dtype/layout/transpose、same-space sizes、groups、
+4. fresh resolved GEKO與Ductile exact commits，以及實際結合兩者的integration
+   commit／patch／worktree／archive identity；
+5. 可直接解析的architecture、dtype/layout/transpose、same-space sizes、groups、
    candidate order與existing weights；
-5. 若以rerun證provenance，byte-identical output；
-6. H3所需same-lineage post-codegen/runtime mapping evidence；
-7. H4所需exact device/window/collision controls與dated ≥5-day calendar。
+6. 若以rerun證provenance，byte-identical output；
+7. H3所需same-lineage post-codegen/runtime mapping evidence；
+8. H4所需exact device/window/collision controls與dated ≥5-day calendar。
 
 取得新evidence後必須從S10重新做fresh planning、implementation與independent
 verification；不得在本次blocked record上補寫假lock或outcome。任何recovery也不會

@@ -8,6 +8,8 @@
 >
 > **Foundation provenance：**active `protocol/v1/`與S00 report是fresh foundation；退役M00內容仍不得作schema、hash、lock、registry、fixture、test或PASS evidence。S00只支持CPU-only evidence semantics，不是GPU／performance結果。
 >
+> **GEKO／Ductile source topology（默認前提）：**兩套codebase仍以不同branch作source authority，尚未假設已整合進目前checkout。Ductile為`refs/remotes/origin/ductile_integration`（目前已知pin `5d6bdc8a6438b5fc73a96e46a907f9a5b1cd4e39`）；GEKO為`refs/remotes/origin/users/pkamd/geko_pr`（目前已知pin `d32abacfd13579d1f523f035b7a10b0734c4ac47`）。任何checkpoint若同時使用兩者，必須各自重新resolve並鎖定兩個exact commits，再記錄實際integration commit／patch／worktree／archive identity；不得從GEKO branch中附帶的Ductile files反推Ductile revision，也不得把current checkout、cache、build或container內容當成任一source authority。
+>
 > **S00雙視圖邊界：**`protocol/v1/README.md`是immutable execution-authority
 > view（E）runbook；E由baseline commit
 > `60775f12843bee9f95cb0bef4e91de8bc4dc9dc3`、exact 29 implementation blobs與
