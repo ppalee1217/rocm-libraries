@@ -4,9 +4,20 @@
 >
 > **研究 scope／claim authority：**[Formocast Factorized Gen0 Guidance Feasibility Study — Research Charter](surrogate-dse-plan.md)。
 >
-> **狀態：**`pre_empirical / zero_lock / zero_completion`。十份checkpoint design已完成設計審查；S00尚未開始，其餘全部dependency-gated。目前沒有active runtime protocol、effective lock、formal report或empirical outcome。
+> **狀態：**`pre_empirical / foundation_complete`。S00已由successor-001 evidence、原verifier FULL重驗、formal closeout與同一closure commit完成；scientific outcome為`positive`。S10的dependency已解除但仍`not_started`，尚無S10 lock、mapping、GPU evidence或Stage 1 outcome。
 >
-> **Zero-state warning：**退役的`protocol/` tracked files維持deleted；不得恢復、移植或重用M00 artifact、schema、hash、lock、registry、fixture或test。本輪不建立`protocol/`、`reports/`或runtime artifacts。
+> **Foundation provenance：**active `protocol/v1/`與S00 report是fresh foundation；退役M00內容仍不得作schema、hash、lock、registry、fixture、test或PASS evidence。S00只支持CPU-only evidence semantics，不是GPU／performance結果。
+>
+> **S00雙視圖邊界：**`protocol/v1/README.md`是immutable execution-authority
+> view（E）runbook；E由baseline commit
+> `60775f12843bee9f95cb0bef4e91de8bc4dc9dc3`、exact 29 implementation blobs與
+> exact兩份Plan-B bytes重建，且本plan、active README、S00 design在E中使用
+> baseline bytes。本頁是post-PASS closeout-projection view（C）的三份投影之一；
+> C中直接重跑historical outcome writer會按設計在寫入前
+> `bound_hash_mismatch`，不得把它當成E runbook。Exact重建、預期拒絕與
+> E→C hashes見[S00 formal report](ductile-origami-warmstart/reports/staged/s00-foundation-verification-report.md)。
+> 重建依賴baseline Git object與兩份exact ignored Plan-B；不宣稱standalone
+> source-tarball portability。
 >
 > **平台：**gfx942／MI300X、non-StreamK、單一dtype/layout。檔名中的`origami-warmstart`為歷史名稱；primary model是Formocast，Origami estimation只作reference。Stage 1是七日Gen0 gate；只有通過後才依序進Stage 2 persistence與Stage 3 bounded replication，Stage 4 surrogate是嚴格條件分支。
 
@@ -21,15 +32,15 @@
 1. Research charter：scope、claim ladder、non-goals、canonical failure taxonomy。
 2. 本experiment plan：scientific criterion IDs、公式、數值、samples、seeds、go/stop與checkpoint DAG。
 3. Checkpoint design：implementation handoff、maximum boundary、artifact/evidence binding。
-4. Future effective lock：把committed authorities、Plan-B、exact whitelists、inputs、fixtures與seeds綁成不可變執行實例。
+4. Checkpoint effective lock：把committed authorities、Plan-B、exact whitelists、inputs、fixtures與seeds綁成不可變執行實例。
 5. Formal report：記錄verified evidence、outcome、decision與closeout，不得反向修改criterion。
 
 ### Canonical checkpoint index
 
 | ID | Responsibility | Design | Execution | Checkpoint | Scientific outcome | Lock | Design | Formal report |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| S00 | Evidence contract／lineage／observability foundation | approved | not_started | DESIGN_APPROVED | not_evaluated | absent | [design](ductile-origami-warmstart/s00-evidence-contract-lineage-observability-design.md) | `reports/staged/s00-foundation-verification-report.md` |
-| S10 | Stage 1 access／artifact／mapping／noise gate | approved | gated | DESIGN_APPROVED | not_evaluated | absent | [design](ductile-origami-warmstart/s10-stage1-entry-access-mapping-gate-design.md) | `reports/staged/s10-stage1-entry-gate-report.md` |
+| S00 | Evidence contract／lineage／observability foundation | approved | completed | CHECKPOINT_COMPLETE | positive | effective (`successor-001`) | [design](ductile-origami-warmstart/s00-evidence-contract-lineage-observability-design.md) | [report](ductile-origami-warmstart/reports/staged/s00-foundation-verification-report.md) |
+| S10 | Stage 1 access／artifact／mapping／noise gate | approved | not_started | DESIGN_APPROVED | not_evaluated | absent | [design](ductile-origami-warmstart/s10-stage1-entry-access-mapping-gate-design.md) | `reports/staged/s10-stage1-entry-gate-report.md` |
 | S11 | Stage 1 model-only factorization／guidance lock | approved | gated | DESIGN_APPROVED | not_evaluated | absent | [design](ductile-origami-warmstart/s11-stage1-model-only-factorization-design.md) | `reports/staged/s11-stage1-model-only-factorization-report.md` |
 | S12 | Stage 1 D5 real-score／oracle audit | approved | gated | DESIGN_APPROVED | not_evaluated | absent | [design](ductile-origami-warmstart/s12-stage1-real-score-ranking-oracle-audit-design.md) | `reports/staged/s12-stage1-real-score-audit-report.md` |
 | S13 | Stage 1 actual Gen0 mechanism | approved | gated | DESIGN_APPROVED | not_evaluated | absent | [design](ductile-origami-warmstart/s13-stage1-actual-gen0-mechanism-design.md) | `reports/gen0-factorization-mvp-report.md` |
@@ -68,7 +79,7 @@ flowchart TD
   s40 -->|"S4_ACTIVATE"| s41
 ```
 
-S10不得與S00並行。`S1_ENTRY_DEGRADED_PROXY`、two-size mode、H5 pilot、single-cluster pilot或任何縮減方案必須先停在`blocked-awaiting-user-decision`；user未批准前沒有outgoing edge。
+S00的post-audited positive closeout已驗證`S00_EVIDENCE_READY -> S10`；這只解除S10 planning dependency，不代表S10已有lock或開始執行。`S1_ENTRY_DEGRADED_PROXY`、two-size mode、H5 pilot、single-cluster pilot或任何縮減方案仍必須先停在`blocked-awaiting-user-decision`；user未批准前沒有後續outgoing edge。
 
 ### Stable criterion IDs
 
@@ -249,9 +260,9 @@ Mapping靠猜、coverage／correctness不完整或judgment pool不足者不具�
 
 目前 workspace 中的工作樹狀態不能直接當正式 revision；執行前須保存 commit SHA、patch hash 或完整 source checksum。
 
-### 1.4 Future S00 protocol bootstrap
+### 1.4 S00 protocol foundation result
 
-目前不存在active runtime protocol。未來只有S00可第一次建立：
+S00已建立fresh active runtime protocol：
 
 ```text
 protocol/v1/README.md
@@ -261,12 +272,18 @@ protocol/v1/schemas/
 protocol/v1/locks/s00-foundation-lock.json
 ```
 
-- Genesis使用全新identity與`parent_lock: null`。
+- Genesis使用全新identity與`parent_lock: null`；iteration-1 technical findings透過
+  exactly-one amendment與parent-linked `successor-001`修復，未覆寫原世代。
 - 不得出現M00 version、hash、criterion、registry、path或migration provenance。
-- Schema／validator／lock writer與fresh deterministic fixtures先實作、先驗證；effective lock成立前不得產生outcome evidence。
-- S00 lock綁定committed charter、parent plan、S00 design、rule/skill revisions、Plan-B、exact whitelists、fixtures/seeds與report target。
+- Schema／validator／lock writer與fresh deterministic fixtures先實作、先驗證；
+  兩代皆遵守lock-before-evidence。
+- Effective successor lock綁定committed authority identities、兩份Plan-B、29/33 exact
+  whitelists、fixtures/seeds、amendment與report target。
 - Evidence開始後若schema、fixture或whitelist改變，必須append amendment、建立新lock並重跑，不得覆寫。
 - Git history中的retired protocol內容不得作template、compatibility target或PASS evidence。
+- Formal result見
+  [S00 verification and closeout report](ductile-origami-warmstart/reports/staged/s00-foundation-verification-report.md)；
+  它只支持CPU-only foundation semantics。
 
 ---
 

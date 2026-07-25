@@ -1,0 +1,169 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rocm.docs.local/ductile-origami/v1/checkpoint.schema.json",
+  "title": "Ductile GA checkpoint manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format",
+    "version",
+    "checkpoint_id",
+    "parent_checkpoint_id",
+    "generation",
+    "n_evals",
+    "soo",
+    "space_map",
+    "space_map_sha256",
+    "snapshots",
+    "component_sha256",
+    "pop_size",
+    "base_pop_size",
+    "decay_mode",
+    "seed",
+    "observer",
+    "lineage",
+    "payload_sha256"
+  ],
+  "properties": {
+    "format": {"const": "ductile-ga-checkpoint"},
+    "version": {"const": 1},
+    "checkpoint_id": {
+      "type": "string",
+      "pattern": "^ga-checkpoint-[0-9a-f]{64}$"
+    },
+    "parent_checkpoint_id": {
+      "oneOf": [
+        {"type": "null"},
+        {"type": "string", "pattern": "^ga-checkpoint-[0-9a-f]{64}$"}
+      ]
+    },
+    "generation": {"type": "integer", "minimum": 1},
+    "n_evals": {"type": "integer", "minimum": 0},
+    "soo": {"type": "boolean"},
+    "space_map": {"type": "object", "minProperties": 1},
+    "space_map_sha256": {"$ref": "#/$defs/sha256"},
+    "snapshots": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["best", "old_population", "population", "stats"],
+      "properties": {
+        "best": {
+          "oneOf": [
+            {"type": "null"},
+            {"type": "array", "items": {"$ref": "#/$defs/individual"}}
+          ]
+        },
+        "old_population": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/individual"}
+        },
+        "population": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/individual"}
+        },
+        "stats": {"type": "object"}
+      }
+    },
+    "component_sha256": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "best_sha256",
+        "old_population_sha256",
+        "population_sha256",
+        "stats_sha256",
+        "python_rng_sha256",
+        "numpy_rng_sha256",
+        "seed_sequence_sha256"
+      ],
+      "properties": {
+        "best_sha256": {"$ref": "#/$defs/sha256"},
+        "old_population_sha256": {"$ref": "#/$defs/sha256"},
+        "population_sha256": {"$ref": "#/$defs/sha256"},
+        "stats_sha256": {"$ref": "#/$defs/sha256"},
+        "python_rng_sha256": {"$ref": "#/$defs/sha256"},
+        "numpy_rng_sha256": {"$ref": "#/$defs/sha256"},
+        "seed_sequence_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "pop_size": {"type": "integer", "minimum": 1},
+    "base_pop_size": {"type": "integer", "minimum": 1},
+    "decay_mode": {
+      "enum": ["none", "large_space", "low_diversity"]
+    },
+    "seed": {"type": "integer", "minimum": 0},
+    "observer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["enabled", "next_sequence", "event_chain_head"],
+      "properties": {
+        "enabled": {"type": "boolean"},
+        "next_sequence": {"type": "integer", "minimum": 0},
+        "event_chain_head": {
+          "oneOf": [{"type": "null"}, {"$ref": "#/$defs/sha256"}]
+        }
+      }
+    },
+    "lineage": {"$ref": "#/$defs/lineage"},
+    "payload_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "nonEmpty": {"type": "string", "minLength": 1},
+    "individual": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["X", "F", "G"],
+      "properties": {
+        "X": {"type": "object", "minProperties": 1},
+        "F": {"type": "number"},
+        "G": {
+          "oneOf": [
+            {"type": "number"},
+            {"type": "array", "items": {"type": "number"}}
+          ]
+        }
+      }
+    },
+    "lineage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifact_id",
+        "run_id",
+        "effective_lock_sha256",
+        "parent_id",
+        "input_sha256",
+        "source_bundle_sha256",
+        "fixture_sha256",
+        "seed"
+      ],
+      "properties": {
+        "artifact_id": {"$ref": "#/$defs/nonEmpty"},
+        "run_id": {"$ref": "#/$defs/nonEmpty"},
+        "effective_lock_sha256": {"$ref": "#/$defs/sha256"},
+        "parent_id": {
+          "oneOf": [{"type": "null"}, {"$ref": "#/$defs/nonEmpty"}]
+        },
+        "input_sha256": {"$ref": "#/$defs/sha256"},
+        "source_bundle_sha256": {"$ref": "#/$defs/sha256"},
+        "fixture_sha256": {"$ref": "#/$defs/sha256"},
+        "seed": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["name", "value"],
+          "properties": {
+            "name": {"$ref": "#/$defs/nonEmpty"},
+            "value": {"type": "integer", "minimum": 0}
+          }
+        },
+        "prior_event_sha256": {
+          "oneOf": [{"type": "null"}, {"$ref": "#/$defs/sha256"}]
+        },
+        "prior_checkpoint_id": {
+          "oneOf": [{"type": "null"}, {"$ref": "#/$defs/nonEmpty"}]
+        }
+      }
+    }
+  }
+}

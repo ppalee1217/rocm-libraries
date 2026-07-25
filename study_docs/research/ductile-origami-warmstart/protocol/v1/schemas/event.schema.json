@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rocm.docs.local/ductile-origami/v1/event.schema.json",
+  "title": "Ductile immutable GA event",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "run_id",
+    "effective_lock_sha256",
+    "sequence",
+    "event_id",
+    "previous_event_sha256",
+    "kind",
+    "generation",
+    "payload",
+    "payload_sha256",
+    "event_sha256"
+  ],
+  "properties": {
+    "run_id": {"$ref": "#/$defs/nonEmpty"},
+    "effective_lock_sha256": {"$ref": "#/$defs/sha256"},
+    "sequence": {"type": "integer", "minimum": 0},
+    "event_id": {
+      "type": "string",
+      "pattern": "^ga-event-[0-9a-f]{64}$"
+    },
+    "previous_event_sha256": {
+      "oneOf": [{"type": "null"}, {"$ref": "#/$defs/sha256"}]
+    },
+    "kind": {"$ref": "#/$defs/nonEmpty"},
+    "generation": {"type": "integer", "minimum": 0},
+    "payload": {"type": "object"},
+    "payload_sha256": {"$ref": "#/$defs/sha256"},
+    "event_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "nonEmpty": {"type": "string", "minLength": 1},
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

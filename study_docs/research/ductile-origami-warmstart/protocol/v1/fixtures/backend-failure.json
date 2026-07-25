@@ -1,0 +1,69 @@
+{
+  "fixture_id": "s00-backend-failure-v1",
+  "seed": 41002,
+  "lineage": {
+    "artifact_id": "backend-failure-artifact",
+    "run_id": "backend-failure-run",
+    "effective_lock_sha256": "5c02d84d7724979d6c8b9e9390d470ccea906025342d97329178f49003d10fdd",
+    "parent_id": null,
+    "input_sha256": "e27c6dc18a56fb359f403e1fdd9d15ac12ad67e7724100439288c5d9be9b5bf5",
+    "source_bundle_sha256": "41e1fe4d39387e5a726d2c73fe0ac40e3ea5f2344cf4b12f0b5fca1614b1b347",
+    "fixture_sha256": "b7a6c30f585a8ee3dcc099eb853dbb15f26217b44ea36d2e4551a68182f15fd1",
+    "seed": {"name": "backend-failure", "value": 41002}
+  },
+  "failure_records": [
+    {
+      "record_id": "generated_input-0",
+      "kind": "generated_input",
+      "status": "success",
+      "previous_record_sha256": null,
+      "lineage": {
+        "artifact_id": "backend-failure-artifact", "run_id": "backend-failure-run", "effective_lock_sha256": "5c02d84d7724979d6c8b9e9390d470ccea906025342d97329178f49003d10fdd", "parent_id": null, "input_sha256": "e27c6dc18a56fb359f403e1fdd9d15ac12ad67e7724100439288c5d9be9b5bf5", "source_bundle_sha256": "41e1fe4d39387e5a726d2c73fe0ac40e3ea5f2344cf4b12f0b5fca1614b1b347", "fixture_sha256": "b7a6c30f585a8ee3dcc099eb853dbb15f26217b44ea36d2e4551a68182f15fd1", "seed": {"name": "backend-failure", "value": 41002}
+      },
+      "payload": {"config": {"x": 1, "y": 2}},
+      "payload_sha256": "246f0cce72aed0c4dca1eea21cc96d08be8304d417113f144bb81c630a2bade2",
+      "record_sha256": "30c7f54caf245a7ef2f4eba728ee5149df0d86597f68d110fb1e71903a6d31b9"
+    },
+    {
+      "record_id": "backend_result-1",
+      "kind": "backend_result",
+      "status": "failure",
+      "previous_record_sha256": "30c7f54caf245a7ef2f4eba728ee5149df0d86597f68d110fb1e71903a6d31b9",
+      "lineage": {
+        "artifact_id": "backend-failure-artifact", "run_id": "backend-failure-run", "effective_lock_sha256": "5c02d84d7724979d6c8b9e9390d470ccea906025342d97329178f49003d10fdd", "parent_id": null, "input_sha256": "e27c6dc18a56fb359f403e1fdd9d15ac12ad67e7724100439288c5d9be9b5bf5", "source_bundle_sha256": "41e1fe4d39387e5a726d2c73fe0ac40e3ea5f2344cf4b12f0b5fca1614b1b347", "fixture_sha256": "b7a6c30f585a8ee3dcc099eb853dbb15f26217b44ea36d2e4551a68182f15fd1", "seed": {"name": "backend-failure", "value": 41002}
+      },
+      "payload": {"backend": "synthetic", "exit_code": 9},
+      "payload_sha256": "929dd54af78853c24d5cd0303f0fc8119ea66facadd8b82a05b3b5c109ae7ed8",
+      "record_sha256": "0335bc1bed0c384c5830e5dd8b1a7a3a06e524c5372fa665f6622b7e6333e975"
+    },
+    {
+      "record_id": "summary-2",
+      "kind": "summary",
+      "status": "failure",
+      "previous_record_sha256": "0335bc1bed0c384c5830e5dd8b1a7a3a06e524c5372fa665f6622b7e6333e975",
+      "lineage": {
+        "artifact_id": "backend-failure-artifact", "run_id": "backend-failure-run", "effective_lock_sha256": "5c02d84d7724979d6c8b9e9390d470ccea906025342d97329178f49003d10fdd", "parent_id": null, "input_sha256": "e27c6dc18a56fb359f403e1fdd9d15ac12ad67e7724100439288c5d9be9b5bf5", "source_bundle_sha256": "41e1fe4d39387e5a726d2c73fe0ac40e3ea5f2344cf4b12f0b5fca1614b1b347", "fixture_sha256": "b7a6c30f585a8ee3dcc099eb853dbb15f26217b44ea36d2e4551a68182f15fd1", "seed": {"name": "backend-failure", "value": 41002}
+      },
+      "payload": {"outcome": "backend_failure"},
+      "payload_sha256": "bfca511b5824539b3bac21c915e9b555539441b2f3262cf5471e2e0124c79410",
+      "record_sha256": "d57739e994a474b2cb5ebb629d7e0924123d317237dff5118b19d45e7f8d7e32"
+    }
+  ],
+  "expected": {"reconciliation": "backend_failure"},
+  "cases": [
+    {"case_id": "partial-failure", "operation": "remove_record", "target_index": 2, "expected_error": "missing_record"},
+    {"case_id": "unexpected-observation", "operation": "insert_success_observation", "target_index": 2, "expected_error": "partial_failure_chain"},
+    {"case_id": "success-summary-mismatch", "operation": "replace_status", "target_index": 2, "value": "success", "expected_error": "partial_failure_chain"},
+    {"case_id": "missing-backend", "operation": "remove_record", "target_index": 1, "expected_error": "missing_record"}
+  ],
+  "payload": {
+    "case": "explicit-backend-failure",
+    "case_ids": [
+      "partial-failure",
+      "unexpected-observation",
+      "success-summary-mismatch",
+      "missing-backend"
+    ]
+  },
+  "payload_sha256": "1cae7582b49fb4d34128f3979f5df255f0b8ffd8dadb85651e57d8d0cdf0c82a"
+}

@@ -1,0 +1,47 @@
+{
+  "fixture_id": "s00-invalid-lineage-v1",
+  "seed": 41004,
+  "base_lineage": {
+    "artifact_id": "lineage-artifact",
+    "run_id": "lineage-run",
+    "effective_lock_sha256": "366e9f39a5a399e31a80ec710949f5939912a7d668d227c7593f26c34ce3fcaa",
+    "parent_id": null,
+    "input_sha256": "9de0c34879c8d389f0d54b1f17138c42717b3ebac36169a98f4b6b4a8a473f63",
+    "source_bundle_sha256": "41e1fe4d39387e5a726d2c73fe0ac40e3ea5f2344cf4b12f0b5fca1614b1b347",
+    "fixture_sha256": "37a1d915f8f7691eb8b6697f78c009daa17aad400843de6e24c47e7379ac831d",
+    "seed": {"name": "lineage", "value": 41004}
+  },
+  "cases": [
+    {"case_id": "missing-parent", "operation": "remove", "field": "parent_id", "expected_error": "lineage_missing_field"},
+    {"case_id": "mismatch-parent", "operation": "replace", "field": "parent_id", "value": "wrong-parent", "expected_error": "lineage_field_mismatch"},
+    {"case_id": "missing-input", "operation": "remove", "field": "input_sha256", "expected_error": "lineage_missing_field"},
+    {"case_id": "mismatch-input", "operation": "replace", "field": "input_sha256", "value": "a0a762cea1016d8a23d41e3bcfc054ecac91d824ec8cc803b3ac4b45dfef6f7b", "expected_error": "lineage_field_mismatch"},
+    {"case_id": "missing-source", "operation": "remove", "field": "source_bundle_sha256", "expected_error": "lineage_missing_field"},
+    {"case_id": "mismatch-source", "operation": "replace", "field": "source_bundle_sha256", "value": "f9e105349a44686498dd22d3183ea6977a00243b94e937bd6eabfe57343137cc", "expected_error": "lineage_field_mismatch"},
+    {"case_id": "missing-fixture", "operation": "remove", "field": "fixture_sha256", "expected_error": "lineage_missing_field"},
+    {"case_id": "mismatch-fixture", "operation": "replace", "field": "fixture_sha256", "value": "ac663e65a8c357bb108610f39da1a858fcd0c57bcac6b49826924b94a8fb77e8", "expected_error": "lineage_field_mismatch"},
+    {"case_id": "missing-seed", "operation": "remove", "field": "seed", "expected_error": "lineage_missing_field"},
+    {"case_id": "mismatch-seed", "operation": "replace", "field": "seed", "value": {"name": "lineage", "value": 999}, "expected_error": "lineage_field_mismatch"},
+    {"case_id": "missing-effective-lock", "operation": "remove", "field": "effective_lock_sha256", "expected_error": "lineage_missing_field"},
+    {"case_id": "mismatch-effective-lock", "operation": "replace", "field": "effective_lock_sha256", "value": "21835e261866270c780887b77e587dd7d46909e698c2b0c20ffa415034ac72b8", "expected_error": "lineage_field_mismatch"},
+    {"case_id": "unknown-field", "operation": "add", "field": "unexpected", "value": true, "expected_error": "lineage_unknown_field"}
+  ],
+  "payload": {
+    "case_ids": [
+      "missing-parent",
+      "mismatch-parent",
+      "missing-input",
+      "mismatch-input",
+      "missing-source",
+      "mismatch-source",
+      "missing-fixture",
+      "mismatch-fixture",
+      "missing-seed",
+      "mismatch-seed",
+      "missing-effective-lock",
+      "mismatch-effective-lock",
+      "unknown-field"
+    ]
+  },
+  "payload_sha256": "e37094d25a1758601eeb54eb983b317b7f5fac71baca44bc2d781ad6188d16b8"
+}

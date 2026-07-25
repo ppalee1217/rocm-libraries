@@ -5,6 +5,16 @@ from ..core import Population, SearchSpace, Mating, Survival
 from ..utils import Logger
 from ..config import DEFAULTS
 from ..core.space import MaxIterationsReached
+from ..evidence import (
+    CheckpointValidationError,
+    atomic_write_bytes,
+    build_ga_event,
+    canonical_population_hash,
+    canonical_sha256,
+    plain_value,
+    validate_checkpoint_manifest,
+    validate_lineage,
+)
 from typing import Callable
 from pathlib import Path
 
@@ -142,17 +152,36 @@ class GeneticAlgorithm:
             raise ValueError("observer must be callable or None")
         self.observer = observer
         self._observer_sequence = 0
+        self._previous_event_sha256 = None
+        self._checkpoint_id = None
+        self._checkpoint_manifests = []
         self.termination_reason = None
         self.final_generation = 0
         self.checkpoint_lineage = (
             dict(checkpoint_lineage) if checkpoint_lineage is not None else None
         )
+        if (
+                observer is not None or checkpoint_path is not None or
+                interrupt_after_generation is not None):
+            if self.checkpoint_lineage is None:
+                raise ValueError(
+                    "observer/checkpoint execution requires complete checkpoint_lineage"
+                )
+            validate_lineage(self.checkpoint_lineage)
+            if self.checkpoint_lineage["seed"]["value"] != seed:
+                raise ValueError(
+                    "checkpoint_lineage seed must equal the GeneticAlgorithm seed"
+                )
         if interrupt_after_generation is not None and (
                 not isinstance(interrupt_after_generation, int) or
                 interrupt_after_generation < 1 or
                 interrupt_after_generation >= self.n_gen):
             raise ValueError(
                 "interrupt_after_generation must be within the full horizon"
+            )
+        if interrupt_after_generation is not None and checkpoint_path is None:
+            raise ValueError(
+                "interrupt_after_generation requires a checkpoint path"
             )
         self.interrupt_after_generation = interrupt_after_generation
 
@@ -167,16 +196,42 @@ class GeneticAlgorithm:
     def _emit(self, kind, generation, payload):
         if self.observer is None:
             return
-        from ..m00.events import GAEvent, freeze_payload
+        py_state = random.getstate()
+        np_state = np.random.get_state()
+        try:
+            event = self._reserve_event(kind, generation, payload)
+            self.observer(event)
+        finally:
+            random.setstate(py_state)
+            np.random.set_state(np_state)
 
-        event = GAEvent(
-            sequence=self._observer_sequence,
-            event_id=f"observer-{self._observer_sequence:06d}",
-            kind=kind,
-            generation=generation,
-            payload=freeze_payload(payload),
-        )
-        self._observer_sequence += 1
+    def _reserve_event(self, kind, generation, payload):
+        if self.observer is None:
+            return None
+        py_state = random.getstate()
+        np_state = np.random.get_state()
+        try:
+            event = build_ga_event(
+                run_id=self.checkpoint_lineage["run_id"],
+                effective_lock_sha256=(
+                    self.checkpoint_lineage["effective_lock_sha256"]
+                ),
+                sequence=self._observer_sequence,
+                previous_event_sha256=self._previous_event_sha256,
+                kind=kind,
+                generation=int(generation),
+                payload=payload,
+            )
+            self._observer_sequence += 1
+            self._previous_event_sha256 = event.event_sha256
+            return event
+        finally:
+            random.setstate(py_state)
+            np.random.set_state(np_state)
+
+    def _deliver_reserved_event(self, event):
+        if event is None:
+            return
         py_state = random.getstate()
         np_state = np.random.get_state()
         try:
@@ -184,6 +239,19 @@ class GeneticAlgorithm:
         finally:
             random.setstate(py_state)
             np.random.set_state(np_state)
+
+    @staticmethod
+    def _population_snapshot(pop):
+        if pop is None:
+            return None
+        return [
+            {
+                "X": dict(ind.X),
+                "F": float(ind.F),
+                "G": plain_value(ind.G),
+            }
+            for ind in pop
+        ]
 
     def update(self, best, pop, old_pop, scores):
         scores[scores < 0] = -1.0
@@ -225,6 +293,17 @@ class GeneticAlgorithm:
         self.pop_size = self.decay(self.pop_size) if hasattr(self, "decay") else self.pop_size
 
     def save(self, path: str, gen: int, best: Population, n_evals: int, old_pop: Population, pop: Population):
+        if self.checkpoint_lineage is None:
+            raise CheckpointValidationError(
+                "checkpoint save requires lineage", code="checkpoint_missing_lineage"
+            )
+        prior_sequence = self._observer_sequence
+        prior_event_sha256 = self._previous_event_sha256
+        reserved_event = self._reserve_event(
+            "checkpoint_written",
+            gen,
+            {"path_name": Path(path).name},
+        )
         state = {
             "gen": gen,
             "soo": self.soo,
@@ -240,16 +319,84 @@ class GeneticAlgorithm:
             "random_state": random.getstate(),
             "np_random_state": np.random.get_state(),
             "seed_sequence_state": dict(self.space.seed_seq.state),
-            "protocol_lineage": self.checkpoint_lineage,
+            "checkpoint_lineage": dict(self.checkpoint_lineage),
+            "seed": self.seed,
         }
-        directory = os.path.dirname(path)
-        if directory:
-            os.makedirs(directory, exist_ok=True)
+        snapshots = {
+            "best": self._population_snapshot(best),
+            "old_population": self._population_snapshot(old_pop),
+            "population": self._population_snapshot(pop),
+            "stats": plain_value(self.stats),
+        }
+        components = {
+            "best_sha256": canonical_sha256(snapshots["best"]),
+            "old_population_sha256": canonical_sha256(
+                snapshots["old_population"]
+            ),
+            "population_sha256": canonical_sha256(snapshots["population"]),
+            "stats_sha256": canonical_sha256(snapshots["stats"]),
+            "python_rng_sha256": canonical_sha256(state["random_state"]),
+            "numpy_rng_sha256": canonical_sha256(state["np_random_state"]),
+            "seed_sequence_sha256": canonical_sha256(
+                state["seed_sequence_state"]
+            ),
+        }
+        manifest_body = {
+            "format": "ductile-ga-checkpoint",
+            "version": 1,
+            "parent_checkpoint_id": self._checkpoint_id,
+            "generation": int(gen),
+            "n_evals": int(n_evals),
+            "soo": self.soo,
+            "space_map": plain_value(self.space.map),
+            "space_map_sha256": canonical_sha256(self.space.map),
+            "snapshots": snapshots,
+            "component_sha256": components,
+            "pop_size": int(self.pop_size),
+            "base_pop_size": int(self._pop_size),
+            "decay_mode": self._decay_type,
+            "seed": self.seed,
+            "observer": {
+                "enabled": self.observer is not None,
+                "next_sequence": int(self._observer_sequence),
+                "event_chain_head": self._previous_event_sha256,
+            },
+            "lineage": plain_value(self.checkpoint_lineage),
+        }
+        manifest = validate_checkpoint_manifest(
+            {
+                **manifest_body,
+                "checkpoint_id": (
+                    "ga-checkpoint-" + canonical_sha256(manifest_body)
+                ),
+                "payload_sha256": canonical_sha256(manifest_body),
+            }
+        )
+        envelope = {
+            "format_version": 1,
+            "manifest": manifest,
+            "state": state,
+        }
+        try:
+            atomic_write_bytes(
+                path, pickle.dumps(envelope, protocol=pickle.HIGHEST_PROTOCOL),
+                exclusive=False,
+            )
+        except Exception:
+            self._observer_sequence = prior_sequence
+            self._previous_event_sha256 = prior_event_sha256
+            raise
+        self._checkpoint_id = manifest["checkpoint_id"]
+        self._checkpoint_manifests.append(manifest)
+        self._deliver_reserved_event(reserved_event)
+        return manifest
 
-        with open(path, "wb") as fp:
-            pickle.dump(state, fp)
-
-    def load(self, checkpoint):
+    def load(
+            self,
+            checkpoint,
+            *,
+            expected_checkpoint_id=None,
+            prior_checkpoint_journal=None):
         if isinstance(checkpoint, (str, bytes, os.PathLike, Path)):
             with open(checkpoint, "rb") as fp:
                 checkpoint = pickle.load(fp)
@@ -257,39 +404,174 @@ class GeneticAlgorithm:
         if not isinstance(checkpoint, dict):
             raise ValueError("checkpoint must be a dict or a path to a pickled checkpoint")
 
+        envelope_required = {"format_version", "manifest", "state"}
+        if set(checkpoint) != envelope_required or checkpoint.get("format_version") != 1:
+            raise CheckpointValidationError(
+                "checkpoint envelope field/version mismatch",
+                code="checkpoint_envelope_mismatch",
+            )
+        manifest = validate_checkpoint_manifest(checkpoint["manifest"])
+        checkpoint = checkpoint["state"]
         required = {
             "gen", "soo", "space_map", "stats", "best", "n_evals",
             "old_pop", "pop", "pop_size", "_pop_size", "decay_type",
             "random_state", "np_random_state", "seed_sequence_state",
-            "protocol_lineage",
+            "checkpoint_lineage", "seed",
         }
         if set(checkpoint) != required:
-            raise ValueError(
+            raise CheckpointValidationError(
                 "checkpoint field set mismatch: "
                 f"missing={sorted(required.difference(checkpoint))}, "
-                f"extra={sorted(set(checkpoint).difference(required))}"
+                f"extra={sorted(set(checkpoint).difference(required))}",
+                code="checkpoint_state_field_mismatch",
             )
 
+        if expected_checkpoint_id is None:
+            raise CheckpointValidationError(
+                "expected_checkpoint_id is required",
+                code="checkpoint_expected_id_missing",
+            )
+        if expected_checkpoint_id != manifest["checkpoint_id"]:
+            raise CheckpointValidationError(
+                "expected checkpoint identity mismatch",
+                code="checkpoint_expected_id_mismatch",
+            )
+        journal_required = {
+            "checkpoint_id",
+            "parent_checkpoint_id",
+            "next_sequence",
+            "event_chain_head",
+        }
+        if (
+                not isinstance(prior_checkpoint_journal, dict) or
+                set(prior_checkpoint_journal) != journal_required):
+            raise CheckpointValidationError(
+                "complete prior_checkpoint_journal is required",
+                code="checkpoint_journal_missing",
+            )
+        expected_journal = {
+            "checkpoint_id": manifest["checkpoint_id"],
+            "parent_checkpoint_id": manifest["parent_checkpoint_id"],
+            "next_sequence": manifest["observer"]["next_sequence"],
+            "event_chain_head": manifest["observer"]["event_chain_head"],
+        }
+        if prior_checkpoint_journal != expected_journal:
+            raise CheckpointValidationError(
+                "prior checkpoint/event journal mismatch",
+                code="checkpoint_journal_mismatch",
+            )
         if checkpoint["soo"] != self.soo:
-            raise ValueError(f"soo mismatch. checkpoint={checkpoint['soo']} current={self.soo}")
+            raise CheckpointValidationError(
+                f"soo mismatch. checkpoint={checkpoint['soo']} current={self.soo}",
+                code="checkpoint_soo_mismatch",
+            )
 
         if checkpoint["space_map"] != self.space.map:
-            raise ValueError("space.map mismatch between checkpoint and current search space")
-        if checkpoint["protocol_lineage"] != self.checkpoint_lineage:
-            raise ValueError(
-                "protocol lineage mismatch between checkpoint and current run"
+            raise CheckpointValidationError(
+                "space.map mismatch between checkpoint and current search space",
+                code="checkpoint_space_mismatch",
             )
+        validate_lineage(checkpoint["checkpoint_lineage"], self.checkpoint_lineage)
+        if checkpoint["seed"] != self.seed:
+            raise CheckpointValidationError(
+                "seed mismatch between checkpoint and current run",
+                code="checkpoint_seed_mismatch",
+            )
+        if manifest["observer"]["enabled"] != (self.observer is not None):
+            raise CheckpointValidationError(
+                "observer mode mismatch",
+                code="checkpoint_observer_mismatch",
+            )
+
+        snapshots = {
+            "best": self._population_snapshot(
+                Population(checkpoint["best"])
+                if checkpoint["best"] is not None else None
+            ),
+            "old_population": self._population_snapshot(
+                Population(checkpoint["old_pop"])
+            ),
+            "population": self._population_snapshot(
+                Population(checkpoint["pop"])
+            ),
+            "stats": plain_value(checkpoint["stats"]),
+        }
+        expected_components = {
+            "best_sha256": canonical_sha256(snapshots["best"]),
+            "old_population_sha256": canonical_sha256(
+                snapshots["old_population"]
+            ),
+            "population_sha256": canonical_sha256(snapshots["population"]),
+            "stats_sha256": canonical_sha256(snapshots["stats"]),
+            "python_rng_sha256": canonical_sha256(checkpoint["random_state"]),
+            "numpy_rng_sha256": canonical_sha256(
+                checkpoint["np_random_state"]
+            ),
+            "seed_sequence_sha256": canonical_sha256(
+                checkpoint["seed_sequence_state"]
+            ),
+        }
+        if manifest["component_sha256"] != expected_components:
+            raise CheckpointValidationError(
+                "checkpoint component hash mismatch",
+                code="checkpoint_component_mismatch",
+            )
+        manifest_state_fields = {
+            "generation": int(checkpoint["gen"]),
+            "n_evals": int(checkpoint["n_evals"]),
+            "soo": checkpoint["soo"],
+            "space_map": plain_value(checkpoint["space_map"]),
+            "space_map_sha256": canonical_sha256(checkpoint["space_map"]),
+            "snapshots": snapshots,
+            "component_sha256": expected_components,
+            "pop_size": int(checkpoint["pop_size"]),
+            "base_pop_size": int(checkpoint["_pop_size"]),
+            "decay_mode": checkpoint["decay_type"],
+            "seed": checkpoint["seed"],
+            "lineage": plain_value(checkpoint["checkpoint_lineage"]),
+        }
+        for field, expected in manifest_state_fields.items():
+            if manifest.get(field) != expected:
+                raise CheckpointValidationError(
+                    f"manifest/state mismatch at {field}",
+                    code="checkpoint_component_mismatch",
+                )
 
         decay_type = checkpoint.get("decay_type", "none")
         if decay_type == "large_space":
-            self.decay = lambda sz: int(self._pop_size + (sz - self._pop_size) / 2)
+            decay = lambda sz: int(
+                checkpoint["_pop_size"]
+                + (sz - checkpoint["_pop_size"]) / 2
+            )
         elif decay_type == "low_diversity":
-            self.decay = lambda sz: int(self._pop_size / 2 + (sz - self._pop_size / 2) / 1.25)
+            decay = lambda sz: int(
+                checkpoint["_pop_size"] / 2
+                + (sz - checkpoint["_pop_size"] / 2) / 1.25
+            )
         elif decay_type == "none":
-            if hasattr(self, "decay"):
-                delattr(self, "decay")
+            decay = None
         else:
-            raise ValueError(f"unknown decay_type '{decay_type}' in checkpoint")
+            raise CheckpointValidationError(
+                f"unknown decay_type '{decay_type}' in checkpoint",
+                code="checkpoint_decay_mismatch",
+            )
+
+        seed_state = checkpoint["seed_sequence_state"]
+        try:
+            seed_sequence = np.random.SeedSequence(
+                seed_state["entropy"],
+                spawn_key=tuple(seed_state["spawn_key"]),
+                pool_size=seed_state["pool_size"],
+            )
+            if seed_state["n_children_spawned"]:
+                seed_sequence.spawn(seed_state["n_children_spawned"])
+            random.Random().setstate(checkpoint["random_state"])
+            probe = np.random.RandomState()
+            probe.set_state(checkpoint["np_random_state"])
+        except (KeyError, TypeError, ValueError) as exc:
+            raise CheckpointValidationError(
+                f"invalid RNG state: {exc}", code="checkpoint_rng_malformed"
+            ) from exc
 
         self._decay_type = decay_type
 
@@ -297,17 +579,17 @@ class GeneticAlgorithm:
         self.pop_size = checkpoint["pop_size"]
 
         self._pop_size = checkpoint["_pop_size"]
+        if decay is None:
+            if hasattr(self, "decay"):
+                delattr(self, "decay")
+        else:
+            self.decay = decay
         random.setstate(checkpoint["random_state"])
         np.random.set_state(checkpoint["np_random_state"])
-        seed_state = checkpoint["seed_sequence_state"]
-        seed_sequence = np.random.SeedSequence(
-            seed_state["entropy"],
-            spawn_key=tuple(seed_state["spawn_key"]),
-            pool_size=seed_state["pool_size"],
-        )
-        if seed_state["n_children_spawned"]:
-            seed_sequence.spawn(seed_state["n_children_spawned"])
         self.space.seed_seq = seed_sequence
+        self._observer_sequence = manifest["observer"]["next_sequence"]
+        self._previous_event_sha256 = manifest["observer"]["event_chain_head"]
+        self._checkpoint_id = manifest["checkpoint_id"]
 
         self._resume_state = checkpoint
 
@@ -329,7 +611,7 @@ class GeneticAlgorithm:
                 self._emit("resume_loaded", int(state["gen"]), {
                     "next_generation": gen_start,
                     "population_indices": [dict(ind.X) for ind in pop],
-                    "legacy_n_evals": n_evals,
+                    "n_evals": n_evals,
                 })
             self.logger.info(f"Resuming optimization from generation {gen_start} with best F={best.F.mean():.4f}...")
         else:
@@ -352,6 +634,9 @@ class GeneticAlgorithm:
                 self._emit("initial_population", 0, {
                     "ordered_indices": [dict(ind.X) for ind in pop],
                     "ordered_configs": self.space.transform(pop),
+                    "canonical_config_set_sha256": canonical_population_hash(
+                        self.space.transform(pop)
+                    ),
                 })
 
         self.logger.info(f"Starting optimization...")
@@ -362,6 +647,9 @@ class GeneticAlgorithm:
                     self._emit("proposal_batch", gen, {
                         "ordered_indices": [dict(ind.X) for ind in pop],
                         "ordered_configs": configs,
+                        "canonical_config_set_sha256": (
+                            canonical_population_hash(configs)
+                        ),
                     })
                 scores = self.evaluate(configs)
                 if scores.ndim == 1:
@@ -385,7 +673,7 @@ class GeneticAlgorithm:
                 if self.observer is not None:
                     per_gene_diversity = pop.diversity(reduce=False)
                     self._emit("generation_stats", gen, {
-                        "legacy_n_evals": int(n_evals),
+                        "n_evals": int(n_evals),
                         "f_avg": float(f_avg),
                         "f_max": float(f_max),
                         "diversity": float(diversity),
@@ -406,13 +694,22 @@ class GeneticAlgorithm:
 
                 old_pop = self.survival(old_pop, pop, self.pop_size)
                 pop = self.mating(old_pop, self.pop_size)
+                if self.observer is not None:
+                    survivor_configs = self.space.transform(old_pop)
+                    offspring_configs = self.space.transform(pop)
+                    self._emit("population_transition", gen, {
+                        "ordered_survivors": survivor_configs,
+                        "canonical_survivor_set_sha256": (
+                            canonical_population_hash(survivor_configs)
+                        ),
+                        "ordered_offspring": offspring_configs,
+                        "canonical_offspring_set_sha256": (
+                            canonical_population_hash(offspring_configs)
+                        ),
+                    })
 
                 if self.checkpoint_path:
                     self.save(self.checkpoint_path, gen=gen, best=best, n_evals=n_evals, old_pop=old_pop, pop=pop)
-                    if self.observer is not None:
-                        self._emit("checkpoint_written", gen, {
-                            "path_name": Path(self.checkpoint_path).name,
-                        })
                 self.final_generation = gen
                 if gen == self.interrupt_after_generation:
                     raise DurableInterruption(gen)
@@ -421,10 +718,6 @@ class GeneticAlgorithm:
             self.termination_reason = "early_stop"
             if self.checkpoint_path:
                 self.save(self.checkpoint_path, gen=gen, best=best, n_evals=n_evals, old_pop=old_pop, pop=pop)
-                if self.observer is not None:
-                    self._emit("checkpoint_written", gen, {
-                        "path_name": Path(self.checkpoint_path).name,
-                    })
             if self.observer is not None:
                 self._emit("termination", gen, {
                     "reason": self.termination_reason,

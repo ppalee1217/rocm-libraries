@@ -1,0 +1,199 @@
+# Copyright Advanced Micro Devices, Inc., or its affiliates.
+# SPDX-License-Identifier: MIT
+
+protocol: ductile-origami-s00-v1
+checkpoint: S00
+generation: successor-001
+baseline:
+  branch: users/perlee/doc-study
+  commit: 60775f12843bee9f95cb0bef4e91de8bc4dc9dc3
+criterion: S00_EVIDENCE_READY
+positive_edge: S10
+authorities:
+  - path: .cursor/rules/hipblaslt-onboarding.mdc
+    sha256: c076e9492cbfd75d3519a28af597187e41e17e4ec790f917a94ef68f0e388bb0
+  - path: .cursor/skills/implement-verify-loop/SKILL.md
+    sha256: e7eaf11f30b141d0069e29f5d38afa273be21c07008f25350fc09258ed15d5a0
+  - path: study_docs/research/surrogate-dse-plan.md
+    sha256: 943bbb981b8625c50f53a84bd75005b346822083d1e1b22750b3c39898e252f6
+  - path: study_docs/research/ductile-origami-warmstart-experiment-plan.md
+    sha256: 48e64a29c559e130c02fe60e61adc630d676df41cf5ec92a2d6156eb68ea5e73
+  - path: study_docs/research/ductile-origami-warmstart/README.md
+    sha256: b63f37b5a9ada937b8c67f337b604c74b6682ec513cb77984634dbb01bbc82e5
+  - path: study_docs/research/ductile-origami-warmstart/s00-evidence-contract-lineage-observability-design.md
+    sha256: c3698947fbb58bb34b4f346848f8aa5a33c8ef3a18a46c3f864ed28b08914fc1
+implementation_whitelist:
+  - projects/hipblaslt/tensilelite/Tensile/ductile/algorithm/ga.py
+  - projects/hipblaslt/tensilelite/Tensile/ductile/evidence.py
+  - projects/hipblaslt/tensilelite/Tensile/Tests/unit/test_ductile_s00_foundation.py
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/README.md
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/study-contract.yaml
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/amendment-ledger.jsonl
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/run_s00_foundation.py
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/schemas/study-contract.schema.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/schemas/amendment.schema.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/schemas/lock.schema.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/schemas/event.schema.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/schemas/checkpoint.schema.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/schemas/lineage.schema.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/fixtures/valid-run.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/fixtures/invalid-lineage.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/fixtures/duplicate-events.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/fixtures/backend-failure.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/locks/s00-foundation-lock.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s00-neutrality.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s00-resume-parity.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s00-reconciliation.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s00-lineage-fail-closed.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s00-decision.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/locks/s00-foundation-lock-successor-001.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s00-neutrality-successor-001.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s00-resume-parity-successor-001.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s00-reconciliation-successor-001.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s00-lineage-fail-closed-successor-001.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s00-decision-successor-001.json
+implementation_whitelist_sha256: 9686eab5037145252bc2233e514e5a050b2662352c78d4dcd3ce7ecb716f6aa6
+delivery_whitelist:
+  - projects/hipblaslt/tensilelite/Tensile/ductile/algorithm/ga.py
+  - projects/hipblaslt/tensilelite/Tensile/ductile/evidence.py
+  - projects/hipblaslt/tensilelite/Tensile/Tests/unit/test_ductile_s00_foundation.py
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/README.md
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/study-contract.yaml
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/amendment-ledger.jsonl
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/run_s00_foundation.py
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/schemas/study-contract.schema.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/schemas/amendment.schema.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/schemas/lock.schema.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/schemas/event.schema.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/schemas/checkpoint.schema.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/schemas/lineage.schema.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/fixtures/valid-run.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/fixtures/invalid-lineage.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/fixtures/duplicate-events.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/fixtures/backend-failure.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/locks/s00-foundation-lock.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s00-neutrality.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s00-resume-parity.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s00-reconciliation.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s00-lineage-fail-closed.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s00-decision.json
+  - study_docs/research/ductile-origami-warmstart/reports/staged/s00-foundation-verification-report.md
+  - study_docs/research/ductile-origami-warmstart-experiment-plan.md
+  - study_docs/research/ductile-origami-warmstart/README.md
+  - study_docs/research/ductile-origami-warmstart/s00-evidence-contract-lineage-observability-design.md
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/locks/s00-foundation-lock-successor-001.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s00-neutrality-successor-001.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s00-resume-parity-successor-001.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s00-reconciliation-successor-001.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s00-lineage-fail-closed-successor-001.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s00-decision-successor-001.json
+delivery_whitelist_sha256: 0632d43fafc8bf583d0ebdad60f1c832d7be4a0022f08602bcff61ec135deb5e
+pinned_sources:
+  - path: projects/hipblaslt/tensilelite/Tensile/ductile/algorithm/ga.py
+    sha256: 5633a79b8e068137000dfcc2382124d3da1bd441d7049955799cd1f8f929aa35
+  - path: projects/hipblaslt/tensilelite/Tensile/ductile/evidence.py
+    sha256: d55f14d0fe184974c7397c345a4d40b87132393578115375d1f24523a1d3b4bf
+  - path: study_docs/research/ductile-origami-warmstart/protocol/v1/run_s00_foundation.py
+    sha256: 09441df0e1568ce572f017742c3cc35c258aa3f9273145586688ee48b713ee91
+  - path: projects/hipblaslt/tensilelite/Tensile/Tests/unit/test_ductile_s00_foundation.py
+    sha256: 63daeb5f8c788b763d3920e7c8dce978ff6934cd467c2f55cb2b23a994c35ad1
+  - path: projects/hipblaslt/tensilelite/Tensile/ductile/core/space.py
+    sha256: 7f63af21d82c0f5942f3824ecb484956c2ff27a834e8ee696afc1e28a414f69e
+  - path: projects/hipblaslt/tensilelite/Tensile/ductile/core/mutation.py
+    sha256: c9a759f5d0c8be607cf4d3d4c52592d1a345ecb5edbcb38f28e3cff9bc631696
+  - path: projects/hipblaslt/tensilelite/Tensile/ductile/core/mating.py
+    sha256: e09a19ed7e04a622958120438bd131616174c49e9115b042c5f8fb321cbca9a9
+  - path: projects/hipblaslt/tensilelite/Tensile/ductile/core/selection.py
+    sha256: 5782610b31eaff7e47ce5db5f2f58f929a88198a8623cf8b122e67133418eaf5
+  - path: projects/hipblaslt/tensilelite/Tensile/ductile/core/crossover.py
+    sha256: 5f6494d0d745a20330242f31e6c0688571346269842b6ccea54fc7e7559ded8a
+  - path: projects/hipblaslt/tensilelite/Tensile/ductile/core/survival.py
+    sha256: 0c4947ca12e6584c00f44016b25df6727d0bb1c0c9363b8826954a7ae82ef9ff
+  - path: projects/hipblaslt/tensilelite/Tensile/ductile/core/population.py
+    sha256: 19365c724f4014196cc4d6d0bc869c77fbbc4aacea46e7d1f21e0d1a05a237df
+schemas:
+  - path: study_docs/research/ductile-origami-warmstart/protocol/v1/schemas/study-contract.schema.json
+    sha256: d400c75d6321265f12db3955693359d295ca9c98434e6c1fd69943ebf033c355
+  - path: study_docs/research/ductile-origami-warmstart/protocol/v1/schemas/amendment.schema.json
+    sha256: f512c4e10472725519188b7c76b4ad96d4f8d2aeb4fb945e765b2a333b7af855
+  - path: study_docs/research/ductile-origami-warmstart/protocol/v1/schemas/lock.schema.json
+    sha256: a4f2b345705f265c4b58c3f509b1542d0efad51a76a838964379bba068f60c7e
+  - path: study_docs/research/ductile-origami-warmstart/protocol/v1/schemas/event.schema.json
+    sha256: 2ce04a815db4471078735d08e7adbccc32c3726d48fe9e7f07bf7856b78156fc
+  - path: study_docs/research/ductile-origami-warmstart/protocol/v1/schemas/checkpoint.schema.json
+    sha256: ac69ad3aa1b0893964121b9e03510852d7c60b15a085cdd7ff2793505ac22085
+  - path: study_docs/research/ductile-origami-warmstart/protocol/v1/schemas/lineage.schema.json
+    sha256: 861a4868a45e0ce547c491990950f24bebfefaba3d34a25b76f0a903f7d72deb
+fixtures:
+  - path: study_docs/research/ductile-origami-warmstart/protocol/v1/fixtures/valid-run.json
+    sha256: cd078bef8d81040b25a31d507f09d981eb4542fa424b4579d6485121da272e10
+  - path: study_docs/research/ductile-origami-warmstart/protocol/v1/fixtures/invalid-lineage.json
+    sha256: 19a56c64d8fe9747169306fd028a5c4477afe04ceda8fb3137bf7ae44c943e83
+  - path: study_docs/research/ductile-origami-warmstart/protocol/v1/fixtures/duplicate-events.json
+    sha256: be06a69c86c68642f02fed65c7116a3916a7450a1f571d01743975bd3bb60145
+  - path: study_docs/research/ductile-origami-warmstart/protocol/v1/fixtures/backend-failure.json
+    sha256: 18604c68251e7de0836ac13a0b6541c087b1cd5d4eb91fe84f73f126f18c87e6
+amendment_ledger:
+  path: study_docs/research/ductile-origami-warmstart/protocol/v1/amendment-ledger.jsonl
+  raw_sha256: 92da8dde11de879c573018a1f968648cef6f328ba44cee06e83f3b379ce81619
+  head_sha256: ec0e72c60aaa2d4ea1b54545aa1c9cbd2039401447bcca6d0d374e1866ee77b2
+  amendment_id: s00-successor-recovery-001
+seeds:
+  neutrality: 41001
+  resume: 41002
+  reconciliation: 41003
+  lineage: 41004
+fixture_runtime:
+  device: cpu-only-synthetic
+  sampling_jobs: 1
+plan_b_bindings:
+  - path: agent_run/260725-ductile-factorized-guidance-s0-s2/milestones/S00/plan_b.md
+    sha256: b8e7a458bb6cb6fa103e92c50eed5c11b2e964c354dd71d629c61cdeecc571d9
+  - path: agent_run/260725-ductile-factorized-guidance-s0-s2/milestones/S00/recovery/plan_b.md
+    sha256: 3f64ec77def3960b67756b0af576bdb5d4f28683ed11a1df55956fe87c0e34c2
+old_lock:
+  path: study_docs/research/ductile-origami-warmstart/protocol/v1/locks/s00-foundation-lock.json
+  lock_id: s00-lock-6c9bc5c909f46d287cada9e8b8a3b74d51e6a36dabc50ab98218d7d4ac0c1946
+  sha256: 35d0c98cd9f6058fe21cd8723288d5bc34d68b87c3bf9e4bc9a0b7c488a0691c
+immutable_old_generation:
+  - path: study_docs/research/ductile-origami-warmstart/protocol/v1/locks/s00-foundation-lock.json
+    sha256: 35d0c98cd9f6058fe21cd8723288d5bc34d68b87c3bf9e4bc9a0b7c488a0691c
+  - path: study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s00-neutrality.json
+    sha256: ada294f5cbf62643490564e52b8cb88092c8b6c07ad09ab7e8030f2bf436a315
+  - path: study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s00-resume-parity.json
+    sha256: fe447f49989ad4996358cbeae60918c3209eebce314154ec022ad1e95b402281
+  - path: study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s00-reconciliation.json
+    sha256: bf6b83e739c6fc4c8dd437675f6b8f2cbeeceb31c3c287c71a877318cf04597a
+  - path: study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s00-lineage-fail-closed.json
+    sha256: 05a0fa9be80174a560de180ceb8bfe0399bb7ca01d625b0961910b97d1e46a82
+  - path: study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s00-decision.json
+    sha256: e73601ba108c31ac15d3372b8b951b8f5b50110071a5d74f8c5f982f5ac101c0
+recovery_authority:
+  standing_delegation: '2026-07-25'
+  reviewers:
+    - /root/s00_recovery_design_a
+    - /root/s00_recovery_design_b
+  consensus: [AGREE, AGREE]
+  adjudication_reference:
+    path: agent_run/260725-ductile-factorized-guidance-s0-s2/adjudication.md
+    identity_sha256: a49ac982e5a60f351f4334f636447855e357880b03db756fb6b5c2ce7d555ee8
+formal_report:
+  path: study_docs/research/ductile-origami-warmstart/reports/staged/s00-foundation-verification-report.md
+  canonical_identity_sha256: 0a758be4e5454479901972a24d3ab1fdc6b48e84f424568a277affad7e193696
+evidence_outputs:
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/locks/s00-foundation-lock-successor-001.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s00-neutrality-successor-001.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s00-resume-parity-successor-001.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s00-reconciliation-successor-001.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s00-lineage-fail-closed-successor-001.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s00-decision-successor-001.json
+outcome_matrix:
+  positive: [S10]
+  negative: []
+  inconclusive: []
+  changes_required: []
+  blocked: []
+claim_boundary:
+  gpu_claims: false
+  s10_discovery: false
+  measurement: evidence-semantics-and-cpu-fixtures-only

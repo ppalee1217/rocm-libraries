@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rocm.docs.local/ductile-origami/v1/amendment.schema.json",
+  "title": "Ductile protocol amendment ledger entry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "amendment_id",
+    "previous_entry_sha256",
+    "superseded_lock_id",
+    "superseded_lock_sha256",
+    "trigger",
+    "reason",
+    "changed_bindings",
+    "affected_evidence",
+    "required_rerun_scope",
+    "new_lock_target",
+    "decision_authority"
+  ],
+  "properties": {
+    "amendment_id": {"type": "string", "minLength": 1},
+    "previous_entry_sha256": {
+      "oneOf": [{"type": "null"}, {"$ref": "#/$defs/sha256"}]
+    },
+    "superseded_lock_id": {"type": "string", "minLength": 1},
+    "superseded_lock_sha256": {"$ref": "#/$defs/sha256"},
+    "trigger": {"type": "string", "minLength": 1},
+    "reason": {"type": "string", "minLength": 1},
+    "changed_bindings": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "affected_evidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "required_rerun_scope": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "new_lock_target": {"type": "string", "minLength": 1},
+    "decision_authority": {"type": "string", "minLength": 1}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

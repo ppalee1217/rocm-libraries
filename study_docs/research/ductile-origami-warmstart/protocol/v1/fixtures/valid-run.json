@@ -1,0 +1,78 @@
+{
+  "fixture_id": "s00-valid-run-v1",
+  "seed": 41001,
+  "lineage": {
+    "artifact_id": "valid-artifact",
+    "run_id": "valid-run",
+    "effective_lock_sha256": "a1430c4903b4f2a8b4bfb95c73e0c641f4992923792bafaecc7e883f23568e24",
+    "parent_id": null,
+    "input_sha256": "1be7cdeea6d3f2173cdd6b16424dd9cca1aa93b76b8c977394df79d63d9f0ef3",
+    "source_bundle_sha256": "41e1fe4d39387e5a726d2c73fe0ac40e3ea5f2344cf4b12f0b5fca1614b1b347",
+    "fixture_sha256": "374e8cab780f9cdee479b2a384f222b4b62ad8453808cb9b1984a2834fcf89b4",
+    "seed": {"name": "valid", "value": 41001}
+  },
+  "records": [
+    {
+      "record_id": "generated_input-0",
+      "kind": "generated_input",
+      "status": "success",
+      "previous_record_sha256": null,
+      "lineage": {
+        "artifact_id": "valid-artifact", "run_id": "valid-run", "effective_lock_sha256": "a1430c4903b4f2a8b4bfb95c73e0c641f4992923792bafaecc7e883f23568e24", "parent_id": null, "input_sha256": "1be7cdeea6d3f2173cdd6b16424dd9cca1aa93b76b8c977394df79d63d9f0ef3", "source_bundle_sha256": "41e1fe4d39387e5a726d2c73fe0ac40e3ea5f2344cf4b12f0b5fca1614b1b347", "fixture_sha256": "374e8cab780f9cdee479b2a384f222b4b62ad8453808cb9b1984a2834fcf89b4", "seed": {"name": "valid", "value": 41001}
+      },
+      "payload": {"config": {"x": 1, "y": 2}},
+      "payload_sha256": "246f0cce72aed0c4dca1eea21cc96d08be8304d417113f144bb81c630a2bade2",
+      "record_sha256": "633d0fd386f41e4794470e131d683580a9758704e735e38311033469fab1b004"
+    },
+    {
+      "record_id": "backend_result-1",
+      "kind": "backend_result",
+      "status": "success",
+      "previous_record_sha256": "633d0fd386f41e4794470e131d683580a9758704e735e38311033469fab1b004",
+      "lineage": {
+        "artifact_id": "valid-artifact", "run_id": "valid-run", "effective_lock_sha256": "a1430c4903b4f2a8b4bfb95c73e0c641f4992923792bafaecc7e883f23568e24", "parent_id": null, "input_sha256": "1be7cdeea6d3f2173cdd6b16424dd9cca1aa93b76b8c977394df79d63d9f0ef3", "source_bundle_sha256": "41e1fe4d39387e5a726d2c73fe0ac40e3ea5f2344cf4b12f0b5fca1614b1b347", "fixture_sha256": "374e8cab780f9cdee479b2a384f222b4b62ad8453808cb9b1984a2834fcf89b4", "seed": {"name": "valid", "value": 41001}
+      },
+      "payload": {"backend": "synthetic", "exit_code": 0},
+      "payload_sha256": "442f0d8c72c30ea4e24d3814abd7672d4948cec4821343c64539a3fb7c409488",
+      "record_sha256": "cd26b0d973343926a10c7daa9908f845d3ff6678bc5c4633344b19697a46f791"
+    },
+    {
+      "record_id": "benchmark_observation-2",
+      "kind": "benchmark_observation",
+      "status": "success",
+      "previous_record_sha256": "cd26b0d973343926a10c7daa9908f845d3ff6678bc5c4633344b19697a46f791",
+      "lineage": {
+        "artifact_id": "valid-artifact", "run_id": "valid-run", "effective_lock_sha256": "a1430c4903b4f2a8b4bfb95c73e0c641f4992923792bafaecc7e883f23568e24", "parent_id": null, "input_sha256": "1be7cdeea6d3f2173cdd6b16424dd9cca1aa93b76b8c977394df79d63d9f0ef3", "source_bundle_sha256": "41e1fe4d39387e5a726d2c73fe0ac40e3ea5f2344cf4b12f0b5fca1614b1b347", "fixture_sha256": "374e8cab780f9cdee479b2a384f222b4b62ad8453808cb9b1984a2834fcf89b4", "seed": {"name": "valid", "value": 41001}
+      },
+      "payload": {"score": 3.5, "unit": "synthetic"},
+      "payload_sha256": "909e2169c2a1eee246ed7b4b2c8a16e26460aa49763edbba235c5d45520cf7d4",
+      "record_sha256": "3e2485ddb9c8eed23d51fcafbde7df60a0788318e4742d3a6565eb36b20e9dee"
+    },
+    {
+      "record_id": "summary-3",
+      "kind": "summary",
+      "status": "success",
+      "previous_record_sha256": "3e2485ddb9c8eed23d51fcafbde7df60a0788318e4742d3a6565eb36b20e9dee",
+      "lineage": {
+        "artifact_id": "valid-artifact", "run_id": "valid-run", "effective_lock_sha256": "a1430c4903b4f2a8b4bfb95c73e0c641f4992923792bafaecc7e883f23568e24", "parent_id": null, "input_sha256": "1be7cdeea6d3f2173cdd6b16424dd9cca1aa93b76b8c977394df79d63d9f0ef3", "source_bundle_sha256": "41e1fe4d39387e5a726d2c73fe0ac40e3ea5f2344cf4b12f0b5fca1614b1b347", "fixture_sha256": "374e8cab780f9cdee479b2a384f222b4b62ad8453808cb9b1984a2834fcf89b4", "seed": {"name": "valid", "value": 41001}
+      },
+      "payload": {"outcome": "success"},
+      "payload_sha256": "3863ee0a9a320461c866f2b3b4b746e6acf6251770f062fec4136d31ff1c0f99",
+      "record_sha256": "e5dd524dce4582edc7dc9d8a0dc6bcd8ee6f7e55bbf3148f98f16a225e200be9"
+    }
+  ],
+  "events": [
+    {
+      "run_id": "valid-run", "effective_lock_sha256": "a1430c4903b4f2a8b4bfb95c73e0c641f4992923792bafaecc7e883f23568e24", "sequence": 0, "event_id": "ga-event-8cd1979dc14238034e03616ed51abf2fb0f9d174b66d29ae1dae51f7c4df5dae", "previous_event_sha256": null, "kind": "initial_population", "generation": 0, "payload": {"configs": [{"x": 1, "y": 2}]}, "payload_sha256": "03ef3ebdbd31d718166ffdcbb73a155fa5e340b6891d84f0501bc7d3e138aec9", "event_sha256": "66bb7dea9329c67d9ce7809a9c860fc2952b5c01ad00c60de7d1f696e0aa674a"
+    },
+    {
+      "run_id": "valid-run", "effective_lock_sha256": "a1430c4903b4f2a8b4bfb95c73e0c641f4992923792bafaecc7e883f23568e24", "sequence": 1, "event_id": "ga-event-f95a9352d5b014f986e6c9b1aea6683a9e38a6c833759677d78d0f08357944d7", "previous_event_sha256": "66bb7dea9329c67d9ce7809a9c860fc2952b5c01ad00c60de7d1f696e0aa674a", "kind": "proposal_batch", "generation": 1, "payload": {"configs": [{"x": 1, "y": 2}]}, "payload_sha256": "03ef3ebdbd31d718166ffdcbb73a155fa5e340b6891d84f0501bc7d3e138aec9", "event_sha256": "935f16fd833b9ef18589cb37448427813d6f4a4a86407502a5cf41478d125794"
+    },
+    {
+      "run_id": "valid-run", "effective_lock_sha256": "a1430c4903b4f2a8b4bfb95c73e0c641f4992923792bafaecc7e883f23568e24", "sequence": 2, "event_id": "ga-event-5f04f8a9d3f6778a469221c1060fa1312132096d68b82f53ecffe5f58aaec3d2", "previous_event_sha256": "935f16fd833b9ef18589cb37448427813d6f4a4a86407502a5cf41478d125794", "kind": "termination", "generation": 1, "payload": {"reason": "fixed_horizon"}, "payload_sha256": "642b318932c193f6dea0f3abf5fe71154e557394b40c1d8c673c7b8dfe09f39c", "event_sha256": "6ec3013b5b45c6230f3f449379609514f914572bf281089d4917f6f302c00460"
+    }
+  ],
+  "expected": {"reconciliation": "success", "event_chain": "valid"},
+  "payload": {"case": "valid-success", "events": 3, "records": 4},
+  "payload_sha256": "73916e9691f2c234584c0472baf05b7b511905f43d8ff3f915b692de68537ce2"
+}

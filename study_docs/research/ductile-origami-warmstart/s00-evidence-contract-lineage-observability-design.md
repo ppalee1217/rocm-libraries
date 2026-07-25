@@ -3,10 +3,10 @@ checkpoint_id: S00
 title: Evidence contract、lineage 與 observability foundation
 stage: foundation
 design_status: approved
-execution_status: not_started
-checkpoint_state: DESIGN_APPROVED
-scientific_outcome: not_evaluated
-lock_state: absent
+execution_status: completed
+checkpoint_state: CHECKPOINT_COMPLETE
+scientific_outcome: positive
+lock_state: effective
 hypothesis_id: S00-H1
 dependencies: []
 entry_criteria: []
@@ -20,7 +20,7 @@ allowed_outgoing_edges:
     target_checkpoint: S10
 formal_report_path: reports/staged/s00-foundation-verification-report.md
 blocker_path: null
-future_effective_lock_path: protocol/v1/locks/s00-foundation-lock.json
+effective_lock_path: protocol/v1/locks/s00-foundation-lock-successor-001.json
 implementation_boundary_max:
   - protocol/v1/**
   - checkpoint/resume and observer integration points selected by future exact-path planning
@@ -48,6 +48,17 @@ consensus_status: approved_two_reviewer_agree
 # S00 — Evidence contract、lineage 與 observability foundation
 
 導航：[active checkpoint index](README.md)｜[research charter](../surrogate-dse-plan.md)｜[experiment plan](../ductile-origami-warmstart-experiment-plan.md)
+
+> **Verified E/C lifecycle boundary：**S00的immutable execution-authority view（E）
+> 由baseline commit
+> `60775f12843bee9f95cb0bef4e91de8bc4dc9dc3`、exact 29 implementation blobs與
+> exact兩份Plan-B重建；本design、parent plan與active README在E使用baseline
+> bytes，`protocol/v1/README.md`是E runbook。本檔目前是post-PASS
+> closeout-projection view（C）的三份投影之一；在C直接執行historical outcome
+> writer必須於寫入前`bound_hash_mismatch`。Green E重建、C拒絕probe與exact
+> E→C hashes見[formal report](reports/staged/s00-foundation-verification-report.md)。
+> 重建依賴baseline Git object與兩份exact ignored Plan-B；不宣稱standalone
+> source-tarball portability。
 
 ## 1. 白話目標
 
@@ -168,6 +179,20 @@ Measurement boundary只涵蓋evidence semantics；synthetic fixture runtime不�
 `reports/staged/s00-foundation-verification-report.md`
 
 Report必須self-contained地記錄frozen oracle、commands、working directories、exit codes、raw artifact hashes、每輪finding／repair、criterion結果、first divergence、outcome、failure ID、能與不能支持的結論。Technical `PASS`只進`VERIFIED_PENDING_CLOSEOUT`；parent hunk、原verifier的`CLOSEOUT_ACK`、isolated commit與post-commit audit全過後才是`CHECKPOINT_COMPLETE`。
+
+### Verified closeout projection
+
+- Formal report：
+  [S00 Evidence Foundation — Verification and Closeout Report](reports/staged/s00-foundation-verification-report.md)
+- Effective lock：`protocol/v1/locks/s00-foundation-lock-successor-001.json`
+- Technical verification：原verifier FULL `PASS`，`AC-01`–`AC-10`全PASS
+- Scientific outcome：`positive`
+- Completion：formal report、exact staged-byte `CLOSEOUT_ACK`、single exact-path
+  closure commit與post-commit audit完成後，投影為`CHECKPOINT_COMPLETE`
+- Verified edge：`S00_EVIDENCE_READY -> S10`只解除S10 dependency；S10仍
+  `not_started`、lock absent，沒有S10 implementation或outcome
+- Claim boundary：只支持CPU-only synthetic observer/resume/lineage/reconciliation
+  semantics，不支持GPU availability、mapping、performance或Stage 1 readiness
 
 ## 9. Design-consensus record
 

@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rocm.docs.local/ductile-origami/v1/lineage.schema.json",
+  "title": "Ductile S00 lineage",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "artifact_id",
+    "run_id",
+    "effective_lock_sha256",
+    "parent_id",
+    "input_sha256",
+    "source_bundle_sha256",
+    "fixture_sha256",
+    "seed"
+  ],
+  "properties": {
+    "artifact_id": {"$ref": "#/$defs/nonEmpty"},
+    "run_id": {"$ref": "#/$defs/nonEmpty"},
+    "effective_lock_sha256": {"$ref": "#/$defs/sha256"},
+    "parent_id": {
+      "oneOf": [{"type": "null"}, {"$ref": "#/$defs/nonEmpty"}]
+    },
+    "input_sha256": {"$ref": "#/$defs/sha256"},
+    "source_bundle_sha256": {"$ref": "#/$defs/sha256"},
+    "fixture_sha256": {"$ref": "#/$defs/sha256"},
+    "seed": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "value"],
+      "properties": {
+        "name": {"$ref": "#/$defs/nonEmpty"},
+        "value": {"type": "integer", "minimum": 0}
+      }
+    },
+    "prior_event_sha256": {
+      "oneOf": [{"type": "null"}, {"$ref": "#/$defs/sha256"}]
+    },
+    "prior_checkpoint_id": {
+      "oneOf": [{"type": "null"}, {"$ref": "#/$defs/nonEmpty"}]
+    }
+  },
+  "$defs": {
+    "nonEmpty": {"type": "string", "minLength": 1},
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

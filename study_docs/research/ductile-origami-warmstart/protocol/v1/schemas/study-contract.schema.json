@@ -1,0 +1,276 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rocm.docs.local/ductile-origami/v1/study-contract.schema.json",
+  "title": "Ductile S00 successor study contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "protocol",
+    "checkpoint",
+    "generation",
+    "baseline",
+    "criterion",
+    "positive_edge",
+    "authorities",
+    "implementation_whitelist",
+    "implementation_whitelist_sha256",
+    "delivery_whitelist",
+    "delivery_whitelist_sha256",
+    "pinned_sources",
+    "schemas",
+    "fixtures",
+    "amendment_ledger",
+    "seeds",
+    "fixture_runtime",
+    "plan_b_bindings",
+    "old_lock",
+    "immutable_old_generation",
+    "recovery_authority",
+    "formal_report",
+    "evidence_outputs",
+    "outcome_matrix",
+    "claim_boundary"
+  ],
+  "properties": {
+    "protocol": {"const": "ductile-origami-s00-v1"},
+    "checkpoint": {"const": "S00"},
+    "generation": {"const": "successor-001"},
+    "baseline": {
+      "const": {
+        "branch": "users/perlee/doc-study",
+        "commit": "60775f12843bee9f95cb0bef4e91de8bc4dc9dc3"
+      }
+    },
+    "criterion": {"const": "S00_EVIDENCE_READY"},
+    "positive_edge": {"const": "S10"},
+    "authorities": {
+      "allOf": [
+        {"$ref": "#/$defs/bindings"},
+        {"minItems": 6, "maxItems": 6}
+      ]
+    },
+    "implementation_whitelist": {
+      "const": [
+        "projects/hipblaslt/tensilelite/Tensile/ductile/algorithm/ga.py",
+        "projects/hipblaslt/tensilelite/Tensile/ductile/evidence.py",
+        "projects/hipblaslt/tensilelite/Tensile/Tests/unit/test_ductile_s00_foundation.py",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/README.md",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/study-contract.yaml",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/amendment-ledger.jsonl",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/run_s00_foundation.py",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/schemas/study-contract.schema.json",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/schemas/amendment.schema.json",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/schemas/lock.schema.json",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/schemas/event.schema.json",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/schemas/checkpoint.schema.json",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/schemas/lineage.schema.json",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/fixtures/valid-run.json",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/fixtures/invalid-lineage.json",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/fixtures/duplicate-events.json",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/fixtures/backend-failure.json",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/locks/s00-foundation-lock.json",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s00-neutrality.json",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s00-resume-parity.json",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s00-reconciliation.json",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s00-lineage-fail-closed.json",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s00-decision.json",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/locks/s00-foundation-lock-successor-001.json",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s00-neutrality-successor-001.json",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s00-resume-parity-successor-001.json",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s00-reconciliation-successor-001.json",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s00-lineage-fail-closed-successor-001.json",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s00-decision-successor-001.json"
+      ]
+    },
+    "implementation_whitelist_sha256": {"const": "9686eab5037145252bc2233e514e5a050b2662352c78d4dcd3ce7ecb716f6aa6"},
+    "delivery_whitelist": {
+      "const": [
+        "projects/hipblaslt/tensilelite/Tensile/ductile/algorithm/ga.py",
+        "projects/hipblaslt/tensilelite/Tensile/ductile/evidence.py",
+        "projects/hipblaslt/tensilelite/Tensile/Tests/unit/test_ductile_s00_foundation.py",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/README.md",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/study-contract.yaml",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/amendment-ledger.jsonl",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/run_s00_foundation.py",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/schemas/study-contract.schema.json",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/schemas/amendment.schema.json",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/schemas/lock.schema.json",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/schemas/event.schema.json",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/schemas/checkpoint.schema.json",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/schemas/lineage.schema.json",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/fixtures/valid-run.json",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/fixtures/invalid-lineage.json",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/fixtures/duplicate-events.json",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/fixtures/backend-failure.json",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/locks/s00-foundation-lock.json",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s00-neutrality.json",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s00-resume-parity.json",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s00-reconciliation.json",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s00-lineage-fail-closed.json",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s00-decision.json",
+        "study_docs/research/ductile-origami-warmstart/reports/staged/s00-foundation-verification-report.md",
+        "study_docs/research/ductile-origami-warmstart-experiment-plan.md",
+        "study_docs/research/ductile-origami-warmstart/README.md",
+        "study_docs/research/ductile-origami-warmstart/s00-evidence-contract-lineage-observability-design.md",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/locks/s00-foundation-lock-successor-001.json",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s00-neutrality-successor-001.json",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s00-resume-parity-successor-001.json",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s00-reconciliation-successor-001.json",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s00-lineage-fail-closed-successor-001.json",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s00-decision-successor-001.json"
+      ]
+    },
+    "delivery_whitelist_sha256": {"const": "0632d43fafc8bf583d0ebdad60f1c832d7be4a0022f08602bcff61ec135deb5e"},
+    "pinned_sources": {
+      "allOf": [
+        {"$ref": "#/$defs/bindings"},
+        {"minItems": 11, "maxItems": 11}
+      ]
+    },
+    "schemas": {
+      "allOf": [
+        {"$ref": "#/$defs/bindings"},
+        {"minItems": 6, "maxItems": 6}
+      ]
+    },
+    "fixtures": {
+      "allOf": [
+        {"$ref": "#/$defs/bindings"},
+        {"minItems": 4, "maxItems": 4}
+      ]
+    },
+    "amendment_ledger": {"$ref": "#/$defs/amendment"},
+    "seeds": {
+      "const": {
+        "neutrality": 41001,
+        "resume": 41002,
+        "reconciliation": 41003,
+        "lineage": 41004
+      }
+    },
+    "fixture_runtime": {
+      "const": {"device": "cpu-only-synthetic", "sampling_jobs": 1}
+    },
+    "plan_b_bindings": {
+      "const": [
+        {
+          "path": "agent_run/260725-ductile-factorized-guidance-s0-s2/milestones/S00/plan_b.md",
+          "sha256": "b8e7a458bb6cb6fa103e92c50eed5c11b2e964c354dd71d629c61cdeecc571d9"
+        },
+        {
+          "path": "agent_run/260725-ductile-factorized-guidance-s0-s2/milestones/S00/recovery/plan_b.md",
+          "sha256": "3f64ec77def3960b67756b0af576bdb5d4f28683ed11a1df55956fe87c0e34c2"
+        }
+      ]
+    },
+    "old_lock": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "lock_id", "sha256"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "lock_id": {"type": "string", "pattern": "^s00-lock-[0-9a-f]{64}$"},
+        "sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "immutable_old_generation": {
+      "allOf": [
+        {"$ref": "#/$defs/bindings"},
+        {"minItems": 6, "maxItems": 6}
+      ]
+    },
+    "recovery_authority": {"$ref": "#/$defs/recovery_authority"},
+    "formal_report": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "canonical_identity_sha256"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "canonical_identity_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "evidence_outputs": {
+      "const": [
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/locks/s00-foundation-lock-successor-001.json",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s00-neutrality-successor-001.json",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s00-resume-parity-successor-001.json",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s00-reconciliation-successor-001.json",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s00-lineage-fail-closed-successor-001.json",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s00-decision-successor-001.json"
+      ]
+    },
+    "outcome_matrix": {
+      "const": {
+        "positive": ["S10"],
+        "negative": [],
+        "inconclusive": [],
+        "changes_required": [],
+        "blocked": []
+      }
+    },
+    "claim_boundary": {
+      "const": {
+        "gpu_claims": false,
+        "s10_discovery": false,
+        "measurement": "evidence-semantics-and-cpu-fixtures-only"
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "bindings": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/binding"}
+    },
+    "amendment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "raw_sha256", "head_sha256", "amendment_id"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "raw_sha256": {"const": "92da8dde11de879c573018a1f968648cef6f328ba44cee06e83f3b379ce81619"},
+        "head_sha256": {"const": "ec0e72c60aaa2d4ea1b54545aa1c9cbd2039401447bcca6d0d374e1866ee77b2"},
+        "amendment_id": {"const": "s00-successor-recovery-001"}
+      }
+    },
+    "recovery_authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "standing_delegation",
+        "reviewers",
+        "consensus",
+        "adjudication_reference"
+      ],
+      "properties": {
+        "standing_delegation": {"const": "2026-07-25"},
+        "reviewers": {
+          "const": [
+            "/root/s00_recovery_design_a",
+            "/root/s00_recovery_design_b"
+          ]
+        },
+        "consensus": {"const": ["AGREE", "AGREE"]},
+        "adjudication_reference": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["path", "identity_sha256"],
+          "properties": {
+            "path": {"type": "string", "minLength": 1},
+            "identity_sha256": {"$ref": "#/$defs/sha256"}
+          }
+        }
+      }
+    }
+  }
+}
