@@ -36,6 +36,7 @@ delivery_boundary_max:
   - protocol/v1/**
   - reports/short-horizon-persistence-report.md
   - ../ductile-origami-warmstart-experiment-plan.md
+  - README.md
   - s20-stage2-h10-persistence-design.md
 forbidden_downstream_roots:
   - reports/staged/s30-heldout-registry-freeze-report.md

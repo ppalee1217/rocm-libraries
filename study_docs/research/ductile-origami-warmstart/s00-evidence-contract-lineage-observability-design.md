@@ -27,8 +27,11 @@ implementation_boundary_max:
   - fresh deterministic foundation fixtures and their tests
 delivery_boundary_max:
   - protocol/v1/**
+  - checkpoint/resume and observer integration points selected by future exact-path planning
+  - fresh deterministic foundation fixtures and their tests
   - reports/staged/s00-foundation-verification-report.md
   - ../ductile-origami-warmstart-experiment-plan.md
+  - README.md
   - s00-evidence-contract-lineage-observability-design.md
 forbidden_downstream_roots:
   - reports/staged/s10-stage1-entry-gate-report.md

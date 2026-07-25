@@ -33,6 +33,7 @@ delivery_boundary_max:
   - protocol/v1/**
   - reports/staged/s11-stage1-model-only-factorization-report.md
   - ../ductile-origami-warmstart-experiment-plan.md
+  - README.md
   - s11-stage1-model-only-factorization-design.md
 forbidden_downstream_roots:
   - reports/staged/s12-stage1-real-score-audit-report.md

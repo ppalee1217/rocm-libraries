@@ -2,7 +2,9 @@
 
 > **文件角色：**研究 charter（研究問題、範圍、證據邊界與可宣稱結論的唯一權威）。
 >
-> **狀態：**`stage_gated_roadmap_approved / pre_empirical / zero_lock / zero_completion`。十份checkpoint design已完成設計審查；S00尚未開始，其餘全部dependency-gated。目前沒有active runtime protocol、effective lock、formal report或empirical outcome。
+> **設計核准基線（2026-07-24）：**`stage_gated_roadmap_approved / pre_empirical / zero_lock / zero_completion`。當時十份checkpoint design已完成設計審查；S00尚未開始，其餘全部dependency-gated，且沒有active runtime protocol、effective lock、formal report或empirical outcome。
+>
+> **Current lifecycle：**以[active checkpoint index](ductile-origami-warmstart/README.md)與[experiment plan](ductile-origami-warmstart-experiment-plan.md)為準；本charter不重複維護易變的checkpoint current state。
 >
 > **檔名說明：**`surrogate-dse-plan.md` 是為維持既有連結而保留的歷史檔名。Stage 1–3不訓練 self-trained surrogate；主要模型是 **Formocast**。Learned residual只有 Stage 4 trigger與data gate同時通過才啟動。
 >
@@ -498,7 +500,7 @@ Noise、support、coverage、importance ESS、unique configs 或兩-regime evide
 
 ## 10. Active checkpoint authority 與 legacy archive
 
-唯一active入口是[checkpoint index](ductile-origami-warmstart/README.md)。十份design全部是`approved / lock_state:absent / scientific_outcome:not_evaluated`；只有S00是`execution_status:not_started`，其餘都是`gated`。
+唯一active入口是[checkpoint index](ductile-origami-warmstart/README.md)。2026-07-24設計核准時，十份design全部是`approved / lock_state:absent / scientific_outcome:not_evaluated`；只有S00是`execution_status:not_started`，其餘都是`gated`。後續current lifecycle只由active index與experiment plan的verified closeout projection維護。
 
 Strict DAG：
 
@@ -544,6 +546,6 @@ M00–M09移入`ductile-origami-warmstart/legacy/`，只保留歷史正文：
 
 ---
 
-## 12. 目前下一步
+## 12. 設計核准時的下一步與 current lifecycle
 
-目前不是執行Stage 1 D1–D2；第一個可開始的checkpoint是S00。S00開始前須另行取得ordinary baseline commit授權，把intentional retired-protocol deletions與本authority/design bundle固定成stable committed baseline；該commit不是S00 closure。S00只能from scratch建立`protocol/v1/`，且只有完成`S00_EVIDENCE_READY`的formal closeout後才能開始S10。
+2026-07-24設計核准時不是執行Stage 1 D1–D2；第一個可開始的checkpoint是S00。2026-07-25使用者已核准九路徑pre-execution authority amendment及其exact-path ordinary baseline commit；該commit不是S00 closure，也不授權push。當前dependency-ready checkpoint與執行狀態以active index及experiment plan為準。S00仍只能from scratch建立`protocol/v1/`，且只有完成`S00_EVIDENCE_READY`的formal closeout後才能開始S10。

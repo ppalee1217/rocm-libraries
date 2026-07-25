@@ -99,9 +99,11 @@ flowchart TD
 5. Fresh implementer依Plan-A實作，fresh verifier依Plan-B獨立驗證。
 6. `CHANGES_REQUIRED`只修 active checkpoint並重驗；consequential design issue先走 `design-discussion`。
 7. Technical `PASS`只進入`VERIFIED_PENDING_CLOSEOUT`。
-8. 建立self-contained formal report並只更新parent的checkpoint-specific hunk。
+8. 建立self-contained formal report，同步更新parent的checkpoint-specific hunk、current design status，以及本README的verified lifecycle projection。
 9. 原verifier執行closeout audit並明確給`CLOSEOUT_ACK`。
 10. Exact-path isolated commit與post-commit audit成功後，才標`CHECKPOINT_COMPLETE`並考慮下一條edge。
+
+Verified lifecycle projection只可更新當前checkpoint row、該closeout直接解析的outgoing edge／downstream state，以及事實性banner prose；不得預寫下游結果，也不得藉此修改criteria、thresholds、strict DAG或claim authority。2026-07-25核准的pre-execution authority amendment只補齊此同步責任；本頁zero-state在S00實際closeout前維持不變。
 
 Positive、negative與inconclusive在evidence integrity完整時都照常report、closeout與commit。Durable `BLOCKED`不是完成；`skipped_by_gate`／`not_activated`只由上游checkpoint記錄，不建立自己的report或commit。
 

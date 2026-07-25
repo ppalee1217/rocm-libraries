@@ -41,6 +41,7 @@ delivery_boundary_max:
   - protocol/v1/**
   - reports/staged/s12-stage1-real-score-audit-report.md
   - ../ductile-origami-warmstart-experiment-plan.md
+  - README.md
   - s12-stage1-real-score-ranking-oracle-audit-design.md
 forbidden_downstream_roots:
   - reports/gen0-factorization-mvp-report.md

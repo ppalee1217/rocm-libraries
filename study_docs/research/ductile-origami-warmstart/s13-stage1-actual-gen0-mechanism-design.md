@@ -36,6 +36,7 @@ delivery_boundary_max:
   - protocol/v1/**
   - reports/gen0-factorization-mvp-report.md
   - ../ductile-origami-warmstart-experiment-plan.md
+  - README.md
   - s13-stage1-actual-gen0-mechanism-design.md
 forbidden_downstream_roots:
   - reports/short-horizon-persistence-report.md

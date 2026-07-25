@@ -39,6 +39,7 @@ delivery_boundary_max:
   - reports/staged/s10-stage1-entry-gate-report.md
   - reports/gen0-factorization-blocker-memo.md
   - ../ductile-origami-warmstart-experiment-plan.md
+  - README.md
   - s10-stage1-entry-access-mapping-gate-design.md
 forbidden_downstream_roots:
   - reports/staged/s11-stage1-model-only-factorization-report.md
