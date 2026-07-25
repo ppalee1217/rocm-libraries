@@ -3,9 +3,9 @@ checkpoint_id: S10
 title: Stage 1 access、artifact、mapping 與 noise entry gate
 stage: 1
 design_status: approved
-execution_status: gated
-checkpoint_state: DESIGN_APPROVED
-scientific_outcome: not_evaluated
+execution_status: blocked
+checkpoint_state: BLOCKED
+scientific_outcome: blocked
 lock_state: absent
 hypothesis_id: S10-H1
 dependencies:
@@ -175,3 +175,25 @@ Blocker memo只能用於未能取得access、可信artifact或canonical mapping�
 - Shared resolution：只有actual-guidance GO可無額外downgrade decision地進S11；hard blocker保留唯一memo path。
 - Reviewer A final：`AGREE`
 - Reviewer B final：`AGREE`
+
+## 10. Execution record — `S1_ENTRY_BLOCKED`
+
+S00 dependency解除後，fresh implementer只依Plan-A先執行read-only H1–H4
+discovery。任何tracked implementation、effective lock或outcome evidence開始前，
+H1已直接確認`FT-BLOCKED-ACCESS`：
+
+- 沒有actual generated gfx942 non-StreamK Ductile YAML exact bytes；
+- 沒有與它共同綁定的authoritative command、cwd、input bytes、generator revision
+  與byte-identical rerun provenance；
+- 唯一具體gfx942 generator record是錯誤test regime的失敗命令，exit `1`、零output；
+- pinned GEKO source可驗，但source capability不能替代actual artifact。
+
+H2為`PASS`；H3仍`UNKNOWN / EVIDENCE_REQUIRED`；H4的milestone-local GPU使用授權
+已由兩名fresh reviewers交互詰問後一致確認，但scheduled window、collision control
+與dated ≥5 complete-work-day calendar仍未證。H1單獨已滿足parent §2.8 hard stop，
+因此本checkpoint進入`BLOCKED`／`blocked`，lock保持`absent`，沒有formal report或
+outgoing edge，S11為`not_activated`。
+
+Direct evidence、claim boundary與recovery interface見
+[S10 blocker memo](reports/gen0-factorization-blocker-memo.md)。本段只投影執行結果，
+不修改本design原先的hypothesis、acceptance、whitelist、DAG或claim boundary。

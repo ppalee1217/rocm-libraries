@@ -4,7 +4,7 @@
 >
 > **研究 scope／claim authority：**[Formocast Factorized Gen0 Guidance Feasibility Study — Research Charter](surrogate-dse-plan.md)。
 >
-> **狀態：**`pre_empirical / foundation_complete`。S00已由successor-001 evidence、原verifier FULL重驗、formal closeout與同一closure commit完成；scientific outcome為`positive`。S10的dependency已解除但仍`not_started`，尚無S10 lock、mapping、GPU evidence或Stage 1 outcome。
+> **狀態：**`pre_empirical / stage1_entry_blocked`。S00已由successor-001 evidence、原verifier FULL重驗、formal closeout與同一closure commit完成；scientific outcome為`positive`。S10在tracked implementation與outcome evidence開始前直接確認actual generated gfx942 non-StreamK Ductile YAML provenance不足，依§2.8進入`S1_ENTRY_BLOCKED`；S10 lock與formal report均不存在，S11為`not_activated`。
 >
 > **Foundation provenance：**active `protocol/v1/`與S00 report是fresh foundation；退役M00內容仍不得作schema、hash、lock、registry、fixture、test或PASS evidence。S00只支持CPU-only evidence semantics，不是GPU／performance結果。
 >
@@ -40,8 +40,8 @@
 | ID | Responsibility | Design | Execution | Checkpoint | Scientific outcome | Lock | Design | Formal report |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | S00 | Evidence contract／lineage／observability foundation | approved | completed | CHECKPOINT_COMPLETE | positive | effective (`successor-001`) | [design](ductile-origami-warmstart/s00-evidence-contract-lineage-observability-design.md) | [report](ductile-origami-warmstart/reports/staged/s00-foundation-verification-report.md) |
-| S10 | Stage 1 access／artifact／mapping／noise gate | approved | not_started | DESIGN_APPROVED | not_evaluated | absent | [design](ductile-origami-warmstart/s10-stage1-entry-access-mapping-gate-design.md) | `reports/staged/s10-stage1-entry-gate-report.md` |
-| S11 | Stage 1 model-only factorization／guidance lock | approved | gated | DESIGN_APPROVED | not_evaluated | absent | [design](ductile-origami-warmstart/s11-stage1-model-only-factorization-design.md) | `reports/staged/s11-stage1-model-only-factorization-report.md` |
+| S10 | Stage 1 access／artifact／mapping／noise gate | approved | blocked | BLOCKED | blocked | absent | [design](ductile-origami-warmstart/s10-stage1-entry-access-mapping-gate-design.md) | [blocker memo](ductile-origami-warmstart/reports/gen0-factorization-blocker-memo.md) |
+| S11 | Stage 1 model-only factorization／guidance lock | approved | gated | DESIGN_APPROVED | not_activated | absent | [design](ductile-origami-warmstart/s11-stage1-model-only-factorization-design.md) | `reports/staged/s11-stage1-model-only-factorization-report.md` |
 | S12 | Stage 1 D5 real-score／oracle audit | approved | gated | DESIGN_APPROVED | not_evaluated | absent | [design](ductile-origami-warmstart/s12-stage1-real-score-ranking-oracle-audit-design.md) | `reports/staged/s12-stage1-real-score-audit-report.md` |
 | S13 | Stage 1 actual Gen0 mechanism | approved | gated | DESIGN_APPROVED | not_evaluated | absent | [design](ductile-origami-warmstart/s13-stage1-actual-gen0-mechanism-design.md) | `reports/gen0-factorization-mvp-report.md` |
 | S20 | Stage 2 H10 persistence | approved | gated | DESIGN_APPROVED | not_evaluated | absent | [design](ductile-origami-warmstart/s20-stage2-h10-persistence-design.md) | `reports/short-horizon-persistence-report.md` |
@@ -79,7 +79,7 @@ flowchart TD
   s40 -->|"S4_ACTIVATE"| s41
 ```
 
-S00的post-audited positive closeout已驗證`S00_EVIDENCE_READY -> S10`；這只解除S10 planning dependency，不代表S10已有lock或開始執行。`S1_ENTRY_DEGRADED_PROXY`、two-size mode、H5 pilot、single-cluster pilot或任何縮減方案仍必須先停在`blocked-awaiting-user-decision`；user未批准前沒有後續outgoing edge。
+S00的post-audited positive closeout已驗證`S00_EVIDENCE_READY -> S10`。S10的read-only pre-implementation discovery直接確認actual generated gfx942 non-StreamK Ductile YAML provenance不足，依§2.8形成`S1_ENTRY_BLOCKED`；沒有S10 lock、formal report或outgoing edge，S11為`not_activated`。Direct evidence、H1–H4邊界與recovery interface見[blocker memo](ductile-origami-warmstart/reports/gen0-factorization-blocker-memo.md)。`S1_ENTRY_DEGRADED_PROXY`、two-size mode、H5 pilot、single-cluster pilot或任何縮減方案仍必須先停在`blocked-awaiting-user-decision`；user未批准前沒有後續outgoing edge。
 
 ### Stable criterion IDs
 
