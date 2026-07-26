@@ -1,0 +1,1399 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rocm.docs.local/ductile/s10-entry.schema.json",
+  "title": "Ductile S10 Stage-1 entry documents",
+  "oneOf": [
+    {"$ref": "#/$defs/contract"},
+    {"$ref": "#/$defs/provenance"},
+    {"$ref": "#/$defs/size_registry"},
+    {"$ref": "#/$defs/environment"},
+    {"$ref": "#/$defs/lock"},
+    {"$ref": "#/$defs/mapping"},
+    {"$ref": "#/$defs/smoke"},
+    {"$ref": "#/$defs/noise"},
+    {"$ref": "#/$defs/decision"}
+  ],
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "git_oid": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$"
+    },
+    "finite_number": {
+      "type": "number"
+    },
+    "size": {
+      "type": "array",
+      "items": {"type": "integer", "minimum": 1},
+      "minItems": 4,
+      "maxItems": 4
+    },
+    "implementation_whitelist": {
+      "const": [
+        "projects/hipblaslt/tensilelite/Tensile/Tests/unit/test_ductile_s10_entry.py",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/run_s10_entry.py",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/schemas/s10-entry.schema.json",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/s10-entry-contract.yaml",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/inputs/s10-generated.yaml",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10-yaml-provenance.json",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10-mapping-corpus.json",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10-size-registry.json",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10-environment.json",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/locks/s10-stage1-entry-lock.json",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s10-smoke-correctness.json",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s10-noise-pilot.json",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s10-decision.json"
+      ]
+    },
+    "delivery_whitelist": {
+      "const": [
+        "projects/hipblaslt/tensilelite/Tensile/Tests/unit/test_ductile_s10_entry.py",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/run_s10_entry.py",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/schemas/s10-entry.schema.json",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/s10-entry-contract.yaml",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/inputs/s10-generated.yaml",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10-yaml-provenance.json",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10-mapping-corpus.json",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10-size-registry.json",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10-environment.json",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/locks/s10-stage1-entry-lock.json",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s10-smoke-correctness.json",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s10-noise-pilot.json",
+        "study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s10-decision.json",
+        "study_docs/research/ductile-origami-warmstart/reports/staged/s10-stage1-entry-gate-report.md",
+        "study_docs/research/ductile-origami-warmstart-experiment-plan.md",
+        "study_docs/research/ductile-origami-warmstart/README.md",
+        "study_docs/research/ductile-origami-warmstart/s10-stage1-entry-access-mapping-gate-design.md"
+      ]
+    },
+    "forbidden_roots": {
+      "const": [
+        "study_docs/research/ductile-origami-warmstart/reports/staged/s11-stage1-model-only-factorization-report.md",
+        "study_docs/research/ductile-origami-warmstart/reports/staged/s12-stage1-real-score-audit-report.md",
+        "study_docs/research/ductile-origami-warmstart/reports/gen0-factorization-mvp-report.md",
+        "study_docs/research/ductile-origami-warmstart/reports/short-horizon-persistence-report.md",
+        "study_docs/research/ductile-origami-warmstart/reports/bounded-regime-replication-report.md",
+        "study_docs/research/ductile-origami-warmstart/reports/staged/s40-stage4-activation-report.md",
+        "study_docs/research/ductile-origami-warmstart/reports/learned-residual-surrogate-report.md"
+      ]
+    },
+    "artifact_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "raw_sha256"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1, "not": {"pattern": "(^/|(^|/)\\.\\.(/|$))"}},
+        "raw_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "r8_parent_lock": {
+      "const": {
+        "generation": "genesis",
+        "archive_root": "agent_run/260725-ductile-factorized-guidance-s0-s1-recovery/milestones/S10/r8-parent-lock",
+        "lock": {
+          "path": "agent_run/260725-ductile-factorized-guidance-s0-s1-recovery/milestones/S10/r8-parent-lock/retired/study_docs/research/ductile-origami-warmstart/protocol/v1/locks/s10-stage1-entry-lock.json",
+          "raw_sha256": "fca28ece474b8ae8e26748c23983be84682e2f9880f410759b4948429c6101cb",
+          "body_sha256": "d7b5c87ac3c30e3b6cd8d9f2ff7267624525f2b877a0191a698c28e29935c6ed",
+          "lock_id": "s10-lock-d7b5c87ac3c30e3b6cd8d9f2ff7267624525f2b877a0191a698c28e29935c6ed"
+        },
+        "environment": {
+          "path": "agent_run/260725-ductile-factorized-guidance-s0-s1-recovery/milestones/S10/r8-parent-lock/retired/study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10-environment.json",
+          "raw_sha256": "dc1d8b5fd3959979ddaf1f61bd79f7e57b1ad502e39db65ee306327999bb762e"
+        },
+        "closure": {
+          "path": "agent_run/260725-ductile-factorized-guidance-s0-s1-recovery/milestones/S10/r8-parent-lock/manifests/parent-closure.json",
+          "raw_sha256": "ae9a1d3469b6e2adb917e9cae543658893b4998c79b2a57610a3dbbdf61dc750"
+        },
+        "failure": {
+          "path": "agent_run/260725-ductile-factorized-guidance-s0-s1-recovery/milestones/S10/r8-parent-lock/manifests/failure.json",
+          "raw_sha256": "b73732285050595789bc8333686effc8287f518b271b64ac52555b43b3457d01"
+        },
+        "absence": {
+          "path": "agent_run/260725-ductile-factorized-guidance-s0-s1-recovery/milestones/S10/r8-parent-lock/manifests/absence.json",
+          "raw_sha256": "b268e4ddfc0092692046de78d9edcb661a41bb2c268199d125060605826a59e0"
+        },
+        "seal": {
+          "path": "agent_run/260725-ductile-factorized-guidance-s0-s1-recovery/milestones/S10/r8-parent-lock/manifests/seal.json",
+          "raw_sha256": "e6281b219149c70d5981af7306875ff1c1e8d7e07e645c9fd0a8dd1f7b6fcf26"
+        },
+        "raw_tree": {
+          "path": "agent_run/260725-ductile-factorized-guidance-s0-s1-recovery/milestones/S10/r8-parent-lock/raw/final-prelock-r7",
+          "tree_canonical_sha256": "f8b1f8fbb175f08813e9e897435939656291e7e2a205dba4983f1b9d220e3489",
+          "entry_count": 11767,
+          "regular_file_bytes": 12278622411
+        }
+      }
+    },
+    "r8_recovery_authority": {
+      "const": {
+        "path": "agent_run/260725-ductile-factorized-guidance-s0-s1-recovery/adjudication.md",
+        "raw_sha256": "095b3021416a555032b660fe926e9995aad260e88ca6233a99b0b1ee9f3c5c59"
+      }
+    },
+    "r9_parent_lock": {
+      "const": {
+        "generation": "successor-001",
+        "archive_root": "agent_run/260725-ductile-factorized-guidance-s0-s1-recovery/milestones/S10/r9-successor-001-lock",
+        "transition_id": "s10-transition-f3a3ecd6bc393877aca044e2784d97ea62988c17d0ea2b09ba9fea857b177ed3",
+        "claim": {
+          "path": "agent_run/260725-ductile-factorized-guidance-s0-s1-recovery/milestones/S10/r9-successor-001-lock/claims/s10-lock-c04c6a827bc6dc204fc46b9b4a7d1ed46896ef5f51996a0853a3abad26bb1e33.json",
+          "raw_sha256": "a452f68d1233eea84e6164c9d43ced524d658bcd172564cd4be256a8136a06ad"
+        },
+        "lock": {
+          "path": "agent_run/260725-ductile-factorized-guidance-s0-s1-recovery/milestones/S10/r9-successor-001-lock/retired/study_docs/research/ductile-origami-warmstart/protocol/v1/locks/s10-stage1-entry-lock.json",
+          "raw_sha256": "590912852b27d84e4992d844de3b65e544b96aeda947c0aa7a80d295d16e4b28",
+          "body_sha256": "c04c6a827bc6dc204fc46b9b4a7d1ed46896ef5f51996a0853a3abad26bb1e33",
+          "lock_id": "s10-lock-c04c6a827bc6dc204fc46b9b4a7d1ed46896ef5f51996a0853a3abad26bb1e33"
+        },
+        "environment": {
+          "path": "agent_run/260725-ductile-factorized-guidance-s0-s1-recovery/milestones/S10/r9-successor-001-lock/retired/study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10-environment.json",
+          "raw_sha256": "e59d2d5cf7e4d31d12c1e761674540c7eee8dd7297e7567f4a0b19291fa7bafb"
+        },
+        "closure": {
+          "path": "agent_run/260725-ductile-factorized-guidance-s0-s1-recovery/milestones/S10/r9-successor-001-lock/manifests/parent-closure.json",
+          "raw_sha256": "e1ace1236f09f735f7bcd72565d7957d8c778df33e6cf97e55dbc131541d2519"
+        },
+        "failure": {
+          "path": "agent_run/260725-ductile-factorized-guidance-s0-s1-recovery/milestones/S10/r9-successor-001-lock/manifests/failure.json",
+          "raw_sha256": "c892d3061db6bfdeadb2e1abd770ba9e7f3020a53372be8c0e7cc8db3b994c3d"
+        },
+        "absence": {
+          "path": "agent_run/260725-ductile-factorized-guidance-s0-s1-recovery/milestones/S10/r9-successor-001-lock/manifests/absence.json",
+          "raw_sha256": "b4bfb72fda228347d8804b5233eaeb3845c11b6e62d7b5b5e976aec5b57dbbeb"
+        },
+        "rehash": {
+          "path": "agent_run/260725-ductile-factorized-guidance-s0-s1-recovery/milestones/S10/r9-successor-001-lock/audit/independent-full-rehash.json",
+          "raw_sha256": "f44d92e05c2995ad5e91209779da2041b4abb6e458ce283d084fd547d19bff8e"
+        },
+        "seal": {
+          "path": "agent_run/260725-ductile-factorized-guidance-s0-s1-recovery/milestones/S10/r9-successor-001-lock/manifests/seal.json",
+          "raw_sha256": "8a86d633e960d43a6eb8f9fe8ede937762479101d30f5a58beef2ece0a19869b"
+        },
+        "raw_tree": {
+          "path": "agent_run/260725-ductile-factorized-guidance-s0-s1-recovery/milestones/S10/r9-successor-001-lock/raw/final-prelock-r8-successor-001",
+          "tree_canonical_sha256": "bc99fb3a13ee74a118c3f75fff1d18387b1738e8a99cd1af34e660441c88bf65",
+          "entry_count": 11788,
+          "regular_file_bytes": 12279134329
+        }
+      }
+    },
+    "r9_recovery_authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "raw_sha256"],
+      "properties": {
+        "path": {
+          "const": "agent_run/260725-ductile-factorized-guidance-s0-s1-recovery/milestones/S10/final-prelock-r9-successor-002/authority/r9-adjudication.md"
+        },
+        "raw_sha256": {
+          "const": "46dee6a54eb0deeb69b0e166f2406bbeed18d57300610e9a4be49af0de55d1ea"
+        }
+      }
+    },
+    "r10_parent_lock": {
+      "const": {
+        "generation": "successor-002",
+        "archive_root": "agent_run/260725-ductile-factorized-guidance-s0-s1-recovery/milestones/S10/r10-successor-002-lock",
+        "transition_id": "s10-transition-6241204f902c6a37db47a405e1b7389e34c3614d7d5290257358b5d994eef7ea",
+        "claim": {
+          "path": "agent_run/260725-ductile-factorized-guidance-s0-s1-recovery/milestones/S10/r10-successor-002-lock/claims/s10-lock-2a1e31d88538791ed8abe5f37f67f81be7d032a1575da2a872928ad15e66d81a.json",
+          "raw_sha256": "9f51a2ad22556d1e8e817bd35ca140db7ed53b5a97a05bca1662d8663c85e14d"
+        },
+        "lock": {
+          "path": "agent_run/260725-ductile-factorized-guidance-s0-s1-recovery/milestones/S10/r10-successor-002-lock/retired/study_docs/research/ductile-origami-warmstart/protocol/v1/locks/s10-stage1-entry-lock.json",
+          "raw_sha256": "ab475892cdb15fe85c854ff89a2a92d0ed945ab630da8fdefbad75b5ba47f3f3",
+          "body_sha256": "2a1e31d88538791ed8abe5f37f67f81be7d032a1575da2a872928ad15e66d81a",
+          "lock_id": "s10-lock-2a1e31d88538791ed8abe5f37f67f81be7d032a1575da2a872928ad15e66d81a"
+        },
+        "environment": {
+          "path": "agent_run/260725-ductile-factorized-guidance-s0-s1-recovery/milestones/S10/r10-successor-002-lock/retired/study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10-environment.json",
+          "raw_sha256": "af4c58941102b6a26d1b473033c17a0d6bbf9ae80d986555d9212e54f79197a1"
+        },
+        "closure": {
+          "path": "agent_run/260725-ductile-factorized-guidance-s0-s1-recovery/milestones/S10/r10-successor-002-lock/manifests/parent-closure.json",
+          "raw_sha256": "766e742e0d3957a13887f9bb51294c707f8dcd1633dfa7cd39073cadaf86c554"
+        },
+        "failure": {
+          "path": "agent_run/260725-ductile-factorized-guidance-s0-s1-recovery/milestones/S10/r10-successor-002-lock/manifests/failure.json",
+          "raw_sha256": "b6820f29015d5123c8eae18ff67132482ee843ab6fa1c619226b1456ac736854"
+        },
+        "absence": {
+          "path": "agent_run/260725-ductile-factorized-guidance-s0-s1-recovery/milestones/S10/r10-successor-002-lock/manifests/absence.json",
+          "raw_sha256": "ac950e07f90532fc17c2bf56a308a6483570d992c0fdb12198f866973f9f90bd"
+        },
+        "rehash": {
+          "path": "agent_run/260725-ductile-factorized-guidance-s0-s1-recovery/milestones/S10/r10-successor-002-lock/audit/independent-full-rehash.json",
+          "raw_sha256": "df09ea1ef5bb1eced8863da0cde61df0e66a75dbb83da2c211fad15af2344079"
+        },
+        "seal": {
+          "path": "agent_run/260725-ductile-factorized-guidance-s0-s1-recovery/milestones/S10/r10-successor-002-lock/manifests/seal.json",
+          "raw_sha256": "2b39f47c6603b44d9d8e8499f58b9d161dff7139d5411cfb9e81c4a3a0bac466"
+        },
+        "raw_tree": {
+          "path": "agent_run/260725-ductile-factorized-guidance-s0-s1-recovery/milestones/S10/r10-successor-002-lock/raw/final-prelock-r9-successor-002",
+          "tree_canonical_sha256": "088fd008995448bd3d99538acb0bc5e60391ff05e0da51ece6adae14a1dd1e19",
+          "entry_count": 11792,
+          "regular_file_bytes": 12279373335
+        }
+      }
+    },
+    "r10_recovery_authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "raw_sha256"],
+      "properties": {
+        "path": {
+          "const": "agent_run/260725-ductile-factorized-guidance-s0-s1-recovery/milestones/S10/final-prelock-r10-successor-003/authority/r10-adjudication.md"
+        },
+        "raw_sha256": {
+          "const": "d0166dd259b9227df440e124afc49da1baba36e5dbfc66bd7796c0cbff0118df"
+        }
+      }
+    },
+    "authorities": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ductile", "geko", "merge_base"],
+      "properties": {
+        "ductile": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["ref", "commit", "commit_tree", "trees"],
+          "properties": {
+            "ref": {"const": "refs/remotes/origin/ductile_integration"},
+            "commit": {"const": "5d6bdc8a6438b5fc73a96e46a907f9a5b1cd4e39"},
+            "commit_tree": {"$ref": "#/$defs/git_oid"},
+            "trees": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "projects/hipblaslt",
+                "projects/hipblaslt/tensilelite",
+                "projects/hipblaslt/tensilelite/rocisa",
+                "shared/origami",
+                "shared/stinkytofu"
+              ],
+              "properties": {
+                "projects/hipblaslt": {"const": "d8d72b3f3262a4feac63099c1ae12f699c52a808"},
+                "projects/hipblaslt/tensilelite": {"const": "0bc3b63205f3aa5e62b64d0302726e7f5177527d"},
+                "projects/hipblaslt/tensilelite/rocisa": {"const": "db94c6621fbe545e6ac410bbdcb564e83eb805f0"},
+                "shared/origami": {"const": "17663aaba3c7b6e9c68c7e0b5e7f639422242fa4"},
+                "shared/stinkytofu": {"const": "628e1de27adba9a8936208564d6f2a401d63d612"}
+              }
+            }
+          }
+        },
+        "geko": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "ref", "commit", "commit_tree", "utility_tree",
+            "template_path", "template_blob", "template_raw_sha256"
+          ],
+          "properties": {
+            "ref": {"const": "refs/remotes/origin/users/pkamd/geko_pr"},
+            "commit": {"const": "d32abacfd13579d1f523f035b7a10b0734c4ac47"},
+            "commit_tree": {"$ref": "#/$defs/git_oid"},
+            "utility_tree": {"const": "c9d28b254face6463c44a526782033ed5632a4c8"},
+            "template_path": {"const": "projects/hipblaslt/utilities/geko/geko/config_generator/config.yaml"},
+            "template_blob": {"const": "e9bae943716ae380129d7314de448fc5cc9f26ed"},
+            "template_raw_sha256": {"const": "e12e22b4ede4263ccc549ca0d19e0bb68b2efc10b70462ed8ba7a6749af7dc6e"}
+          }
+        },
+        "merge_base": {"const": "8f2bacb6cfc3ada0697f20bf271743d94c2d325f"}
+      }
+    },
+    "device_identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "container_visible_index", "unique_id", "serial_number", "pci_bus",
+        "arch", "compute_partition", "memory_partition"
+      ],
+      "properties": {
+        "container_visible_index": {"type": "integer", "minimum": 0},
+        "unique_id": {"type": "string", "minLength": 4},
+        "serial_number": {"type": "string", "minLength": 1},
+        "pci_bus": {"type": "string", "pattern": "^[0-9A-Fa-f]{4}:[0-9A-Fa-f]{2}:[0-9A-Fa-f]{2}\\.[0-7]$"},
+        "arch": {"const": "gfx942"},
+        "compute_partition": {"const": "SPX"},
+        "memory_partition": {"const": "NPS1"}
+      }
+    },
+    "h4_sample_device": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "identity", "gpu_use_percent", "vram_allocation_percent",
+        "vram_used_bytes", "vram_total_bytes", "mapped_kfd_pids",
+        "eligible", "ineligibility_reasons"
+      ],
+      "properties": {
+        "identity": {"$ref": "#/$defs/device_identity"},
+        "gpu_use_percent": {"type": "number", "minimum": 0, "maximum": 100},
+        "vram_allocation_percent": {"type": "number", "minimum": 0, "maximum": 100},
+        "vram_used_bytes": {"type": "integer", "minimum": 0},
+        "vram_total_bytes": {"type": "integer", "minimum": 1},
+        "mapped_kfd_pids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "integer", "minimum": 1}
+        },
+        "eligible": {"type": "boolean"},
+        "ineligibility_reasons": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "h4_sample": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sample_index", "captured_at", "seconds_since_previous",
+        "device_command", "process_command", "devices"
+      ],
+      "properties": {
+        "sample_index": {"type": "integer", "minimum": 0, "maximum": 2},
+        "captured_at": {"$ref": "#/$defs/timestamp"},
+        "seconds_since_previous": {
+          "oneOf": [
+            {"type": "null"},
+            {"type": "number", "minimum": 2}
+          ]
+        },
+        "device_command": {"$ref": "#/$defs/command_record"},
+        "process_command": {"$ref": "#/$defs/command_record"},
+        "devices": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/h4_sample_device"}
+        }
+      }
+    },
+    "h4_record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version", "kind", "checkpoint_id", "container",
+        "availability_mode", "tool_version", "tool_command", "policy",
+        "samples", "selected_device", "selection_key", "claim_limitations"
+      ],
+      "properties": {
+        "schema_version": {"const": "1.0.0"},
+        "kind": {"const": "s10_h4_live_availability"},
+        "checkpoint_id": {"const": "S10"},
+        "container": {"const": "perlee"},
+        "availability_mode": {"const": "live_unreserved"},
+        "tool_version": {"type": "string", "minLength": 1},
+        "tool_command": {"$ref": "#/$defs/command_record"},
+        "policy": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "sample_count", "minimum_sample_spacing_seconds", "arch",
+            "compute_partition", "memory_partition", "gpu_use_percent",
+            "maximum_vram_allocation_percent", "mapped_kfd_pid_count",
+            "selection_key", "maximum_complete_attempts",
+            "maximum_during_sample_period_seconds"
+          ],
+          "properties": {
+            "sample_count": {"const": 3},
+            "minimum_sample_spacing_seconds": {"const": 2},
+            "arch": {"const": "gfx942"},
+            "compute_partition": {"const": "SPX"},
+            "memory_partition": {"const": "NPS1"},
+            "gpu_use_percent": {"const": 0},
+            "maximum_vram_allocation_percent": {"const": 1},
+            "mapped_kfd_pid_count": {"const": 0},
+            "selection_key": {"const": ["maximum_sampled_vram_used_bytes", "container_visible_index", "unique_id"]},
+            "maximum_complete_attempts": {"const": 3},
+            "maximum_during_sample_period_seconds": {"const": 1}
+          }
+        },
+        "samples": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {"$ref": "#/$defs/h4_sample"}
+        },
+        "selected_device": {"$ref": "#/$defs/device_identity"},
+        "selection_key": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {
+            "oneOf": [
+              {"type": "integer", "minimum": 0},
+              {"type": "string", "minLength": 4}
+            ]
+          }
+        },
+        "claim_limitations": {
+          "const": [
+            "Observed availability only; no reservation or exclusivity claim",
+            "No future-availability or five-day-budget claim",
+            "Residual sub-sample contention may remain undetected"
+          ]
+        }
+      }
+    },
+    "command_record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "argv", "cwd", "environment", "started_at", "ended_at",
+        "exit_code", "stdout", "stderr"
+      ],
+      "properties": {
+        "argv": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+        "cwd": {"type": "string", "minLength": 1},
+        "environment": {"type": "object"},
+        "started_at": {"$ref": "#/$defs/timestamp"},
+        "ended_at": {"$ref": "#/$defs/timestamp"},
+        "exit_code": {"type": "integer"},
+        "stdout": {"$ref": "#/$defs/log_ref"},
+        "stderr": {"$ref": "#/$defs/log_ref"}
+      }
+    },
+    "log_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "raw_sha256", "bytes"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "raw_sha256": {"$ref": "#/$defs/sha256"},
+        "bytes": {"type": "integer", "minimum": 0}
+      }
+    },
+    "mapping_candidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "slot", "pattern", "coverage_reason", "indices", "values", "config_hash"
+      ],
+      "properties": {
+        "slot": {"type": "integer", "minimum": 0, "maximum": 9},
+        "pattern": {"type": "string", "minLength": 1},
+        "coverage_reason": {"type": "string", "minLength": 1},
+        "indices": {"type": "object", "minProperties": 1, "additionalProperties": {"type": "integer", "minimum": 0}},
+        "values": {"type": "object", "minProperties": 1},
+        "config_hash": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version", "kind", "checkpoint_id", "status", "objective",
+        "authorities", "adjudication", "artifact_role", "implementation_whitelist",
+        "delivery_whitelist", "forbidden_roots", "input_derivation", "integration",
+        "native_build", "generation", "consumption", "size_selection",
+        "mapping_selection", "h4", "lock_lifecycle", "mapping", "smoke",
+        "noise", "decision", "raw_artifact_layout", "report_target"
+      ],
+      "properties": {
+        "schema_version": {"const": "1.0.0"},
+        "kind": {"const": "s10_entry_contract"},
+        "checkpoint_id": {"const": "S10"},
+        "status": {"const": "pre_registered"},
+        "objective": {"type": "string", "minLength": 1},
+        "authorities": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["s00_closure_commit", "ductile_ref", "ductile_commit", "geko_ref", "geko_commit"],
+          "properties": {
+            "s00_closure_commit": {"const": "8d1be2af3e5033ee74a1a8e3b31536f132a014cb"},
+            "ductile_ref": {"const": "refs/remotes/origin/ductile_integration"},
+            "ductile_commit": {"const": "5d6bdc8a6438b5fc73a96e46a907f9a5b1cd4e39"},
+            "geko_ref": {"const": "refs/remotes/origin/users/pkamd/geko_pr"},
+            "geko_commit": {"const": "d32abacfd13579d1f523f035b7a10b0734c4ac47"}
+          }
+        },
+        "adjudication": {"type": "object"},
+        "artifact_role": {"type": "object"},
+        "implementation_whitelist": {"$ref": "#/$defs/implementation_whitelist"},
+        "delivery_whitelist": {"$ref": "#/$defs/delivery_whitelist"},
+        "forbidden_roots": {"$ref": "#/$defs/forbidden_roots"},
+        "input_derivation": {"type": "object"},
+        "integration": {"type": "object"},
+        "native_build": {"type": "object"},
+        "generation": {"type": "object"},
+        "consumption": {"type": "object"},
+        "size_selection": {"type": "object"},
+        "mapping_selection": {"type": "object"},
+        "h4": {"type": "object"},
+        "lock_lifecycle": {"type": "object"},
+        "mapping": {"type": "object"},
+        "smoke": {"type": "object"},
+        "noise": {"type": "object"},
+        "decision": {"type": "object"},
+        "raw_artifact_layout": {"type": "string", "minLength": 1},
+        "report_target": {"const": "study_docs/research/ductile-origami-warmstart/reports/staged/s10-stage1-entry-gate-report.md"}
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version", "kind", "checkpoint_id", "status", "created_at",
+        "generation", "evidence_reuse", "parent_lock", "recovery_authority",
+        "authorities", "template", "derived_input", "runs", "generation_parity",
+        "actual_yaml", "raw_fields", "consumption", "mapping_selection", "exclusions"
+      ],
+      "properties": {
+        "schema_version": {"const": "1.0.0"},
+        "kind": {"const": "s10_yaml_provenance"},
+        "checkpoint_id": {"const": "S10"},
+        "status": {"const": "prelock_complete"},
+        "created_at": {"$ref": "#/$defs/timestamp"},
+        "generation": {"const": "successor-003"},
+        "evidence_reuse": {"const": false},
+        "parent_lock": {"$ref": "#/$defs/r10_parent_lock"},
+        "recovery_authority": {"$ref": "#/$defs/r10_recovery_authority"},
+        "authorities": {"$ref": "#/$defs/authorities"},
+        "template": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["path", "blob", "raw_sha256"],
+          "properties": {
+            "path": {"const": "projects/hipblaslt/utilities/geko/geko/config_generator/config.yaml"},
+            "blob": {"const": "e9bae943716ae380129d7314de448fc5cc9f26ed"},
+            "raw_sha256": {"const": "e12e22b4ede4263ccc549ca0d19e0bb68b2efc10b70462ed8ba7a6749af7dc6e"}
+          }
+        },
+        "derived_input": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["path", "raw_sha256", "derivation"],
+          "properties": {
+            "path": {"type": "string", "minLength": 1},
+            "raw_sha256": {"$ref": "#/$defs/sha256"},
+            "derivation": {"type": "object"}
+          }
+        },
+        "runs": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "tag", "integration", "integration_semantic", "native", "generation",
+              "integration_manifest_sha256", "integration_wrapper_sha256", "native_binary_sha256",
+              "generation_manifest_sha256", "imports"
+            ],
+            "properties": {
+              "tag": {"enum": ["a", "b"]},
+              "integration": {"$ref": "#/$defs/artifact_ref"},
+              "integration_semantic": {"$ref": "#/$defs/artifact_ref"},
+              "native": {"$ref": "#/$defs/artifact_ref"},
+              "generation": {"$ref": "#/$defs/artifact_ref"},
+              "integration_manifest_sha256": {"$ref": "#/$defs/sha256"},
+              "integration_wrapper_sha256": {"$ref": "#/$defs/sha256"},
+              "native_binary_sha256": {"$ref": "#/$defs/sha256"},
+              "generation_manifest_sha256": {"$ref": "#/$defs/sha256"},
+              "imports": {"type": "object", "minProperties": 1}
+            }
+          }
+        },
+        "generation_parity": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "complete_manifest_identical", "manifest_sha256",
+            "qualifying_count_per_run", "qualifying_relative_path"
+          ],
+          "properties": {
+            "complete_manifest_identical": {"const": true},
+            "manifest_sha256": {"$ref": "#/$defs/sha256"},
+            "qualifying_count_per_run": {"const": [1, 1]},
+            "qualifying_relative_path": {"type": "string", "pattern": "\\.ya?ml$"}
+          }
+        },
+        "actual_yaml": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "run_a_path", "run_b_path", "tracked_copy_path", "run_a_raw_sha256",
+            "run_b_raw_sha256", "tracked_copy_raw_sha256", "byte_copy_only",
+            "artifact_role"
+          ],
+          "properties": {
+            "run_a_path": {"type": "string"},
+            "run_b_path": {"type": "string"},
+            "tracked_copy_path": {"const": "study_docs/research/ductile-origami-warmstart/protocol/v1/inputs/s10-generated.yaml"},
+            "run_a_raw_sha256": {"$ref": "#/$defs/sha256"},
+            "run_b_raw_sha256": {"$ref": "#/$defs/sha256"},
+            "tracked_copy_raw_sha256": {"$ref": "#/$defs/sha256"},
+            "byte_copy_only": {"const": true},
+            "artifact_role": {"const": "fresh experimental actual fixture"}
+          }
+        },
+        "raw_fields": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "architecture", "backend_name", "data_type", "dest_data_type",
+            "compute_data_type", "transpose_a", "transpose_b", "batched",
+            "n_elements_to_validate", "soo"
+          ],
+          "properties": {
+            "architecture": {"const": "gfx942"},
+            "backend_name": {"const": "Ductile"},
+            "data_type": {"const": "B"},
+            "dest_data_type": {"const": "B"},
+            "compute_data_type": {"const": "S"},
+            "transpose_a": {"const": false},
+            "transpose_b": {"const": false},
+            "batched": {"const": true},
+            "n_elements_to_validate": {"type": "integer", "minimum": 1},
+            "soo": {"type": "boolean"}
+          }
+        },
+        "consumption": {"type": "object"},
+        "mapping_selection": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "ordered_axis_schema", "axis_order", "axis_order_sha256",
+            "ordered_axis_records_sha256", "legacy_space_map_sha256",
+            "selection_rule", "candidates", "candidate_hashes", "anchor_rule",
+            "anchor_hashes", "coverage"
+          ],
+          "properties": {
+            "ordered_axis_schema": {"const": "s10_ordered_axis_records_v1"},
+            "axis_order": {
+              "const": [
+                "TransposeLDS", "GlobalReadVectorWidthA", "GlobalReadVectorWidthB",
+                "WaveSeparateGlobalReadA", "WaveSeparateGlobalReadB",
+                "UnrollLoopSwapGlobalReadOrder", "PrefetchGlobalRead",
+                "DirectToVgprA", "StaggerU", "StaggerUStride",
+                "WorkGroupMapping", "WorkGroupMappingXCC", "1LDSBuffer", "DepthU",
+                "NonTemporalD", "NonTemporalC", "NonTemporalA", "NonTemporalB",
+                "SourceSwap", "StorePriorityOpt", "NumElementsPerBatchStore",
+                "StoreSyncOpt", "MIArchVgpr", "AdaptiveGemm",
+                "ExtraMiLatencyLeft", "TailloopInNll", "ScheduleGROverBarrier",
+                "group_0", "group_1", "group_2"
+              ]
+            },
+            "axis_order_sha256": {"const": "926a6d9502546dda22ea2edc483c0f61ef74b3e378bcf32f222f17130bb668a3"},
+            "ordered_axis_records_sha256": {"$ref": "#/$defs/sha256"},
+            "legacy_space_map_sha256": {"const": "5785871bc0779fb67627943ef2ed5fde8e96647be7e0bb0db4f770473cd7a1a0"},
+            "selection_rule": {"type": "array", "minItems": 8, "items": {"type": "string"}},
+            "candidates": {"type": "array", "minItems": 10, "maxItems": 10, "items": {"$ref": "#/$defs/mapping_candidate"}},
+            "candidate_hashes": {"type": "array", "minItems": 10, "maxItems": 10, "uniqueItems": true, "items": {"$ref": "#/$defs/sha256"}},
+            "anchor_rule": {"const": "sorted hashes at indices 0,4,9"},
+            "anchor_hashes": {"type": "array", "minItems": 3, "maxItems": 3, "uniqueItems": true, "items": {"$ref": "#/$defs/sha256"}},
+            "coverage": {"type": "object"}
+          }
+        },
+        "exclusions": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "compatibility_probes_reused", "build_3_reused", "build_2_rejected",
+            "current_checkout_imported", "installed_rocisa_used",
+            "production_or_deployment_claim"
+          ],
+          "properties": {
+            "compatibility_probes_reused": {"const": false},
+            "build_3_reused": {"const": false},
+            "build_2_rejected": {"const": true},
+            "current_checkout_imported": {"const": false},
+            "installed_rocisa_used": {"const": false},
+            "production_or_deployment_claim": {"const": false}
+          }
+        }
+      }
+    },
+    "size_registry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version", "kind", "checkpoint_id", "status", "raw_rows",
+        "raw_row_count", "deduplication_rule", "distinct_source_order",
+        "distinct_count", "selection_key", "selection_indices", "selected_sizes",
+        "dtype_layout", "same_space", "same_space_parity"
+      ],
+      "properties": {
+        "schema_version": {"const": "1.0.0"},
+        "kind": {"const": "s10_size_registry"},
+        "checkpoint_id": {"const": "S10"},
+        "status": {"const": "prelock_complete"},
+        "raw_rows": {"type": "array", "minItems": 17, "maxItems": 17, "items": {"$ref": "#/$defs/size"}},
+        "raw_row_count": {"const": 17},
+        "deduplication_rule": {"const": "first occurrence by exact (M,N,batch,K) tuple"},
+        "distinct_source_order": {"type": "array", "minItems": 3, "uniqueItems": true, "items": {"$ref": "#/$defs/size"}},
+        "distinct_count": {"type": "integer", "minimum": 3},
+        "selection_key": {"const": ["K", "M*N*batch", "M", "N", "batch"]},
+        "selection_indices": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "uniqueItems": true,
+          "items": {"type": "integer", "minimum": 0}
+        },
+        "selected_sizes": {"type": "array", "minItems": 3, "maxItems": 3, "uniqueItems": true, "items": {"$ref": "#/$defs/size"}},
+        "dtype_layout": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["data_type", "dest_data_type", "compute_data_type", "transpose_a", "transpose_b", "batched"],
+          "properties": {
+            "data_type": {"const": "B"},
+            "dest_data_type": {"const": "B"},
+            "compute_data_type": {"const": "S"},
+            "transpose_a": {"const": false},
+            "transpose_b": {"const": false},
+            "batched": {"const": true}
+          }
+        },
+        "same_space": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["raw_yaml_sha256", "search_space_map_sha256", "groups_sha256", "candidate_order_sha256", "weights_sha256"],
+          "properties": {
+            "raw_yaml_sha256": {"$ref": "#/$defs/sha256"},
+            "search_space_map_sha256": {"$ref": "#/$defs/sha256"},
+            "groups_sha256": {"$ref": "#/$defs/sha256"},
+            "candidate_order_sha256": {"$ref": "#/$defs/sha256"},
+            "weights_sha256": {"$ref": "#/$defs/sha256"}
+          }
+        },
+        "same_space_parity": {"const": true}
+      }
+    },
+    "environment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version", "kind", "checkpoint_id", "status", "created_at",
+        "container", "repo_mount", "arch", "availability_mode",
+        "selected_device", "h4",
+        "tool_identities", "prohibitions"
+      ],
+      "properties": {
+        "schema_version": {"const": "1.0.0"},
+        "kind": {"const": "s10_environment"},
+        "checkpoint_id": {"const": "S10"},
+        "status": {"const": "prelock_complete"},
+        "created_at": {"$ref": "#/$defs/timestamp"},
+        "container": {"const": "perlee"},
+        "repo_mount": {"const": "/src/rocm-libraries"},
+        "arch": {"const": "gfx942"},
+        "availability_mode": {"const": "live_unreserved"},
+        "selected_device": {"$ref": "#/$defs/device_identity"},
+        "h4": {"$ref": "#/$defs/h4_record"},
+        "tool_identities": {"type": "array", "minItems": 2, "maxItems": 2, "items": {"$ref": "#/$defs/artifact_ref"}},
+        "prohibitions": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["network_fetch", "dependency_install", "container_mutation", "other_container_access"],
+          "properties": {
+            "network_fetch": {"const": true},
+            "dependency_install": {"const": true},
+            "container_mutation": {"const": true},
+            "other_container_access": {"const": true}
+          }
+        }
+      }
+    },
+    "lock": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version", "kind", "checkpoint_id", "state", "created_at",
+        "generation", "evidence_reuse", "parent_lock", "recovery_authority",
+        "s00_closure_commit", "authorities", "adjudication",
+        "plan_a", "plan_b", "implementation_whitelist", "delivery_whitelist", "forbidden_roots",
+        "bound_files", "integration_manifests", "native_manifests",
+        "generation_manifests", "actual_yaml_sha256", "size_registry_sha256",
+        "environment_sha256", "h4_semantic_sha256", "mapping_candidates",
+        "anchor_hashes", "device", "noise_schedule", "report_target",
+        "body_sha256", "lock_id"
+      ],
+      "properties": {
+        "schema_version": {"const": "1.0.0"},
+        "kind": {"const": "s10_stage1_entry_lock"},
+        "checkpoint_id": {"const": "S10"},
+        "state": {"const": "effective"},
+        "created_at": {"$ref": "#/$defs/timestamp"},
+        "generation": {"const": "successor-003"},
+        "evidence_reuse": {"const": false},
+        "parent_lock": {"$ref": "#/$defs/r10_parent_lock"},
+        "recovery_authority": {"$ref": "#/$defs/r10_recovery_authority"},
+        "s00_closure_commit": {"const": "8d1be2af3e5033ee74a1a8e3b31536f132a014cb"},
+        "authorities": {"$ref": "#/$defs/authorities"},
+        "adjudication": {"$ref": "#/$defs/artifact_ref"},
+        "plan_a": {"$ref": "#/$defs/artifact_ref"},
+        "plan_b": {"$ref": "#/$defs/artifact_ref"},
+        "implementation_whitelist": {"$ref": "#/$defs/implementation_whitelist"},
+        "delivery_whitelist": {"$ref": "#/$defs/delivery_whitelist"},
+        "forbidden_roots": {"$ref": "#/$defs/forbidden_roots"},
+        "bound_files": {"type": "array", "minItems": 8, "items": {"$ref": "#/$defs/artifact_ref"}},
+        "integration_manifests": {"type": "array", "minItems": 2, "maxItems": 2, "items": {"type": "object"}},
+        "native_manifests": {"type": "array", "minItems": 2, "maxItems": 2, "items": {"type": "object"}},
+        "generation_manifests": {"type": "array", "minItems": 2, "maxItems": 2, "items": {"type": "object"}},
+        "actual_yaml_sha256": {"$ref": "#/$defs/sha256"},
+        "size_registry_sha256": {"$ref": "#/$defs/sha256"},
+        "environment_sha256": {"$ref": "#/$defs/sha256"},
+        "h4_semantic_sha256": {"$ref": "#/$defs/sha256"},
+        "mapping_candidates": {"type": "array", "minItems": 10, "maxItems": 10, "items": {"$ref": "#/$defs/mapping_candidate"}},
+        "anchor_hashes": {"type": "array", "minItems": 3, "maxItems": 3, "uniqueItems": true, "items": {"$ref": "#/$defs/sha256"}},
+        "device": {"$ref": "#/$defs/device_identity"},
+        "noise_schedule": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "anchors", "sizes", "repeats", "observations_per_level", "levels",
+            "cv_p95_threshold", "warmup_policy", "balanced_order_seed"
+          ],
+          "properties": {
+            "anchors": {"const": 3},
+            "sizes": {"const": 3},
+            "repeats": {"const": 7},
+            "observations_per_level": {"const": 63},
+            "levels": {"const": [1, 2, 4]},
+            "cv_p95_threshold": {"const": 0.005},
+            "warmup_policy": {"type": "string", "minLength": 1},
+            "balanced_order_seed": {"type": "integer", "minimum": 0}
+          }
+        },
+        "report_target": {"const": "study_docs/research/ductile-origami-warmstart/reports/staged/s10-stage1-entry-gate-report.md"},
+        "body_sha256": {"$ref": "#/$defs/sha256"},
+        "lock_id": {"type": "string", "pattern": "^s10-lock-[0-9a-f]{64}$"}
+      }
+    },
+    "mapping_row": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "config_hash", "size", "raw_indices", "raw_values", "expanded_groups",
+        "resolved_solution", "codegen_identity", "size_mapping", "effective_gsu",
+        "resolved_sentinels", "formocast_input", "field_provenance", "status",
+        "rejection", "prediction", "tie"
+      ],
+      "properties": {
+        "config_hash": {"$ref": "#/$defs/sha256"},
+        "size": {"$ref": "#/$defs/size"},
+        "raw_indices": {"type": "object"},
+        "raw_values": {"type": "object"},
+        "expanded_groups": {"type": "object"},
+        "resolved_solution": {"type": ["object", "null"]},
+        "codegen_identity": {"type": ["object", "null"]},
+        "size_mapping": {"type": ["object", "null"]},
+        "effective_gsu": {"type": ["integer", "null"], "minimum": 1},
+        "resolved_sentinels": {"type": "object"},
+        "formocast_input": {"type": ["object", "null"]},
+        "field_provenance": {"type": "object"},
+        "status": {"enum": ["accepted", "rejected"]},
+        "rejection": {
+          "oneOf": [
+            {"type": "null"},
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "stage", "reason_code", "reason_text",
+                "internal_subreason", "log_sha256"
+              ],
+              "properties": {
+                "stage": {
+                  "enum": ["solution_resolution", "post_codegen", "formocast"]
+                },
+                "reason_code": {
+                  "enum": [
+                    "pinned_validation_boundary_none",
+                    "canonical_duplicate_kernel",
+                    "pinned_codegen_nonzero",
+                    "formocast_nonfinite_prediction"
+                  ]
+                },
+                "reason_text": {"type": "string", "minLength": 1},
+                "internal_subreason": {"type": "string", "minLength": 1},
+                "log_sha256": {"$ref": "#/$defs/sha256"}
+              },
+              "allOf": [
+                {
+                  "if": {"properties": {"stage": {"const": "solution_resolution"}}},
+                  "then": {
+                    "properties": {
+                      "reason_code": {"const": "pinned_validation_boundary_none"},
+                      "internal_subreason": {"const": "internal_subreason_unknown"}
+                    }
+                  }
+                },
+                {
+                  "if": {"properties": {"reason_code": {"const": "canonical_duplicate_kernel"}}},
+                  "then": {
+                    "properties": {
+                      "stage": {"const": "post_codegen"},
+                      "internal_subreason": {"const": "canonical_getKernelFileBase_visited_set"}
+                    }
+                  }
+                },
+                {
+                  "if": {"properties": {"reason_code": {"const": "pinned_codegen_nonzero"}}},
+                  "then": {
+                    "properties": {
+                      "stage": {"const": "post_codegen"},
+                      "internal_subreason": {"type": "string", "pattern": "^-?[0-9]+(?:,-?[0-9]+)*$"}
+                    }
+                  }
+                },
+                {
+                  "if": {"properties": {"stage": {"const": "formocast"}}},
+                  "then": {
+                    "properties": {
+                      "reason_code": {"const": "formocast_nonfinite_prediction"},
+                      "internal_subreason": {"const": "pinned_formocast_structured_rejection"}
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "prediction": {"type": ["number", "null"]},
+        "tie": {"type": "boolean"}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"status": {"const": "accepted"}}},
+          "then": {
+            "properties": {
+              "rejection": {"const": null},
+              "prediction": {"type": "number"}
+            }
+          },
+          "else": {
+            "properties": {
+              "rejection": {"type": "object"},
+              "prediction": {"const": null},
+              "tie": {"const": false}
+            }
+          }
+        }
+      ]
+    },
+    "mapping": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version", "kind", "checkpoint_id", "status", "created_at",
+        "effective_lock_raw_sha256", "candidate_count", "size_count",
+        "row_count", "anchor_hashes", "rows", "deterministic_rerun_parity",
+        "mapping_evidence_integrity", "mapping_entry", "executor"
+      ],
+      "properties": {
+        "schema_version": {"const": "1.0.0"},
+        "kind": {"const": "s10_mapping_corpus"},
+        "checkpoint_id": {"const": "S10"},
+        "status": {"const": "complete"},
+        "created_at": {"$ref": "#/$defs/timestamp"},
+        "effective_lock_raw_sha256": {"$ref": "#/$defs/sha256"},
+        "candidate_count": {"const": 10},
+        "size_count": {"const": 3},
+        "row_count": {"const": 30},
+        "anchor_hashes": {"type": "array", "minItems": 3, "maxItems": 3, "uniqueItems": true, "items": {"$ref": "#/$defs/sha256"}},
+        "rows": {"type": "array", "minItems": 30, "maxItems": 30, "items": {"$ref": "#/$defs/mapping_row"}},
+        "deterministic_rerun_parity": {"const": true},
+        "mapping_evidence_integrity": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "status", "execution", "reason_code", "reason_text", "failure_id"
+          ],
+          "properties": {
+            "status": {"const": "PASS"},
+            "execution": {"const": "complete"},
+            "reason_code": {"const": "fresh_exact_30_row_ab_parity"},
+            "reason_text": {"type": "string", "minLength": 1},
+            "failure_id": {"type": "null"}
+          }
+        },
+        "mapping_entry": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "status", "execution", "reason_code", "reason_text", "failure_id",
+            "anchor_failure_hashes", "formocast_rejection_count"
+          ],
+          "properties": {
+            "status": {"enum": ["PASS", "FAIL"]},
+            "execution": {"const": "complete"},
+            "reason_code": {
+              "enum": [
+                "all_locked_entry_prerequisites_satisfied",
+                "locked_mapping_entry_prerequisite_failed"
+              ]
+            },
+            "reason_text": {"type": "string", "minLength": 1},
+            "failure_id": {
+              "type": ["string", "null"],
+              "enum": ["S10-MAPPING-ENTRY-FAIL", null]
+            },
+            "anchor_failure_hashes": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": {"$ref": "#/$defs/sha256"}
+            },
+            "formocast_rejection_count": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 30
+            }
+          },
+          "allOf": [
+            {
+              "if": {"properties": {"status": {"const": "PASS"}}},
+              "then": {
+                "properties": {
+                  "reason_code": {"const": "all_locked_entry_prerequisites_satisfied"},
+                  "failure_id": {"const": null},
+                  "anchor_failure_hashes": {"const": []},
+                  "formocast_rejection_count": {"type": "integer", "minimum": 1, "maximum": 30}
+                }
+              },
+              "else": {
+                "properties": {
+                  "reason_code": {"const": "locked_mapping_entry_prerequisite_failed"},
+                  "failure_id": {"const": "S10-MAPPING-ENTRY-FAIL"}
+                },
+                "anyOf": [
+                  {"properties": {"anchor_failure_hashes": {"minItems": 1}}},
+                  {"properties": {"formocast_rejection_count": {"const": 0}}}
+                ]
+              }
+            }
+          ]
+        },
+        "executor": {"type": "object"}
+      }
+    },
+    "smoke_run": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "size", "generate", "compile", "benchmark", "binary_sha256",
+        "result_sha256", "validation_count", "correctness", "timing", "quality"
+      ],
+      "properties": {
+        "size": {"$ref": "#/$defs/size"},
+        "generate": {"$ref": "#/$defs/command_record"},
+        "compile": {"$ref": "#/$defs/command_record"},
+        "benchmark": {"$ref": "#/$defs/command_record"},
+        "binary_sha256": {"$ref": "#/$defs/sha256"},
+        "result_sha256": {"$ref": "#/$defs/sha256"},
+        "validation_count": {"type": "integer", "minimum": 1},
+        "correctness": {"const": "pass"},
+        "timing": {"type": "number", "exclusiveMinimum": 0},
+        "quality": {"type": "number", "exclusiveMinimum": 0}
+      }
+    },
+    "smoke": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version", "kind", "checkpoint_id", "status", "created_at",
+        "effective_lock_raw_sha256", "environment_revalidation",
+        "candidate_hash", "runs"
+      ],
+      "properties": {
+        "schema_version": {"const": "1.0.0"},
+        "kind": {"const": "s10_smoke_correctness"},
+        "checkpoint_id": {"const": "S10"},
+        "status": {"const": "pass"},
+        "created_at": {"$ref": "#/$defs/timestamp"},
+        "effective_lock_raw_sha256": {"$ref": "#/$defs/sha256"},
+        "environment_revalidation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["container", "arch", "availability_mode", "device", "rocm", "driver", "clock_power_policy", "commands", "monitoring"],
+          "properties": {
+            "container": {"const": "perlee"},
+            "arch": {"const": "gfx942"},
+            "availability_mode": {"const": "live_unreserved"},
+            "device": {"$ref": "#/$defs/device_identity"},
+            "rocm": {"type": "string", "minLength": 1},
+            "driver": {"type": "string", "minLength": 1},
+            "clock_power_policy": {"type": "string", "minLength": 1},
+            "commands": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/command_record"}},
+            "monitoring": {"type": "object"}
+          }
+        },
+        "candidate_hash": {"$ref": "#/$defs/sha256"},
+        "runs": {"type": "array", "minItems": 3, "maxItems": 3, "items": {"$ref": "#/$defs/smoke_run"}}
+      }
+    },
+    "noise_observation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "anchor_hash", "size", "repeat", "order", "timed_iterations",
+        "quality", "correctness", "raw_output_sha256"
+      ],
+      "properties": {
+        "anchor_hash": {"$ref": "#/$defs/sha256"},
+        "size": {"$ref": "#/$defs/size"},
+        "repeat": {"type": "integer", "minimum": 0, "maximum": 6},
+        "order": {"type": "integer", "minimum": 0, "maximum": 62},
+        "timed_iterations": {"type": "integer", "minimum": 1},
+        "quality": {"type": "number", "exclusiveMinimum": 0},
+        "correctness": {"const": "pass"},
+        "raw_output_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "noise_level": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "multiplier", "observations", "cvs", "p95_cv", "aggregate_quality",
+        "log_deviations", "delta_noise"
+      ],
+      "properties": {
+        "multiplier": {"enum": [1, 2, 4]},
+        "observations": {"type": "array", "minItems": 63, "maxItems": 63, "items": {"$ref": "#/$defs/noise_observation"}},
+        "cvs": {"type": "array", "minItems": 9, "maxItems": 9, "items": {"type": "object"}},
+        "p95_cv": {"type": "number", "minimum": 0},
+        "aggregate_quality": {"type": "array", "minItems": 21, "maxItems": 21, "items": {"type": "object"}},
+        "log_deviations": {"type": "array", "minItems": 21, "maxItems": 21, "items": {"type": "number", "minimum": 0}},
+        "delta_noise": {"type": "number", "minimum": 0}
+      }
+    },
+    "noise": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version", "kind", "checkpoint_id", "status", "created_at",
+        "effective_lock_raw_sha256", "anchor_hashes", "sizes", "repeat_count",
+        "balanced_order_seed", "level_multipliers", "completed_levels",
+        "selected_multiplier", "capped_multiplier", "p95_cv", "cv_threshold",
+        "reduce_fn", "delta_noise", "monitoring"
+      ],
+      "properties": {
+        "schema_version": {"const": "1.0.0"},
+        "kind": {"const": "s10_noise_pilot"},
+        "checkpoint_id": {"const": "S10"},
+        "status": {"enum": ["stable", "noise_blocked"]},
+        "created_at": {"$ref": "#/$defs/timestamp"},
+        "effective_lock_raw_sha256": {"$ref": "#/$defs/sha256"},
+        "anchor_hashes": {"type": "array", "minItems": 3, "maxItems": 3, "uniqueItems": true, "items": {"$ref": "#/$defs/sha256"}},
+        "sizes": {"type": "array", "minItems": 3, "maxItems": 3, "uniqueItems": true, "items": {"$ref": "#/$defs/size"}},
+        "repeat_count": {"const": 7},
+        "balanced_order_seed": {"type": "integer", "minimum": 0},
+        "level_multipliers": {"const": [1, 2, 4]},
+        "completed_levels": {"type": "array", "minItems": 1, "maxItems": 3, "items": {"$ref": "#/$defs/noise_level"}},
+        "selected_multiplier": {"type": ["integer", "null"], "enum": [1, 2, 4, null]},
+        "capped_multiplier": {"const": 4},
+        "p95_cv": {"type": "number", "minimum": 0},
+        "cv_threshold": {"const": 0.005},
+        "reduce_fn": {"enum": ["mean", "max"]},
+        "delta_noise": {"type": "number", "minimum": 0},
+        "monitoring": {"type": "object"}
+      }
+    },
+    "decision_gate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name", "role", "status", "execution", "reason_code", "reason_text",
+        "failure_id", "blocked_by", "evidence", "blocked_absence"
+      ],
+      "properties": {
+        "name": {
+          "enum": [
+            "actual_guidance", "three_sizes", "h4_and_environment",
+            "mapping_evidence_integrity", "mapping_entry",
+            "smoke_correctness", "noise_stable"
+          ]
+        },
+        "role": {
+          "enum": [
+            "prerequisite", "evidence_integrity", "entry_gate",
+            "execution_gate", "blocked_absent"
+          ]
+        },
+        "status": {"enum": ["PASS", "FAIL", "INCONCLUSIVE", "BLOCKED"]},
+        "execution": {"enum": ["complete", "not_activated"]},
+        "reason_code": {"type": "string", "minLength": 1},
+        "reason_text": {"type": "string", "minLength": 1},
+        "failure_id": {"type": ["string", "null"]},
+        "blocked_by": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "evidence": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/artifact_ref"}
+        },
+        "blocked_absence": {
+          "oneOf": [
+            {"type": "null"},
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "canonical_path", "raw_path", "must_be_absent", "blocked_by"
+              ],
+              "properties": {
+                "canonical_path": {"type": "string", "minLength": 1},
+                "raw_path": {"type": "string", "minLength": 1},
+                "must_be_absent": {"const": true},
+                "blocked_by": {"const": "mapping_entry"}
+              }
+            }
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"status": {"const": "PASS"}}},
+          "then": {
+            "properties": {
+              "execution": {"const": "complete"},
+              "failure_id": {"const": null},
+              "blocked_by": {"const": []},
+              "evidence": {"minItems": 1},
+              "blocked_absence": {"const": null}
+            }
+          }
+        },
+        {
+          "if": {"properties": {"status": {"const": "FAIL"}}},
+          "then": {
+            "properties": {
+              "execution": {"const": "complete"},
+              "failure_id": {"type": "string", "minLength": 1},
+              "blocked_by": {"const": []},
+              "evidence": {"minItems": 1},
+              "blocked_absence": {"const": null}
+            }
+          }
+        },
+        {
+          "if": {"properties": {"status": {"const": "BLOCKED"}}},
+          "then": {
+            "properties": {
+              "role": {"const": "blocked_absent"},
+              "execution": {"const": "not_activated"},
+              "failure_id": {"const": null},
+              "blocked_by": {"minItems": 1},
+              "evidence": {"const": []},
+              "blocked_absence": {"type": "object"}
+            }
+          },
+          "else": {
+            "properties": {
+              "blocked_absence": {"const": null}
+            }
+          }
+        }
+      ]
+    },
+    "decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version", "kind", "checkpoint_id", "status", "created_at",
+        "effective_lock_raw_sha256", "study_mode", "completion_correctness",
+        "scientific_outcome", "criterion", "edge", "gates",
+        "failure_taxonomy", "artifacts", "decision_evidence",
+        "claim_limitations"
+      ],
+      "properties": {
+        "schema_version": {"const": "1.0.0"},
+        "kind": {"const": "s10_decision"},
+        "checkpoint_id": {"const": "S10"},
+        "status": {"const": "complete"},
+        "created_at": {"$ref": "#/$defs/timestamp"},
+        "effective_lock_raw_sha256": {"$ref": "#/$defs/sha256"},
+        "study_mode": {"const": "ready_actual_yaml_guidance"},
+        "completion_correctness": {"const": "complete"},
+        "scientific_outcome": {"enum": ["positive", "negative", "inconclusive"]},
+        "criterion": {"enum": ["S1_ENTRY_GO", "S1_ENTRY_BLOCKED"]},
+        "edge": {"type": ["string", "null"], "enum": ["S1_ENTRY_GO -> S11", null]},
+        "gates": {
+          "type": "array",
+          "minItems": 7,
+          "maxItems": 7,
+          "prefixItems": [
+            {"allOf": [{"$ref": "#/$defs/decision_gate"}, {"properties": {"name": {"const": "actual_guidance"}, "role": {"const": "prerequisite"}}}]},
+            {"allOf": [{"$ref": "#/$defs/decision_gate"}, {"properties": {"name": {"const": "three_sizes"}, "role": {"const": "prerequisite"}}}]},
+            {"allOf": [{"$ref": "#/$defs/decision_gate"}, {"properties": {"name": {"const": "h4_and_environment"}, "role": {"const": "prerequisite"}}}]},
+            {"allOf": [{"$ref": "#/$defs/decision_gate"}, {"properties": {"name": {"const": "mapping_evidence_integrity"}, "role": {"const": "evidence_integrity"}}}]},
+            {"allOf": [{"$ref": "#/$defs/decision_gate"}, {"properties": {"name": {"const": "mapping_entry"}, "role": {"const": "entry_gate"}}}]},
+            {"allOf": [{"$ref": "#/$defs/decision_gate"}, {"properties": {"name": {"const": "smoke_correctness"}, "role": {"enum": ["execution_gate", "blocked_absent"]}}}]},
+            {"allOf": [{"$ref": "#/$defs/decision_gate"}, {"properties": {"name": {"const": "noise_stable"}, "role": {"enum": ["execution_gate", "blocked_absent"]}}}]}
+          ],
+          "items": false
+        },
+        "failure_taxonomy": {"type": "array", "uniqueItems": true, "items": {"enum": ["FT-BLOCKED-ACCESS", "FT-BLOCKED-MAPPING", "FT-INCONCLUSIVE"]}},
+        "artifacts": {"type": "array", "minItems": 4, "items": {"$ref": "#/$defs/artifact_ref"}},
+        "decision_evidence": {
+          "oneOf": [
+            {"type": "null"},
+            {"$ref": "#/$defs/artifact_ref"}
+          ]
+        },
+        "claim_limitations": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"criterion": {"const": "S1_ENTRY_GO"}}},
+          "then": {
+            "properties": {
+              "edge": {"const": "S1_ENTRY_GO -> S11"},
+              "scientific_outcome": {"const": "positive"},
+              "failure_taxonomy": {"const": []},
+              "decision_evidence": {"const": null},
+              "gates": {
+                "items": {
+                  "properties": {
+                    "status": {"const": "PASS"},
+                    "execution": {"const": "complete"},
+                    "blocked_absence": {"const": null}
+                  }
+                }
+              }
+            }
+          },
+          "else": {"properties": {"edge": {"const": null}}}
+        },
+        {
+          "if": {"properties": {"scientific_outcome": {"const": "negative"}}},
+          "then": {
+            "properties": {
+              "criterion": {"const": "S1_ENTRY_BLOCKED"},
+              "edge": {"const": null},
+              "failure_taxonomy": {"const": ["FT-BLOCKED-MAPPING"]},
+              "decision_evidence": {"$ref": "#/$defs/artifact_ref"},
+              "gates": {
+                "prefixItems": [
+                  {"properties": {"status": {"const": "PASS"}, "execution": {"const": "complete"}}},
+                  {"properties": {"status": {"const": "PASS"}, "execution": {"const": "complete"}}},
+                  {"properties": {"status": {"const": "PASS"}, "execution": {"const": "complete"}}},
+                  {"properties": {"status": {"const": "PASS"}, "execution": {"const": "complete"}}},
+                  {"properties": {"status": {"const": "FAIL"}, "execution": {"const": "complete"}, "reason_code": {"const": "locked_mapping_entry_prerequisite_failed"}, "failure_id": {"const": "S10-MAPPING-ENTRY-FAIL"}, "evidence": {"minItems": 1}}},
+                  {"properties": {"role": {"const": "blocked_absent"}, "status": {"const": "BLOCKED"}, "execution": {"const": "not_activated"}, "blocked_by": {"const": ["mapping_entry"]}, "evidence": {"const": []}, "blocked_absence": {"type": "object"}}},
+                  {"properties": {"role": {"const": "blocked_absent"}, "status": {"const": "BLOCKED"}, "execution": {"const": "not_activated"}, "blocked_by": {"const": ["mapping_entry"]}, "evidence": {"const": []}, "blocked_absence": {"type": "object"}}}
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,6 +1,6 @@
 # Ductile Factorized Guidance — Active Checkpoint Index
 
-> **Active-state authority banner：**本研究目前是 `pre_empirical / stage1_entry_blocked`。S00已以fresh `protocol/v1/`、effective `successor-001` lock、raw-direct evidence、原verifier FULL重驗與formal closeout完成，scientific outcome為`positive`。S10在tracked implementation與outcome evidence開始前直接確認actual generated gfx942 non-StreamK Ductile YAML provenance不足，依parent §2.8進入`S1_ENTRY_BLOCKED`；S10 lock與formal report均不存在，S11為`not_activated`。
+> **Active-state authority banner：**本研究目前是 `pre_empirical / stage1_entry_blocked`。S00已以fresh `protocol/v1/`、effective `successor-001` lock、raw-direct evidence、原verifier FULL重驗與formal closeout完成，scientific outcome為`positive`。S10已以fresh actual YAML、effective `successor-003` lock、live-unreserved `perlee` card 0與獨立mapping重現完成；30 rows為3 accepted／27 typed rejections，兩個locked anchors失敗且genuine Formocast rejection為0，因此scientific outcome為`negative`、criterion為`S1_ENTRY_BLOCKED`、沒有outgoing edge，S11為`not_activated`。
 >
 > **唯一 active 導航入口：**本 README。`legacy/` 內的 M00–M09 仍是 dead-protocol archive，不能提供 schema、hash、lock、registry、criterion、fixture、test或 PASS evidence；S00 positive只支持CPU-only evidence foundation。
 >
@@ -29,7 +29,7 @@
 | ID | Responsibility | Design | Execution | Checkpoint | Scientific outcome | Lock | Formal report |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | S00 | Evidence／lineage／checkpoint-resume foundation | `approved` | `completed` | `CHECKPOINT_COMPLETE` | `positive` | `effective (successor-001)` | [report](reports/staged/s00-foundation-verification-report.md) |
-| S10 | Stage 1 access／artifact／mapping／noise gate | `approved` | `blocked` | `BLOCKED` | `blocked` | `absent` | [blocker memo](reports/gen0-factorization-blocker-memo.md) |
+| S10 | Stage 1 access／artifact／mapping／noise gate | `approved` | `completed` | `CHECKPOINT_COMPLETE` | `negative` | `effective (successor-003)` | [report](reports/staged/s10-stage1-entry-gate-report.md) |
 | S11 | Stage 1 model-only factorization／guidance lock | `approved` | `gated` | `DESIGN_APPROVED` | `not_activated` | `absent` | `reports/staged/s11-stage1-model-only-factorization-report.md` |
 | S12 | Stage 1 real-score／ranking／oracle audit | `approved` | `gated` | `DESIGN_APPROVED` | `not_evaluated` | `absent` | `reports/staged/s12-stage1-real-score-audit-report.md` |
 | S13 | Stage 1 actual Gen0 mechanism | `approved` | `gated` | `DESIGN_APPROVED` | `not_evaluated` | `absent` | `reports/gen0-factorization-mvp-report.md` |
@@ -79,11 +79,13 @@ flowchart TD
   s40 -->|"S4_ACTIVATE"| s41
 ```
 
-- S00的post-audited positive closeout已驗證`S00_EVIDENCE_READY -> S10`。S10的
-  read-only pre-implementation discovery直接確認actual generated gfx942
-  non-StreamK Ductile YAML provenance不足，依parent §2.8形成
-  `S1_ENTRY_BLOCKED`；沒有S10 lock、formal report或outgoing edge。Direct evidence、
-  H1–H4邊界與recovery interface見[blocker memo](reports/gen0-factorization-blocker-memo.md)。
+- S00的post-audited positive closeout已驗證`S00_EVIDENCE_READY -> S10`。S10已完成
+  actual-guidance／live-unreserved H4／mapping boundary，並以完整可重現的
+  `FT-BLOCKED-MAPPING` negative branch形成`S1_ENTRY_BLOCKED`。沒有outgoing edge；
+  S11維持`not_activated`。Direct evidence、successor lifecycle與claim boundary見
+  [S10 formal report](reports/staged/s10-stage1-entry-gate-report.md)；早期
+  [blocker memo](reports/gen0-factorization-blocker-memo.md)只保留為historical
+  recovery evidence。
 - `S1_ENTRY_DEGRADED_PROXY`、two-size mode、H5 pilot、single-cluster pilot或任何縮減不會自動形成 outgoing edge；必須先停在 `blocked-awaiting-user-decision`。
 - S12／S31 只有 parent 明列的 predictor-specific、oracle-positive evidence可送入 S40。
 - S40 沒有合法 trigger時不執行，由上游 report記 `not_activated`；不替 S40 建假 report或commit。
@@ -117,7 +119,7 @@ flowchart TD
 9. 原verifier執行closeout audit並明確給`CLOSEOUT_ACK`。
 10. Exact-path isolated commit與post-commit audit成功後，才標`CHECKPOINT_COMPLETE`並考慮下一條edge。
 
-Verified lifecycle projection只可更新當前checkpoint row、該terminal record直接解析的outgoing edge／downstream state，以及事實性banner prose；不得預寫下游結果，也不得藉此修改criteria、thresholds、strict DAG或claim authority。2026-07-25核准的pre-execution authority amendment補齊此同步責任；本頁現投影已closeout的S00、durable blocked的S10與直接`not_activated`的S11。
+Verified lifecycle projection只可更新當前checkpoint row、該terminal record直接解析的outgoing edge／downstream state，以及事實性banner prose；不得預寫下游結果，也不得藉此修改criteria、thresholds、strict DAG或claim authority。2026-07-25核准的pre-execution authority amendment補齊此同步責任；本頁現投影已closeout的S00、completed negative的S10與直接`not_activated`的S11。
 
 Positive、negative與inconclusive在evidence integrity完整時都照常report、closeout與commit。Durable `BLOCKED`不是完成；`skipped_by_gate`／`not_activated`只由上游checkpoint記錄，不建立自己的report或commit。
 

@@ -1,0 +1,491 @@
+# SPDX-License-Identifier: MIT
+schema_version: 1.0.0
+kind: s10_entry_contract
+checkpoint_id: S10
+status: pre_registered
+objective: >-
+  Recover only the Stage-1 entry gate by constructing a pinned Ductile-base,
+  GEKO-utilities-only experimental integration, reproducing one actual gfx942
+  non-StreamK Ductile YAML twice byte-for-byte, proving pinned Ductile
+  consumption and three same-space sizes, then selecting one currently
+  available gfx942 from three fresh read-only samples inside exact perlee before
+  any effective lock or post-lock work.
+authorities:
+  s00_closure_commit: 8d1be2af3e5033ee74a1a8e3b31536f132a014cb
+  ductile_ref: refs/remotes/origin/ductile_integration
+  ductile_commit: 5d6bdc8a6438b5fc73a96e46a907f9a5b1cd4e39
+  geko_ref: refs/remotes/origin/users/pkamd/geko_pr
+  geko_commit: d32abacfd13579d1f523f035b7a10b0734c4ac47
+adjudication:
+  accepted_plan: Plan-A
+  r5_authority: user-directed live unreserved GPU selection
+  amended_plan_a_sha256: 60862d9597a14175659cfa5ee93f747b71c5cdb7b7051c16a6d5a7ea852accd3
+  amended_plan_b_sha256: 3cb50d05c3481e4fb6d2a0fd9b23cb0e6876d2b9b0582af17a7220710e2a40d7
+  governing_plan_is_ignored: true
+  compatibility_probes_are_feasibility_only: true
+  build_3_is_feasibility_only: true
+  build_2_is_rejected: true
+  plan_b_is_unread_until_lock_binding: true
+  r8_recovery_authority:
+    path: agent_run/260725-ductile-factorized-guidance-s0-s1-recovery/adjudication.md
+    raw_sha256: 095b3021416a555032b660fe926e9995aad260e88ca6233a99b0b1ee9f3c5c59
+  r8_classification: postlock_harness_defect
+  r8_scientific_mapping_negative: false
+  r9_recovery_authority:
+    source: agent_run/260725-ductile-factorized-guidance-s0-s1-recovery/adjudication.md
+    immutable_child_snapshot: authority/r9-adjudication.md
+    raw_sha256: 46dee6a54eb0deeb69b0e166f2406bbeed18d57300610e9a4be49af0de55d1ea
+  r9_classification: successor-001 postlock_harness_defect
+  r9_scientific_mapping_negative: false
+  r9_reviewers:
+    - /root/s10_r9_negative_decision_a
+    - /root/s10_r9_negative_decision_b
+  r9_explicit_agreement: [AGREE, AGREE]
+  r10_recovery_authority:
+    source: agent_run/260725-ductile-factorized-guidance-s0-s1-recovery/adjudication.md
+    immutable_child_snapshot: authority/r10-adjudication.md
+    raw_sha256: d0166dd259b9227df440e124afc49da1baba36e5dbfc66bd7796c0cbff0118df
+  r10_verifier_finding: S10-R9-SCHEMA-001
+  r10_verifier_report_sha256: 7af1ef82f0339d2f5bbba3812ac5f9094d5e3958fcc05dd9a8f68ebcc692acf8
+  r10_verifier_verdict_sha256: f31ed0e146e1cd77a6634b2ea1eade0fdcdefd48484220398afac8b65860cb8d
+  r10_schema_negative_matrix_sha256: 793ae1dc39d8710298d2d980395e706ea70d0b9e695ec431d8d37627c9ca5de7
+  r10_classification: unique plan-preserving strict-schema defect
+artifact_role:
+  name: fresh experimental actual fixture
+  means:
+    - freshly emitted by the pinned generator
+    - byte-identical across two independent materialization/build/generation roots
+    - consumed by the pinned experimental Ductile workflow
+  does_not_mean:
+    - historical
+    - owner-provided
+    - deployed
+    - production
+    - representative
+implementation_whitelist:
+  - projects/hipblaslt/tensilelite/Tensile/Tests/unit/test_ductile_s10_entry.py
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/run_s10_entry.py
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/schemas/s10-entry.schema.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/s10-entry-contract.yaml
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/inputs/s10-generated.yaml
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10-yaml-provenance.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10-mapping-corpus.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10-size-registry.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10-environment.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/locks/s10-stage1-entry-lock.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s10-smoke-correctness.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s10-noise-pilot.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s10-decision.json
+delivery_whitelist:
+  - projects/hipblaslt/tensilelite/Tensile/Tests/unit/test_ductile_s10_entry.py
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/run_s10_entry.py
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/schemas/s10-entry.schema.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/s10-entry-contract.yaml
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/inputs/s10-generated.yaml
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10-yaml-provenance.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10-mapping-corpus.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10-size-registry.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10-environment.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/locks/s10-stage1-entry-lock.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s10-smoke-correctness.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s10-noise-pilot.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s10-decision.json
+  - study_docs/research/ductile-origami-warmstart/reports/staged/s10-stage1-entry-gate-report.md
+  - study_docs/research/ductile-origami-warmstart-experiment-plan.md
+  - study_docs/research/ductile-origami-warmstart/README.md
+  - study_docs/research/ductile-origami-warmstart/s10-stage1-entry-access-mapping-gate-design.md
+forbidden_roots:
+  - study_docs/research/ductile-origami-warmstart/reports/staged/s11-stage1-model-only-factorization-report.md
+  - study_docs/research/ductile-origami-warmstart/reports/staged/s12-stage1-real-score-audit-report.md
+  - study_docs/research/ductile-origami-warmstart/reports/gen0-factorization-mvp-report.md
+  - study_docs/research/ductile-origami-warmstart/reports/short-horizon-persistence-report.md
+  - study_docs/research/ductile-origami-warmstart/reports/bounded-regime-replication-report.md
+  - study_docs/research/ductile-origami-warmstart/reports/staged/s40-stage4-activation-report.md
+  - study_docs/research/ductile-origami-warmstart/reports/learned-residual-surrogate-report.md
+input_derivation:
+  template_blob: e9bae943716ae380129d7314de448fc5cc9f26ed
+  preserve_size_rows_and_order: 17
+  preserve_duplicate_rows: true
+  preserve_dtype_layout: B/B/S NN batched
+  exact_overrides:
+    ARCH: gfx942
+    StreamK: false
+    ONE_SIZE_PER_CONFIG: false
+    GA: true
+    SIZE_OPTION: 0
+    CLUSTER: 0
+  unset_all_pinned_environment_override_keys: true
+integration:
+  base: Ductile projects/hipblaslt tree
+  overlays:
+    - GEKO projects/hipblaslt/utilities/geko only
+  destination_must_be_absent: true
+  materialization_policy: preserve_validated_pinned_source_symlink_v1
+  expected_closure:
+    regular_files: 4505
+    source_symlinks: 13
+    leaves: 4518
+    directories: exact ancestor-directory closure
+  source_symlink_policy:
+    preserve_actual_filesystem_links: true
+    inventory_is_exact_and_ordered: true
+    bind_link_mode_blob_bytes_hash_and_lexical_target: true
+    target_requires_same_commit_direct_100644_blob_and_content_hash: true
+    dereference_fallback: forbidden
+    reject:
+      - a fourteenth Ductile link
+      - every GEKO link
+      - absolute or escaping target
+      - symlink chain
+      - missing or nonregular target
+      - overlay target
+      - unexpected link
+      - symlink ancestor
+      - hardlink or special node
+  object_driven_materialization:
+    regular_files_and_targets_first: true
+    exclusive_no_follow_writes: true
+    source_links_after_regular_files: true
+  preserve_source_git_mode_separately_from_filesystem_kind: true
+  semantic_manifest_is_root_independent: true
+  run_wrapper_binds_live_root_and_phase_seals: true
+  phase_seals:
+    - after materialization
+    - before and after native build
+    - before and after generation
+    - before and after Ductile consumption
+    - prelock check
+    - immediately pre-lock
+    - around post-lock commands that consume roots
+  generated_tracked_evidence_and_rocisa_outputs_are_symlink_free: true
+  installed_toolchain_symlinks_are_recorded_by_lexical_and_resolved_lineage: true
+native_build:
+  roots: 2
+  fresh_and_independent: true
+  target: _rocisa
+  source_dependencies:
+    - Ductile projects/hipblaslt/tensilelite/rocisa
+    - Ductile shared/origami
+    - Ductile shared/stinkytofu
+  container: perlee
+  offline: true
+  forbid_fetch_or_download: true
+  forbid_installed_rocisa: true
+generation:
+  roots: 2
+  python: /opt/venv/bin/python3 -S
+  pythonpath_order:
+    - fresh native build
+    - pinned TensileLite
+    - pinned GEKO
+    - /opt/venv/lib/python3.12/site-packages
+  generator: pinned GEKO scripts/config_generator.py
+  complete_output_manifests_must_match: true
+  qualifying_yaml_count_per_root: 1
+  qualifying_yaml_requirements: gfx942 Ductile non-StreamK B/B/S NN batched
+consumption:
+  oracle: s10_three_layer_ductile_oracle_v1
+  per_fresh_root:
+    raw_witness:
+      parser: strict YAML with ordered singleton-record validation
+      binds:
+        - exact generated YAML byte hash
+        - exact 30=27+3 variable/singleton partition with type-sensitive values
+        - raw declaration order as raw witness only
+        - groups, weights, sizes, and O4 fields
+    independent_source_model:
+      may_import_or_call_runtime_implementation: false
+      pinned_source_blobs:
+        BenchmarkStructs.py: 4968b29b5eacddc56b20c42cb4b2c1e3d8d6f406
+        GlobalParameters.py: e576b94fab302382aa55c46a077168b4aaf8b08f
+        ValidParameters.py: f0166a77e3646d922debfdd3aa5734a88a98304a
+        BenchmarkProblems.py: c9e4144ca0b2d7396c57249eaf3770b12ebd87f8
+        ductile_backend.py: e295e481f832cf00d9826e7aaf6130aaaf9651d2
+        space.py: 315d39b2fd5b714736145dff9ac1bf1e196bf61f
+        LibraryIO.py: 794e1e528e9113a25e46a8e628f7e441132e1a14
+        config_init.py: 7bfe80353c1ce3b45156207895af2cd6311b43da
+        defaults.yaml: dacc78a3de71a402b8af6d202400453014a2852d
+        ga.py: de47028571bba928ec7f4184e1f1085c7ab86280
+      reconstructs:
+        - ordered default/common/fork updates
+        - singleton/multi-value classification and full origin maps
+        - bounded generic group expansion with raw-to-expanded indices
+        - positional group_0 weights and pinned-default weight_beta=0.25
+        - float32 GA probabilities including dtype, endian, shape, bytes, and values
+    actual_runtime:
+      parser: pinned Tensile.LibraryIO.read
+      process: pinned Tensile.BenchmarkStructs.BenchmarkProcess
+      search_space: pinned Ductile SearchSpace.map
+      ga: pinned GeneticAlgorithm construction only
+      only_accepted_stderr: >-
+        GA:WARNING Some variables have a larger search space than pop_size.
+        Increasing pop_size for the first generations.
+    require_model_runtime_match_before_cross_root_parity: true
+  ordered_axes:
+    schema: s10_ordered_axis_records_v1
+    count: 30
+    contiguous_unique_indices: true
+    axis_order_sha256: 926a6d9502546dda22ea2edc483c0f61ef74b3e378bcf32f222f17130bb668a3
+    legacy_space_map_sha256: 5785871bc0779fb67627943ef2ed5fde8e96647be7e0bb0db4f770473cd7a1a0
+    raw_groups_and_expanded_groups_sha256: 0526a9b3c1d8a1bbe1db2cb03616bfda6e5a1f2dfad3826c0747d8dcb3ab9140
+    weights_sha256: 56c34446385e93138944082b1801649271fd6a49df948aa41017cb05d012f34f
+  tracked_evidence:
+    - raw partition table
+    - ordered axis index table and candidate hashes
+    - parameter origin/resolution table
+    - raw-to-expanded group index table
+    - positional weight and probability evidence
+  ignored_dumps_per_root: [raw document, raw witness, independent model, actual runtime]
+size_selection:
+  deduplication: first occurrence by exact (M,N,batch,K) tuple
+  sort_key: [K, M*N*batch, M, N, batch]
+  indices: [0, (n-1)//2, n-1]
+  require_three_distinct_same_space_sizes: true
+mapping_selection:
+  corpus_size: 10
+  performance_blind: true
+  inputs: reconstructed authoritative ordered-axis records, candidate indices, and canonical config hash only
+  required_patterns:
+    - all-first
+    - all-last
+    - group-first-residual-last
+    - group-last-residual-first
+    - alternating
+    - complement
+    - lower-middle
+    - upper-middle
+    - sentinel-boundary
+    - hash-seeded-fill
+  noise_anchor_rule: sorted hashes at indices 0,4,9
+  post_lock_anchor_replacement: forbidden
+h4:
+  availability_mode: live_unreserved
+  probe_location: exact existing perlee only
+  sample_count: 3
+  minimum_sample_spacing_seconds: 2
+  commands_are_read_only: true
+  device_identity_fields:
+    - container-visible index
+    - unique ID
+    - serial number
+    - PCI bus
+    - gfx architecture
+    - compute partition
+    - memory partition
+  eligibility_all_samples:
+    arch: gfx942
+    compute_partition: SPX
+    memory_partition: NPS1
+    gpu_use_percent: 0
+    maximum_vram_allocation_percent: 1
+    mapped_kfd_pid_count: 0
+  selection_key: [maximum sampled VRAM-used bytes, container-visible index, unique ID]
+  claims_excluded:
+    - reservation
+    - exclusivity
+    - future availability
+    - five-day remaining budget
+  post_lock_monitoring:
+    fixed_device: true
+    phases: [before, during, after]
+    maximum_during_sample_period_seconds: 1
+    only_current_executor_process_lineage_may_be_mapped: true
+    contaminated_smoke_retry_unit: complete three-size attempt
+    contaminated_noise_retry_unit: complete 63-cell level
+    maximum_complete_attempts: 3
+lock_lifecycle:
+  active_leaf_generation: successor-003
+  recursive_lineage: [successor-003, successor-002, successor-001, genesis]
+  genesis_parent:
+    lock_id: s10-lock-d7b5c87ac3c30e3b6cd8d9f2ff7267624525f2b877a0191a698c28e29935c6ed
+    raw_sha256: fca28ece474b8ae8e26748c23983be84682e2f9880f410759b4948429c6101cb
+    body_sha256: d7b5c87ac3c30e3b6cd8d9f2ff7267624525f2b877a0191a698c28e29935c6ed
+    environment_sha256: dc1d8b5fd3959979ddaf1f61bd79f7e57b1ad502e39db65ee306327999bb762e
+  sealed_genesis_archive:
+    root: agent_run/260725-ductile-factorized-guidance-s0-s1-recovery/milestones/S10/r8-parent-lock
+    closure_sha256: ae9a1d3469b6e2adb917e9cae543658893b4998c79b2a57610a3dbbdf61dc750
+    failure_sha256: b73732285050595789bc8333686effc8287f518b271b64ac52555b43b3457d01
+    absence_sha256: b268e4ddfc0092692046de78d9edcb661a41bb2c268199d125060605826a59e0
+    seal_sha256: e6281b219149c70d5981af7306875ff1c1e8d7e07e645c9fd0a8dd1f7b6fcf26
+    raw_tree_sha256: f8b1f8fbb175f08813e9e897435939656291e7e2a205dba4983f1b9d220e3489
+  predecessor_parent:
+    generation: successor-001
+    lock_id: s10-lock-c04c6a827bc6dc204fc46b9b4a7d1ed46896ef5f51996a0853a3abad26bb1e33
+    raw_sha256: 590912852b27d84e4992d844de3b65e544b96aeda947c0aa7a80d295d16e4b28
+    body_sha256: c04c6a827bc6dc204fc46b9b4a7d1ed46896ef5f51996a0853a3abad26bb1e33
+    environment_sha256: e59d2d5cf7e4d31d12c1e761674540c7eee8dd7297e7567f4a0b19291fa7bafb
+  predecessor_parent_transition:
+    id: s10-transition-f3a3ecd6bc393877aca044e2784d97ea62988c17d0ea2b09ba9fea857b177ed3
+    single_use_claim_sha256: a452f68d1233eea84e6164c9d43ced524d658bcd172564cd4be256a8136a06ad
+    archive_root: agent_run/260725-ductile-factorized-guidance-s0-s1-recovery/milestones/S10/r9-successor-001-lock
+    closure_sha256: e1ace1236f09f735f7bcd72565d7957d8c778df33e6cf97e55dbc131541d2519
+    failure_sha256: c892d3061db6bfdeadb2e1abd770ba9e7f3020a53372be8c0e7cc8db3b994c3d
+    absence_sha256: b4bfb72fda228347d8804b5233eaeb3845c11b6e62d7b5b5e976aec5b57dbbeb
+    full_rehash_sha256: f44d92e05c2995ad5e91209779da2041b4abb6e458ce283d084fd547d19bff8e
+    seal_sha256: 8a86d633e960d43a6eb8f9fe8ede937762479101d30f5a58beef2ece0a19869b
+    raw_tree_sha256: bc99fb3a13ee74a118c3f75fff1d18387b1738e8a99cd1af34e660441c88bf65
+    state: PARENT_ARCHIVE_SEALED/NO_ACTIVE_LOCK
+  immediate_parent:
+    generation: successor-002
+    lock_id: s10-lock-2a1e31d88538791ed8abe5f37f67f81be7d032a1575da2a872928ad15e66d81a
+    raw_sha256: ab475892cdb15fe85c854ff89a2a92d0ed945ab630da8fdefbad75b5ba47f3f3
+    body_sha256: 2a1e31d88538791ed8abe5f37f67f81be7d032a1575da2a872928ad15e66d81a
+    environment_sha256: af4c58941102b6a26d1b473033c17a0d6bbf9ae80d986555d9212e54f79197a1
+  immediate_parent_transition:
+    id: s10-transition-6241204f902c6a37db47a405e1b7389e34c3614d7d5290257358b5d994eef7ea
+    single_use_claim_sha256: 9f51a2ad22556d1e8e817bd35ca140db7ed53b5a97a05bca1662d8663c85e14d
+    archive_root: agent_run/260725-ductile-factorized-guidance-s0-s1-recovery/milestones/S10/r10-successor-002-lock
+    closure_sha256: 766e742e0d3957a13887f9bb51294c707f8dcd1633dfa7cd39073cadaf86c554
+    failure_sha256: b6820f29015d5123c8eae18ff67132482ee843ab6fa1c619226b1456ac736854
+    absence_sha256: ac950e07f90532fc17c2bf56a308a6483570d992c0fdb12198f866973f9f90bd
+    full_rehash_sha256: df09ea1ef5bb1eced8863da0cde61df0e66a75dbb83da2c211fad15af2344079
+    seal_sha256: 2b39f47c6603b44d9d8e8499f58b9d161dff7139d5411cfb9e81c4a3a0bac466
+    raw_tree_sha256: 088fd008995448bd3d99538acb0bc5e60391ff05e0da51ece6adae14a1dd1e19
+    state: PARENT_ARCHIVE_SEALED/NO_ACTIVE_LOCK
+  parent_consumption_claim:
+    exclusive_parent_lock_id_key: true
+    retained_on_every_failure: true
+    rollback_or_sibling_creation: forbidden
+    child_lock_binds_claim_and_archive: true
+  archive_rehash_before_prepare_lock_and_postlock: true
+  structured_parent_reference_required: true
+  evidence_reuse: false
+  reject:
+    - parent archive drift
+    - sibling or lifecycle cycle
+    - wrong parent or generation
+    - missing parent failure boundary
+    - parent reactivation
+    - generation skip or ancestor cycle
+    - sibling or sequential sibling claim
+    - final-prelock-r7 or final-prelock-r8-successor-001 reuse
+    - path, inode, command, manifest, or mixed ancestor evidence reuse
+  prelock_outputs:
+    - s10-generated.yaml
+    - s10-yaml-provenance.json
+    - s10-size-registry.json
+  lock_requires_valid_live_h4: true
+  exclusive_atomic_lock_creation: true
+  child_lock_is_last_prelock_write: true
+  transition_failure_never_reactivates_parent: true
+  substitute_after_lock: forbidden
+  postlock_outputs_before_lock: forbidden
+  source_integrity_drift:
+    prelock: preserve ignored evidence and create no tracked outputs or lock
+    postlock: preserve lock and raw failure evidence, invalidate dependent evidence, and emit no positive edge
+mapping:
+  rows: 30
+  matrix: 10 configs x 3 sizes
+  canonical_kernel_prepass:
+    naming_function: getKernelFileBase
+    visited_set: required
+    set_duplicate: true
+    set_unique_BaseName_before_processKernelSource: true
+  validation_none_taxonomy:
+    stage: solution_resolution
+    reason_code: pinned_validation_boundary_none
+    internal_subreason: internal_subreason_unknown
+  strict_schema_cross_fields:
+    ordered_gate_names_and_roles: required
+    fail_requires_failure_id_and_evidence: true
+    blocked_requires_blocked_by_and_absence: true
+    mapping_entry_status_reason_failure_anchor_formocast_coherence: required
+    rejection_stage_reason_internal_subreason_pairing: required
+    verifier_nine_case_matrix_must_reject_all: true
+  candidate_rejection_allowlist:
+    - pinned validation boundary None
+    - canonical duplicate kernel identity
+    - pinned processKernelSource nonzero error
+    - pinned Formocast nonfinite prediction
+  postlock_harness_defect_abort:
+    - AttributeError
+    - KeyError
+    - AssertionError
+    - API-shape or missing-field error
+    - every unregistered exception
+    - every BaseException control-flow event
+  harness_defect_creates_mapping_or_decision: false
+  actual_post_codegen_fields_required: true
+  native_effective_gsu_required: true
+  formocast_input_reproduces_solution_iterator: true
+  deterministic_fresh_rerun_required: true
+  preserve_rejections_and_ties: true
+  evidence_integrity:
+    status: PASS only for fresh exact 30-row A/B parity with typed rows
+  entry:
+    requires_all_locked_anchor_x_three_size_prerequisites: true
+    requires_genuine_formocast_rejection_observable: true
+    replacement_or_eleventh_candidate: forbidden
+    synthetic_rejection_is_plumbing_only: true
+  branch:
+    integrity_defect: CHANGES_REQUIRED with no scientific decision
+    entry_fail: strict mapping-negative decision
+    entry_pass: continue smoke then noise
+smoke:
+  anchor: smallest locked anchor hash
+  sizes: 3
+  same_lineage_generate_compile_client_benchmark: true
+  require_nonzero_configured_validation: true
+  require_correctness_and_finite_positive_quality_timing: true
+noise:
+  anchors: 3
+  sizes: 3
+  repeats: 7
+  observations_per_level: 63
+  levels: [1, 2, 4]
+  cv_p95_threshold: 0.005
+  cap: 4
+  complete_panel_required_per_level: true
+  balanced_order_from_locked_seed: true
+  delta_noise_formula: exp(P95(abs(log(Q_ar)-median_r(log(Q_ar)))))-1
+decision:
+  go_criterion: S1_ENTRY_GO
+  go_edge: S1_ENTRY_GO -> S11
+  requires_all_hard_gates: true
+  ordered_gate_fields:
+    - name
+    - role
+    - status
+    - execution
+    - reason_code
+    - reason_text
+    - failure_id
+    - blocked_by
+    - direct evidence
+  statuses: [PASS, FAIL, INCONCLUSIVE, BLOCKED]
+  executions: [complete, not_activated]
+  separate_mapping_gates:
+    - mapping_evidence_integrity
+    - mapping_entry
+  definitive_mapping_negative:
+    earlier_gates: PASS/complete
+    mapping_evidence_integrity: PASS/complete
+    mapping_entry: FAIL/complete
+    smoke: BLOCKED/not_activated/blocked_absent
+    noise: BLOCKED/not_activated/blocked_absent
+    scientific_outcome: negative
+    criterion: S1_ENTRY_BLOCKED
+    taxonomy: [FT-BLOCKED-MAPPING]
+    edge: null
+  blocked_absent:
+    requires_canonical_and_raw_paths: true
+    requires_blocked_by_and_must_be_absent: true
+    artifact_hash_or_placeholder: forbidden
+  negative_stop_raw:
+    path: postlock/decision/negative-stop-raw.json
+    exclusive: true
+    role: decision evidence only
+    binds:
+      - effective lock and mapping hashes
+      - derivation and stop-rule identity
+      - runner, schema, and contract identities
+      - pre/post smoke and noise absence rechecks
+  terminal_command_refusal: [mapping, smoke, noise]
+  proxy_partial_or_two_size_result: blocked-awaiting-user-decision
+  prelock_failure_creates_no_lock_or_outcome: true
+  postlock_negative_preserves_evidence_without_edge: true
+raw_artifact_layout: >-
+  All non-delivery source trees, builds, logs, command records, raw executor
+  records, manifests, and failed-attempt preservation live only below
+  agent_run/260725-ductile-factorized-guidance-s0-s1-recovery/milestones/S10/.
+report_target: study_docs/research/ductile-origami-warmstart/reports/staged/s10-stage1-entry-gate-report.md

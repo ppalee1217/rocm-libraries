@@ -3,10 +3,10 @@ checkpoint_id: S10
 title: Stage 1 access、artifact、mapping 與 noise entry gate
 stage: 1
 design_status: approved
-execution_status: blocked
-checkpoint_state: BLOCKED
-scientific_outcome: blocked
-lock_state: absent
+execution_status: completed
+checkpoint_state: CHECKPOINT_COMPLETE
+scientific_outcome: negative
+lock_state: effective
 hypothesis_id: S10-H1
 dependencies:
   - checkpoint_id: S00
@@ -29,7 +29,7 @@ allowed_outgoing_edges:
     user_review_required: true
 formal_report_path: reports/staged/s10-stage1-entry-gate-report.md
 blocker_path: reports/gen0-factorization-blocker-memo.md
-future_effective_lock_path: protocol/v1/locks/s10-stage1-entry-lock.json
+effective_lock_path: protocol/v1/locks/s10-stage1-entry-lock.json
 implementation_boundary_max:
   - Stage 1 YAML provenance, environment, access, mapping, size-registry, correctness and noise harnesses
   - protocol/v1 schemas and lock entries required only by S10
@@ -123,7 +123,8 @@ Inputs：
   resolve exact commit，不得由其中一個branch反推另一個revision；
 - candidate actual YAML／generator provenance；
 - mapping source revisions；
-- gfx942 reservation evidence；
+- existing `perlee`中的live-unreserved gfx942 availability evidence；直接三次取樣、
+  依frozen selection key選可用卡，不需reservation；
 - parent D1–D2 rules。
 
 Outputs：
@@ -185,24 +186,35 @@ Blocker memo只能用於未能取得access、可信artifact或canonical mapping�
 - Reviewer A final：`AGREE`
 - Reviewer B final：`AGREE`
 
-## 10. Execution record — `S1_ENTRY_BLOCKED`
+## 10. Execution record — completed negative `S1_ENTRY_BLOCKED`
 
-S00 dependency解除後，fresh implementer只依Plan-A先執行read-only H1–H4
-discovery。任何tracked implementation、effective lock或outcome evidence開始前，
-H1已直接確認`FT-BLOCKED-ACCESS`：
+早期read-only discovery曾因當時缺少actual artifact而形成
+[historical blocker memo](reports/gen0-factorization-blocker-memo.md)。後續recovery在
+不降低claim下fresh materialize兩個獨立branch authorities、生成byte-identical
+actual YAML、建立effective successor lineage，故該memo不再是current terminal
+record。
 
-- 沒有actual generated gfx942 non-StreamK Ductile YAML exact bytes；
-- 沒有與它共同綁定的authoritative command、cwd、input bytes、generator revision
-  與byte-identical rerun provenance；
-- 唯一具體gfx942 generator record是錯誤test regime的失敗命令，exit `1`、零output；
-- pinned GEKO source可驗，但source capability不能替代actual artifact。
+Final successor-003：
 
-H2為`PASS`；H3仍`UNKNOWN / EVIDENCE_REQUIRED`；H4的milestone-local GPU使用授權
-已由兩名fresh reviewers交互詰問後一致確認，但scheduled window、collision control
-與dated ≥5 complete-work-day calendar仍未證。H1單獨已滿足parent §2.8 hard stop，
-因此本checkpoint進入`BLOCKED`／`blocked`，lock保持`absent`，沒有formal report或
-outgoing edge，S11為`not_activated`。
+- actual YAML、groups/order/weights與三個same-space sizes：`PASS`；
+- H4：在existing `perlee`三次live-unreserved取樣，依frozen key選visible card 0
+  (`gfx942 / SPX / NPS1`、PCI `0000:13:00.0`)；沒有reservation或future-availability
+  claim；
+- effective lock：
+  `s10-lock-9fefc341a765885a03d07c00aba5fffd8bb1f2fe9333043d9d564140257c1115`；
+- mapping evidence：30 rows、A/B一致，3 accepted／27 typed validation-boundary
+  rejections，evidence integrity `PASS`；
+- mapping entry：兩個locked anchors失敗且genuine Formocast rejection為0，因此
+  `FAIL / S10-MAPPING-ENTRY-FAIL`；
+- smoke與noise：依negative-stop為`BLOCKED / not_activated`且canonical/raw targets
+  均不存在；
+- decision：`negative / S1_ENTRY_BLOCKED / FT-BLOCKED-MAPPING / edge=null`。
 
-Direct evidence、claim boundary與recovery interface見
-[S10 blocker memo](reports/gen0-factorization-blocker-memo.md)。本段只投影執行結果，
-不修改本design原先的hypothesis、acceptance、whitelist、DAG或claim boundary。
+Fresh verifier重跑61 tests、九種schema mutations、successor archives full rehash、
+fresh mapping reproduction、postlock validation及terminal immutability後，簽出
+`PASS / FULL / 0 blockers`。Closeout只在formal report、authority projections、
+`CLOSEOUT_ACK`、exact-path commit與post-commit audit一起成立時成為durable
+`CHECKPOINT_COMPLETE`。沒有outgoing edge；S11維持`not_activated`。
+
+完整evidence、所有iterations、deviations、hashes與claim boundary見
+[S10 formal report](reports/staged/s10-stage1-entry-gate-report.md)。
