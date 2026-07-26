@@ -110,6 +110,23 @@ Stage 1 回答上述 **factorization／initialization mechanism**。只有它通
 
 各checkpoint的objections、採納／捨棄方案、理由與雙方`AGREE`保存在其active design。這是design approval，不是effective lock或empirical outcome。
 
+### 1.7 Post-closeout Stage 1 entry recovery
+
+2026-07-26，S10已durable closeout為frozen raw-boundary fixture下的
+`negative / S1_ENTRY_BLOCKED / edge=null`後，唯讀diagnostics確認兩個新的
+measurement-design問題：
+
+- 十組fixture未先對齊Ductile operational `valid_fn` accepted support；
+- non-finite-only Formocast rejection沒有區分finite early-terminate sentinel與
+  whole-cohort runtime threshold queue。
+
+兩個fresh GPT-5.6 Sol/xhigh reviewers依`design-discussion`獨立判讀、交換完整
+立場並交互詰問，最後共同核准獨立S10R1 checkpoint。S10及其negative保持
+immutable；S10R1只在相同source pins、byte-identical YAML、space／groups／weights、
+三sizes、correctness與noise要求下修正selection及measurement semantics。只有
+post-audited `S10R1:S1_ENTRY_GO`可進S11；這不是S10補發edge，也不授權任何scope
+downgrade。
+
 ---
 
 ## 2. 研究問題與假設
@@ -502,13 +519,20 @@ Noise、support、coverage、importance ESS、unique configs 或兩-regime evide
 
 唯一active入口是[checkpoint index](ductile-origami-warmstart/README.md)。2026-07-24設計核准時，十份design全部是`approved / lock_state:absent / scientific_outcome:not_evaluated`；只有S00是`execution_status:not_started`，其餘都是`gated`。後續current lifecycle只由active index與experiment plan的verified closeout projection維護。
 
-Strict DAG：
+Current strict scientific DAG與administrative recovery prerequisites：
 
 ```text
-S00 -> S10 -> S11 -> S12 -> S13 -> S20 -> S30 -> S31
-                       \                         \
-                        +---- conditional ------> S40 -> S41
+S00 -> S10 [terminal negative; edge=null]
+  \          \
+   +----------+-- administrative/provenance only --> S10R1
+                                                     |
+                                                     +-- S1_ENTRY_GO --> S11 -> S12 -> S13 -> S20 -> S30 -> S31
+                                                                                 \                         \
+                                                                                  +---- conditional ------> S40 -> S41
 ```
+
+S00／S10到S10R1的關係不是scientific outgoing edge。S10R1 negative、
+inconclusive、`CHANGES_REQUIRED`或未完成都不會啟動S11。
 
 M00–M09移入`ductile-origami-warmstart/legacy/`，只保留歷史正文：
 
@@ -535,7 +559,9 @@ M00–M09移入`ductile-origami-warmstart/legacy/`，只保留歷史正文：
 - Future effective lock生效前不得產生outcome-bearing evidence。
 - S10 hard access／artifact／mapping blocker才使用：
   - `ductile-origami-warmstart/reports/gen0-factorization-blocker-memo.md`
-- 十份checkpoint各有唯一formal report path，詳見active index。
+- 每份checkpoint各有唯一formal report path，詳見active index；S10R1使用
+  `ductile-origami-warmstart/reports/staged/s10r1-stage1-entry-recovery-report.md`
+  且不覆寫S10 report。
 - S40 data insufficiency是formal scientific negative，寫入`reports/staged/s40-stage4-activation-report.md`；不建立data-insufficiency blocker memo。
 - `skipped_by_gate`／`not_activated`由上游report與closeout記錄，不建立自己的report或commit。
 - Positive、negative與inconclusive在evidence integrity完整時都需formal report、parent update、`CLOSEOUT_ACK`、isolated commit與post-commit audit。
@@ -548,4 +574,4 @@ M00–M09移入`ductile-origami-warmstart/legacy/`，只保留歷史正文：
 
 ## 12. 設計核准時的下一步與 current lifecycle
 
-2026-07-24設計核准時不是執行Stage 1 D1–D2；第一個可開始的checkpoint是S00。2026-07-25使用者已核准九路徑pre-execution authority amendment及其exact-path ordinary baseline commit；該commit不是S00 closure，也不授權push。當前dependency-ready checkpoint與執行狀態以active index及experiment plan為準。S00仍只能from scratch建立`protocol/v1/`，且只有完成`S00_EVIDENCE_READY`的formal closeout後才能開始S10。
+2026-07-24設計核准時不是執行Stage 1 D1–D2；第一個可開始的checkpoint是S00。2026-07-25使用者已核准九路徑pre-execution authority amendment及其exact-path ordinary baseline commit；該commit不是S00 closure，也不授權push。S00與S10後來都已durable closeout，結果以active index及experiment plan為準。2026-07-26使用者委派的two-reviewer design-discussion另核准五路徑S10R1 post-closeout measurement amendment與其ordinary baseline commit；它不撤銷S10 negative、不預寫S10R1 outcome，也不授權push。當前dependency-ready checkpoint與執行狀態仍只以active index及experiment plan為準。

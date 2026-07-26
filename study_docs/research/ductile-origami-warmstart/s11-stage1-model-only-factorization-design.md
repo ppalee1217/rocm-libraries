@@ -9,11 +9,11 @@ scientific_outcome: not_evaluated
 lock_state: absent
 hypothesis_id: S11-H1
 dependencies:
-  - checkpoint_id: S10
-    required_edge: S1_ENTRY_GO_or_user_approved_S1_ENTRY_DEGRADED_PROXY
+  - checkpoint_id: S10R1
+    required_edge: S1_ENTRY_GO
 entry_criteria:
   - S00_EVIDENCE_READY
-  - S1_ENTRY_GO_or_user_approved_S1_ENTRY_DEGRADED_PROXY
+  - post_audited_S10R1_S1_ENTRY_GO
 criterion_refs:
   - S1_GUIDANCE_LOCKED
 failure_ids:
@@ -55,7 +55,7 @@ consensus_status: approved_two_reviewer_agree
 
 ## 2. Hypothesis 與 falsification
 
-**S11-H1：**在S10鎖定的space中，Formocast能對至少一個eligible residual gene產生符合parent model-only criteria的穩定prior，並可無損轉成與`SearchSpace.map`完全對齊的weights與shuffled control。
+**S11-H1：**在S10R1以相同actual YAML／source pins重新鎖定的Ductile-valid space中，Formocast能對至少一個eligible residual gene產生符合parent model-only criteria的穩定prior，並可無損轉成與`SearchSpace.map`完全對齊的weights與shuffled control。
 
 反證或inconclusive：
 
@@ -68,7 +68,11 @@ consensus_status: approved_two_reviewer_agree
 
 ## 3. Dependencies、entry 與 outgoing edge
 
-S11需要S00 foundation與S10 formal closeout。若S10是`S1_ENTRY_DEGRADED_PROXY`，還必須綁定user批准的decision packet。
+S11需要S00 foundation、immutable S10 terminal provenance，以及S10R1的positive
+formal closeout／isolated commit／post-commit audit。S10自己的negative沒有
+outgoing edge；只有post-audited `S10R1:S1_ENTRY_GO`能啟動S11。S10R1
+negative／inconclusive／`CHANGES_REQUIRED`或未完成都保持S11
+`not_activated`，且本dependency amendment沒有proxy／reduced-mode edge。
 
 唯一outgoing edge：
 
@@ -105,7 +109,12 @@ Future lock：
 
 `protocol/v1/locks/s11-stage1-model-only-factorization-lock.json`
 
-它綁定S10 closure、frozen YAML/space/groups/weights/sizes/mapping、study mode、Formocast/validity revisions、parent constants、randomness bundles、label-seal evidence、Plan-B、exact whitelists與report target。
+它綁定S10 immutable terminal provenance、S10R1 positive closure、frozen
+YAML／space／groups／weights／sizes／valid-support mapping、study mode、
+Formocast／validity revisions、parent constants、randomness bundles、
+label-seal evidence、Plan-B、exact whitelists與report target。S10R1的
+ten-config corpus只作mapping／conformance fixture；S11仍須建立自己的
+multiplicity-preserving occurrence frame。
 
 Outputs至少包括：
 
@@ -138,7 +147,7 @@ S11能說明model-only factorization是否可建立，不能說明real ranking�
 | Guidance完整且label-blind鎖定 | positive closeout | S12 |
 | 無guidable gene／lambda退化 | negative formal closeout | 無 |
 | Support／stability不足 | negative或inconclusive formal closeout | 無 |
-| Mapping缺陷來自S10 authority | 停止並記failure；不得猜值 | 無 |
+| Mapping缺陷來自S10R1 authority | 停止並記failure；不得猜值 | 無 |
 | Label leakage | evidence invalid；新lock／fresh pool後全量重跑 | 無 |
 | Proxy scope需要再縮減 | `blocked-awaiting-user-decision` | 無 |
 
@@ -159,3 +168,16 @@ S11若terminal，不製造S13的Stage 1 rollup。Report需自含label-seal證據
 - Shared resolution：S11只能交付immutable model-only guidance；任何negative仍正式closeout但不建立下游Stage 1 outcome。
 - Reviewer A final：`AGREE`
 - Reviewer B final：`AGREE`
+
+### 2026-07-26 R12 dependency amendment
+
+- S10已durable closeout為negative且沒有outgoing edge；不得由S11把它重解讀為GO。
+- 兩位fresh recovery reviewers同意新增獨立S10R1，保持S10 immutable，並把
+  validity、Formocast model sentinel與runtime queue semantics分離。
+- S11 dependency因此改為exact post-audited `S10R1:S1_ENTRY_GO`；S11的
+  occurrence counts、model-only criteria、weights、shuffle、label seal與claim
+  全部不變。
+- Reviewer A final：`AGREE`。
+- Reviewer B final：`AGREE`。
+- 使用者已委派`/data1/perlee`內的此類block由design-discussion共識決定；
+  amendment不授權push或任何downgrade。
