@@ -11,7 +11,8 @@
 > report且不是`CHECKPOINT_COMPLETE`；generation 0／1只作diagnostic lineage並
 > 禁止重用。A33另授權identity-only retirement；bulk artifacts不再保留。
 > 新的sibling S10R2目前是`BLOCKED / not_evaluated / R2`；A33 retirement已完成，
-> A34已核准prospective calibration boundary，但final numeric resource relock與
+> A34已核准prospective calibration boundary；A35另將R2 repair round上限由3提高為6，
+> 已消耗rounds完整carry over且不改scientific criteria。Final numeric resource relock與
 > preflight尚未通過。只有
 > post-audited `S10R2:S1_ENTRY_GO`可啟動S11。
 >
@@ -334,6 +335,23 @@ Positive、negative與inconclusive都要durable outcome closure。Operational
   edge或claim。Numeric caps與effective lock完成前，S10R2維持
   `BLOCKED / not_evaluated / edge=null`；不授權formal evidence、push、dependency
   install、container lifecycle mutation或downgrade。
+
+### 2026-07-28 A35 R2 repair-budget amendment
+
+- **Trigger：**S10R2 adversarial audit v3已關閉先前noise、GPU isolation、resource
+  lifecycle與registry/window findings，但typed-exact allocation cross-binding仍為
+  `CHANGES_REQUIRED`；當時`T-S10R2`已消耗原3/3 repair rounds。
+- **User decision：**使用者明確授權繼續修復，並將R2 repair round上限由3提高為6。
+- **Carry-over：**rounds 1–3完整保留，不能因本amendment、generation、restart、
+  replacement或new root歸零；下一輪是round 4，最多到round 6。Fresh role-thread
+  上限仍為5。
+- **Scope：**只擴張R2 repair governance，不改任何scientific hypothesis、search
+  space、workload、seed、threshold、criterion、outcome／edge matrix、claim、
+  resource cap、allocation value或evidence boundary。`T-S1-MECHANISM`原reserved
+  5-thread／3-repair allowance與S13 R1最多2 repairs不變。
+- **Progression：**更新後的frozen contract必須綁定本authority amendment並重新取得
+  adversarial `AUDIT_PASS`；其後仍須effective lock seal commit與post-seal audit，
+  才能開始formal evidence。A35不授權push或downgrade。
 
 ### Downgrade user gates
 

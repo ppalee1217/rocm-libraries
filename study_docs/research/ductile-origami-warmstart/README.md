@@ -8,8 +8,9 @@
 > report且不是`CHECKPOINT_COMPLETE`；generation 0／1只作diagnostic lineage並
 > 禁止重用。A33另授權identity-only retirement；bulk artifacts不再保留。新的
 > sibling S10R2目前為`BLOCKED / not_evaluated / risk_tier=R2`。A33 retirement
-> post-audit已通過；A34只核准prospective calibration boundary，final numeric
-> resource relock與preflight仍待完成；
+> post-audit已通過；A34核准prospective calibration boundary，A35再將R2 repair
+> round上限由3提高為6且不重置已消耗rounds；final numeric resource relock與
+> preflight仍待完成；
 > 只有S10R2的post-audited `S1_ENTRY_GO`可啟動S11。
 >
 > **唯一 active 導航入口：**本 README。`legacy/` 內的 M00–M09 仍是 dead-protocol archive，不能提供 schema、hash、lock、registry、criterion、fixture、test或 PASS evidence；S00 positive只支持CPU-only evidence foundation。

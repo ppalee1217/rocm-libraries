@@ -93,7 +93,7 @@ prior context; explanations must build up from the basics.
 - Track `live_run_state` separately from `committed_projection_state`. Partial artifacts and
   working-tree progress belong only to live state; committed projection changes only after the
   durable closeout commit and post-commit audit.
-- Repair rounds are bounded: R0/R1 at most 2, R2 at most 3, and R3 at most 3 unless a human
+- Repair rounds are bounded: R0/R1 at most 2, R2 at most 6, and R3 at most 3 unless a human
   approves more. Stop when the same finding has two rounds without material progress.
   Generations, successors, renames, replacements, or fresh threads cannot reset counts. Total
   fresh role-thread caps for one gate/lineage are R2 = 5 and R3 = 6.

@@ -119,7 +119,7 @@ S10R2是`risk_tier=R2`、獨立`execution_tranche=T-S10R2`與
 - wall-time、CPU/GPU time、storage、throughput samples、pre-empirical engineering、
   repair rounds與fresh role threads都按同一Stage-1 lineage累計；generation、
   successor、sibling checkpoint、replacement role、process restart或new root都不能歸零；
-- R2最多3個repair rounds、5個fresh role threads；pre-empirical engineering最多使用
+- R2最多6個repair rounds、5個fresh role threads；pre-empirical engineering最多使用
   Stage-1 hard cap的20%；首1% planned throughput後重估wall-time與storage；
 - projected cost超過原估2倍、任一frozen resource cap超限，或預設5 GiB transient
   storage不足時，必須safe-boundary pause並提交decision packet；A33 cleanup只降低
@@ -193,6 +193,26 @@ allowance比per-gate reset更窄，並保留S11–S13完成所需的reservation�
 role plan證明5/3不足，只能在labels前提交human cap-increase decision，不得改名繞過。
 本A34不授權push、dependency installation、container lifecycle mutation、正式
 S10R2 evidence或任何downgrade。
+
+### 2.2 A35 R2 repair-budget amendment
+
+2026-07-28，使用者在fresh adversarial audit v3以
+`CHANGES_REQUIRED`指出typed-exact allocation cross-binding缺口後，明確授權繼續修復，
+並將R2 repair round上限由3提高為6。本amendment只改execution governance，不改
+scientific hypothesis、search space、samples、sizes、seeds、criteria、thresholds、
+outcome matrix、edge、claim、resource caps、allocation values或evidence boundary。
+
+- `T-S10R2` prospective repair allowance由3提高為6；已消耗的rounds 1–3完整carry
+  over，不歸零，因此目前下一輪是round 4，最多仍只可到round 6。
+- R2 fresh role-thread上限仍是5；既有fresh auditor必須resume，不得用replacement、
+  generation、restart或new run root重設repair／thread計數。
+- `T-S1-MECHANISM`原先reserved但尚未activated的5-thread／3-repair allowance不變；
+  S13的R1 gate-specific最多2 repairs亦不變。
+- Round 4只先處理audit v3的typed-exact allocation finding；任何後續finding仍按
+  累計round 5／6計數。到round 6或同一finding兩輪無material progress時仍須honest
+  stop。
+- 本amendment不授權push；正式evidence仍必須等待更新後的frozen contract、
+  `AUDIT_PASS`、effective lock seal commit及post-seal audit。
 
 ## 3. Frozen actual-S10 identity
 

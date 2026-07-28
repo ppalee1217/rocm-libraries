@@ -407,7 +407,7 @@ Main agent 每輪將以下內容追加到 `adjudication.md`：
 Repair round 是一個 verifier finding 被送修、實作回應並重新驗證的完整 cycle：
 
 - R0/R1 每個 gate 最多 2 rounds。
-- R2 最多 3 rounds。
+- R2 最多 6 rounds。
 - R3 最多 3 rounds；超過只能取得 human approval。
 - 同一 finding 連續 2 rounds 沒有 material progress，立即停止。
 - Generation、successor、renaming、replacement、role/thread restart 或搬到新 run root
