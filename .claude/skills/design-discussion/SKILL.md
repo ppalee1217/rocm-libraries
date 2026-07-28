@@ -1,36 +1,41 @@
 ---
 name: design-discussion
-description: Uses two independent GPT-5.6 Sol subagents to deliberate experiment or implementation design, repeatedly cross-examine assumptions and evidence until both explicitly confirm one consensus, and preserve the resulting decision for the governing design and experiment report. Use for experiment design, architecture or approach selection, hypothesis validation strategy, ambiguous result interpretation, unexpected implementation or verification design issues, and other consequential design-direction decisions. Do not use for lookups, mechanical edits, implementation execution, or choices with an obvious conventional default.
+description: Uses two independent reviewers for bounded deliberation of material protocol, claim, measurement-lineage, or authority ambiguity. Allows at most two cross-examination rounds plus one evidence-backed final round and 60 total agent wall-minutes; preserves dissent and escalates instead of forcing agreement. Do not use for lookups, mechanical repairs, ordinary implementation choices, resource waiting, or questions already resolved by a frozen contract.
 ---
 
 # Design Discussion
 
-用兩個彼此獨立的 GPT-5.6 Sol subagents 降低單一觀點的盲點。
-Main agent 是 orchestrator：準備共同 prompt、轉交雙方論點、查核證據、判斷是否真正收斂，最後寫回對應文件。
+用兩個彼此獨立的 reviewers 降低單一觀點的盲點。Main agent 是 orchestrator：準備
+共同 prompt、轉交雙方論點、查核證據、執行 round/time cap，最後寫回 consensus 或
+保留 dissent 的 human decision packet。
 
 ## Model policy
 
-- 每次啟動 fresh subagent 時，明確指定 `model: gpt-5.6-sol-xhigh`。
-- A、B 必須使用相同 model 與相同的初始 prompt。
-- 若該 model 無法使用，停止並告知使用者；不可靜默換成其他 model。
+- `model: gpt-5.6-sol-xhigh` 是 disclosed preference／capability requirement。記錄
+  requested/actual model 與 capability assessment；不可靜默降級。
+- Model unavailability 不是 R0/R1 的 universal hard stop。只有 approved design 明定
+  不可替代 capability，或替代 model 無法滿足 material R2/R3 review 時才停止。
+- A、B 應使用相同 capability class 與相同初始 prompt；差異必須揭露。
 - Subagent 必須是兩個不同的 fresh threads；不可用同一 thread 扮演雙方。
+- Same-model fresh threads 是 process independence，不是 scientific replication。
 
 ## 何時使用
 
-使用情境：
+只在下列 material ambiguity 可能改變 frozen boundary 時使用：
 
-- 設計實驗、control、變因、測量方法或 acceptance criteria。
-- 選擇實作架構、演算法、研究方法或下一個實驗方向。
-- 判斷 hypothesis、assumption、claim 或設計方向是否合理。
-- 解讀 ambiguous、negative 或 counterintuitive result。
-- 一個決策有數個合理方案，且選錯會造成明顯成本。
+- Protocol、control、fixture、acceptance、threshold 或 stopping rule ambiguity。
+- Measurement quantity/boundary、claim scope、lineage、selection 或 comparability ambiguity。
+- Authority、destructive operation、post-label amendment 或 immutable lock ambiguity。
+- Negative/counterintuitive result 暴露多個會改 gate/claim 的合理 interpretation。
 
 不要使用：
 
 - 單純查資料、找 symbol、解釋既有程式或機械式修改。
-- 已有唯一慣例答案的小決策。
+- 已有唯一 frozen-contract／慣例答案的小決策。
 - 實際執行實作；改用 `implement-verify-loop`。
 - 純粹屬於使用者偏好的選擇。
+- 普通 in-scope repair、deterministic disposable artifact recovery、resource waiting、
+  或不影響 protocol/claim/authority 的 implementation choice。
 
 ## Step 0：界定問題與目標文件
 
@@ -45,6 +50,9 @@ Main agent 是 orchestrator：準備共同 prompt、轉交雙方論點、查核�
 6. 若由`implement-verify-loop`處理active checkpoint的unexpected issue，target先使用該
    checkpoint的`adjudication.md`；不得為plan-preserving repair改寫locked design。
    Main agent必須在closeout時把material decision完整整合進formal experiment report。
+7. 記錄 start time、60 agent wall-minute 總 budget 與最多兩輪 cross-examination；
+   A、B 各自消耗的 wall-time 都計入總數。Initial positions 不算 cross-examination，
+   evidence-backed final positions 是額外且唯一的一輪。
 
 ## Step 1：建立共同 prompt
 
@@ -97,10 +105,11 @@ Main agent 是透明 relay，不得把自己的偏好偽裝成另一方意見。
    - 說明哪些地方接受對方修正，哪些地方仍反對及其證據。
    - 給出 revised position 與 remaining disagreements。
 4. 若分歧取決於可查證事實，先從 repo、data 或 artifact 取得證據，再把同一份證據交給雙方。
-5. 不設任意輪數上限。持續交互詰問，直到真正 tension points 已處理且兩方可評估同
-   一份 candidate consensus。若同一 factual disagreement 連續兩輪沒有 material
-   progress，Main agent 必須先取得新 evidence、縮小可驗證命題或指出缺少的證據，
-   不可只重複相同 prompt。
+5. 最多執行兩輪。每輪後記錄 elapsed agent wall-minutes、resolved crux 與 remaining
+   dissent。若同一 factual disagreement 連續兩輪沒有 material progress，直接進 final
+   round；不可重複 prompt 或另開 thread 重設 cap。
+6. 任一時點達 60 agent wall-minutes，立即停止新 cross-examination，進入可負擔的
+   evidence-backed final positions；若連 final round 都無 budget，使用當前 positions。
 
 禁止：
 
@@ -117,19 +126,17 @@ Main agent 是透明 relay，不得把自己的偏好偽裝成另一方意見。
    - experiment/implementation design。
    - acceptance criteria 與 falsification conditions。
    - risks、evidence boundary 與 residual uncertainty。
-2. 將同一份 candidate consensus 與雙方最新 remaining disagreements 並行送回 A、B。
-3. 要求每一方只可回覆：
-   - `AGREE`，並簡述它為何足以代表自己的立場；或
-   - `OBJECT`，列出具體未解決項目與最小修正。
-4. 只有兩方都回覆 `AGREE` 才能宣告 unified conclusion。
-5. 若有可處理的 objection，修正 candidate、補同一份 evidence給雙方，再次讓兩方
-   確認；不可因已討論若干輪就停止。
-6. 若 objection 是 factual，繼續查證；若是 scope misunderstanding，回到共同 prompt
-   與原 plan澄清；若是 value trade-off，先找出是否能在原 plan boundary內採用更
-   嚴格且雙方可接受的設計。
-7. 只有當 remaining disagreement 本身證明必須打破或修改使用者原訂 plan，或只能由
-   使用者偏好決定，才停止並提交 human review。不得產生假共識，也不得把任一方立場
-   寫成已定案計畫。
+2. 在前兩輪取得的 evidence 內，並行送出唯一一次 evidence-backed final round。兩方
+   都收到相同 candidate、remaining disagreements、evidence 與剩餘 wall-time。
+3. 要求每一方回覆：
+   - `AGREE`：簡述 candidate 為何足以代表自己的立場；或
+   - `DISSENT`：列出具體未解項、supporting evidence、claim impact 與最小 human choice。
+4. 只有兩方都 `AGREE` 才能宣告 unified conclusion；不得再開第四輪要求改口。
+5. 任一 `DISSENT`、缺席、timeout、round cap 或 60-minute cap 都建立 preserved-dissent
+   packet：共同點、各自立場、factual/value/scope crux、evidence boundary、已嘗試修正、
+   最小選項與 recommendation，然後 human escalation。
+6. Cap 不是失敗，也不是默認任何一方勝出。不得以多數、語氣、model、Main agent 偏好
+   或時間壓力強迫 `AGREE`、刪除 objection 或偽造 consensus。
 
 ## User escalation boundary
 
@@ -138,6 +145,8 @@ Main agent 是透明 relay，不得把自己的偏好偽裝成另一方意見。
 - 兩方 `AGREE` 的 consensus若保留 frozen goal、acceptance、planned evidence、
   report target、checkpoint order/gates、approved whitelist/authority invariants與
   claim boundary，Main agent直接寫回並繼續，不需額外詢問使用者。
+- 任一 material `DISSENT` 或 cap reached 都保留原 frozen contract，提交 human decision
+  packet；不可在等待期間修改 source、authority、labels 或 claim。
 - 任何時點只要consensus顯示繼續必須打破或修改上述plan/authority，才將change
   packet交給使用者審查；不必等checkpoint完成後才升級。
 - Ordinary in-scope repair、fresh rerun、原 plan 已定義的 negative branch、或把
@@ -150,7 +159,8 @@ Main agent 是透明 relay，不得把自己的偏好偽裝成另一方意見。
 
 ## Step 5：由 Main agent 寫回文件
 
-只有 unified conclusion 成立後才寫回 Step 0 的 target document。
+Unified conclusion 成立時寫回 approved decision；有 dissent 時只寫回 clearly
+non-authoritative decision packet 與 preserved positions，不得把任一立場標成定案。
 
 - Main agent 親自整合內容；不可直接貼上任一 subagent 的原始回答。
 - 更新文件中最自然的既有章節；只有沒有合適位置時才新增設計決策章節。
@@ -166,20 +176,21 @@ Main agent 是透明 relay，不得把自己的偏好偽裝成另一方意見。
   trade-offs、implementation/measurement/gate/claim impact、resolution、remaining
   uncertainty及user-review basis。
 - 實際啟動本skill的issue另記兩位reviewers的substantive objections、採納/捨棄方案、
-  shared consensus與兩個explicit `AGREE`；不要貼raw chat或private chain-of-thought。
-- 清楚標示結論是 dual-agent cross-examination 後由 A、B 共同確認。
+  shared consensus 或 preserved dissent、round/time usage 與 final responses；不要貼
+  raw chat 或 private chain-of-thought。
+- 只有兩方 `AGREE` 才標示共同確認；否則清楚標示 `PENDING_HUMAN_DECISION`。
 - 遵守目標文件既有語言、格式與 repo 文件規範。
 - 不覆蓋無關的使用者變更。
 
-## 多 checkpoint 實驗的文件生命週期
+## 多 gate 實驗的文件生命週期
 
-Canonical execution unit是authoritative parent experiment plan index中的stable
-checkpoint；`milestone`/`step`只有指向該indexed checkpoint時才是alias。Parent plan是
-規劃階段的target；其明確引用的checkpoint design、report與blocked memo是同一目標的
-受控交付物，不需逐一詢問路徑。
+Parent plan 必須把 indexed checkpoint 明確映射到 `scientific_gate`、`execution_tranche`
+與 `closure_unit`。Scientific gate 保留 hard edge；相容 adjacent gates 可共享角色、
+run root 與一個 terminal closeout，但不得共享或改寫彼此的 outcome criterion。
 
-1. **規劃階段：每個 checkpoint 各建一份設計文件**
-   - parent plan 必須提供文件索引、執行順序、dependency、gate、目前狀態與設計文件連結。
+1. **規劃階段：每個 scientific gate 各建一份設計／frozen-contract authority**
+   - parent plan 必須提供文件索引、gate order/dependency、tranche/closure mapping、
+     current state 與設計／machine-readable contract 連結。
    - 每份設計文件至少要直白說明：
      - 實驗假設是什麼，以及什麼觀察會推翻它。
      - 實驗預期目標是什麼；成功、失敗、降級各代表什麼。
@@ -189,40 +200,48 @@ checkpoint；`milestone`/`step`只有指向該indexed checkpoint時才是alias�
      - acceptance criteria、falsification condition、停止條件與下一步決策。
      - 預期可能遇到的狀況、診斷證據、處理方法與無法排除時的降級方案。
    - 尚未執行的實驗只能寫 hypothesis、protocol 與預期判讀；不得捏造數字、結果或已解決狀況。
-2. **Technical verification通過後：另建該checkpoint的完整實驗報告**
+   - Durable machine-readable contract 與 lock 必須在 outcome labels 前 seal；transient
+     execution plan 不能取代。
+2. **Technical verification 通過後：由 closure unit 建立 terminal 實驗報告**
    - 報告與設計文件分開保存，不用事後結果覆寫 preregistered design。
-   - 只有planned execution/evidence完整且independent verifier technical `PASS`才建立
-     formal report；`CHECKPOINT_COMPLETE`仍須經parent update、`CLOSEOUT_ACK`、isolated
-     commit與post-commit audit。
-   - Report除原始假設、目標、環境/revision、偏差、結果、root cause、解法、未解問題、
+   - 每個 outcome-bearing R1-R3 gate 必須先有 fresh verifier technical `PASS`。相容
+     gates 可在一份 closure report 中各自保留 criterion、outcome、evidence 與 edge，
+     再做一次 parent update、`CLOSEOUT_ACK`、授權範圍內的 terminal commit 與
+     post-commit audit。
+   - Report 除各 gate 的原始假設、目標、環境/revision、偏差、結果、root cause、解法、未解問題、
      commands與artifacts外，還須完整materialize所有影響implementation、verification、
      interpretation、lifecycle或gate的agent adjudication。
    - negative / inconclusive result 也必須建立報告，不可只報成功案例；若證據不足，明確標成 underpowered 或 inconclusive。
    - Durable terminal `BLOCKED`只建立design預先指定的blocker memo；不是formal report或
      completion。`skipped_by_gate`/`not_activated`不建立假report，由上游closeout記錄。
 3. **可追溯性**
-   - 每份 design 要連回 parent plan，並預先指定未來 report 路徑。
-   - 每份 report 要連回對應 design，逐項回答原 acceptance criteria 與 falsification conditions。
+   - 每份 design/contract 要連回 parent plan，並預先指定未來 closure report 路徑。
+   - 每份 closure report 要按 gate 連回對應 design/contract，逐項回答原 acceptance
+     criteria 與 falsification conditions。
    - 若執行中修改 hypothesis、metric 或門檻，保留原設計並在 report 記錄變更時間、理由與影響，不可把事後門檻偽裝成預註冊條件。
    - Tracked report/parent不嵌closure commit自己的SHA、`SELF`或delivery-manifest hash；
      使用stable identity、commit trailers、Git history與post-commit audit關聯。
 
 ## 完成條件
 
-只有以下條件全數成立才算完成：
+本 skill 在「consensus 已寫回」或「dissent 已保存並升級」其中一個 terminal state
+成立時完成：
 
-- 兩個 fresh GPT-5.6 Sol subagents 收到相同初始 prompt。
-- 雙方至少完成一輪針對彼此實際論點的交互詰問。
+- 兩個 fresh reviewers 收到相同初始 prompt。
+- Budget 允許時，雙方至少完成一輪針對彼此實際論點的交互詰問；若 initial positions
+  已耗盡 60-minute cap，直接保存 positions 並升級。
 - Factual crux 已以可取得的證據查核，或明確列為未驗證。
-- A、B 都明確確認同一份 candidate consensus。
-- 不得因固定輪數、時間方便或 Main agent 偏好，在兩方尚未 `AGREE` 時假定收斂。
-- Main agent 已把 unified design 寫回唯一、正確的 target document。
-- 若為多checkpoint實驗，parent plan已建立完整索引，且每個checkpoint都有可執行的
-  獨立設計與預先指定的report或terminal blocker path。
+- Cross-examination 不超過兩輪，final positions 不超過一輪，且總 agent wall-time
+  不超過 60 分鐘。
+- A、B 都 `AGREE` 同一 candidate，或 material dissent 已原樣保存並 human escalated。
+- Main agent 已把 approved design 或 non-authoritative decision packet 寫回唯一、
+  正確的 target document。
+- 若為 multi-gate 實驗，parent plan 已建立 gate/tranche/closure mapping，且每個 gate
+  都有可執行的獨立設計／contract 與預先指定的 closure report 或 terminal blocker path。
 
 最後以繁體中文簡述：
 
-- 統一結論。
+- 統一結論，或 preserved dissent 與需要的人類決定。
 - 交互詰問改變或強化了哪些關鍵點。
 - 寫回的文件路徑。
 - 仍存在的 evidence boundary 與非阻擋風險。

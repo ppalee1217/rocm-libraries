@@ -61,48 +61,71 @@ prior context; explanations must build up from the basics.
   completion status must wait. If an early report is explicitly required, label it
   `partial` / `in-progress` and list every pending run and unavailable conclusion.
 
-### Close every indexed checkpoint before starting the next
+### Govern experiments by risk, hard gates, and closure units
 
-- The execution unit is one stable checkpoint explicitly indexed by the authoritative parent
-  experiment plan. `step` and `milestone` are aliases only when they refer to that indexed
-  checkpoint; a command, repair iteration, day, stage, or subtask is not automatically a new
-  checkpoint.
-- The parent plan and its explicitly linked checkpoint design form the authoritative bundle.
-  Before execution, uniquely resolve the checkpoint ID, goal, dependency/gate, acceptance and
-  evidence boundary, report or blocker target, status/outcome vocabulary, implementation
-  whitelist, and delivery/commit whitelist. If any of these are materially ambiguous, stop and
-  clarify or amend the design instead of inventing them.
-- At the start of every checkpoint, read and record the current committed repository rule and
-  `implement-verify-loop` revision. The latest rule is the orchestration and completion floor;
-  it does not silently rewrite scientific hypotheses or thresholds. Align a conflicting locked
-  design through a traceable amendment or new effective lock before execution.
-- Work on exactly one active checkpoint at a time. Give it two independent plans, a fresh
-  implementer, and a fresh verifier; repair and re-verify until the verifier returns a valid
-  technical `PASS`. A broad request to implement all checkpoints authorizes the sequence, not a
-  batched implementation or batched verification.
-- Technical `PASS` enters `VERIFIED_PENDING_CLOSEOUT`; it is not checkpoint completion. The main
-  agent must then publish the checkpoint's formal experiment report, update the authoritative
-  parent plan, obtain the verifier's read-only `CLOSEOUT_ACK`, commit exactly the checkpoint
-  delivery whitelist, and audit the resulting commit. Only then mark `CHECKPOINT_COMPLETE` and
-  start a dependent checkpoint.
-- The repository owner has authorized one isolated checkpoint closure commit for each
-  `implement-verify-loop` checkpoint in this experiment sequence. Do not ask again for that
-  commit. This authority does not include push, unrelated workflows, unrelated dirty changes,
-  or files outside the frozen delivery whitelist.
-- Positive, negative, and inconclusive scientific outcomes all require the formal report and
-  closure commit when execution and evidence integrity pass. A predeclared durable `BLOCKED`
-  state may create only its specified blocker memo and blocked-state commit; it is not a formal
-  experiment report, does not complete the checkpoint, and does not unlock dependents.
-  `skipped_by_gate` or `not_activated` checkpoints get no fabricated report or commit of their
-  own; record them in the upstream checkpoint's report, parent update, and closure commit.
-- `CHANGES_REQUIRED`, transient evidence requests, `BLOCKED`, missing evidence, a still-running
-  verification, a missing report/parent update, a failed closeout audit, or a failed commit stops
-  that dependency path. Never modify downstream checkpoint files speculatively.
-- Preserve separate baselines, Plan-A/Plan-B, evidence, adjudication, report, delivery manifest,
-  verdict, and closure audit for every checkpoint. Keep transient `agent_run/` evidence out of
-  the commit and preserve unrelated user changes and pre-existing index entries.
+- Classify work before any outcome label is visible:
+  - `R0 mechanical`: deterministic, non-outcome mechanical work.
+  - `R1 standard preregistered outcome checkpoint`: ordinary execution and interpretation of an
+    approved outcome gate.
+  - `R2 material measurement/claim/lineage risk`: work that can materially change measurement,
+    comparability, provenance, selection, lineage, or allowed claims.
+  - `R3 authority/destructive/post-label change`: new authority, destructive work, or any
+    post-label protocol, contract, lock, fixture, threshold, selection, lineage, or claim change.
+- Freeze the tier before labels. After labels, risk may only escalate. A generation, successor,
+  rename, replacement role, fresh thread, or new run root cannot reset tier, repair count,
+  thread count, lineage, or authority history.
+- Before outcome-bearing R1-R3 work, extract a durable machine-readable frozen contract from the
+  approved parent/design, verify its human/machine parity, and seal its tracked lock before
+  labels. It must define criteria, outcome/edge matrix, evidence/measurement/claim boundaries,
+  fixtures, lineage, whitelists, authority, repair and resource budgets, downgrade gate, and lock
+  identity. A transient execution plan cannot replace or amend it.
+- Use one execution planner by default. R2/R3 add one fresh adversarial oracle/authority auditor
+  before labels. A fresh implementer is not mandatory and may continue within one execution
+  tranche. Every outcome-bearing R1-R3 gate requires a fresh verifier who did not implement that
+  gate. Same-model fresh threads are process independence, not scientific replication.
+- A model pin is a disclosed preference or capability requirement, not a universal R0/R1 hard
+  stop. Record requested and actual models and capability differences; stop only when an
+  approved non-substitutable capability is unavailable.
+- Keep three units separate:
+  - A `scientific_gate` is a hard preregistered outcome/claim/authority edge.
+  - An `execution_tranche` may share planner, implementer, verifier, run root, and repair ledger.
+  - A `closure_unit` may give compatible adjacent gates one terminal report/update/staged audit
+    and commit without weakening any scientific edge.
+- Dependent outcome work waits for the upstream gate's verified frozen edge, not necessarily its
+  later terminal paperwork. Independent label-blind preparations may run in parallel only when
+  write, index, run-root, evidence, and authority boundaries do not overlap. Never speculate on
+  a dependent outcome.
+- Track `live_run_state` separately from `committed_projection_state`. Partial artifacts and
+  working-tree progress belong only to live state; committed projection changes only after the
+  durable closeout commit and post-commit audit.
+- Repair rounds are bounded: R0/R1 at most 2, R2 at most 3, and R3 at most 3 unless a human
+  approves more. Stop when the same finding has two rounds without material progress.
+  Generations, successors, renames, replacements, or fresh threads cannot reset counts. Total
+  fresh role-thread caps for one gate/lineage are R2 = 5 and R3 = 6.
+- Pre-empirical engineering may consume at most 20% of the stage cap. Reforecast wall-time and
+  storage after the first 1% of planned throughput. A projection above 2x the original or any
+  wall-time/storage/throughput budget exceed requires a safe-boundary pause and decision packet.
+  Runtime alone never permits optional stopping, but a frozen budget exceed is a gate. Unless an
+  approved design says otherwise, transient storage is capped at 5 GiB.
+- For the same scientific gate/lineage, all consumed wall-time, CPU/GPU time, storage,
+  throughput samples, and pre-empirical engineering budget accumulate across generations,
+  successors, replacement roles, process restarts, and new run roots. None may reset unless a
+  human explicitly approves new authority/contract; that contract must record prior
+  consumption, carry-over, and the expressly approved reset boundary.
+- Technical verification and staged closeout may be one fresh verifier pass when implementation
+  is stable and the complete staged draft is ready; record separate technical and closeout
+  verdicts. Any later staged change requires the affected audit again. Post-commit audit remains
+  mandatory.
+- An isolated terminal commit is permitted only when existing authority covers the exact
+  closure unit and frozen delivery whitelist. Push, PR, credentials, external writes,
+  dependency installation, and container mutation remain separately gated.
+- Positive, negative, and inconclusive outcomes all require durable terminal evidence. A
+  predeclared `BLOCKED` state may create only its specified blocker memo; it does not unlock a
+  dependent edge. `skipped_by_gate` and `not_activated` get no fabricated report of their own.
+- Keep transient `agent_run/` evidence out of commits. Preserve unrelated user changes and
+  pre-existing index entries.
 
-### Make every checkpoint report a durable decision record
+### Make every closure report a durable decision record
 
 - The committed report must be self-contained. Restate the frozen oracle and evidence boundary;
   record exact commands, working directories, exit codes, raw artifact hashes, every
@@ -113,9 +136,9 @@ prior context; explanations must build up from the basics.
   trade-offs, implementation/measurement/gate/claim impact, resolution, remaining uncertainty,
   and why user review was or was not required.
 - When `design-discussion` was used, also synthesize both reviewers' substantive objections,
-  accepted and rejected alternatives, shared consensus, and both explicit `AGREE` responses.
-  Do not paste raw chat or private chain-of-thought. A link to ignored transient evidence is not
-  a substitute for the durable report.
+  accepted and rejected alternatives, shared consensus or preserved dissent, round/time usage,
+  and final responses. Do not paste raw chat or private chain-of-thought. A link to ignored
+  transient evidence is not a substitute for the durable report.
 - Do not embed a closure commit's own SHA, a `SELF` placeholder, or a delivery-manifest hash in
   the tracked report or parent plan. Link the commit through stable checkpoint/report identity,
   commit trailers, Git history, the transient post-commit audit, and the final handoff.
@@ -148,31 +171,44 @@ prior context; explanations must build up from the basics.
   and a plausible mechanism. State the measurement boundary, sample size, repetitions, metrics,
   and what the result cannot support.
 
-### Resolve unexpected design issues by consensus before escalating
+### Bound material design discussion and preserve dissent
 
-- When implementation or verification exposes an unplanned consequential design issue, do not
-  immediately ask the user to choose a repair and do not let the main agent decide alone. Use
-  `design-discussion` with two additional fresh GPT-5.6 Sol xhigh subagents that receive the
-  same evidence and neutral prompt.
-- Keep the two original reviewer threads independent for their first pass, then relay their
-  complete positions, cross-examine factual assumptions, gather missing repo/artifact evidence,
-  and revise one candidate consensus until both explicitly return `AGREE`. Do not impose an
-  arbitrary debate-round limit or treat silence, majority, or the main agent's preference as
-  consensus.
-- If the consensus preserves the original plan, frozen goal, acceptance criteria, planned
-  evidence, report target, checkpoint DAG/gates, approved whitelist/authority invariants, and
-  claim boundary, record the adjudication and continue without asking the user again.
-- Ask the user to review only when consensus at any point proves that continuing requires
-  breaking or modifying the original plan or authority. A plan change includes a changed goal,
-  acceptance threshold, evidence source, report target, checkpoint order/gate, preregistered
-  fixture/measurement boundary, approved whitelist, immutable lock/lifecycle invariant, or
-  allowed claim.
-- `CHANGES_REQUIRED` alone is not a plan change. A plan-preserving in-scope repair, fresh rerun,
-  correctly isolated test harness, or explicitly designed negative branch does not require
+- Trigger `design-discussion` only for material protocol, measurement/claim/lineage, or authority
+  ambiguity. Do not trigger it for mechanical repairs, deterministic artifact recovery, ordinary
+  implementation choices, or resource waiting.
+- Give two fresh independent reviewers the same neutral prompt and evidence. Allow at most two
+  cross-examination rounds plus one evidence-backed final round, with at most 60 total agent
+  wall-minutes. A new thread or renamed issue cannot reset either cap.
+- Do not force `AGREE`. If both reviewers agree within the cap and the decision preserves the
+  frozen contract and existing authority, record it and continue. At any material dissent,
+  timeout, round cap, or time cap, preserve both positions, evidence boundaries, shared points,
+  and the smallest decision packet, then escalate to the user.
+- A frozen-contract change includes a changed goal, acceptance threshold, evidence source,
+  report target, gate order/edge, preregistered fixture or measurement boundary, whitelist,
+  immutable lock/lifecycle invariant, lineage, or allowed claim. After labels, such a change is
+  R3 and cannot be made through reviewer consensus alone.
+- `CHANGES_REQUIRED` alone is not a contract change. A contract-preserving in-scope repair,
+  rerun, correctly isolated test harness, or explicitly designed negative branch does not need
   repeated human approval.
-- This consensus rule cannot invent the user's initial intent or grant missing authority for
-  commit/push, credentials, external-system writes, dependency installation, container
-  mutation, or other platform-required approvals.
+- Reviewer agreement cannot invent the user's initial intent or grant missing commit/push,
+  credential, external-system, dependency-installation, container, or destructive authority.
+
+### Recover only deterministic disposable artifacts automatically
+
+- Automatic recovery is limited to one exact ordinary regular file that is baseline-absent,
+  newly untracked, unstaged, exactly attributed to the current workflow, byte-regenerable,
+  nonsensitive, and neither evidence-bearing nor independently valuable.
+- Prove lexical and resolved path, active-area ownership, baseline absence, exact creator
+  attribution, `lstat` type/mode/link count, Git/index/ignore state, size, SHA-256, timestamps,
+  and lack of user/concurrent overlap before action.
+- For a qualifying file, automatically move only that exact file into a new incident-specific
+  ignored `agent_run/...` quarantine, verify identical hashes and source absence, then audit full
+  status/diff/index, whitelist, and unrelated user changes. No dual reviewers are required.
+- Never use globs, recursion, broad variables, `git clean`, reset, checkout, stash, unlink, or
+  directory removal in this automatic path.
+- Tracked, staged, pre-existing, attribution-ambiguous, concurrently modified, sensitive,
+  evidence-bearing, plan-listed, or independently valuable artifacts remain at a human/dual
+  review gate. Dual review can resolve classification; it cannot invent destructive authority.
 
 ### Downgrades require the user's decision
 
