@@ -2,7 +2,7 @@
   "schema_version": 1,
   "manifest_id": "s10r1-diagnostic-retirement",
   "retention_event": "A33",
-  "state": "authorized_pending_cleanup",
+  "state": "retired_post_audited",
   "authority": {
     "user_instruction_date": "2026-07-28",
     "authority_head": "24d9ef2ba165b51c6de8da18eba56058fb00a7c0",
@@ -149,7 +149,48 @@
     "unrelated working-tree and index changes",
     "perlee container lifecycle"
   ],
-  "post_cleanup_audit": null,
+  "post_cleanup_audit": {
+    "state": "PASS",
+    "completed_at_utc": "2026-07-28T14:02:35Z",
+    "pending_authority_commit": "54f4332c56c508d04048090091d841462bb8610b",
+    "execution_surface": "docker exec perlee against /src/rocm-libraries bind mount",
+    "operation": "exact allowlist recursive retirement; no glob, git clean, reset, checkout, stash, or parent-wide cleanup",
+    "ignored_root_absent": true,
+    "small_paths_absent": 19,
+    "remaining_s10r1_protocol_paths": 0,
+    "remaining_s10r2_implementation_or_evidence_paths": 0,
+    "other_agent_run_roots_preserved": [
+      "260724-ductile-factorized-guidance-s0-s2-v2",
+      "260724-ductile-factorized-guidance-s00",
+      "260724-ductile-origami-warmstart-all",
+      "260724-ductile-origami-warmstart-sequential",
+      "260725-ductile-factorized-guidance-s0-s1-recovery",
+      "260725-ductile-factorized-guidance-s0-s2"
+    ],
+    "filesystem_available_bytes_before": 568399196160,
+    "filesystem_available_bytes_after": 602133839872,
+    "filesystem_available_bytes_observed_delta": 33734643712,
+    "pre_cleanup_target_allocated_bytes": 34225770496,
+    "reclaimed_bytes_interpretation": "observed filesystem delta is not historical peak, total bytes written, or a resource-budget reset",
+    "index_entries": 0,
+    "unrelated_worktree_changes_preserved": [
+      {
+        "path": "study_docs/research/ductile-origami-warmstart/reports/staged/s00-foundation-verification-report.md",
+        "sha256": "0bc2d71812808ec3a8f1bcb347f2cfb34f6b2dfd962f523b8df432d53730e77e"
+      },
+      {
+        "path": "study_docs/research/ductile-origami-warmstart/reports/staged/s10-stage1-entry-gate-report.md",
+        "sha256": "8965f7ec230704bceadefb31859b272f850fb44a54295d8cb12af11d6444f340"
+      }
+    ],
+    "actual_yaml_sha256_after": "faaa8d65014d30646b89b84a8e97395539e52684bef7b430804a63ef2d64cf36",
+    "ductile_commit_object_present": true,
+    "geko_commit_object_present": true,
+    "active_s10r1_or_s10r2_writers": 0,
+    "s10r1_lifecycle_changed": false,
+    "resource_history_reset": false,
+    "push_performed": false
+  },
   "claim_boundary": {
     "supports": [
       "S10R1 cancellation identity",
