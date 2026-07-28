@@ -1,0 +1,656 @@
+# Copyright Advanced Micro Devices, Inc., or its affiliates.
+# SPDX-License-Identifier: MIT
+
+schema_version: 1
+checkpoint_id: S10R2
+status: frozen_pre_evidence
+
+authority:
+  research_charter: study_docs/research/surrogate-dse-plan.md
+  experiment_plan: study_docs/research/ductile-origami-warmstart-experiment-plan.md
+  checkpoint_index: study_docs/research/ductile-origami-warmstart/README.md
+  checkpoint_design: study_docs/research/ductile-origami-warmstart/s10r2-stage1-support-aware-entry-recovery-design.md
+  governance_commit: b0561d2c9216a58a9d71b8e839c47efaa51f9c00
+  checkpoint_authority_commit: 24d9ef2ba165b51c6de8da18eba56058fb00a7c0
+  retirement_completion_commit: d66edf7ac81cb76825b988e1ea9a65264dfeb0f6
+  resource_boundary_commit: f29ace79110cecd64a57b5beba0d6233da5ac41c
+  repair_budget_amendment_commit: bfe700ca76a17bd65509f3afff70abaf0ad125f4
+
+governance:
+  risk_tier: R2
+  scientific_gate: S10R2
+  execution_tranche: T-S10R2
+  closure_unit: CU-S10R2
+  lock_before_labels: true
+  fresh_adversarial_audit_required: true
+  fresh_verifier_required: true
+  no_push: true
+
+source_identity:
+  s00_closeout_commit: 8d1be2af3e5033ee74a1a8e3b31536f132a014cb
+  s10_closeout_commit: 48c26297fc6815e6edfcc89b8503e47370fedc53
+  ductile:
+    ref: refs/remotes/origin/ductile_integration
+    commit: 5d6bdc8a6438b5fc73a96e46a907f9a5b1cd4e39
+  geko:
+    ref: refs/remotes/origin/users/pkamd/geko_pr
+    commit: d32abacfd13579d1f523f035b7a10b0734c4ac47
+  actual_yaml:
+    path: study_docs/research/ductile-origami-warmstart/protocol/v1/inputs/s10-generated.yaml
+    git_blob: 1fd6fb401d5baebd4665a87e9002687fb725b2dc
+    sha256: faaa8d65014d30646b89b84a8e97395539e52684bef7b430804a63ef2d64cf36
+  candidate_construction:
+    path: projects/hipblaslt/tensilelite/Tensile/BenchmarkStructs.py
+    git_blob: 4968b29b5eacddc56b20c42cb4b2c1e3d8d6f406
+  native_formocast:
+    source_path: shared/origami/src/simulator/tensilelite/formocast_simulator.cpp
+    source_blob: cac2b324984a9fe2e1fadb018702486545e86e80
+    header_path: shared/origami/include/origami/simulator/tensilelite/formocast_simulator.hpp
+    header_blob: 96741965d34f2da1b0a08eaecab15e72082a78bc
+    symbol: "origami::Formocast::predictedPerformance() const"
+  runtime_queue:
+    source_path: projects/hipblaslt/tensilelite/client/src/SolutionIterator.cpp
+    source_blob: 33e86cfc4bf3d4ce8fa8da194b94c024bbb5639f
+    header_path: projects/hipblaslt/tensilelite/client/include/SolutionIterator.hpp
+    header_blob: bad091c0f299f30c4235bc8313c9e8f134fa66a5
+    symbols:
+      - "SolutionIterator::checkSolution(ContractionSolution&, ContractionProblemGemm&, bool)"
+      - "AllSolutionsIterator::preProblem"
+
+claim_boundary:
+  answers: credible and reproducible Stage-1 entry boundary within observed operational valid support
+  does_not_answer:
+    - Formocast ranking accuracy
+    - factorization efficacy
+    - prior-mass improvement
+    - Gen0 improvement
+    - absence of unobserved candidates
+    - production readiness
+  baseline_yaml_semantics_unchanged: true
+
+resource:
+  historical_carry_over:
+    completed_selection_chunks: 3151
+    fresh_role_threads_lower_bound: 10
+    repair_rounds_lower_bound: 11
+    wall_s: UNKNOWN
+    cpu_s: UNKNOWN
+    gpu_s: UNKNOWN
+    preemp_engineering_s: UNKNOWN
+    historical_peak_storage_bytes: UNKNOWN
+    bytes_written: UNKNOWN
+    reset_by_s10r2: false
+  prospective_limits:
+    fresh_role_threads: 5
+    repair_rounds: 6
+    shared_hands_on_s: 604800
+    preemp_engineering_s: 120960
+    transient_storage_bytes: 5368709120
+  calibration_protocol:
+    status: complete
+    output_allowlist:
+      - elapsed_wall_s
+      - elapsed_cpu_s
+      - elapsed_gpu_s
+      - utilization
+      - peak_bytes
+      - retained_bytes
+      - exit_status
+      - fixed_toolchain_cost
+    forbidden_payloads:
+      - actual_S10R2_validity_draws
+      - support_classification
+      - Formocast_ranking
+      - GFLOPS
+      - correctness_labels
+      - noise_labels
+      - S10R1_artifacts
+    selection_chunk:
+      fixture_id: s10r2-selection-calibration-axis-cycle-v1
+      config_count: 512
+      candidate_index_rule: "(draw_index*17 + axis_index*13) mod candidate_count"
+      candidate_registry_digest: 6eb5b7611e1bb34e35798c9c37b9318533c5226c752bbac3efd1f441b95dcc51
+      retain_validity_labels: false
+      fixture_config_digest: c55e9bd1ea7940aa10ab280c16ec7ff7471e5ecbc35bc2154cee02b278a116b7
+      calibration_digest: 0213b6186b259ff815dd26efaa31ec22dfb89043ccafd61256c1e0a7ba6ecb6f
+      wall_s: 7.476893840357661
+      cpu_s: 23.623115000000002
+      maximum_child_rss_kib: 320220
+      retained_bytes: 395871
+      exit_status: 0
+    native_build:
+      fixture_id: s10r2-clean-pinned-native-build-v1
+      build_manifest_digest: fab9eeee69dff7d0dc9e4d10ed368ff213dc1082045670da3aa4c53c7fcebc8d
+      wall_s: 165.39675567671657
+      cpu_s: 390.814501
+      exit_status: 0
+    client_build:
+      status: complete
+      fixture_id: s10r2-pinned-tensilelite-client-build-v1
+      target: tensilelite-client
+      parallel_jobs: 16
+      client_build_digest: a0faa66408fe87e3a56cf70fb0b35edbd8990579273d34a7d71ccbaeae0f3a2d
+      client_sha256: 68dc702f3c1368298677e00b498d84c0cd8bcaca90c8b8d84f285a81a7e3b07f
+      wall_s: 12.04350008489564
+      cpu_s: 12.085301999999999
+      exit_status: 0
+    mapping_row:
+      status: complete
+      fixture_id: s10r2-s10-foundation-mapping-cost-v1
+      foundation_source_path: study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10-mapping-corpus.json
+      foundation_source_sha256: 9cd9429b79d6f2502741a454c8a8c0bb46de986fee79b6e2d6d762f86ca377ec
+      fixed_config_hash: 83398232f63ccd4d6a7cc59520e8fb5096a62be9701c2e94aaa0a706430ff857
+      fixed_size_id: medium
+      fixed_size: [256, 256, 1, 1024]
+      retain_mapping_or_Formocast_labels: false
+      allowed_use: resource_timing_only_not_S10R2_gate_evidence
+      calibration_digest: 0823f7ee4b820337d5045af9847c89bbfa757c1e71bf2684ede50131d279776f
+      wall_s: 7.014307276345789
+      cpu_s: 24.07183
+      maximum_child_rss_kib: 379240
+      retained_bytes: 8328
+      exit_status: 0
+    correctness_build_cell:
+      status: complete
+      fixture_id: s10r2-s10-foundation-build-only-cost-v1
+      foundation_source_path: study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10-mapping-corpus.json
+      foundation_source_sha256: 9cd9429b79d6f2502741a454c8a8c0bb46de986fee79b6e2d6d762f86ca377ec
+      fixed_config_hash: 83398232f63ccd4d6a7cc59520e8fb5096a62be9701c2e94aaa0a706430ff857
+      fixed_size_id: medium
+      fixed_size: [256, 256, 1, 1024]
+      build_only: true
+      retain_GFLOPS_correctness_or_noise_labels: false
+      allowed_use: resource_timing_and_storage_only_not_S10R2_gate_evidence
+      calibration_digest: 594847e6beab6c7cf546e574e7875fa702aa8a54b627a7f6996eeb5c2586c6f5
+      config_sha256: df26adfa8d623f29d604706d906b0a04d1dda229d9161c71f22c86477533bf5a
+      wall_s: 19.686897651758045
+      cpu_s: 233.65890799999997
+      generated_file_count: 18
+      retained_bytes: 7021019
+      benchmark_csv_count: 0
+      exit_status: 0
+    gpu_fixed_cost:
+      status: complete
+      fixture_id: s10r2-empty-hip-launch-calibration-v1
+      source_sha256: 3d0372a0c9aa8c87deb48ae791d31c5e2e995b32877ffa19e56d62ca38e0e59a
+      launch_count: 10000
+      device_selection_rule: lowest visible gfx942 SPX/NPS1 card with zero GPU use, zero VRAM allocation, and no foreign PID
+      pid_snapshot_command: /opt/rocm/bin/rocm-smi --showpidgpus
+      pid_map_semantics: physical DRM card index to sorted PID list
+      selected_device_pid_set_required: []
+      fail_closed_on_pid_command_or_parse_error: true
+      retain_correctness_or_performance_labels: false
+      output_fields:
+        - elapsed_wall_s
+        - elapsed_cpu_s
+        - elapsed_gpu_s
+        - exit_status
+      calibration_digest: 7c1e05f4682c56b0e0e76661ed7a8d2c7a1b693e0c82fdffee792504af75e4ce
+      selected_device:
+        container_visible_index: 0
+        unique_id: "0x2e5e9f248283700d"
+        serial_number: "692348002343"
+        gfx_version: gfx942
+        compute_partition: SPX
+        memory_partition: NPS1
+      wall_s: 2.0711529119871557
+      run_wall_s: 0.4539638948626816
+      cpu_s: 2.033875
+      gpu_s: 0.016021784
+      maximum_child_rss_kib: 437524
+      retained_bytes: 22290
+      exit_status: 0
+    storage:
+      status: complete
+      current_retained_bytes: 249823970
+      maximum_all_accepted_chunk_bytes: 769371
+      maximum_512_chunk_ledger_bytes: 393917952
+      tracked_candidate_registry_bytes: 14199199
+      foundation_build_only_bytes_per_anchor: 7021019
+      fixed_disposable_and_report_buffer_bytes: 1073741824
+      projection_formula: round_up_to_binary_GiB(current + 512_chunk_ledger + registry + 3*foundation_anchor_build + 1GiB buffer)
+      projected_transient_storage_bytes: 2147483648
+    metric_derivation:
+      correctness_cell_wall_s: correctness_build_cell.wall_s + gpu_fixed_cost.run_wall_s
+      correctness_cell_cpu_s: correctness_build_cell.cpu_s + gpu_fixed_cost.cpu_s
+      correctness_cell_gpu_s: correctness_cell_wall_s
+      noise_cell_wall_s: correctness_cell_wall_s
+      noise_cell_cpu_s: correctness_cell_cpu_s
+      noise_cell_gpu_s: noise_cell_wall_s
+      fixed_overhead_wall_s: selection + mapping + gpu + client + correctness calibration wall
+      fixed_overhead_cpu_s: selection + mapping + gpu + client + correctness calibration CPU
+      safety_factor: 2.0
+      full_panel_counts:
+        selection_chunks: 512
+        mapping_rows: 60
+        correctness_cells: 9
+        noise_cells: 63
+  numeric_relock:
+    status: approved
+    caps:
+      wall_s: 11827
+      cpu_s: 62396
+      gpu_s: 2901
+      transient_storage_bytes: 2147483648
+      safety_factor: 2.0
+      derivation_digest: 06f91c45be62a270449ad1bb2a51c8fc6d6e762f347efa73347e88c56f126bef
+    calibration_fixture_digest: 58f4880bb5998ad5c9ad1daf1faf30cf3bf9fedc45fca7626d19025dda7cfc84
+    calibration_input_contract_digest: e316944d47e2947628554e813686161cdb18c70bab25da44bfb712b6933f20ba
+    initial_resource_counter:
+      wall_s: 214.14347133692354
+      cpu_s: 688.321406
+      gpu_s: 0.016021784
+      transient_storage_bytes: 249823970
+    unbuffered_projection:
+      wall_s: 5913.313585537486
+      cpu_s: 31197.546462
+      gpu_s: 1450.1420313566923
+      transient_storage_bytes: 2147483648
+    reservations:
+      selection_chunk:
+        wall_s: 14.953787680715322
+        cpu_s: 47.246230000000004
+        gpu_s: 0.0
+        transient_storage_bytes: 1048576
+      mapping_ab:
+        wall_s: 841.7168731614947
+        cpu_s: 2888.6196
+        gpu_s: 0.0
+        transient_storage_bytes: 16777216
+      native_conformance:
+        wall_s: 30.0
+        cpu_s: 30.0
+        gpu_s: 0.0
+        transient_storage_bytes: 4194304
+      gpu_environment:
+        wall_s: 10.0
+        cpu_s: 10.0
+        gpu_s: 0.0
+        transient_storage_bytes: 1048576
+      correctness_anchor:
+        wall_s: 120.84516927972436
+        cpu_s: 1414.1566979999998
+        gpu_s: 120.84516927972436
+        transient_storage_bytes: 67108864
+      noise_anchor_repeat:
+        wall_s: 120.84516927972436
+        cpu_s: 1414.1566979999998
+        gpu_s: 120.84516927972436
+        transient_storage_bytes: 2097152
+      decision:
+        wall_s: 10.0
+        cpu_s: 10.0
+        gpu_s: 0.0
+        transient_storage_bytes: 2097152
+    preemp_engineering:
+      prospective_boundary_utc: "2026-07-28T14:47:02Z"
+      measured_through_fixture_utc: "2026-07-28T17:02:22Z"
+      measured_through_fixture_s: 8120
+      audit_and_seal_reservation_s: 7200
+      charged_before_formal_s: 15320
+      cap_s: 120960
+      measurement_basis: elapsed_UTC_upper_bound
+      exact_through_lock_recorded_in_lock: true
+
+schedule:
+  chunk_size: 512
+  global_chunks: 32
+  conditional_chunks_each: 32
+  maximum_conditional_targets: 15
+  maximum_total_chunks: 512
+  maximum_total_draws: 262144
+  first_resource_reforecast_chunk: 6
+  first_resource_reforecast_draws: 3072
+  early_stop: false
+  extension: false
+  base_seed: 14074315914322064998
+  seed_derivation: sha256(checkpoint,base_seed,stream_id,chunk_index)-128bit
+
+support:
+  states:
+    - supported_witnessed
+    - support_unobserved
+    - support_proven_absent
+  stochastic_zero_implies_absence: false
+  complete_absence_proof_kinds:
+    - finite_exhaustive
+    - sound_constraint
+    - independently_validated_complete_equivalent
+  ordered_axis_count: 30
+  candidate_registry_path: study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r2-candidate-atom-registry.json
+  candidate_registry_digest: 6eb5b7611e1bb34e35798c9c37b9318533c5226c752bbac3efd1f441b95dcc51
+  candidate_registry_rows: 10024
+  prelocked_candidate_atom_count: 101
+  conditional_diagnostic_atom_count: 107
+  prelocked_candidate_rule: ungrouped_and_unweighted_and_free_and_cardinality_gt_one
+  diagnostic_union:
+    - all_prelocked_candidates
+    - each_axis_first_and_last
+    - exact_typed_integer_minus_two_or_minus_one
+  conditional_activation: first_15_final_global_unobserved_by_frozen_priority
+  residual_gene_with_any_nonwitnessed_value_guidance_eligible: false
+
+mapping:
+  mandatory_atom_rule: prelocked_candidate_atoms_intersect_supported_witnessed
+  always_required_structural_atoms: []
+  selection_rule: deterministic_greedy_set_cover_v1
+  tie_break:
+    - stream_rank
+    - conditional_priority_rank
+    - chunk_index
+    - draw_index
+    - config_hash
+  corpus_size: 10
+  sizes: 3
+  rows_per_pass: 30
+  passes: [A, B]
+  performance_blind: true
+  replacement: false
+  eleventh_config: false
+  insufficient_distinct_witnesses_outcome: inconclusive/FT-INCONCLUSIVE
+  infeasible_cover_outcome: inconclusive/FT-INCONCLUSIVE
+
+native_conformance:
+  helper_source: study_docs/research/ductile-origami-warmstart/protocol/v1/s10r2/native_formocast_runtime_adapter.cpp
+  helper_symbol: "s10r2_native::evaluate_formocast_all_solutions_cohort"
+  host_adapter: study_docs/research/ductile-origami-warmstart/protocol/v1/s10r2/native_adapter.py
+  host_symbol: "s10r2::PinnedNativeFormocastRuntimeAdapter.evaluate_cohort"
+  binding:
+    status: clean_build_complete
+    helper_source_sha256: 9cedd53ea838e812c630422c4680d9aab89a7d5308e6dd37e7ad9173854b1185
+    helper_binary_sha256: dbd2cbec56d623fef16dcb5dc1c9d182c8941316e96ddabf7cff8a28be197468
+    host_adapter_sha256: 85116f79caf872bcca5ac38596ba20882d39add7dd1be123f6bf89fa2c62c5cc
+    build_manifest_digest: fab9eeee69dff7d0dc9e4d10ed368ff213dc1082045670da3aa4c53c7fcebc8d
+    toolchain:
+      cmake: /opt/venv/bin/cmake
+      cxx: /opt/rocm/bin/amdclang++
+      build_type: Release
+      parallel_jobs: 16
+    configure_argv:
+      - /opt/venv/bin/cmake
+      - -S
+      - /src/rocm-libraries/agent_run/260728-ductile-factorized-guidance-s10r2/native-calibration/native-build/source
+      - -B
+      - /src/rocm-libraries/agent_run/260728-ductile-factorized-guidance-s10r2/native-calibration/native-build/build
+      - -DCMAKE_BUILD_TYPE=Release
+      - -DCMAKE_CXX_COMPILER=/opt/rocm/bin/amdclang++
+    build_argv:
+      - /opt/venv/bin/cmake
+      - --build
+      - /src/rocm-libraries/agent_run/260728-ductile-factorized-guidance-s10r2/native-calibration/native-build/build
+      - --target
+      - s10r2-native
+      - --parallel
+      - "16"
+    invocation_argv:
+      - "{helper_binary}"
+      - --input
+      - "{fixture_input}"
+      - --output
+      - "{transcript_output}"
+  score_blind: true
+  early_terminate:
+    microSeconds: 9999999.9
+    hitRate: 0.0
+  guard_order:
+    - global-split-u-zero
+    - small-mn-macro-tile-gap
+    - large-mn-macro-tile-gap
+    - bf16-half-depthu-k-batch-mi
+    - direct-to-lds-a-small-m
+    - direct-to-lds-b-small-n
+    - derived-plr-zero
+  thresholds: [0.0, 0.5, 1.0, 2.0]
+  synthetic_fixture_digest: 6dc566d36655f1d1da3ee7bbfebfe85652f467295d6d61c2d532832f6c618467
+  synthetic_fixture_input_sha256: aa10a2faab53f1ef0c756a21e9e704e01d9878aec0c02e54ee7a0486fba860f0
+  synthetic_fixture:
+    schema_version: 1
+    fixture_id: s10r2-native-whole-cohort-v1
+    outcome_blind: true
+    derivation: hand-constructed technical path fixture frozen before formal evidence
+    input_header:
+      row_count: 4
+      threshold_count: 4
+    problem:
+      M: 256
+      N: 256
+      NumBatches: 1
+      K: 1024
+      transpose_a: false
+      transpose_b: false
+      data_type: BFloat16
+      compute_type: Float
+    base_size_mapping:
+      waveNum: 4
+      macroTile: [64, 64, 1]
+      matrixInstruction: [16, 16, 16, 1]
+      grvwA: 4
+      grvwB: 4
+      gwvwC: 4
+      gwvwD: 4
+      depthU: 32
+      globalSplitU: 1
+      workGroupMapping: 1
+      globalAccumulation: 0
+      workGroupMappingXCC: 1
+      workGroupMappingXCCGroup: -1
+      globalSplitUCoalesced: false
+      globalSplitUWorkGroupMappingRoundRobin: false
+      CUOccupancy: 2
+      PrefetchGlobalRead: 2
+      MathClocksUnrolledLoop: 16
+      DirectToVgprA: false
+      DirectToVgprB: false
+      NumLoadsCoalescedA: 1
+      NumLoadsCoalescedB: 1
+      VectorWidthA: 4
+      VectorWidthB: 4
+      LocalSplitU: 1
+      DirectToLdsA: false
+      DirectToLdsB: false
+      waveGroup: [2, 2]
+    rows:
+      - ordinal: 0
+        check_solution: true
+        mapping_overrides: {}
+        expected_microseconds: 18.199829979797979
+      - ordinal: 1
+        check_solution: false
+        mapping_overrides:
+          macroTile: [96, 64, 1]
+        expected_microseconds: null
+      - ordinal: 2
+        check_solution: true
+        mapping_overrides: {}
+        expected_microseconds: 18.199829979797979
+      - ordinal: 3
+        check_solution: true
+        mapping_overrides:
+          macroTile: [128, 64, 1]
+        expected_microseconds: 22.466412606060604
+    validity_mask: [true, false, true, true]
+    expected_tie_sets:
+      - ordinals: [0, 2]
+        microseconds: 18.199829979797979
+    expected_queues:
+      "0.0":
+        prediction_disabled: false
+        sorted_ordinals: [0, 2, 3]
+        threshold_index: 0
+        threshold_value: 18.199829979797979
+        queue_prefix: [0]
+      "0.5":
+        prediction_disabled: false
+        sorted_ordinals: [0, 2, 3]
+        threshold_index: 1
+        threshold_value: 18.199829979797979
+        queue_prefix: [0, 2]
+      "1.0":
+        prediction_disabled: false
+        sorted_ordinals: [0, 2, 3]
+        threshold_index: 2
+        threshold_value: 22.466412606060604
+        queue_prefix: [0, 2, 3]
+      "2.0":
+        prediction_disabled: true
+        sorted_ordinals: [0, 1, 2, 3]
+        threshold_index: null
+        threshold_value: null
+        queue_prefix: [0, 1, 2, 3]
+  stable_sort: true
+  validity_before_prediction: true
+  substitution_faults:
+    - helper_path
+    - helper_sha256
+    - predicted_performance_source_blob
+    - host_adapter_sha256
+    - queue_adapter_source_blob
+
+correctness:
+  sorted_exact_ten: true
+  anchor_indices: [0, 4, 9]
+  size_registry_path: study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r2-size-registry.json
+  size_registry_digest: 40ef8dc58b890baa515b3fd00c3257dc41ff41ae0a15eae58120c053bceb8b27
+  sizes:
+    - [8, 8, 1, 128]
+    - [256, 256, 1, 1024]
+    - [2304, 1024, 1, 214336]
+  cells: 9
+  require_generate: true
+  require_compile: true
+  require_smoke: true
+  require_nonzero_validation: true
+  validation_elements: 128
+  atomic_unit: one_anchor_all_three_sizes
+  replacement: false
+
+noise:
+  anchors: 3
+  sizes: 3
+  repeats: 7
+  cells: 63
+  cv_p95_threshold: 0.005
+  delta_noise_formula: exp(P95(abs(log(Q_ar)-median_r(log(Q_ar)))))-1
+  reduce_fn: max
+  schedule_order: sorted_anchor_hash_then_repeat_0_to_6
+  atomic_unit: one_anchor_repeat_all_three_sizes
+  replacement: false
+
+decision:
+  canonical_outcomes:
+    - positive/S1_ENTRY_GO
+    - negative/S1_ENTRY_BLOCKED/FT-BLOCKED-MAPPING
+    - negative/S1_ENTRY_BLOCKED/FT-BLOCKED-CORRECTNESS
+    - inconclusive/FT-INCONCLUSIVE
+    - CHANGES_REQUIRED/not_evaluated
+    - operational_BLOCKED/not_evaluated
+  only_positive_edge: "S10R2:S1_ENTRY_GO -> S11"
+  nonpositive_edge: null
+  positive_requires_fresh_verifier_pass: true
+  positive_requires_closeout_ack: true
+  s10_immutable: true
+  s10r1_immutable: true
+
+lifecycle:
+  stages:
+    - PRELOCK
+    - CAPS_CONFIRMED
+    - PARITY_CONFIRMED
+    - AUDIT_PASS
+    - LOCK_SEALED
+    - PRE_DRAW_REGISTRY_FROZEN
+    - GLOBAL_DISCOVERY
+    - CONDITIONAL_ACTIVATION
+    - CONDITIONAL_DISCOVERY
+    - SUPPORT_CLASSIFICATION_SEALED
+    - EXACT_TEN_SELECTED
+    - MAPPING_AB
+    - NATIVE_CONFORMANCE
+    - GPU_ENVIRONMENT
+    - CORRECTNESS_ANCHORS
+    - NOISE_CELLS
+    - DECISION_READY
+  append_only: true
+  resume_same_ledger_only: true
+  restart_resets_budget: false
+  outcome_before_lock: false
+
+formal_execution:
+  run_root: agent_run/260728-ductile-factorized-guidance-s10r2/formal
+  lineage_root: agent_run/260728-ductile-factorized-guidance-s10r2
+  pinned_integration_root: agent_run/260728-ductile-factorized-guidance-s10r2/native-calibration/pinned
+  pinned_materialization_manifest: agent_run/260728-ductile-factorized-guidance-s10r2/native-calibration/pinned/s10r2-materialization.json
+  native_build_manifest: agent_run/260728-ductile-factorized-guidance-s10r2/native-calibration/native-build/s10r2-native-build.json
+  client_build_record: agent_run/260728-ductile-factorized-guidance-s10r2/calibration/client-build-v1/s10r2-client-build.json
+  allocation_record: agent_run/260728-ductile-factorized-guidance-s10r2/calibration/allocation-v2.json
+  calibration_metrics_record: agent_run/260728-ductile-factorized-guidance-s10r2/calibration/metrics-v2.json
+  resource_calibration_fixture: agent_run/260728-ductile-factorized-guidance-s10r2/calibration/resource-relock-v3.json
+  required_container_name: perlee
+  required_container_env: S10R2_CONTAINER_NAME
+  process_version: s10r2/v1
+  physical_device_selection: lowest_visible_zero_use_zero_vram_no_foreign_pid_gfx942_SPX_NPS1
+  logical_device_index: 0
+  gpu_time_accounting: elapsed_wall_upper_bound
+
+implementation_whitelist:
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/run_s10r2_entry.py
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r2/__init__.py
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r2/contract.py
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r2/calibration.py
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r2/ledger.py
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r2/support.py
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r2/mapping.py
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r2/native_adapter.py
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r2/native_formocast_runtime_adapter.cpp
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r2/conformance.py
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r2/correctness.py
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r2/state_machine.py
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r2-stage1-support-aware-entry-contract.yaml
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/schemas/s10r2-entry.schema.json
+  - projects/hipblaslt/tensilelite/Tensile/Tests/unit/test_ductile_s10r2_entry.py
+
+delivery_whitelist:
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/run_s10r2_entry.py
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r2/__init__.py
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r2/contract.py
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r2/calibration.py
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r2/ledger.py
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r2/support.py
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r2/mapping.py
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r2/native_adapter.py
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r2/native_formocast_runtime_adapter.cpp
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r2/conformance.py
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r2/correctness.py
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r2/state_machine.py
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r2-stage1-support-aware-entry-contract.yaml
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/schemas/s10r2-entry.schema.json
+  - projects/hipblaslt/tensilelite/Tensile/Tests/unit/test_ductile_s10r2_entry.py
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/locks/s10r2-stage1-support-aware-entry-lock.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r2-candidate-atom-registry.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r2-support-classification.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r2-mapping-corpus.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r2-sentinel-conformance.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r2-size-registry.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s10r2-smoke-correctness.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s10r2-noise-pilot.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s10r2-decision.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/gate-records/s10r2-s1-entry-go.json
+  - study_docs/research/ductile-origami-warmstart/reports/staged/s10r2-stage1-support-aware-entry-report.md
+  - study_docs/research/ductile-origami-warmstart-experiment-plan.md
+  - study_docs/research/surrogate-dse-plan.md
+  - study_docs/research/ductile-origami-warmstart/README.md
+  - study_docs/research/ductile-origami-warmstart/s10r2-stage1-support-aware-entry-recovery-design.md
+  - study_docs/research/ductile-origami-warmstart/s11-stage1-model-only-factorization-design.md
+
+forbidden_evidence_reuse:
+  - every S10R1 generation-0 or generation-1 empirical artifact
+  - every S10R1 repair, cache, test, lock, selection, mapping, and verification artifact
+  - every S10R1 formal or diagnostic outcome as S10R2 gate evidence
+
+forbidden_actions:
+  - push
+  - broad staging
+  - dependency installation
+  - container start/stop/rebuild/mutation
+  - formal evidence before numeric relock, parity, audit, and lock seal
+  - S11 implementation before post-audited S10R2 positive edge

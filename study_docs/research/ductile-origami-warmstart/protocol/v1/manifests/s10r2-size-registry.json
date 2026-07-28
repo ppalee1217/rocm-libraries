@@ -1,0 +1,1 @@
+{"checkpoint_id":"S10R2","schema_version":1,"size_registry_digest":"40ef8dc58b890baa515b3fd00c3257dc41ff41ae0a15eae58120c053bceb8b27","sizes":[{"size_id":"small","values":[8,8,1,128]},{"size_id":"medium","values":[256,256,1,1024]},{"size_id":"large","values":[2304,1024,1,214336]}],"source":"s10r2-stage1-support-aware-entry-contract.yaml"}

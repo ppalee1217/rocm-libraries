@@ -1,0 +1,315 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "s10r2-entry.schema.json",
+  "title": "S10R2 support-aware Stage-1 entry contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "checkpoint_id",
+    "status",
+    "authority",
+    "governance",
+    "source_identity",
+    "claim_boundary",
+    "resource",
+    "schedule",
+    "support",
+    "mapping",
+    "native_conformance",
+    "correctness",
+    "noise",
+    "decision",
+    "lifecycle",
+    "formal_execution",
+    "implementation_whitelist",
+    "delivery_whitelist",
+    "forbidden_evidence_reuse",
+    "forbidden_actions"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "checkpoint_id": {"const": "S10R2"},
+    "status": {
+      "enum": [
+        "draft_numeric_caps_pending",
+        "frozen_pre_evidence",
+        "effective"
+      ]
+    },
+    "authority": {"$ref": "#/$defs/nonemptyObject"},
+    "governance": {"$ref": "#/$defs/nonemptyObject"},
+    "source_identity": {"$ref": "#/$defs/nonemptyObject"},
+    "claim_boundary": {"$ref": "#/$defs/nonemptyObject"},
+    "resource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "historical_carry_over",
+        "prospective_limits",
+        "calibration_protocol",
+        "numeric_relock"
+      ],
+      "properties": {
+        "historical_carry_over": {"$ref": "#/$defs/nonemptyObject"},
+        "prospective_limits": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "fresh_role_threads",
+            "repair_rounds",
+            "shared_hands_on_s",
+            "preemp_engineering_s",
+            "transient_storage_bytes"
+          ],
+          "properties": {
+            "fresh_role_threads": {"const": 5},
+            "repair_rounds": {"const": 6},
+            "shared_hands_on_s": {"const": 604800},
+            "preemp_engineering_s": {"const": 120960},
+            "transient_storage_bytes": {"const": 5368709120}
+          }
+        },
+        "calibration_protocol": {"$ref": "#/$defs/nonemptyObject"},
+        "numeric_relock": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "status",
+            "caps",
+            "calibration_fixture_digest",
+            "calibration_input_contract_digest",
+            "initial_resource_counter",
+            "unbuffered_projection",
+            "reservations",
+            "preemp_engineering"
+          ],
+          "properties": {
+            "status": {"enum": ["pending", "approved"]},
+            "caps": {
+              "oneOf": [
+                {"type": "null"},
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "wall_s",
+                    "cpu_s",
+                    "gpu_s",
+                    "transient_storage_bytes",
+                    "safety_factor",
+                    "derivation_digest"
+                  ],
+                  "properties": {
+                    "wall_s": {"type": "integer", "minimum": 1},
+                    "cpu_s": {"type": "integer", "minimum": 1},
+                    "gpu_s": {"type": "integer", "minimum": 1},
+                    "transient_storage_bytes": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 5368709120
+                    },
+                    "safety_factor": {"type": "number", "minimum": 1},
+                    "derivation_digest": {"$ref": "#/$defs/sha256"}
+                  }
+                }
+              ]
+            },
+            "calibration_fixture_digest": {
+              "oneOf": [{"type": "null"}, {"$ref": "#/$defs/sha256"}]
+            },
+            "calibration_input_contract_digest": {"$ref": "#/$defs/sha256"},
+            "initial_resource_counter": {
+              "oneOf": [
+                {"type": "null"},
+                {"$ref": "#/$defs/resourceCounter"}
+              ]
+            },
+            "unbuffered_projection": {
+              "oneOf": [
+                {"type": "null"},
+                {"$ref": "#/$defs/resourceCounter"}
+              ]
+            },
+            "reservations": {
+              "oneOf": [
+                {"type": "null"},
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "selection_chunk",
+                    "mapping_ab",
+                    "native_conformance",
+                    "gpu_environment",
+                    "correctness_anchor",
+                    "noise_anchor_repeat",
+                    "decision"
+                  ],
+                  "properties": {
+                    "selection_chunk": {"$ref": "#/$defs/resourceCounter"},
+                    "mapping_ab": {"$ref": "#/$defs/resourceCounter"},
+                    "native_conformance": {"$ref": "#/$defs/resourceCounter"},
+                    "gpu_environment": {"$ref": "#/$defs/resourceCounter"},
+                    "correctness_anchor": {"$ref": "#/$defs/resourceCounter"},
+                    "noise_anchor_repeat": {"$ref": "#/$defs/resourceCounter"},
+                    "decision": {"$ref": "#/$defs/resourceCounter"}
+                  }
+                }
+              ]
+            },
+            "preemp_engineering": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "prospective_boundary_utc",
+                "measured_through_fixture_utc",
+                "measured_through_fixture_s",
+                "audit_and_seal_reservation_s",
+                "charged_before_formal_s",
+                "cap_s",
+                "measurement_basis",
+                "exact_through_lock_recorded_in_lock"
+              ],
+              "properties": {
+                "prospective_boundary_utc": {"type": "string", "minLength": 1},
+                "measured_through_fixture_utc": {"type": "string", "minLength": 1},
+                "measured_through_fixture_s": {"type": "number", "minimum": 0},
+                "audit_and_seal_reservation_s": {"type": "number", "minimum": 0},
+                "charged_before_formal_s": {"type": "number", "minimum": 0},
+                "cap_s": {"const": 120960},
+                "measurement_basis": {"const": "elapsed_UTC_upper_bound"},
+                "exact_through_lock_recorded_in_lock": {"const": true}
+              }
+            }
+          }
+        }
+      }
+    },
+    "schedule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "chunk_size",
+        "global_chunks",
+        "conditional_chunks_each",
+        "maximum_conditional_targets",
+        "maximum_total_chunks",
+        "maximum_total_draws",
+        "first_resource_reforecast_chunk",
+        "first_resource_reforecast_draws",
+        "early_stop",
+        "extension",
+        "base_seed",
+        "seed_derivation"
+      ],
+      "properties": {
+        "chunk_size": {"const": 512},
+        "global_chunks": {"const": 32},
+        "conditional_chunks_each": {"const": 32},
+        "maximum_conditional_targets": {"const": 15},
+        "maximum_total_chunks": {"const": 512},
+        "maximum_total_draws": {"const": 262144},
+        "first_resource_reforecast_chunk": {"const": 6},
+        "first_resource_reforecast_draws": {"const": 3072},
+        "early_stop": {"const": false},
+        "extension": {"const": false},
+        "base_seed": {"type": "integer", "minimum": 0},
+        "seed_derivation": {"const": "sha256(checkpoint,base_seed,stream_id,chunk_index)-128bit"}
+      }
+    },
+    "support": {"$ref": "#/$defs/nonemptyObject"},
+    "mapping": {"$ref": "#/$defs/nonemptyObject"},
+    "native_conformance": {"$ref": "#/$defs/nonemptyObject"},
+    "correctness": {"$ref": "#/$defs/nonemptyObject"},
+    "noise": {"$ref": "#/$defs/nonemptyObject"},
+    "decision": {"$ref": "#/$defs/nonemptyObject"},
+    "lifecycle": {"$ref": "#/$defs/nonemptyObject"},
+    "formal_execution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "run_root",
+        "lineage_root",
+        "pinned_integration_root",
+        "pinned_materialization_manifest",
+        "native_build_manifest",
+        "client_build_record",
+        "allocation_record",
+        "calibration_metrics_record",
+        "resource_calibration_fixture",
+        "required_container_name",
+        "required_container_env",
+        "process_version",
+        "physical_device_selection",
+        "logical_device_index",
+        "gpu_time_accounting"
+      ],
+      "properties": {
+        "run_root": {"type": "string", "minLength": 1},
+        "lineage_root": {"type": "string", "minLength": 1},
+        "pinned_integration_root": {"type": "string", "minLength": 1},
+        "pinned_materialization_manifest": {"type": "string", "minLength": 1},
+        "native_build_manifest": {"type": "string", "minLength": 1},
+        "client_build_record": {"type": "string", "minLength": 1},
+        "allocation_record": {"type": "string", "minLength": 1},
+        "calibration_metrics_record": {"type": "string", "minLength": 1},
+        "resource_calibration_fixture": {"type": "string", "minLength": 1},
+        "required_container_name": {"const": "perlee"},
+        "required_container_env": {"const": "S10R2_CONTAINER_NAME"},
+        "process_version": {"const": "s10r2/v1"},
+        "physical_device_selection": {"const": "lowest_visible_zero_use_zero_vram_no_foreign_pid_gfx942_SPX_NPS1"},
+        "logical_device_index": {"const": 0},
+        "gpu_time_accounting": {"const": "elapsed_wall_upper_bound"}
+      }
+    },
+    "implementation_whitelist": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "delivery_whitelist": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "forbidden_evidence_reuse": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "forbidden_actions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string", "minLength": 1}
+    }
+  },
+  "$defs": {
+    "nonemptyObject": {
+      "type": "object",
+      "minProperties": 1
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "resourceCounter": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "wall_s",
+        "cpu_s",
+        "gpu_s",
+        "transient_storage_bytes"
+      ],
+      "properties": {
+        "wall_s": {"type": "number", "minimum": 0},
+        "cpu_s": {"type": "number", "minimum": 0},
+        "gpu_s": {"type": "number", "minimum": 0},
+        "transient_storage_bytes": {"type": "integer", "minimum": 0}
+      }
+    }
+  }
+}
