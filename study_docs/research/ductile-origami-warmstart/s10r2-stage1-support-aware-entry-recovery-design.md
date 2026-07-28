@@ -7,6 +7,7 @@ execution_status: blocked
 checkpoint_state: BLOCKED
 scientific_outcome: not_evaluated
 lock_state: absent
+resource_relock_state: calibration_authority_approved_numeric_caps_pending
 risk_tier: R2
 governance_baseline: b0561d2c9216a58a9d71b8e839c47efaa51f9c00
 scientific_gate: S10R2
@@ -25,7 +26,7 @@ entry_criteria:
   - post_audited_S10R1_identity_only_retirement
   - exact_S10_source_and_actual_YAML_identity
   - durable_cumulative_resource_relock_and_preflight_pass
-operational_block_reason: retirement_and_resource_relock_required
+operational_block_reason: numeric_resource_relock_and_preflight_required
 criterion_refs:
   - S1_ENTRY_GO
   - S1_ENTRY_BLOCKED
@@ -128,11 +129,70 @@ S10R2是`risk_tier=R2`、獨立`execution_tranche=T-S10R2`與
 
 Stage 1仍是最多七個hands-on工作日的hard cap，不是完成承諾。A33沒有給
 wall／CPU／GPU、repair／thread、pre-empirical或七日餘額的數值reset；目前
-administrative reason是`resource_relock_required`。Entry前必須以新的durable
+administrative reason是`numeric_resource_relock_and_preflight_required`。Entry前必須以新的durable
 resource decision逐欄記錄prior consumption、carry-over、reset boundary與future
 cap，再證明剩餘budget足以完成S10R2、S11–S13所需的dependency-ready工作與report
 buffer；不足時維持operational `BLOCKED / not_evaluated / edge=null`，不靠縮criteria
 救回。
+
+### 2.1 A34 prospective resource boundary
+
+2026-07-28，使用者要求以`design-discussion`解決resource relock，取得統一共識後
+再用`implement-verify-loop`執行S10R2。Fresh reviewers
+`/root/s10r2_next_plan_a`與`/root/s10r2_next_plan_b`使用相同
+`gpt-5.6-sol / xhigh` capability與相同committed evidence，完成獨立首輪、一輪
+cross-examination及同一evidence-backed final round，兩方均明確`AGREE`。
+
+受影響的不變量是cumulative resource lineage、lock-before-label、完整Stage-1
+panel與no-downgrade；scientific hypothesis、samples、sizes、criteria、outcome matrix、
+edge與claim均不變。採用方案如下：
+
+- Historical cutoff固定為commit
+  `d66edf7ac81cb76825b988e1ea9a65264dfeb0f6`。Lifetime ledger保留
+  `completed_selection_chunks=3151`、`fresh_role_threads>=10`、
+  `repair_rounds>=11`；selection wall、Stage-1 hands-on、CPU/GPU、
+  pre-empirical engineering、historical peak storage與total bytes written維持
+  `UNKNOWN`。不得把`UNKNOWN`轉成0，也不得把A33釋放的current bytes當歷史reset。
+- Prospective enforcement boundary只在承載本A34決策的exact-path authority commit
+  通過post-commit audit後生效。歷史總帳不重寫；future resource ledger並列
+  historical lower-bound／`UNKNOWN`與boundary後exact consumption。
+- `T-S10R2`取得prospective allowance：最多5個new fresh role threads與3個new
+  repair rounds。
+- `T-S1-MECHANISM`取得reserved、尚未activated的prospective allowance：最多5個new
+  fresh role threads與3個new repair rounds；S11→S13內不得由internal edge、
+  generation或new root再reset，且S13仍受R1 gate-specific最多2個repair rounds限制。
+  只有post-audited `S10R2:S1_ENTRY_GO`可activate此reservation。
+- S10R2→S13共享新的prospective Stage-1 envelope：最多7個hands-on工作日，
+  pre-empirical engineering最多20%即1.4 hands-on days，concurrent transient
+  storage最多5 GiB。這是使用者明授的forward boundary，不是對歷史真值的推定。
+
+兩階段resource lifecycle固定為：
+
+1. **Calibration authority：**本A34只允許exact、count-bounded、outcome-blind
+   synthetic／foundation calibration。Fixture不得使用actual S10R2 validity draws、
+   support classification、Formocast ranking、GFLOPS、correctness／noise labels或任何
+   S10R1 artifact；輸出schema只允許elapsed time、CPU/GPU utilization、peak／retained
+   bytes、exit status與固定toolchain成本。此階段S10R2仍是
+   `BLOCKED / not_evaluated / edge=null`，不得稱resource preflight已通過。
+2. **Final numeric relock：**calibration後必須把具單位的wall／CPU／GPU caps、
+   confirmed GPU allocation、完整panel與report buffer、deterministic cap derivation、
+   exact whitelists及safe boundaries寫入durable machine-readable contract／effective
+   lock並通過human/machine parity與pre-label adversarial audit。沒有可信numeric
+   bounds時保持`BLOCKED`。
+
+Main lock生效後，actual discovery的first-1% resource reforecast固定在第6個
+512-draw chunk完成的3,072 draws atomic boundary。Resource monitor只可讀attempt count、
+elapsed／CPU／storage telemetry；support labels保持sealed。Projection超過原估2倍或
+任一cap exceed時safe-boundary pause，不能改schedule、selector、samples、sizes、
+criteria或claim。
+
+兩位reviewers共同拒絕：直接進Phase 1、把historical `UNKNOWN`當0、以new sibling／
+run root自動reset、現在捏造CPU/GPU hours、以actual labels作calibration、把每個
+scientific gate自動配一套5/3，或用A33釋放空間擴大budget。採用的tranche-level
+allowance比per-gate reset更窄，並保留S11–S13完成所需的reservation；若future exact
+role plan證明5/3不足，只能在labels前提交human cap-increase decision，不得改名繞過。
+本A34不授權push、dependency installation、container lifecycle mutation、正式
+S10R2 evidence或任何downgrade。
 
 ## 3. Frozen actual-S10 identity
 

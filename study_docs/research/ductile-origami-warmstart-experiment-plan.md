@@ -10,8 +10,9 @@
 > `cancelled / BLOCKED`、scientific `not_evaluated`、`edge=null`，沒有scientific
 > report且不是`CHECKPOINT_COMPLETE`；generation 0／1只作diagnostic lineage並
 > 禁止重用。A33另授權identity-only retirement；bulk artifacts不再保留。
-> 新的sibling S10R2目前是`BLOCKED / not_evaluated / R2`，等待retirement post-audit
-> 與resource relock；只有
+> 新的sibling S10R2目前是`BLOCKED / not_evaluated / R2`；A33 retirement已完成，
+> A34已核准prospective calibration boundary，但final numeric resource relock與
+> preflight尚未通過。只有
 > post-audited `S10R2:S1_ENTRY_GO`可啟動S11。
 >
 > **Foundation provenance：**active `protocol/v1/`與S00 report是fresh foundation；退役M00內容仍不得作schema、hash、lock、registry、fixture、test或PASS evidence。S00只支持CPU-only evidence semantics，不是GPU／performance結果。
@@ -300,6 +301,39 @@ Positive、negative與inconclusive都要durable outcome closure。Operational
 - **Residual uncertainty：**Stage-1 hands-on、CPU/GPU、pre-empirical餘額仍
   `UNKNOWN`；fresh threads及repair rounds只有已超過新R2 defaults的lower bounds。
   Retirement manifest保存此不確定性，不用推算補值。
+
+### 2026-07-28 A34 prospective resource relock authority
+
+- **Trigger：**A33已釋放S10R1 physical artifacts，但historical fresh threads至少10、
+  repairs至少11，其他Stage-1 resource consumption為`UNKNOWN`，且A33沒有reset
+  authority。直接進S10R2會同時違反cumulative accounting與entry preflight。
+- **Design discussion：**fresh reviewers`/root/s10r2_next_plan_a`與
+  `/root/s10r2_next_plan_b`以相同`gpt-5.6-sol / xhigh` capability、相同authority
+  bundle獨立審查，完成一輪cross-examination與一輪evidence-backed final。最強
+  objections是：calibration authority不能冒充final preflight；5/3 enforcement unit
+  必須明列，不能由gate名稱自動reset；S13仍受R1 repair cap；沒有direct evidence時
+  不得捏造CPU/GPU hours。修正後兩方均`AGREE`。
+- **Historical ledger：**cutoff固定為
+  `d66edf7ac81cb76825b988e1ea9a65264dfeb0f6`；保留3151 chunks、
+  fresh threads`>=10`、repairs`>=11`與全部`UNKNOWN`。A33 cleanup只改current
+  capacity，不改historical peak、writes或lifetime totals。
+- **Prospective enforcement：**承載本決策的exact-path authority commit通過
+  post-audit後，`T-S10R2`可使用new threads`<=5`／new repairs`<=3`；
+  `T-S1-MECHANISM`先reserve同樣5/3、只有S10R2 GO後activate，且S11→S13內不得
+  再reset；S13仍受R1最多2 repairs。S10R2→S13共享prospective Stage-1 hands-on
+  `<=7 days`、pre-empirical`<=1.4 days`及transient storage`<=5 GiB`。
+- **Two-stage relock：**第一階段只授權exact count-bounded、outcome-blind
+  synthetic／foundation calibration，禁止actual validity/support、Formocast、
+  GFLOPS、correctness/noise labels與S10R1 artifacts。第二階段才以calibration及
+  confirmed allocation產生具單位wall／CPU／GPU caps、buffer與safe boundaries，
+  寫入durable contract／lock並通過parity與adversarial audit。
+- **First-1% gate：**main lock後，第6個512-draw chunk完成的3,072 draws是唯一初次
+  actual resource reforecast boundary；只讀resource telemetry，labels保持sealed。
+  Projection超過2倍或cap exceed即safe pause，不修改protocol或縮scope。
+- **Current effect：**A34不改scientific hypothesis、workload、criteria、outcome、
+  edge或claim。Numeric caps與effective lock完成前，S10R2維持
+  `BLOCKED / not_evaluated / edge=null`；不授權formal evidence、push、dependency
+  install、container lifecycle mutation或downgrade。
 
 ### Downgrade user gates
 

@@ -7,8 +7,9 @@
 > `cancelled / BLOCKED`、scientific `not_evaluated`、`edge=null`，沒有scientific
 > report且不是`CHECKPOINT_COMPLETE`；generation 0／1只作diagnostic lineage並
 > 禁止重用。A33另授權identity-only retirement；bulk artifacts不再保留。新的
-> sibling S10R2目前為`BLOCKED / not_evaluated / risk_tier=R2`，等待retirement
-> post-audit與resource relock；
+> sibling S10R2目前為`BLOCKED / not_evaluated / risk_tier=R2`。A33 retirement
+> post-audit已通過；A34只核准prospective calibration boundary，final numeric
+> resource relock與preflight仍待完成；
 > 只有S10R2的post-audited `S1_ENTRY_GO`可啟動S11。
 >
 > **唯一 active 導航入口：**本 README。`legacy/` 內的 M00–M09 仍是 dead-protocol archive，不能提供 schema、hash、lock、registry、criterion、fixture、test或 PASS evidence；S00 positive只支持CPU-only evidence foundation。
@@ -229,6 +230,25 @@ completion；`skipped_by_gate`／`not_activated`不建立假report。
 - 後續strict順序是：
   `resource relock -> S10R2 -> S11 -> S12 -> S13 -> S20 -> S30 -> S31`；
   S40／S41仍只在既定trigger與data gate成立時啟動。
+
+### 6.3 2026-07-28 A34 prospective resource boundary
+
+- Fresh reviewers`/root/s10r2_next_plan_a`與`/root/s10r2_next_plan_b`以相同
+  `gpt-5.6-sol / xhigh` evidence完成獨立首輪、一輪cross-examination與同一final
+  candidate，兩方均`AGREE`。
+- Historical cutoff固定為`d66edf7ac81cb76825b988e1ea9a65264dfeb0f6`；
+  3151 chunks、threads`>=10`、repairs`>=11`與其餘resource `UNKNOWN`全部保留。
+  A33釋放空間不是historical reset。
+- Authority commit post-audit後，`T-S10R2`取得prospective 5 new threads／3 new
+  repairs；`T-S1-MECHANISM`先reserve同樣5/3，只有S10R2 GO後activate，S11→S13內
+  不再reset，且S13仍受R1最多2 repairs。
+- S10R2→S13共享新的prospective 7 hands-on days、1.4 pre-empirical days與5 GiB
+  transient ceiling。先做outcome-blind calibration；具單位wall／CPU／GPU caps、
+  confirmed GPU allocation、buffer、contract parity與effective lock全數成立後才
+  `LOCKED_READY`。
+- Numeric relock前S10R2仍是`BLOCKED / not_evaluated / edge=null`。本authority不改
+  workload、criteria、outcome matrix、claim或DAG，也不授權formal evidence、push、
+  dependency install、container lifecycle mutation或downgrade。
 
 ## 7. Downgrade review gate
 

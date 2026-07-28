@@ -168,6 +168,31 @@ S10R2在retirement post-audit及durable resource relock前保持operational
 `BLOCKED / not_evaluated / edge=null`。本次沒有降低任何scientific workload、
 threshold、gate、claim或downstream dependency。
 
+### 1.10 A34 prospective resource boundary
+
+2026-07-28，使用者要求resource relock先由`design-discussion`形成統一共識，再以
+`implement-verify-loop`執行S10R2。兩位fresh `gpt-5.6-sol / xhigh` reviewers
+`/root/s10r2_next_plan_a`與`/root/s10r2_next_plan_b`完成獨立審查、一輪
+cross-examination與一輪final positions，兩方均`AGREE`：
+
+- historical resource record不重寫：cutoff
+  `d66edf7ac81cb76825b988e1ea9a65264dfeb0f6`前的3151 chunks、
+  threads`>=10`、repairs`>=11`與其餘`UNKNOWN`全部保留；
+- authority commit post-audit後，只向前建立`T-S10R2`與reserved
+  `T-S1-MECHANISM`各5 new threads／3 new repairs的enforcement counters；
+  S13仍受R1最多2 repairs，internal edges與new roots都不再reset；
+- S10R2→S13共享新的prospective 7 hands-on days、最多1.4 pre-empirical days與
+  5 GiB transient ceiling；
+- 先做不接觸actual validity/support、Formocast、GFLOPS、correctness/noise labels或
+  S10R1 artifacts的outcome-blind calibration，再把具單位wall／CPU／GPU caps、
+  confirmed allocation與buffer seal進durable contract／lock；
+- final numeric relock與preflight完成前，S10R2仍是
+  `BLOCKED / not_evaluated / edge=null`。
+
+本決策只修resource authority，不改research question、scientific criteria、
+samples、sizes、DAG、claim或downgrade gate；A33釋放的physical capacity仍不是
+historical accounting reset。
+
 ---
 
 ## 2. 研究問題與假設

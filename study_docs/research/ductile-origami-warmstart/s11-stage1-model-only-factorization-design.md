@@ -226,3 +226,19 @@ record與claim boundary。若S13成為tranche final，S13 report整合本record�
   `S10R2:S1_ENTRY_GO`。
 - S11 hypothesis、4,096／8,192 occurrences、128／256 conditional support、
   thresholds、weights、shuffle、label seal、claim與timebox均不變。
+
+### 2026-07-28 A34 prospective resource reservation
+
+- Resource-relock reviewers`/root/s10r2_next_plan_a`與
+  `/root/s10r2_next_plan_b`經一輪cross-examination及同一final candidate後均
+  `AGREE`：historical S10R1 resource lower bounds／`UNKNOWN`不可重寫，A33 cleanup
+  不是reset。
+- `T-S1-MECHANISM`取得reserved、尚未activated的prospective allowance：最多5個
+  new fresh role threads與3個new repair rounds；S11→S13內不得由internal edge、
+  generation或new root再reset，且S13仍受R1 gate-specific最多2 repairs。
+- Reservation不構成S11 entry或resource preflight pass。只有post-audited
+  `S10R2:S1_ENTRY_GO`可activate；entry時仍須把S10R2後的actual prospective
+  consumption帶入shared Stage-1 7-day／1.4-day pre-empirical／5-GiB envelope，
+  並以具單位wall／CPU／GPU caps與完整panel buffer重做preflight。
+- 本amendment不改S11 hypothesis、4,096／8,192 occurrences、128／256 conditional
+  support、thresholds、weights、shuffle、label seal、claim、edge或timebox。
