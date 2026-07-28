@@ -133,8 +133,8 @@ boundary停止S10R1：
 
 - operational state固定為`cancelled / BLOCKED`，scientific outcome為
   `not_evaluated`、edge為`null`，不是`CHECKPOINT_COMPLETE`；
-- 不建立S10R1 scientific report；generation 0／1只作immutable diagnostic
-  provenance，所有empirical／repair artifacts禁止重用；
+- 不建立S10R1 scientific report；generation 0／1只作diagnostic lineage，
+  所有empirical／repair artifacts禁止重用；
 - stochastic non-discovery（包含DepthU=1024 diagnostic）不證明support absent，
   也不是scientific inconclusive；
 - 新建sibling S10R2，在actual S10 pins／YAML／groups／weights／三sizes不變下，
@@ -147,6 +147,26 @@ Execution治理以commit
 `b0561d2c9216a58a9d71b8e839c47efaa51f9c00`為floor；S10R2是R2 standalone
 tranche／closure，後續tranches為S11+S12+S13、S20、S30+S31、S40+S41。這只改
 authority／orchestration，不改scientific gates。
+
+### 1.9 A33 identity-only diagnostic retirement
+
+2026-07-28，使用者要求只保留新版研究真正需要的內容並清除S10R1 bulk artifacts。
+兩位fresh reviewers完成一輪交互詰問並共同`AGREE`：
+
+- S10R1約34 GB ignored run tree與19個untracked implementation／protocol／test paths
+  對S10R2／S11沒有合法consumer，且明文禁止作gate evidence；
+- current S10R1文件壓縮為取消tombstone，A30–A32、source／YAML／L0／selection
+  identities、resource known／unknown與清理稽核由
+  [retirement manifest](ductile-origami-warmstart/retirements/s10r1-diagnostic-retirement.json)
+  保存；完整舊protocol只留在Git history；
+- physical bytes可依exact allowlist退休；immutable的是lifecycle、outcome、edge與
+  digest-level lineage，不是bulk copies；
+- cleanup不改S10R1的`cancelled / not_evaluated / edge=null`，也不reset任何歷史
+  resource消耗。
+
+S10R2在retirement post-audit及durable resource relock前保持operational
+`BLOCKED / not_evaluated / edge=null`。本次沒有降低任何scientific workload、
+threshold、gate、claim或downstream dependency。
 
 ---
 
@@ -567,12 +587,13 @@ S00 -> S10 [terminal negative; edge=null]
                                                                                  \                         \
                                                                                   +---- conditional ------> S40 -> S41
 
-S10R1 [A32 cancelled sibling; diagnostic only; edge=null; evidence reuse forbidden]
+S10R1 [A32 cancelled; A33 identity-only tombstone; edge=null; reuse forbidden]
 ```
 
 S00／S10到S10R2的關係不是scientific outgoing edge。S10R1是sibling diagnostic
 record，不是S10R2 parent或evidence source；A32固定它為
-`cancelled / not_evaluated / edge=null`。S10R2 negative、inconclusive、
+`cancelled / not_evaluated / edge=null`，A33只退休physical artifacts。
+S10R2 negative、inconclusive、
 `CHANGES_REQUIRED`或未完成都不會啟動S11。
 
 M00–M09移入`ductile-origami-warmstart/legacy/`，只保留歷史正文：
@@ -604,7 +625,8 @@ M00–M09移入`ductile-origami-warmstart/legacy/`，只保留歷史正文：
   驗證human/machine parity並seal effective lock。
 - S10 hard access／artifact／mapping blocker才使用：
   - `ductile-origami-warmstart/reports/gen0-factorization-blocker-memo.md`
-- S10R1沒有scientific report；它只保留A32 operational cancellation。
+- S10R1沒有scientific report；current bytes只保留A32 cancellation tombstone與A33
+  retirement manifest。
 - S10R2唯一formal report是
   `ductile-origami-warmstart/reports/staged/s10r2-stage1-support-aware-entry-report.md`，
   且不覆寫S10 report。

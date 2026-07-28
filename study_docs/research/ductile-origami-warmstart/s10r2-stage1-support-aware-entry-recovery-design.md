@@ -3,8 +3,8 @@ checkpoint_id: S10R2
 title: Stage 1 support-aware entry recovery
 stage: 1
 design_status: approved
-execution_status: not_started
-checkpoint_state: DESIGN_APPROVED
+execution_status: blocked
+checkpoint_state: BLOCKED
 scientific_outcome: not_evaluated
 lock_state: absent
 risk_tier: R2
@@ -22,8 +22,10 @@ dependencies:
     required_operational_state: cancelled_not_evaluated_edge_null_under_A32
 entry_criteria:
   - committed_S10R2_authority_amendment
+  - post_audited_S10R1_identity_only_retirement
   - exact_S10_source_and_actual_YAML_identity
-  - cumulative_resource_preflight_pass
+  - durable_cumulative_resource_relock_and_preflight_pass
+operational_block_reason: retirement_and_resource_relock_required
 criterion_refs:
   - S1_ENTRY_GO
   - S1_ENTRY_BLOCKED
@@ -40,6 +42,7 @@ terminal_report_integration: standalone_report_integrates_s10r2_gate_record
 blocker_path: null
 future_frozen_contract_path: protocol/v1/s10r2-stage1-support-aware-entry-contract.yaml
 future_effective_lock_path: protocol/v1/locks/s10r2-stage1-support-aware-entry-lock.json
+predecessor_retirement_manifest_path: retirements/s10r1-diagnostic-retirement.json
 future_artifact_paths:
   - protocol/v1/manifests/s10r2-candidate-atom-registry.json
   - protocol/v1/manifests/s10r2-support-classification.json
@@ -62,6 +65,7 @@ delivery_boundary_max:
   - s10r1-stage1-valid-support-entry-recovery-design.md
   - s10r2-stage1-support-aware-entry-recovery-design.md
   - s11-stage1-model-only-factorization-design.md
+  - retirements/s10r1-diagnostic-retirement.json
 forbidden_evidence_reuse:
   - every S10R1 generation-0 or generation-1 empirical, repair, cache, test, lock, selection, mapping, and verification artifact
 forbidden_downstream_roots:
@@ -93,14 +97,17 @@ S10R2只支持「在本次觀察到的operational valid support內，mapping與m
 entry完整」。它不證明未觀察值不存在，不回答Formocast ranking、factorization、
 prior mass或Gen0效果，也不支持proxy、two-size或workload downgrade。
 
-## 2. A32 cutover與治理單位
+## 2. A32／A33 cutover與治理單位
 
 S10R1 append-only governance chain的user-authorized `A32` event是本cutover的live
 basis：S10R1已在safe boundary停止，operational state為
 `execution_status=cancelled / checkpoint_state=BLOCKED`，scientific outcome是
-`not_evaluated`、edge是`null`，且不是`CHECKPOINT_COMPLETE`。S10R1 generation 0／1
-只保留為immutable diagnostic provenance；其non-discovery不是scientific
-inconclusive，且任何artifact都禁止成為S10R2 gate evidence。
+`not_evaluated`、edge是`null`，且不是`CHECKPOINT_COMPLETE`。A33進一步把S10R1
+retention改為immutable lifecycle／identity tombstone；約34 GB bulk tree與19個
+untracked old-code paths依
+[retirement manifest](retirements/s10r1-diagnostic-retirement.json)退休。其
+non-discovery不是scientific inconclusive，任何artifact都禁止成為S10R2 gate
+evidence，且retired bytes不得恢復到active workspace。
 
 S10R2是`risk_tier=R2`、獨立`execution_tranche=T-S10R2`與
 `closure_unit=CU-S10R2`。執行治理以commit
@@ -114,13 +121,18 @@ S10R2是`risk_tier=R2`、獨立`execution_tranche=T-S10R2`與
 - R2最多3個repair rounds、5個fresh role threads；pre-empirical engineering最多使用
   Stage-1 hard cap的20%；首1% planned throughput後重估wall-time與storage；
 - projected cost超過原估2倍、任一frozen resource cap超限，或預設5 GiB transient
-  storage不足時，必須safe-boundary pause並提交decision packet；本design不授權reset；
+  storage不足時，必須safe-boundary pause並提交decision packet；A33 cleanup只降低
+  current retained bytes，不授權任何歷史resource reset；
 - `live_run_state`可記working-tree／partial進度；`committed_projection_state`只有在
   closure commit與post-commit audit後才可更新。
 
-Stage 1仍是最多七個hands-on工作日的hard cap，不是完成承諾。Entry preflight必須
-先帶入S10R1及同lineage既有消耗，證明剩餘budget足以完成S10R2、S11–S13所需的
-dependency-ready工作與report buffer；不足時停止，不靠縮criteria救回。
+Stage 1仍是最多七個hands-on工作日的hard cap，不是完成承諾。A33沒有給
+wall／CPU／GPU、repair／thread、pre-empirical或七日餘額的數值reset；目前
+administrative reason是`resource_relock_required`。Entry前必須以新的durable
+resource decision逐欄記錄prior consumption、carry-over、reset boundary與future
+cap，再證明剩餘budget足以完成S10R2、S11–S13所需的dependency-ready工作與report
+buffer；不足時維持operational `BLOCKED / not_evaluated / edge=null`，不靠縮criteria
+救回。
 
 ## 3. Frozen actual-S10 identity
 

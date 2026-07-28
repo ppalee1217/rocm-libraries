@@ -5,8 +5,10 @@
 > S10是durable `negative / S1_ENTRY_BLOCKED / edge=null`，兩者不變。User-authorized
 > A32已在safe boundary取消S10R1：operational
 > `cancelled / BLOCKED`、scientific `not_evaluated`、`edge=null`，沒有scientific
-> report且不是`CHECKPOINT_COMPLETE`；generation 0／1只作diagnostic provenance並
-> 禁止重用。新的sibling S10R2為`DESIGN_APPROVED / not_started / risk_tier=R2`；
+> report且不是`CHECKPOINT_COMPLETE`；generation 0／1只作diagnostic lineage並
+> 禁止重用。A33另授權identity-only retirement；bulk artifacts不再保留。新的
+> sibling S10R2目前為`BLOCKED / not_evaluated / risk_tier=R2`，等待retirement
+> post-audit與resource relock；
 > 只有S10R2的post-audited `S1_ENTRY_GO`可啟動S11。
 >
 > **唯一 active 導航入口：**本 README。`legacy/` 內的 M00–M09 仍是 dead-protocol archive，不能提供 schema、hash、lock、registry、criterion、fixture、test或 PASS evidence；S00 positive只支持CPU-only evidence foundation。
@@ -46,7 +48,7 @@ hypothesis、criterion、edge或timebox。
 | S00 | Evidence／lineage／checkpoint-resume foundation | `approved` | `completed` | `CHECKPOINT_COMPLETE` | `positive` | `effective (successor-001)` | [report](reports/staged/s00-foundation-verification-report.md) |
 | S10 | Stage 1 access／artifact／mapping／noise gate | `approved` | `completed` | `CHECKPOINT_COMPLETE` | `negative` | `effective (successor-003)` | [report](reports/staged/s10-stage1-entry-gate-report.md) |
 | S10R1 | Cancelled nominal-boundary recovery diagnostics | `approved` | `cancelled` | `BLOCKED` | `not_evaluated` | `superseded` | none (A32 operational record only) |
-| S10R2 | Stage 1 support-aware entry recovery | `approved` | `not_started` | `DESIGN_APPROVED` | `not_evaluated` | `absent` | `reports/staged/s10r2-stage1-support-aware-entry-report.md` |
+| S10R2 | Stage 1 support-aware entry recovery | `approved` | `blocked` | `BLOCKED` | `not_evaluated` | `absent` | `reports/staged/s10r2-stage1-support-aware-entry-report.md` |
 | S11 | Stage 1 model-only factorization／guidance lock | `approved` | `gated` | `DESIGN_APPROVED` | `not_activated` | `absent` | `reports/staged/s11-stage1-model-only-factorization-report.md` |
 | S12 | Stage 1 real-score／ranking／oracle audit | `approved` | `gated` | `DESIGN_APPROVED` | `not_evaluated` | `absent` | `reports/staged/s12-stage1-real-score-audit-report.md` |
 | S13 | Stage 1 actual Gen0 mechanism | `approved` | `gated` | `DESIGN_APPROVED` | `not_evaluated` | `absent` | `reports/gen0-factorization-mvp-report.md` |
@@ -113,7 +115,9 @@ flowchart TD
 - R12曾核准S10R1；A32後續在quiescent safe boundary取消該execution。
   [S10R1 record](s10r1-stage1-valid-support-entry-recovery-design.md)固定為
   `cancelled / BLOCKED / not_evaluated / edge=null`，不建立report或completion；
-  stochastic non-discovery不是scientific inconclusive或absence proof。
+  stochastic non-discovery不是scientific inconclusive或absence proof。A33只把
+  physical artifacts改為identity-only retention；tombstone與
+  [retirement manifest](retirements/s10r1-diagnostic-retirement.json)保留lineage。
 - 新[S10R2 design](s10r2-stage1-support-aware-entry-recovery-design.md)是sibling，不是
   S10R1 successor。S00 readiness、S10 terminal provenance與A32 status只作
   administrative prerequisites；虛線不是scientific edge，且S10R1 evidence reuse
@@ -208,6 +212,23 @@ completion；`skipped_by_gate`／`not_activated`不建立假report。
   report、commit或push。Working-tree projection是`live_run_state`；future exact-path
   authority commit與post-audit前，`committed_projection_state`仍以
   `b0561d2c9216a58a9d71b8e839c47efaa51f9c00`為baseline。
+
+### 6.2 2026-07-28 A33 S10R1 artifact retirement
+
+- 兩位fresh `gpt-5.6-sol/xhigh` reviewers經獨立首輪、一輪cross-examination與同一
+  final candidate後均`AGREE`：S10R1約34 GB ignored tree與19個untracked old-code
+  paths沒有合法S10R2／S11 consumer，應由compact identity tombstone取代。
+- 第一階段先commit
+  [retirement manifest](retirements/s10r1-diagnostic-retirement.json)的
+  `authorized_pending_cleanup`與本authority；第二階段只按exact allowlist清理並將
+  manifest更新為`retired_post_audited`。不使用broad cleanup，也不碰S00／S10、
+  actual YAML、source objects、S10R2+ authority或unrelated worktree changes。
+- Cleanup不改S10R1 state／outcome／edge，也不reset歷史resource accounting。
+  S10R2在新的resource decision明列carry-over／reset／cap前保持operational
+  `BLOCKED / not_evaluated / edge=null`。
+- 後續strict順序是：
+  `resource relock -> S10R2 -> S11 -> S12 -> S13 -> S20 -> S30 -> S31`；
+  S40／S41仍只在既定trigger與data gate成立時啟動。
 
 ## 7. Downgrade review gate
 

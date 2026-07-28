@@ -1,0 +1,167 @@
+{
+  "schema_version": 1,
+  "manifest_id": "s10r1-diagnostic-retirement",
+  "retention_event": "A33",
+  "state": "authorized_pending_cleanup",
+  "authority": {
+    "user_instruction_date": "2026-07-28",
+    "authority_head": "24d9ef2ba165b51c6de8da18eba56058fb00a7c0",
+    "governance_floor": "b0561d2c9216a58a9d71b8e839c47efaa51f9c00",
+    "reviewers": [
+      "/root/s10r1_cleanup_review_a",
+      "/root/s10r1_cleanup_review_b"
+    ],
+    "requested_model": "gpt-5.6-sol",
+    "actual_model": "gpt-5.6-sol",
+    "reasoning_effort": "xhigh",
+    "cross_examination_rounds": 1,
+    "final_positions": [
+      "AGREE",
+      "AGREE"
+    ],
+    "push_authorized": false
+  },
+  "s10r1_tombstone": {
+    "execution_status": "cancelled",
+    "checkpoint_state": "BLOCKED",
+    "scientific_outcome": "not_evaluated",
+    "edge": null,
+    "lock_state": "superseded",
+    "checkpoint_complete": false,
+    "scientific_report_authorized": false,
+    "stochastic_non_discovery_interpretation": "diagnostic_only_not_absence_not_FT_INCONCLUSIVE"
+  },
+  "controlled_identities": {
+    "ductile_commit": "5d6bdc8a6438b5fc73a96e46a907f9a5b1cd4e39",
+    "geko_commit": "d32abacfd13579d1f523f035b7a10b0734c4ac47",
+    "actual_yaml_sha256": "faaa8d65014d30646b89b84a8e97395539e52684bef7b430804a63ef2d64cf36",
+    "candidate_order_sha256": "926a6d9502546dda22ea2edc483c0f61ef74b3e378bcf32f222f17130bb668a3",
+    "expanded_groups_sha256": "0526a9b3c1d8a1bbe1db2cb03616bfda6e5a1f2dfad3826c0747d8dcb3ab9140",
+    "search_space_map_sha256": "5785871bc0779fb67627943ef2ed5fde8e96647be7e0bb0db4f770473cd7a1a0",
+    "baseline_weights_sha256": "56c34446385e93138944082b1801649271fd6a49df948aa41017cb05d012f34f"
+  },
+  "historical_generation_0_identities": {
+    "l0_lock_id": "fed79f20fe002c9e8d88697a2b0e28cf858496737fd7dd5faa666b8a4f5b7d11",
+    "l0_raw_sha256": "fee0055a87547a3fbf89a09d48ccbf239657a197a3094d555ac1cf3d73b10c98",
+    "selection_tree_composite_sha256": "12ac2f0408f8a1afab78ddfe10b7d023684b408596db195d5838ccc89450ad8b",
+    "selection_tree_regular_files": 15756,
+    "selection_tree_bytes": 3481524527,
+    "completed_selection_chunks": 3151,
+    "a30_body_sha256": "50feb87ca294ff8212357fb02509a22004576ede29a4df4fa738de95523b4396",
+    "a30_chain_id": "e75aea22a00b574e66d485e8ab311d6a90eb7cf97fb0b9850fcc9c3294c78db0",
+    "a30_sequence": 4,
+    "plan_b_sha256": "7ec8288343ee7340acc36c2ebd6370d29f3c4dec6469627c52c16d90002cc518"
+  },
+  "pre_cleanup_bulk_snapshot": {
+    "host_path": "/data1/perlee/rocm-libraries/agent_run/260726-ductile-factorized-guidance-s10r1",
+    "resolved_path": "/data1/perlee/rocm-libraries/agent_run/260726-ductile-factorized-guidance-s10r1",
+    "device": 66308,
+    "inode": 39583745,
+    "type": "directory",
+    "owner": "perlee",
+    "group": "perlee",
+    "mode": "0775",
+    "apparent_bytes_host_best_effort": 34097009945,
+    "allocated_bytes_container_complete": 34225770496,
+    "regular_files_container_complete": 57681,
+    "directories_container_complete": 14112,
+    "symlinks_container_complete": 92,
+    "hardlinked_regular_files_host_visible": 0,
+    "nested_mounts": 0,
+    "class_allocated_bytes_host_best_effort": {
+      "genesis": 15732031488,
+      "verification": 12371365888,
+      "failed_attempts": 6117380096,
+      "governance": 2666496
+    },
+    "content_hash_policy": "no_new_full_tree_content_hash_non_authority_duplicates"
+  },
+  "pre_cleanup_small_paths": {
+    "count": 19,
+    "total_bytes": 1865776,
+    "entries": [
+      {"path": "projects/hipblaslt/tensilelite/Tensile/Tests/unit/test_ductile_s10r1_entry.py", "bytes": 185633, "sha256": "30c887f08a30f9e773eacea698498fdac9b45dcde2f0617088a6164ad4fc748d"},
+      {"path": "study_docs/research/ductile-origami-warmstart/protocol/v1/generations/s10r1/000001/generation-amendment.json", "bytes": 1425, "sha256": "1e784fe71fc3032b5fc05b97284db5ab58a3e8d862162de8f431326ecd0db079"},
+      {"path": "study_docs/research/ductile-origami-warmstart/protocol/v1/generations/s10r1/000001/parent-cutover.json", "bytes": 943, "sha256": "4354582984cdd233abb290c03cbf2b74bdabd0c05b134812f77c1ce06e16cb86"},
+      {"path": "study_docs/research/ductile-origami-warmstart/protocol/v1/generations/s10r1/000001/s10r1-entry-contract.yaml", "bytes": 8470, "sha256": "48522723978ac6353e9eda2d09878edfa1393f1f3527e7177d1e326b56996aec"},
+      {"path": "study_docs/research/ductile-origami-warmstart/protocol/v1/generations/s10r1/000001/schemas/s10r1-entry.schema.json", "bytes": 1338, "sha256": "d95c696ec0012714202f61a8bf7d747f3b4b405b8ee536227f15fabfa01ba899"},
+      {"path": "study_docs/research/ductile-origami-warmstart/protocol/v1/locks/s10r1-stage1-entry-protocol-lock.json", "bytes": 18392, "sha256": "fee0055a87547a3fbf89a09d48ccbf239657a197a3094d555ac1cf3d73b10c98"},
+      {"path": "study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r1-authority.json", "bytes": 3481, "sha256": "03fa38b52369cd533ae2eab8115cf82b5b591a750311059dc21c367ead808196"},
+      {"path": "study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r1-size-registry.json", "bytes": 381, "sha256": "ee814721e0839bcef4d0455d941ef84eb4d5334a0d5349cd2e6631c96f1ff31e"},
+      {"path": "study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r1-yaml-provenance.json", "bytes": 993445, "sha256": "434a676a1959aa6b440bd4f887802e33619771790cac0b965aafea3d233a49ba"},
+      {"path": "study_docs/research/ductile-origami-warmstart/protocol/v1/run_s10r1_entry.py", "bytes": 27006, "sha256": "292e27eaecc0431c7fbe25fa5260d6d0ce78e9e1147877d7675f2a5e13c26528"},
+      {"path": "study_docs/research/ductile-origami-warmstart/protocol/v1/s10r1-entry-contract.yaml", "bytes": 11995, "sha256": "cbb05b17b885cd391de3e14b1193ccf3b850da7978aad5b1e9c2eb11cc9c5716"},
+      {"path": "study_docs/research/ductile-origami-warmstart/protocol/v1/s10r1/__init__.py", "bytes": 179, "sha256": "9efd51c79df4edea0743ff32ff0ed70cffb325824ea2d9dbb8d8012cd0af1bf3"},
+      {"path": "study_docs/research/ductile-origami-warmstart/protocol/v1/s10r1/authority.py", "bytes": 48426, "sha256": "d9a7ce059b6ece751972e591158f196123d2f010cd3e2efb6c6d74300763d3d2"},
+      {"path": "study_docs/research/ductile-origami-warmstart/protocol/v1/s10r1/contract.py", "bytes": 36122, "sha256": "10bd7183060013a51d6e343c071be428e2b1539d0e26659c6be0c170a184265b"},
+      {"path": "study_docs/research/ductile-origami-warmstart/protocol/v1/s10r1/execution.py", "bytes": 139107, "sha256": "eed964f932e9373169d27a0ea19abc1764b5c714f2986b1f09ab41293c3abf2f"},
+      {"path": "study_docs/research/ductile-origami-warmstart/protocol/v1/s10r1/lifecycle.py", "bytes": 129571, "sha256": "21f7b526155f22bcbbe545cadd3a31249576611f3522e2b6be3185d9ee417cd8"},
+      {"path": "study_docs/research/ductile-origami-warmstart/protocol/v1/s10r1/mapping.py", "bytes": 101110, "sha256": "f6c187f9243cb237c39c148df79130c2313bca74af3e7b700857b0daa5b70dfc"},
+      {"path": "study_docs/research/ductile-origami-warmstart/protocol/v1/s10r1/selection.py", "bytes": 61432, "sha256": "7ddc5cbd08e6f9528f5b5cd9bc4e262d833bb725673bd04b835ce2e165826b8d"},
+      {"path": "study_docs/research/ductile-origami-warmstart/protocol/v1/schemas/s10r1-entry.schema.json", "bytes": 97320, "sha256": "2f0d9f6dafd40c6a2964c1e37c84c466de53b6ee4fbc8cab3f67eb3b85ef3ac5"}
+    ]
+  },
+  "selected_ignored_record_hashes": {
+    "adjudication.md": "04c3c67f4086e71ed9eeca7d8ca233f0c1b172a1757559bc6e6580d752468a89",
+    "baseline.md": "13663dee0d683baca3a1e93c1b330289a308bbc497fc9af989e68720489083d4",
+    "subagents.md": "56e2db9b04d23396706bd28a6c13fc21234a53f22ce681f4969cf6c6aed2f87a",
+    "diagnostic_abandonment": "3c6fe1f9ada00e243110addf4064cfe678ae580c174e591b03ef7da5fdcbefbd",
+    "plan_a": "afcbf2c4b99234d4f0bae68e288944111af460a71e7fb8cb93c9c105ea88c595",
+    "plan_b": "7ec8288343ee7340acc36c2ebd6370d29f3c4dec6469627c52c16d90002cc518",
+    "impl_report": "6cfe842bbea002f8b1e75375dcfc712f557ec54cbc048ad537895cf93416f46b",
+    "verifier_report": "b4c84ec1d3285a82d0971f8aec987b027b6d25f87c858dcba434860292a19052",
+    "g1_impl_report": "d89eca27d9c05bcc6e4fd2cbff4d6f38c95241eeec4fd87cef2e9a9764af90b9"
+  },
+  "historical_resource_accounting": {
+    "selection_wall_time_consumed": "UNKNOWN",
+    "completed_selection_chunks": 3151,
+    "fresh_role_threads_lower_bound": 10,
+    "fresh_role_threads_derivation": {
+      "source": "agent_run/260726-ductile-factorized-guidance-s10r1/subagents.md",
+      "source_sha256": "56e2db9b04d23396706bd28a6c13fc21234a53f22ce681f4969cf6c6aed2f87a",
+      "counted_roles": "two planners, original implementer, original verifier, two O3 reviewers, two post-L0 reviewers, and two generation-1 replacement implementers"
+    },
+    "repair_rounds_lower_bound": 11,
+    "repair_rounds_derivation": {
+      "source": "agent_run/260726-ductile-factorized-guidance-s10r1/adjudication.md",
+      "source_sha256": "04c3c67f4086e71ed9eeca7d8ca233f0c1b172a1757559bc6e6580d752468a89",
+      "basis": "A3-A26 append-only events document implementation/verifier iterations through I11/V11; 11 is retained only as a conservative lower bound"
+    },
+    "stage1_hands_on_consumed": "UNKNOWN",
+    "cpu_time_consumed": "UNKNOWN",
+    "gpu_time_consumed": "UNKNOWN",
+    "pre_empirical_engineering_consumed": "UNKNOWN",
+    "historical_peak_storage": "UNKNOWN",
+    "total_bytes_written": "UNKNOWN",
+    "future_budget_reset_authorized": false
+  },
+  "deletion_allowlist": {
+    "ignored_root": "/data1/perlee/rocm-libraries/agent_run/260726-ductile-factorized-guidance-s10r1",
+    "small_paths_source": "pre_cleanup_small_paths.entries[*].path",
+    "empty_parent_directories_may_be_removed_only_if_verified_empty": true
+  },
+  "exclusions": [
+    "tracked S00 and S10 evidence and reports",
+    "tracked actual S10 YAML",
+    "Ductile and GEKO Git objects and remote-tracking refs",
+    "S10R2 and downstream authority or future artifacts",
+    "all other agent_run roots",
+    "unrelated working-tree and index changes",
+    "perlee container lifecycle"
+  ],
+  "post_cleanup_audit": null,
+  "claim_boundary": {
+    "supports": [
+      "S10R1 cancellation identity",
+      "S10R1 lineage identity",
+      "intentional artifact retirement"
+    ],
+    "does_not_support": [
+      "any S10R1 scientific outcome",
+      "support absence",
+      "FT-INCONCLUSIVE",
+      "S11 activation",
+      "resource history reset"
+    ]
+  }
+}

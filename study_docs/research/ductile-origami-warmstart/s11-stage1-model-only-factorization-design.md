@@ -80,7 +80,8 @@ control。
 ## 3. Dependencies、entry 與 outgoing edge
 
 S11需要S00 foundation、immutable S10 terminal provenance、S10R1的A32
-`cancelled / not_evaluated / edge=null` record，以及S10R2的positive formal
+`cancelled / not_evaluated / edge=null` tombstone、A33 identity-only retirement
+record，以及S10R2的positive formal
 closeout／isolated commit／post-commit audit。S10與S10R1都沒有outgoing edge；
 只有post-audited `S10R2:S1_ENTRY_GO`能啟動S11。S10R2 negative／inconclusive／
 `CHANGES_REQUIRED`或未完成都保持S11`not_activated`，且本dependency amendment
@@ -220,7 +221,8 @@ record與claim boundary。若S13成為tranche final，S13 report整合本record�
 - User-authorized A32在safe boundary取消S10R1：operational `cancelled / BLOCKED`、
   scientific `not_evaluated`、`edge=null`，沒有scientific report且不是
   `CHECKPOINT_COMPLETE`。
-- S10R1 generations只作diagnostic provenance並禁止re-use；S11 dependency改為唯一
-  post-audited `S10R2:S1_ENTRY_GO`。
+- S10R1 generations只作diagnostic lineage並禁止re-use；A33退休bulk bytes而不改
+  outcome／edge／resource history。S11 dependency維持唯一post-audited
+  `S10R2:S1_ENTRY_GO`。
 - S11 hypothesis、4,096／8,192 occurrences、128／256 conditional support、
   thresholds、weights、shuffle、label seal、claim與timebox均不變。

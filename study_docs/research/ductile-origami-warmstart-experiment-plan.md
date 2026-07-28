@@ -8,8 +8,10 @@
 > positive；S10是durable `negative / S1_ENTRY_BLOCKED / edge=null`，兩者不變。
 > User-authorized A32已在safe boundary取消S10R1：operational
 > `cancelled / BLOCKED`、scientific `not_evaluated`、`edge=null`，沒有scientific
-> report且不是`CHECKPOINT_COMPLETE`；generation 0／1只作diagnostic provenance並
-> 禁止重用。新的sibling S10R2是`DESIGN_APPROVED / not_started / R2`；只有
+> report且不是`CHECKPOINT_COMPLETE`；generation 0／1只作diagnostic lineage並
+> 禁止重用。A33另授權identity-only retirement；bulk artifacts不再保留。
+> 新的sibling S10R2目前是`BLOCKED / not_evaluated / R2`，等待retirement post-audit
+> 與resource relock；只有
 > post-audited `S10R2:S1_ENTRY_GO`可啟動S11。
 >
 > **Foundation provenance：**active `protocol/v1/`與S00 report是fresh foundation；退役M00內容仍不得作schema、hash、lock、registry、fixture、test或PASS evidence。S00只支持CPU-only evidence semantics，不是GPU／performance結果。
@@ -57,7 +59,7 @@ orchestration／resource floor；它不能靜默修改上列scientific authority
 | S00 | Evidence contract／lineage／observability foundation | approved | completed | CHECKPOINT_COMPLETE | positive | effective (`successor-001`) | [design](ductile-origami-warmstart/s00-evidence-contract-lineage-observability-design.md) | [report](ductile-origami-warmstart/reports/staged/s00-foundation-verification-report.md) |
 | S10 | Stage 1 access／artifact／mapping／noise gate | approved | completed | CHECKPOINT_COMPLETE | negative | effective (`successor-003`) | [design](ductile-origami-warmstart/s10-stage1-entry-access-mapping-gate-design.md) | [report](ductile-origami-warmstart/reports/staged/s10-stage1-entry-gate-report.md) |
 | S10R1 | Cancelled nominal-boundary recovery diagnostics | approved | cancelled | BLOCKED | not_evaluated | superseded | [design](ductile-origami-warmstart/s10r1-stage1-valid-support-entry-recovery-design.md) | none (A32 operational record only) |
-| S10R2 | Stage 1 support-aware entry recovery | approved | not_started | DESIGN_APPROVED | not_evaluated | absent | [design](ductile-origami-warmstart/s10r2-stage1-support-aware-entry-recovery-design.md) | `reports/staged/s10r2-stage1-support-aware-entry-report.md` |
+| S10R2 | Stage 1 support-aware entry recovery | approved | blocked | BLOCKED | not_evaluated | absent | [design](ductile-origami-warmstart/s10r2-stage1-support-aware-entry-recovery-design.md) | `reports/staged/s10r2-stage1-support-aware-entry-report.md` |
 | S11 | Stage 1 model-only factorization／guidance lock | approved | gated | DESIGN_APPROVED | not_activated | absent | [design](ductile-origami-warmstart/s11-stage1-model-only-factorization-design.md) | `reports/staged/s11-stage1-model-only-factorization-report.md` |
 | S12 | Stage 1 D5 real-score／oracle audit | approved | gated | DESIGN_APPROVED | not_evaluated | absent | [design](ductile-origami-warmstart/s12-stage1-real-score-ranking-oracle-audit-design.md) | `reports/staged/s12-stage1-real-score-audit-report.md` |
 | S13 | Stage 1 actual Gen0 mechanism | approved | gated | DESIGN_APPROVED | not_evaluated | absent | [design](ductile-origami-warmstart/s13-stage1-actual-gen0-mechanism-design.md) | `reports/gen0-factorization-mvp-report.md` |
@@ -257,6 +259,47 @@ Positive、negative與inconclusive都要durable outcome closure。Operational
   code、tests、contract、lock、artifact、scientific report、commit或push。Working-tree
   amendment屬`live_run_state`；在future exact-path commit與post-audit前，不把它誤稱
   已完成的`committed_projection_state`。
+
+### 2026-07-28 A33 identity-only retirement與research rebaseline
+
+- **Trigger：**S10R1已取消且S10R2明文禁止重用其artifacts，但約34 GB ignored
+  source／selection／verification／failed-attempt tree與19個untracked S10R1-only
+  implementation paths仍占用active workspace；A32的「immutable diagnostic
+  provenance」若被理解成永久保留physical bytes，會同時增加storage與誤引用風險。
+- **Design discussion：**fresh reviewers
+  `/root/s10r1_cleanup_review_a`與`/root/s10r1_cleanup_review_b`使用相同
+  `gpt-5.6-sol / xhigh` capability與相同evidence。兩方獨立提出立場，完成一輪
+  cross-examination，再審查同一final candidate，均明確`AGREE`。最強反對意見是：
+  authority必須先durable、permission／mount／link異常須fail closed、不能把disk
+  release冒充budget reset，也不應為非authority duplicates支付34 GB逐檔hash成本。
+- **Retention decision：**採identity-only retirement。Current S10R1 design只保留
+  cancellation tombstone；完整superseded protocol留在Git history。新的
+  [retirement manifest](ductile-origami-warmstart/retirements/s10r1-diagnostic-retirement.json)
+  保存A30–A32、source／YAML／L0／selection identities、pre-cleanup inventory、
+  19-path digests、resource known／`UNKNOWN`、exact allowlist與post-audit。
+- **Two-phase cleanup：**第一個exact-path authority commit固定
+  `authorized_pending_cleanup`；live recheck後只刪manifest列出的ignored S10R1
+  run root與19個untracked paths；第二個exact-path commit固定
+  `retired_post_audited`。禁止`git clean`、glob、parent-wide cleanup、unrelated
+  staging、container lifecycle mutation與push。
+- **Scientific effect：**沒有。S10R1仍是
+  `cancelled / BLOCKED / not_evaluated / edge=null / superseded`；不建立report、
+  completion或edge。Stochastic non-discovery仍不是absence proof或
+  `FT-INCONCLUSIVE`。S10與S10R2 criteria／workloads／claims均不變。
+- **Resource effect：**physical cleanup只降低current retained bytes，不reset歷史
+  wall／CPU/GPU／storage／throughput／pre-empirical／repair／thread consumption。
+  本次human instruction沒有給任何數值reset。S10R2在retirement post-audit與新的
+  durable resource decision逐欄記錄prior consumption、carry-over、reset boundary及
+  future caps前，保持operational
+  `BLOCKED / scientific_outcome=not_evaluated / edge=null`。
+- **Progression：**`retirement -> resource relock -> S10R2`；
+  S10R2 positive才進`S11 -> S12 -> S13`；D6 positive才進S20；S20 positive才進
+  `S30 -> S31`；S40／S41只在既定predictor-specific／oracle-positive trigger與data
+  gate成立時啟動。任何terminal negative、inconclusive、resource gate或未核准
+  downgrade都停止。
+- **Residual uncertainty：**Stage-1 hands-on、CPU/GPU、pre-empirical餘額仍
+  `UNKNOWN`；fresh threads及repair rounds只有已超過新R2 defaults的lower bounds。
+  Retirement manifest保存此不確定性，不用推算補值。
 
 ### Downgrade user gates
 
