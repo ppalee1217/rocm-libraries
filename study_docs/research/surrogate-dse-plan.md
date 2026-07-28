@@ -123,9 +123,30 @@ measurement-design問題：
 兩個fresh GPT-5.6 Sol/xhigh reviewers依`design-discussion`獨立判讀、交換完整
 立場並交互詰問，最後共同核准獨立S10R1 checkpoint。S10及其negative保持
 immutable；S10R1只在相同source pins、byte-identical YAML、space／groups／weights、
-三sizes、correctness與noise要求下修正selection及measurement semantics。只有
-post-audited `S10R1:S1_ENTRY_GO`可進S11；這不是S10補發edge，也不授權任何scope
-downgrade。
+三sizes、correctness與noise要求下修正selection及measurement semantics。這是當時的
+approved design；後續A32已取消其execution，沒有產生scientific edge。
+
+### 1.8 A32 diagnostic cancellation與S10R2
+
+2026-07-28，使用者依append-only S10R1 governance chain的A32 event核准在safe
+boundary停止S10R1：
+
+- operational state固定為`cancelled / BLOCKED`，scientific outcome為
+  `not_evaluated`、edge為`null`，不是`CHECKPOINT_COMPLETE`；
+- 不建立S10R1 scientific report；generation 0／1只作immutable diagnostic
+  provenance，所有empirical／repair artifacts禁止重用；
+- stochastic non-discovery（包含DepthU=1024 diagnostic）不證明support absent，
+  也不是scientific inconclusive；
+- 新建sibling S10R2，在actual S10 pins／YAML／groups／weights／三sizes不變下，
+  先做CPU validity-only support classification，再分離exact-ten mapping與
+  deterministic sentinel/helper conformance；
+- 只有post-audited `S10R2:S1_ENTRY_GO`可進S11。S11–S41 roadmap、criteria、
+  numerical timeboxes與claim ladder全部保留。
+
+Execution治理以commit
+`b0561d2c9216a58a9d71b8e839c47efaa51f9c00`為floor；S10R2是R2 standalone
+tranche／closure，後續tranches為S11+S12+S13、S20、S30+S31、S40+S41。這只改
+authority／orchestration，不改scientific gates。
 
 ---
 
@@ -256,13 +277,21 @@ flowchart LR
 
 ### 4.3 Stage-gated timeboxes
 
-- Stage 1：最多七個 hands-on工作日。
-- Stage 2：target四日、hard cap五日。
-- Stage 3：hard cap七日。
-- Stage 4：hard cap五日，且不是必跑 stage。
+- Stage 1：exact hard cap為最多七個hands-on工作日。
+- Stage 2：target四日、exact hard cap五日。
+- Stage 3：exact hard cap七日。
+- Stage 4：exact hard cap五日，且不是必跑stage。
+- Target與hard cap都不是完成承諾；entry resource preflight無法證明完整panel、
+  report與buffer可在剩餘cap內完成時必須停止。
 - 每個 stage entry前必須確認能完成完整 arms／seeds／clusters，並保留至少一個 report工作日與 failure buffer。
 - 資源不足時輸出 partial／inconclusive，不靠縮 seeds、arms、horizon或clusters保留原 claim。
 - D1–D2 access／artifact／mapping gate 未過：停止 empirical work，不以 CPU-only 結果冒充效能研究。
+- 同stage／gate lineage的wall-time、CPU/GPU time、storage、throughput samples、
+  pre-empirical engineering、repair rounds與fresh role threads跨generation、
+  successor、sibling、replacement與new root累計；沒有human明列authority不得reset。
+- Governance baseline `b0561d2c9216a58a9d71b8e839c47efaa51f9c00`要求
+  pre-empirical engineering最多20% stage cap、首1% throughput後重估；projection
+  超過2倍或frozen budget exceed時safe-boundary pause。
 
 ---
 
@@ -364,6 +393,14 @@ flowchart TD
 ### `FT-BLOCKED-MAPPING`
 
 必要 metadata 只能靠猜、sentinel 未解析、candidate order／field parity 無法確認。這是 mapping blocker。
+
+### `FT-BLOCKED-CORRECTNESS`
+
+在frozen valid corpus、source／mapping identity、environment與measurement contract都
+完整時，locked generate、compile、smoke或nonzero correctness可重現失敗。這是
+correctness entry blocker／scientific negative，形成`S1_ENTRY_BLOCKED`與
+`edge=null`；若根因是harness、adapter、schema或path substitution defect，必須走
+`CHANGES_REQUIRED`，不得誤用本ID。
 
 ### `FT-MODEL-RANK`
 
@@ -524,15 +561,19 @@ Current strict scientific DAG與administrative recovery prerequisites：
 ```text
 S00 -> S10 [terminal negative; edge=null]
   \          \
-   +----------+-- administrative/provenance only --> S10R1
+   +----------+-- administrative/provenance only --> S10R2
                                                      |
                                                      +-- S1_ENTRY_GO --> S11 -> S12 -> S13 -> S20 -> S30 -> S31
                                                                                  \                         \
                                                                                   +---- conditional ------> S40 -> S41
+
+S10R1 [A32 cancelled sibling; diagnostic only; edge=null; evidence reuse forbidden]
 ```
 
-S00／S10到S10R1的關係不是scientific outgoing edge。S10R1 negative、
-inconclusive、`CHANGES_REQUIRED`或未完成都不會啟動S11。
+S00／S10到S10R2的關係不是scientific outgoing edge。S10R1是sibling diagnostic
+record，不是S10R2 parent或evidence source；A32固定它為
+`cancelled / not_evaluated / edge=null`。S10R2 negative、inconclusive、
+`CHANGES_REQUIRED`或未完成都不會啟動S11。
 
 M00–M09移入`ductile-origami-warmstart/legacy/`，只保留歷史正文：
 
@@ -556,16 +597,27 @@ M00–M09移入`ductile-origami-warmstart/legacy/`，只保留歷史正文：
 - 本charter是研究scope／claim唯一權威。
 - [Experiment plan](ductile-origami-warmstart-experiment-plan.md)是數值、DAG、criteria與stop rules唯一權威。
 - Checkpoint design只給maximum boundary與evidence binding；future planning必須縮成exact whitelists。
-- Future effective lock生效前不得產生outcome-bearing evidence。
+- Governance baseline
+  `b0561d2c9216a58a9d71b8e839c47efaa51f9c00`是risk、resource、tranche與closure
+  floor，但不能改scientific authority。
+- Future outcome evidence前必須先建立durable machine-readable frozen contract、
+  驗證human/machine parity並seal effective lock。
 - S10 hard access／artifact／mapping blocker才使用：
   - `ductile-origami-warmstart/reports/gen0-factorization-blocker-memo.md`
-- 每份checkpoint各有唯一formal report path，詳見active index；S10R1使用
-  `ductile-origami-warmstart/reports/staged/s10r1-stage1-entry-recovery-report.md`
+- S10R1沒有scientific report；它只保留A32 operational cancellation。
+- S10R2唯一formal report是
+  `ductile-origami-warmstart/reports/staged/s10r2-stage1-support-aware-entry-report.md`，
   且不覆寫S10 report。
 - S40 data insufficiency是formal scientific negative，寫入`reports/staged/s40-stage4-activation-report.md`；不建立data-insufficiency blocker memo。
 - `skipped_by_gate`／`not_activated`由上游report與closeout記錄，不建立自己的report或commit。
-- Positive、negative與inconclusive在evidence integrity完整時都需formal report、parent update、`CLOSEOUT_ACK`、isolated commit與post-commit audit。
+- Internal positive scientific gate使用compact durable record並在同tranche繼續；
+  internal terminal negative／inconclusive產生planned report；final gate report整合
+  prior records。Tranches固定為S10R2、S11+S12+S13、S20、S30+S31、S40+S41。
+- Positive、negative與inconclusive在evidence integrity完整時都需durable outcome
+  closure、parent update、`CLOSEOUT_ACK`、isolated commit與post-commit audit。
 - Technical`PASS`只是`VERIFIED_PENDING_CLOSEOUT`；完成全部closeout後才是`CHECKPOINT_COMPLETE`。
+- `live_run_state`與`committed_projection_state`分離；只有closure commit與
+  post-commit audit後才更新後者。
 - 現在不建立空白report、placeholder lock、fake hash或compatibility stub。
 
 任何`DEGRADED_PROXY`、two-size／reduced-regime、H5 pilot、single-cluster pilot或其他縮減workloads/runs/seeds/metrics/validation/acceptance/scope的方案，必須先產生decision packet並停在`blocked-awaiting-user-decision`。Diagnostic partial run不會完成checkpoint或解鎖下游。
@@ -574,4 +626,11 @@ M00–M09移入`ductile-origami-warmstart/legacy/`，只保留歷史正文：
 
 ## 12. 設計核准時的下一步與 current lifecycle
 
-2026-07-24設計核准時不是執行Stage 1 D1–D2；第一個可開始的checkpoint是S00。2026-07-25使用者已核准九路徑pre-execution authority amendment及其exact-path ordinary baseline commit；該commit不是S00 closure，也不授權push。S00與S10後來都已durable closeout，結果以active index及experiment plan為準。2026-07-26使用者委派的two-reviewer design-discussion另核准五路徑S10R1 post-closeout measurement amendment與其ordinary baseline commit；它不撤銷S10 negative、不預寫S10R1 outcome，也不授權push。當前dependency-ready checkpoint與執行狀態仍只以active index及experiment plan為準。
+2026-07-24設計核准時不是執行Stage 1 D1–D2；第一個可開始的checkpoint是S00。
+2026-07-25 authority amendment與後續S00／S10 durable closeout保持有效。
+2026-07-26 R12曾核准S10R1，但2026-07-28 user-authorized A32已在safe boundary取消
+該execution，沒有scientific outcome或edge。Current active recovery改為S10R2；
+本次只更新documentation／authority，不建立protocol code／tests、report、commit或
+push。Working-tree amendment屬`live_run_state`；current committed governance
+baseline仍是`b0561d2c9216a58a9d71b8e839c47efaa51f9c00`，直到future exact-path
+authority commit與post-audit才更新`committed_projection_state`。

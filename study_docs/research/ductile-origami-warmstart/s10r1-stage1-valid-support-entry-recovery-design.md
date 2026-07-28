@@ -3,44 +3,44 @@ checkpoint_id: S10R1
 title: Stage 1 valid-support entry measurement recovery
 stage: 1
 design_status: approved
-execution_status: not_started
-checkpoint_state: DESIGN_APPROVED
+execution_status: cancelled
+checkpoint_state: BLOCKED
 scientific_outcome: not_evaluated
-lock_state: absent
+lock_state: superseded
+risk_tier: R2
+governance_baseline: b0561d2c9216a58a9d71b8e839c47efaa51f9c00
+scientific_gate: S10R1
+execution_tranche: T-S10R1-CANCELLED
+closure_unit: null
+governance_event: A32
+operational_block_reason: user_cancelled_at_safe_boundary
+superseded_by: S10R2
 hypothesis_id: S10R1-H1
 dependencies:
   - checkpoint_id: S00
     required_edge: S00_EVIDENCE_READY
   - checkpoint_id: S10
     required_terminal: CHECKPOINT_COMPLETE_negative_at_48c26297fc6815e6edfcc89b8503e47370fedc53
-entry_criteria:
-  - committed_R12_governance_amendment
-  - exact_S10_Ductile_and_GEKO_pins_on_expected_authority_lineage
-  - byte_identical_S10_actual_YAML_regeneration
-criterion_refs:
-  - S1_ENTRY_GO
-  - S1_ENTRY_BLOCKED
-failure_ids:
-  - FT-BLOCKED-MAPPING
-  - FT-INCONCLUSIVE
-allowed_outgoing_edges:
-  - criterion_id: S1_ENTRY_GO
-    target_checkpoint: S11
-formal_report_path: reports/staged/s10r1-stage1-entry-recovery-report.md
+entry_criteria: []
+criterion_refs: []
+failure_ids: []
+allowed_outgoing_edges: []
+formal_report_path: null
 blocker_path: null
-future_effective_lock_paths:
+historical_diagnostic_lock_paths:
   - protocol/v1/locks/s10r1-stage1-entry-protocol-lock.json
   - protocol/v1/locks/s10r1-stage1-entry-execution-lock.json
-implementation_boundary_max:
+historical_implementation_boundary_max:
   - S10R1-only authority, validity-ledger, selection, mapping, Formocast, runtime-queue, correctness and noise pipeline
   - S10R1-only protocol/v1 schemas, contract, locks, manifests, evidence and tests
-delivery_boundary_max:
-  - S10R1 implementation and tests selected by future exact-path planning
+historical_delivery_boundary_max:
+  - S10R1 implementation and tests formerly selected by exact-path planning
   - protocol/v1/**
-  - reports/staged/s10r1-stage1-entry-recovery-report.md
   - ../ductile-origami-warmstart-experiment-plan.md
   - README.md
   - s10r1-stage1-valid-support-entry-recovery-design.md
+forbidden_report_paths:
+  - reports/staged/s10r1-stage1-entry-recovery-report.md
 forbidden_historical_roots:
   - protocol/v1/run_s10_entry.py
   - protocol/v1/s10-entry-contract.yaml
@@ -60,35 +60,43 @@ forbidden_downstream_roots:
 consensus_status: approved_two_reviewer_agree
 ---
 
-# S10R1 — Stage 1 valid-support entry measurement recovery
+# S10R1 — Stage 1 valid-support entry measurement recovery（cancelled）
 
 導航：[active checkpoint index](README.md)｜[experiment plan §2](../ductile-origami-warmstart-experiment-plan.md#2-d1d2-entry-gate)｜[historical S10 report](reports/staged/s10-stage1-entry-gate-report.md)
 
-## 1. 白話目標
+> **Do not execute.** S10R1已依append-only governance chain的user-authorized
+> `A32` event在safe boundary取消。以下原設計細節只保留為historical diagnostic
+> provenance，不再授權contract、lock、evidence、report或edge。
 
-重新量一次真正對應Ductile operational domain的Stage 1 entry gate：候選必須先通過
+## 1. 白話目標與目前狀態
+
+原核准目標是重新量一次真正對應Ductile operational domain的Stage 1 entry gate：
+候選必須先通過
 同一個`valid_fn`，Formocast的finite early-terminate sentinel與runtime queue狀態必須
 分開記錄，然後才做原本的mapping、correctness與noise gate。
 
 這不是把S10改判。S10在自己的frozen raw-boundary fixture下仍是完整、有效且不可改寫
-的negative；S10R1是新的measurement boundary。
+的negative。S10R1執行現已`cancelled / BLOCKED`（operational），
+`scientific_outcome=not_evaluated`、`edge=null`，不是`CHECKPOINT_COMPLETE`，也不建立
+scientific formal report。新的active sibling是
+[S10R2](s10r2-stage1-support-aware-entry-recovery-design.md)。
 
 ## 2. Hypothesis、範圍與反證
 
-**S10R1-H1：**在保持S10 exact source pins、actual YAML bytes、search space、
+**S10R1-H1（未評估）：**在保持S10 exact source pins、actual YAML bytes、search space、
 groups／candidate order／existing weights、三個sizes與全部entry thresholds不變時，
 可以從Ductile-valid support預鎖exact 10-config corpus，忠實重現Formocast
 model／runtime semantics，並完成correctness與noise gate。
 
-這個checkpoint只回答「可否合法開始S11」。它不回答Formocast ranking、
-factorization、prior mass或actual Gen0效果。
+這個hypothesis沒有scientific outcome。Voluntary cancellation與diagnostic
+non-discovery都不是negative或inconclusive；S10R1不能回答「可否合法開始S11」。
 
-反證／停止：
+原設計預定檢查以下狀況，但A32前沒有形成任何scientific判讀：
 
 - exact support proof顯示required coverage atom不存在；
 - locked config或anchor可重現地無法完成mapping／codegen／correctness；
-- stochastic nominal-draw cap耗盡但不能建立exact-ten coverage：
-  `inconclusive / FT-INCONCLUSIVE`，不得冒充support不存在；
+- stochastic nominal-draw cap耗盡但不能建立exact-ten coverage（實際diagnostic
+  non-discovery不分類為negative或inconclusive）；
 - schema、helper、API、guard attribution或bound-byte異常：
   `CHANGES_REQUIRED`，不得冒充scientific outcome；
 - source lineage、exact pin或byte-identical YAML parity失敗：停止並另行amend，
@@ -100,14 +108,18 @@ factorization、prior mass或actual Gen0效果。
 - S10已在commit
   `48c26297fc6815e6edfcc89b8503e47370fedc53`完成為
   `negative / S1_ENTRY_BLOCKED / FT-BLOCKED-MAPPING / edge=null`。
-- S10R1引用S10 terminal record只作administrative／provenance prerequisite；
+- S10R1引用S10 terminal record只作historical administrative／provenance；
   S10不會補發scientific edge。
-- 只有post-audited `S10R1:S1_ENTRY_GO -> S11`。S10R1的negative、
-  inconclusive、`CHANGES_REQUIRED`或未完成狀態都沒有outgoing edge。
+- `A32`已固定S10R1為`cancelled / not_evaluated / edge=null`。Generation 0的L0與
+  selection tree、generation 1的tracked capsule、pre-L0 implementation、tests、
+  caches與verification artifacts都只可作immutable diagnostics。
+- S10R1任何empirical、repair或diagnostic artifact都禁止重用為S10R2 gate evidence。
+- 只有future post-audited `S10R2:S1_ENTRY_GO`可以啟動S11；S10R1沒有現在或未來
+  outgoing edge。
 - 不授權proxy、two-size、H5、reduced regime、threshold alteration或其他
   workload／acceptance／claim downgrade。
 
-## 4. Source 與 actual-YAML isolation
+## 4. Historical source 與 actual-YAML isolation（non-executable）
 
 執行前必須fresh resolve並記錄：
 
@@ -127,7 +139,7 @@ S10R1明確以兩個historical exact pins作controlled inputs，以隔離measure
 且fresh regeneration必須byte-identical。任一不成立即停止；不得把current checkout、
 cache、build、container或GEKO branch附帶的Ductile files當source authority。
 
-## 5. L0／L1 lock-before-evidence
+## 5. Historical L0／L1 design（superseded）
 
 ### 5.1 L0 protocol lock
 
@@ -164,10 +176,10 @@ L1綁定：
 - smoke、correctness、63-cell noise schedule；
 - commands、whitelists與report target。
 
-L1後任何bound byte改變都必須建立fresh child generation並重跑所有受影響
-evidence。不得in-place edit、混用S10 evidence或替換anchor。
+這些paths與任何已產生generation都已superseded為diagnostic-only。不得建立fresh
+S10R1 child、繼續選樣、重跑evidence、in-place edit、混用S10 evidence或替換anchor。
 
-## 6. Valid-support selector
+## 6. Historical valid-support selector（diagnostic-only）
 
 ### 6.1 Actual probabilities
 
@@ -238,16 +250,16 @@ set-cover：
 若cover少於10筆，以相同first-occurrence／tie-break規則補到exact 10 distinct
 valid hashes。Final corpus不得有第11筆、replacement或atom relaxation。
 
-Cap耗盡仍少於10 distinct configs、缺atom或無exact-ten cover，一律
-`inconclusive / FT-INCONCLUSIVE / edge=null`。只有finite exhaustive enumeration、
-sound constraint proof或經獨立驗證的等價complete proof，才可把absent support
-判為`negative / FT-BLOCKED-MAPPING`。
+原設計曾預註冊cap耗盡後的inconclusive branch，但該branch從未形成scientific
+outcome。A32之後，generation-0／1任何cap或non-discovery observation都只作
+diagnostic，明確不是`FT-INCONCLUSIVE`；只有新S10R2 design可規範future support
+classification。
 
 先前uniform fixed-seed probe的`6/16 after 1,600 attempts`只作adjudication中的
 feasibility warning；它沒有使用actual `group_0` weights，不是L0 input、gate
 evidence，也不支持「weighted Gen0無法產生十筆」的claim。
 
-## 7. Mapping、Formocast 與 runtime taxonomy
+## 7. Historical mapping、Formocast 與 runtime taxonomy
 
 Exact ten ×三sizes的30 rows必須fresh A/B重現，逐欄保存direct／derived path、
 round-trip與provenance，且不得猜occupancy、effective GSU、
@@ -274,7 +286,7 @@ Validity rejection只屬selection diagnostics，不算Formocast rejection。
 Amended conformance requirement是：至少一個預鎖、source-guard-targeted、
 score-blind的valid config×size實際產生exact model sentinel。
 
-## 8. GPU、correctness 與 noise
+## 8. Historical GPU、correctness 與 noise
 
 - 只使用現有`perlee` container，不建立／停止／重建container；
 - 直接檢查可見gfx942 cards，使用當下符合`SPX / NPS1`且有資源的卡，不需預約；
@@ -285,38 +297,24 @@ score-blind的valid config×size實際產生exact model sentinel。
 - 使用parent原`reduce_fn`、iteration escalation cap、`CV P95 <= 0.5%`與
   `delta_noise`定義，不改threshold或刪cell。
 
-## 9. Acceptance 與 stop matrix
+## 9. Cancellation matrix
 
-`S1_ENTRY_GO`必須全部成立：
-
-- dual-authority fresh resolution、historical-pin lineage與byte-identical YAML parity；
-- exact 10 distinct valid configs覆蓋全部預鎖atoms；
-- 30/30 mapping A/B deterministic parity、完整round-trip／field provenance且無猜值；
-- exact model sentinel與source guard parity；
-- actual runtime threshold mode／queue semantics parity；
-- 三anchors ×三sizes codegen／smoke／nonzero correctness通過；
-- 63-cell noise完整且原noise criterion通過；
-- formal report、fresh independent verifier FULL PASS、原verifier
-  `CLOSEOUT_ACK`、isolated commit與post-commit audit完成。
-
-| 狀況 | 分類 | Outgoing edge |
+| 狀況 | S10R1分類 | Outgoing edge |
 | --- | --- | --- |
-| 全部entry criteria與closeout通過 | `positive / S1_ENTRY_GO` | S11 |
-| Nominal cap內找不到exact-ten coverage | `inconclusive / FT-INCONCLUSIVE` | 無 |
-| Complete proof顯示valid-support atom不存在 | `negative / FT-BLOCKED-MAPPING` | 無 |
-| Locked post-L1 mapping／codegen／correctness可重現失敗 | 對應scientific negative | 無 |
-| Harness／schema／API／guard attribution defect | `CHANGES_REQUIRED` | 無 |
-| Source／YAML isolation失敗 | 停止並另行amend | 無 |
+| User-authorized safe-boundary cancellation | operational `cancelled / BLOCKED` | `null` |
+| Scientific outcome | `not_evaluated` | `null` |
+| Generation-0 DepthU=1024或其他stochastic non-discovery | diagnostic only；不是`FT-INCONCLUSIVE`或absence proof | `null` |
+| Generation 0／1 implementation、test、cache、lock、selection或verification | superseded／forbidden reuse | `null` |
+| 想恢復S10R1或建立successor | forbidden；使用獨立S10R2 authority | `null` |
 
-## 10. Maximum implementation 與 delivery boundary
+## 10. Historical maximum implementation 與 delivery boundary
 
 允許：
 
 - 新的S10R1-only runner、contract、schemas、locks、manifests、evidence與tests；
 - ignored S10R1 run roots中的source materialization、build、logs與raw evidence；
 - L0／L1 lifecycle、validity ledgers、mapping／Formocast/runtime helper、
-  correctness與noise pipeline；
-- formal report及closeout規定的parent／README／current-design projection。
+  correctness與noise pipeline。
 
 禁止：
 
@@ -328,19 +326,15 @@ score-blind的valid config×size實際產生exact model sentinel。
 - dependency install、credential／external write、container lifecycle mutation；
 - push。
 
-Future planners必須把maximum boundary縮成exact paths與symbols。Raw／transient
-evidence留在獨立ignored S10R1 root，不進closure commit。
+這個maximum boundary不再可供future planning。既有raw／transient evidence只作
+immutable diagnostic provenance，不進S10R2 closure commit。
 
-## 11. Formal report 與 closeout
+## 11. No scientific report／no checkpoint completion
 
-唯一formal report：
-
-`reports/staged/s10r1-stage1-entry-recovery-report.md`
-
-Positive、negative與inconclusive只要evidence integrity完整，都需自含report、
-parent／README／本design projection、fresh verifier FULL判讀、原verifier
-`CLOSEOUT_ACK`、exact-path isolated commit與post-commit audit。Technical PASS只到
-`VERIFIED_PENDING_CLOSEOUT`。
+S10R1沒有scientific formal report path，不建立
+`reports/staged/s10r1-stage1-entry-recovery-report.md`。A32 governance event只形成
+operational cancellation record，不把S10R1標成`CHECKPOINT_COMPLETE`，也不產生
+closure commit或scientific edge。
 
 ## 12. Design-consensus record
 
@@ -357,8 +351,22 @@ parent／README／本design projection、fresh verifier FULL判讀、原verifier
   threshold alteration、把S11 accepted targets搬進S10R1，以及把sampling
   non-discovery冒充support不存在。
 - Shared resolution：只有post-audited S10R1 positive能產生新的
-  `S1_ENTRY_GO -> S11`，且不撤銷S10 negative。
+  entry edge是當時未執行的設計；A32已取消該authority，且不撤銷S10 negative。
 - Reviewer A final：`AGREE`。
 - Reviewer B final：`AGREE`。
 - User-review basis：使用者已明確委派`/data1/perlee`內的此類block由
   design-discussion共識決定，不需再次停下取得核准；不授權push。
+
+### 2026-07-28 A32 cancellation amendment
+
+- 使用者核准在quiescent safe boundary停止S10R1，並建立新的sibling S10R2。
+- Generation 0已在atomic boundary退休並sealed；generation 1未建立effective L0、
+  selection、mapping、GPU、noise、decision或formal outcome。
+- Durable interpretation固定為
+  `execution_status=cancelled / checkpoint_state=BLOCKED /
+  scientific_outcome=not_evaluated / edge=null`。
+- 所有generation 0／1內容只能保留為diagnostic provenance，且禁止重用為S10R2
+  evidence。S10R1沒有scientific report，也不是`CHECKPOINT_COMPLETE`。
+- Current execution governance floor是
+  `b0561d2c9216a58a9d71b8e839c47efaa51f9c00`；累積resource／repair／thread budgets
+  不能因S10R2、successor、new root或replacement role歸零。

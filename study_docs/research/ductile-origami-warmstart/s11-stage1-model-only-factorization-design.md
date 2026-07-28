@@ -5,15 +5,20 @@ stage: 1
 design_status: approved
 execution_status: gated
 checkpoint_state: DESIGN_APPROVED
-scientific_outcome: not_evaluated
+scientific_outcome: not_activated
 lock_state: absent
+risk_tier: R2
+governance_baseline: b0561d2c9216a58a9d71b8e839c47efaa51f9c00
+scientific_gate: S11
+execution_tranche: T-S1-MECHANISM
+closure_unit: CU-S1-MECHANISM
 hypothesis_id: S11-H1
 dependencies:
-  - checkpoint_id: S10R1
+  - checkpoint_id: S10R2
     required_edge: S1_ENTRY_GO
 entry_criteria:
   - S00_EVIDENCE_READY
-  - post_audited_S10R1_S1_ENTRY_GO
+  - post_audited_S10R2_S1_ENTRY_GO
 criterion_refs:
   - S1_GUIDANCE_LOCKED
 failure_ids:
@@ -23,6 +28,9 @@ allowed_outgoing_edges:
   - criterion_id: S1_GUIDANCE_LOCKED
     target_checkpoint: S12
 formal_report_path: reports/staged/s11-stage1-model-only-factorization-report.md
+compact_positive_gate_record_path: protocol/v1/evidence/gate-records/s11-s1-guidance-locked.json
+tranche_final_report_path: reports/gen0-factorization-mvp-report.md
+terminal_report_integration: terminal_here_on_negative_or_inconclusive_else_integrated_by_S13
 blocker_path: null
 future_effective_lock_path: protocol/v1/locks/s11-stage1-model-only-factorization-lock.json
 implementation_boundary_max:
@@ -55,7 +63,10 @@ consensus_status: approved_two_reviewer_agree
 
 ## 2. Hypothesis 與 falsification
 
-**S11-H1：**在S10R1以相同actual YAML／source pins重新鎖定的Ductile-valid space中，Formocast能對至少一個eligible residual gene產生符合parent model-only criteria的穩定prior，並可無損轉成與`SearchSpace.map`完全對齊的weights與shuffled control。
+**S11-H1：**在S10R2以相同actual YAML／source pins重新鎖定的Ductile-valid
+space中，Formocast能對至少一個eligible residual gene產生符合parent model-only
+criteria的穩定prior，並可無損轉成與`SearchSpace.map`完全對齊的weights與shuffled
+control。
 
 反證或inconclusive：
 
@@ -68,11 +79,13 @@ consensus_status: approved_two_reviewer_agree
 
 ## 3. Dependencies、entry 與 outgoing edge
 
-S11需要S00 foundation、immutable S10 terminal provenance，以及S10R1的positive
-formal closeout／isolated commit／post-commit audit。S10自己的negative沒有
-outgoing edge；只有post-audited `S10R1:S1_ENTRY_GO`能啟動S11。S10R1
-negative／inconclusive／`CHANGES_REQUIRED`或未完成都保持S11
-`not_activated`，且本dependency amendment沒有proxy／reduced-mode edge。
+S11需要S00 foundation、immutable S10 terminal provenance、S10R1的A32
+`cancelled / not_evaluated / edge=null` record，以及S10R2的positive formal
+closeout／isolated commit／post-commit audit。S10與S10R1都沒有outgoing edge；
+只有post-audited `S10R2:S1_ENTRY_GO`能啟動S11。S10R2 negative／inconclusive／
+`CHANGES_REQUIRED`或未完成都保持S11`not_activated`，且本dependency amendment
+沒有proxy／reduced-mode edge。S10R1任何generation、test、cache或evidence都禁止
+重用。
 
 唯一outgoing edge：
 
@@ -81,6 +94,24 @@ S1_GUIDANCE_LOCKED -> S12
 ```
 
 無guidable gene、mapping failure、label leakage或model-only stability不足都不會解鎖S12。
+
+### 3.1 Gate／tranche／closure governance
+
+- `risk_tier=R2`、`scientific_gate=S11`、
+  `execution_tranche=T-S1-MECHANISM`、`closure_unit=CU-S1-MECHANISM`。
+- 執行前依`b0561d2c9216a58a9d71b8e839c47efaa51f9c00`重做cumulative resource
+  preflight，先seal durable machine-readable contract與effective lock；S10R2／S11
+  的wall-time、CPU/GPU、storage、throughput、repair與thread消耗不能由new
+  generation／successor／root歸零。
+- Positive只seal compact durable gate record
+  `protocol/v1/evidence/gate-records/s11-s1-guidance-locked.json`並在verified frozen
+  edge後留在同一tranche進S12；此時closure unit尚未`COMPLETE`。
+- Negative／inconclusive是本tranche的terminal internal gate，立即產生本design的
+  planned terminal report並停止後續；`CHANGES_REQUIRED`只在frozen repair budget內
+  修復，不是scientific outcome。
+- 若走到S13，最終`reports/gen0-factorization-mvp-report.md`必須整合S11 compact
+  record與後續gate records；`live_run_state`與`committed_projection_state`分開，
+  後者只在CU-S1 closure commit與post-commit audit後更新。
 
 ## 4. Maximum implementation 與 delivery boundary
 
@@ -109,10 +140,10 @@ Future lock：
 
 `protocol/v1/locks/s11-stage1-model-only-factorization-lock.json`
 
-它綁定S10 immutable terminal provenance、S10R1 positive closure、frozen
-YAML／space／groups／weights／sizes／valid-support mapping、study mode、
+它綁定S10 immutable terminal provenance、S10R1 A32 cancellation、S10R2 positive
+closure、frozen YAML／space／groups／weights／sizes／support-aware valid mapping、study mode、
 Formocast／validity revisions、parent constants、randomness bundles、
-label-seal evidence、Plan-B、exact whitelists與report target。S10R1的
+label-seal evidence、Plan-B、exact whitelists與report target。S10R2的
 ten-config corpus只作mapping／conformance fixture；S11仍須建立自己的
 multiplicity-preserving occurrence frame。
 
@@ -147,17 +178,19 @@ S11能說明model-only factorization是否可建立，不能說明real ranking�
 | Guidance完整且label-blind鎖定 | positive closeout | S12 |
 | 無guidable gene／lambda退化 | negative formal closeout | 無 |
 | Support／stability不足 | negative或inconclusive formal closeout | 無 |
-| Mapping缺陷來自S10R1 authority | 停止並記failure；不得猜值 | 無 |
+| Mapping缺陷來自S10R2 authority | 停止並記failure；不得猜值 | 無 |
 | Label leakage | evidence invalid；新lock／fresh pool後全量重跑 | 無 |
 | Proxy scope需要再縮減 | `blocked-awaiting-user-decision` | 無 |
 
 ## 8. Formal report 與 closeout
 
-唯一formal report：
-
-`reports/staged/s11-stage1-model-only-factorization-report.md`
-
-S11若terminal，不製造S13的Stage 1 rollup。Report需自含label-seal證據、所有criteria、failure localization、artifacts、iteration history與claim boundary；closeout流程依README。
+S11 positive使用compact gate record
+`protocol/v1/evidence/gate-records/s11-s1-guidance-locked.json`並繼續同tranche。
+S11若negative／inconclusive而成為terminal，唯一formal report才是
+`reports/staged/s11-stage1-model-only-factorization-report.md`；它需自含label-seal
+證據、所有criteria、failure localization、artifacts、iteration history、先前gate
+record與claim boundary。若S13成為tranche final，S13 report整合本record，不另製造
+重複的S11 positive report。
 
 ## 9. Design-consensus record
 
@@ -174,10 +207,20 @@ S11若terminal，不製造S13的Stage 1 rollup。Report需自含label-seal證據
 - S10已durable closeout為negative且沒有outgoing edge；不得由S11把它重解讀為GO。
 - 兩位fresh recovery reviewers同意新增獨立S10R1，保持S10 immutable，並把
   validity、Formocast model sentinel與runtime queue semantics分離。
-- S11 dependency因此改為exact post-audited `S10R1:S1_ENTRY_GO`；S11的
-  occurrence counts、model-only criteria、weights、shuffle、label seal與claim
-  全部不變。
+- 當時R12曾把S11 dependency指向S10R1；該historical authority已被下列A32
+  amendment取消，沒有形成edge。S11的occurrence counts、model-only criteria、
+  weights、shuffle、label seal與claim全部不變。
 - Reviewer A final：`AGREE`。
 - Reviewer B final：`AGREE`。
 - 使用者已委派`/data1/perlee`內的此類block由design-discussion共識決定；
   amendment不授權push或任何downgrade。
+
+### 2026-07-28 A32／S10R2 dependency amendment
+
+- User-authorized A32在safe boundary取消S10R1：operational `cancelled / BLOCKED`、
+  scientific `not_evaluated`、`edge=null`，沒有scientific report且不是
+  `CHECKPOINT_COMPLETE`。
+- S10R1 generations只作diagnostic provenance並禁止re-use；S11 dependency改為唯一
+  post-audited `S10R2:S1_ENTRY_GO`。
+- S11 hypothesis、4,096／8,192 occurrences、128／256 conditional support、
+  thresholds、weights、shuffle、label seal、claim與timebox均不變。

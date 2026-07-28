@@ -7,6 +7,11 @@ execution_status: gated
 checkpoint_state: DESIGN_APPROVED
 scientific_outcome: not_evaluated
 lock_state: absent
+risk_tier: R1
+governance_baseline: b0561d2c9216a58a9d71b8e839c47efaa51f9c00
+scientific_gate: S41
+execution_tranche: T-S4-LEARNED-RESIDUAL
+closure_unit: CU-S4-LEARNED-RESIDUAL
 hypothesis_id: S41-H1
 dependencies:
   - checkpoint_id: S40
@@ -20,6 +25,9 @@ failure_ids:
   - FT-INCONCLUSIVE
 allowed_outgoing_edges: []
 formal_report_path: reports/learned-residual-surrogate-report.md
+compact_positive_gate_record_path: protocol/v1/evidence/gate-records/s41-s4-learned-residual-positive.json
+tranche_final_report_path: reports/learned-residual-surrogate-report.md
+terminal_report_integration: integrates_S40_compact_record_and_S41_terminal_evidence
 blocker_path: null
 future_effective_lock_path: protocol/v1/locks/s41-stage4-learned-residual-analysis-lock.json
 implementation_boundary_max:
@@ -30,6 +38,7 @@ delivery_boundary_max:
   - protocol/v1/**
   - reports/learned-residual-surrogate-report.md
   - ../ductile-origami-warmstart-experiment-plan.md
+  - README.md
   - s41-stage4-learned-residual-analysis-design.md
 forbidden_downstream_roots:
   - actual GA validation
@@ -60,9 +69,32 @@ consensus_status: approved_two_reviewer_agree
 
 ## 3. Dependencies、entry 與 terminal status
 
-只有S40 committed `S4_ACTIVATE`可開始S41。Qualified cluster registry、prospective-test身分、split roles、feature manifest schema與all model/evaluation rules必須在outer labels進入model pipeline前由effective lock綁定。
+只有fresh verifier依S40 frozen contract確認、並seal在compact durable record中的
+`S4_ACTIVATE`可在同一tranche開始S41；S40 internal positive此時尚不等於CU-S4
+committed closeout。Qualified cluster registry、prospective-test身分、split roles、
+feature manifest schema與all model/evaluation rules必須在outer labels進入model
+pipeline前由effective lock綁定。
 
 S41沒有automatic outgoing edge。Positive完成Stage 4 offline predictor-substitution claim；actual GA需要另有第五個prospectively sealed cluster與fresh user/mentor gate，不屬本checkpoint。
+
+### 3.1 Gate／tranche／closure governance
+
+- `risk_tier=R1`、`scientific_gate=S41`、
+  `execution_tranche=T-S4-LEARNED-RESIDUAL`、
+  `closure_unit=CU-S4-LEARNED-RESIDUAL`；S41是本tranche final scientific gate。
+- Outer labels進入model pipeline前依
+  `b0561d2c9216a58a9d71b8e839c47efaa51f9c00`重做cumulative resource preflight，
+  freeze durable machine-readable contract並seal effective lock。S40+S41既有
+  wall-time、CPU/GPU、storage、throughput、repair與thread consumption跨fold、
+  generation、successor與new root累計。
+- Stage 4 hard cap保持5工作日且不是完成承諾；不能以較弱split、較少cluster、
+  reduced grid或x-of-y替代。
+- Positive另seal compact record
+  `protocol/v1/evidence/gate-records/s41-s4-learned-residual-positive.json`；positive、
+  negative與inconclusive都由S41 final report整合S40 record與每個primary unit
+  terminal evidence。
+- `live_run_state`可在verified S40 edge後繼續；CU-S4的
+  `committed_projection_state`只在terminal commit與post-audit後更新。
 
 ## 4. Deterministic model contract
 
@@ -196,6 +228,11 @@ Outputs：
 `reports/learned-residual-surrogate-report.md`
 
 Report逐primary unit呈現feature/split lineage、lambda selection、all comparators、ranking、prior mass、support與oracle gap；secondary LOCO不得混入primary verdict。Positive、negative、inconclusive都照常closeout。
+
+它也必須整合
+`protocol/v1/evidence/gate-records/s40-s4-activate.json`與S41 machine decision；
+S40 positive不另建重複formal report。S41 positive另seal
+`protocol/v1/evidence/gate-records/s41-s4-learned-residual-positive.json`。
 
 ## 11. Design-consensus record
 

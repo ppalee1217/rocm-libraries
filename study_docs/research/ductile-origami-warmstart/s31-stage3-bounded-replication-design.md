@@ -7,6 +7,11 @@ execution_status: gated
 checkpoint_state: DESIGN_APPROVED
 scientific_outcome: not_evaluated
 lock_state: absent
+risk_tier: R1
+governance_baseline: b0561d2c9216a58a9d71b8e839c47efaa51f9c00
+scientific_gate: S31
+execution_tranche: T-S3-REPLICATION
+closure_unit: CU-S3-REPLICATION
 hypothesis_id: S31-H1
 dependencies:
   - checkpoint_id: S30
@@ -33,6 +38,9 @@ allowed_outgoing_edges:
   - criterion_id: predictor_heterogeneity_and_oracle_positive
     target_checkpoint: S40
 formal_report_path: reports/bounded-regime-replication-report.md
+compact_positive_gate_record_path: protocol/v1/evidence/gate-records/s31-s3-bounded-replication-positive.json
+tranche_final_report_path: reports/bounded-regime-replication-report.md
+terminal_report_integration: integrates_S30_compact_record_and_S31_terminal_evidence
 blocker_path: null
 future_effective_lock_path: protocol/v1/locks/s31-stage3-bounded-replication-lock.json
 implementation_boundary_max:
@@ -43,6 +51,7 @@ delivery_boundary_max:
   - protocol/v1/**
   - reports/bounded-regime-replication-report.md
   - ../ductile-origami-warmstart-experiment-plan.md
+  - README.md
   - s31-stage3-bounded-replication-design.md
 forbidden_downstream_roots:
   - reports/staged/s40-stage4-activation-report.md
@@ -72,13 +81,34 @@ consensus_status: approved_two_reviewer_agree
 
 ## 3. Dependencies、entry 與 outgoing edges
 
-只有S30 committed `S3_REGISTRY_PROCEDURE_LOCKED`可開始S31。
+只有fresh verifier依S30 frozen contract確認、並seal在compact durable record中的
+`S3_REGISTRY_PROCEDURE_LOCKED`可在同一tranche開始S31；S30 internal positive此時
+尚不等於CU-S3 committed closeout。
 
 - `S3_BOUNDED_REPLICATION_POSITIVE`完成bounded replication主線，沒有自動下游checkpoint。
 - 合法predictor heterogeneity + oracle-positive evidence可形成S40 conditional edge。
 - 其他negative／inconclusive停止主線，不會以S40替代。
 
 Single-cluster evidence只能在user批准的downgraded pilot中描述，不能完成S31或產生原edge。
+
+### 3.1 Gate／tranche／closure governance
+
+- `risk_tier=R1`、`scientific_gate=S31`、
+  `execution_tranche=T-S3-REPLICATION`、`closure_unit=CU-S3-REPLICATION`；S31是
+  本tranche final scientific gate。
+- 第一筆S31 score／label前依
+  `b0561d2c9216a58a9d71b8e839c47efaa51f9c00`重做entry preflight並seal durable
+  machine-readable contract／effective lock。S30+S31累積wall-time、CPU/GPU、
+  storage、throughput、repair與thread budget不因cluster、generation、reserve
+  cutover、successor或new root重置。
+- Stage 3 hard cap保持7工作日且不是完成承諾；不能用cache/dedup樂觀估算或縮成
+  single-cluster救回。
+- Positive另seal compact record
+  `protocol/v1/evidence/gate-records/s31-s3-bounded-replication-positive.json`；
+  positive、negative或inconclusive都由S31 final report整合S30 compact record與
+  兩slot terminal evidence。
+- `live_run_state`可在verified S30 edge後繼續；CU-S3的
+  `committed_projection_state`只在terminal commit與post-audit後更新。
 
 ## 4. Maximum implementation 與 delivery boundary
 
@@ -153,6 +183,11 @@ S31只支持two-regime bounded replication，不支持MI300X workload generaliza
 `reports/bounded-regime-replication-report.md`
 
 Report必須逐slot呈現所有D5/H10 gates、未跑GA的原因、fixed denominator、reserve history、negative cases與claim boundary。Conditional S40 edge只有在S31 closeout commit明確記錄後存在。
+
+它也必須整合
+`protocol/v1/evidence/gate-records/s30-s3-registry-locked.json`與S31 machine
+decision；S30 positive不另建重複formal report。S31 positive另seal
+`protocol/v1/evidence/gate-records/s31-s3-bounded-replication-positive.json`。
 
 ## 9. Design-consensus record
 

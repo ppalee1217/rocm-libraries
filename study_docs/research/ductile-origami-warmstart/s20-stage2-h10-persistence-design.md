@@ -7,6 +7,11 @@ execution_status: gated
 checkpoint_state: DESIGN_APPROVED
 scientific_outcome: not_evaluated
 lock_state: absent
+risk_tier: R1
+governance_baseline: b0561d2c9216a58a9d71b8e839c47efaa51f9c00
+scientific_gate: S20
+execution_tranche: T-S20
+closure_unit: CU-S20
 hypothesis_id: S20-H1
 dependencies:
   - checkpoint_id: S13
@@ -26,6 +31,9 @@ allowed_outgoing_edges:
   - criterion_id: S2_DIRECTIONAL_PERSISTENCE_POSITIVE
     target_checkpoint: S30
 formal_report_path: reports/short-horizon-persistence-report.md
+compact_positive_gate_record_path: protocol/v1/evidence/gate-records/s20-s2-persistence-positive.json
+tranche_final_report_path: reports/short-horizon-persistence-report.md
+terminal_report_integration: standalone_report_integrates_s20_gate_record
 blocker_path: null
 future_effective_lock_path: protocol/v1/locks/s20-stage2-h10-persistence-lock.json
 implementation_boundary_max:
@@ -78,6 +86,24 @@ S2_DIRECTIONAL_PERSISTENCE_POSITIVE -> S30
 ```
 
 `S2_H5_RESOURCE_BOUNDED_PILOT`沒有entry權。資源只夠H5時必須decision packet並停在`blocked-awaiting-user-decision`；即使user批准pilot，它也不能完成S20或解鎖S30。
+
+### 3.1 Gate／tranche／closure governance
+
+- `risk_tier=R1`、`scientific_gate=S20`、`execution_tranche=T-S20`、
+  `closure_unit=CU-S20`；本checkpoint是standalone tranche與closure。
+- Entry依governance baseline
+  `b0561d2c9216a58a9d71b8e839c47efaa51f9c00`先做cumulative wall-time／CPU／GPU／
+  storage／throughput preflight，再seal durable machine-readable contract與
+  effective lock。S20內任何generation、resume、successor或new root都不能重置
+  resource、repair或thread budgets。
+- Stage 2 hands-on target仍為4工作日、hard cap仍為5工作日；target與cap都不是完成
+  承諾，cap不足只能terminal/inconclusive或decision packet，不能縮H10／arms／seeds。
+- Positive另seal compact record
+  `protocol/v1/evidence/gate-records/s20-s2-persistence-positive.json`；positive、
+  negative與inconclusive均由`reports/short-horizon-persistence-report.md`形成
+  terminal decision record。
+- `live_run_state`與`committed_projection_state`分離；只有CU-S20 terminal commit
+  及post-audit後更新後者。
 
 ## 4. Maximum implementation 與 delivery boundary
 

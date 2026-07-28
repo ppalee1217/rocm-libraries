@@ -7,6 +7,11 @@ execution_status: gated
 checkpoint_state: DESIGN_APPROVED
 scientific_outcome: not_evaluated
 lock_state: absent
+risk_tier: R1
+governance_baseline: b0561d2c9216a58a9d71b8e839c47efaa51f9c00
+scientific_gate: S13
+execution_tranche: T-S1-MECHANISM
+closure_unit: CU-S1-MECHANISM
 hypothesis_id: S13-H1
 dependencies:
   - checkpoint_id: S12
@@ -26,6 +31,9 @@ allowed_outgoing_edges:
   - criterion_id: D6_MECHANISM_POSITIVE
     target_checkpoint: S20
 formal_report_path: reports/gen0-factorization-mvp-report.md
+compact_positive_gate_record_path: protocol/v1/evidence/gate-records/s13-d6-mechanism-positive.json
+tranche_final_report_path: reports/gen0-factorization-mvp-report.md
+terminal_report_integration: integrates_S11_S12_compact_records_and_S13_terminal_evidence
 blocker_path: null
 future_effective_lock_path: protocol/v1/locks/s13-stage1-actual-gen0-lock.json
 implementation_boundary_max:
@@ -70,7 +78,10 @@ consensus_status: approved_two_reviewer_agree
 
 ## 3. Dependencies、entry 與 outgoing edge
 
-只有S12 committed closeout的`D5_PASS`可開始S13。D5 cutoff、S11 guidance、noise evidence、arms、formal/replay seeds與sampler revisions都必須由S13 effective lock綁定。
+只有fresh verifier依S12 frozen contract確認、並seal在compact durable record中的
+`D5_PASS`可在同一tranche開始S13；S12 internal positive此時尚不等於CU-S1
+committed closeout。D5 cutoff、S11 guidance、noise evidence、arms、formal/replay
+seeds與sampler revisions都必須由S13 effective lock綁定。
 
 唯一outgoing edge：
 
@@ -79,6 +90,24 @@ D6_MECHANISM_POSITIVE -> S20
 ```
 
 Negative／inconclusive不追加generations救回，也不解鎖S20。
+
+### 3.1 Gate／tranche／closure governance
+
+- `risk_tier=R1`、`scientific_gate=S13`、
+  `execution_tranche=T-S1-MECHANISM`、`closure_unit=CU-S1-MECHANISM`；S13是本
+  tranche的final scientific gate。
+- Formal proposals前依
+  `b0561d2c9216a58a9d71b8e839c47efaa51f9c00`完成entry resource preflight並seal
+  durable machine-readable contract／effective lock。Stage-1全部既有wall-time、
+  CPU/GPU、storage、throughput、repair與thread consumption跨generation、
+  successor與root累計，不得因進S13歸零。
+- S13 positive另seal compact record
+  `protocol/v1/evidence/gate-records/s13-d6-mechanism-positive.json`；positive、
+  negative或inconclusive都由本final report整合S11／S12 compact records與S13
+  terminal evidence。
+- `live_run_state`可在verified S11／S12 edges後繼續；整個CU-S1的
+  `committed_projection_state`只有本report、staged audit、isolated commit與
+  post-commit audit完成後才是`COMPLETE`。
 
 ## 4. Maximum implementation 與 delivery boundary
 
@@ -157,6 +186,12 @@ S13能回答actual Gen0 mechanism，不能回答H10 persistence、evaluation eff
 `reports/gen0-factorization-mvp-report.md`
 
 這是S13與Stage 1 rollup的正式decision record，必須同時追溯S10–S13 authority而不重複上游report。Positive、negative與inconclusive都需要closeout；只有positive committed closeout可開始S20。
+
+它必須整合
+`protocol/v1/evidence/gate-records/s11-s1-guidance-locked.json`、
+`protocol/v1/evidence/gate-records/s12-d5-pass.json`與S13 machine decision；前兩份
+compact positive records不另建重複formal report。若S11或S12較早terminal，則不會
+建立本S13 report。
 
 ## 9. Design-consensus record
 

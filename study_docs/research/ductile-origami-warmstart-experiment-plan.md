@@ -4,7 +4,13 @@
 >
 > **研究 scope／claim authority：**[Formocast Factorized Gen0 Guidance Feasibility Study — Research Charter](surrogate-dse-plan.md)。
 >
-> **狀態：**`pre_empirical / stage1_entry_recovery_approved`。S00已由successor-001 evidence、原verifier FULL重驗、formal closeout與同一closure commit完成；scientific outcome為`positive`。S10已以fresh actual YAML、effective `successor-003` lock、live-unreserved `perlee` card 0及fresh mapping重現完成；30 rows中3 accepted／27 typed rejections，兩個locked anchors失敗且helper-defined Formocast rejection為0，因此scientific outcome為`negative`、criterion為`S1_ENTRY_BLOCKED`、edge為`null`。Post-closeout R12共識另核准獨立S10R1 valid-support measurement recovery；S10保持immutable，S10R1為`DESIGN_APPROVED / not_started`，S11仍為`not_activated`。
+> **狀態：**`pre_empirical / stage1_support_aware_recovery_approved`。S00是durable
+> positive；S10是durable `negative / S1_ENTRY_BLOCKED / edge=null`，兩者不變。
+> User-authorized A32已在safe boundary取消S10R1：operational
+> `cancelled / BLOCKED`、scientific `not_evaluated`、`edge=null`，沒有scientific
+> report且不是`CHECKPOINT_COMPLETE`；generation 0／1只作diagnostic provenance並
+> 禁止重用。新的sibling S10R2是`DESIGN_APPROVED / not_started / R2`；只有
+> post-audited `S10R2:S1_ENTRY_GO`可啟動S11。
 >
 > **Foundation provenance：**active `protocol/v1/`與S00 report是fresh foundation；退役M00內容仍不得作schema、hash、lock、registry、fixture、test或PASS evidence。S00只支持CPU-only evidence semantics，不是GPU／performance結果。
 >
@@ -34,8 +40,15 @@
 1. Research charter：scope、claim ladder、non-goals、canonical failure taxonomy。
 2. 本experiment plan：scientific criterion IDs、公式、數值、samples、seeds、go/stop與checkpoint DAG。
 3. Checkpoint design：implementation handoff、maximum boundary、artifact/evidence binding。
-4. Checkpoint effective lock：把committed authorities、Plan-B、exact whitelists、inputs、fixtures與seeds綁成不可變執行實例。
-5. Formal report：記錄verified evidence、outcome、decision與closeout，不得反向修改criterion。
+4. Durable machine-readable frozen contract與effective lock：在evidence前把criteria、
+   outcome matrix、resources、committed authorities、Plan-B、exact whitelists、
+   inputs、fixtures與seeds綁成不可變執行實例。
+5. Compact positive gate record或terminal formal report：記錄verified evidence、
+   outcome、edge與closeout，不得反向修改criterion。
+
+Execution governance commit
+`b0561d2c9216a58a9d71b8e839c47efaa51f9c00`是所有future work的mandatory
+orchestration／resource floor；它不能靜默修改上列scientific authority。
 
 ### Canonical checkpoint index
 
@@ -43,7 +56,8 @@
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | S00 | Evidence contract／lineage／observability foundation | approved | completed | CHECKPOINT_COMPLETE | positive | effective (`successor-001`) | [design](ductile-origami-warmstart/s00-evidence-contract-lineage-observability-design.md) | [report](ductile-origami-warmstart/reports/staged/s00-foundation-verification-report.md) |
 | S10 | Stage 1 access／artifact／mapping／noise gate | approved | completed | CHECKPOINT_COMPLETE | negative | effective (`successor-003`) | [design](ductile-origami-warmstart/s10-stage1-entry-access-mapping-gate-design.md) | [report](ductile-origami-warmstart/reports/staged/s10-stage1-entry-gate-report.md) |
-| S10R1 | Stage 1 valid-support entry measurement recovery | approved | not_started | DESIGN_APPROVED | not_evaluated | absent | [design](ductile-origami-warmstart/s10r1-stage1-valid-support-entry-recovery-design.md) | `reports/staged/s10r1-stage1-entry-recovery-report.md` |
+| S10R1 | Cancelled nominal-boundary recovery diagnostics | approved | cancelled | BLOCKED | not_evaluated | superseded | [design](ductile-origami-warmstart/s10r1-stage1-valid-support-entry-recovery-design.md) | none (A32 operational record only) |
+| S10R2 | Stage 1 support-aware entry recovery | approved | not_started | DESIGN_APPROVED | not_evaluated | absent | [design](ductile-origami-warmstart/s10r2-stage1-support-aware-entry-recovery-design.md) | `reports/staged/s10r2-stage1-support-aware-entry-report.md` |
 | S11 | Stage 1 model-only factorization／guidance lock | approved | gated | DESIGN_APPROVED | not_activated | absent | [design](ductile-origami-warmstart/s11-stage1-model-only-factorization-design.md) | `reports/staged/s11-stage1-model-only-factorization-report.md` |
 | S12 | Stage 1 D5 real-score／oracle audit | approved | gated | DESIGN_APPROVED | not_evaluated | absent | [design](ductile-origami-warmstart/s12-stage1-real-score-ranking-oracle-audit-design.md) | `reports/staged/s12-stage1-real-score-audit-report.md` |
 | S13 | Stage 1 actual Gen0 mechanism | approved | gated | DESIGN_APPROVED | not_evaluated | absent | [design](ductile-origami-warmstart/s13-stage1-actual-gen0-mechanism-design.md) | `reports/gen0-factorization-mvp-report.md` |
@@ -61,7 +75,8 @@
 flowchart TD
   s00["S00 Evidence foundation"]
   s10["S10 Stage 1 entry"]
-  s10r1["S10R1 Valid-support recovery"]
+  s10r1["S10R1 Cancelled diagnostics"]
+  s10r2["S10R2 Support-aware entry"]
   s11["S11 Guidance lock"]
   s12["S12 D5 audit"]
   s13["S13 Actual Gen0"]
@@ -72,9 +87,10 @@ flowchart TD
   s41["S41 Learned residual"]
 
   s00 -->|"S00_EVIDENCE_READY"| s10
-  s00 -. "administrative readiness" .-> s10r1
-  s10 -. "terminal provenance only; no scientific edge" .-> s10r1
-  s10r1 -->|"S1_ENTRY_GO"| s11
+  s00 -. "administrative readiness" .-> s10r2
+  s10 -. "terminal provenance only; no scientific edge" .-> s10r2
+  s10r1 -. "A32 status only; evidence reuse forbidden" .-> s10r2
+  s10r2 -->|"S1_ENTRY_GO"| s11
   s11 -->|"S1_GUIDANCE_LOCKED"| s12
   s12 -->|"D5_PASS"| s13
   s13 -->|"D6_MECHANISM_POSITIVE"| s20
@@ -87,7 +103,14 @@ flowchart TD
 
 S00的post-audited positive closeout已驗證`S00_EVIDENCE_READY -> S10`。S10已完成actual-guidance、live-unreserved H4與其frozen canonical mapping boundary，並以完整可重現的`FT-BLOCKED-MAPPING` negative branch形成`S1_ENTRY_BLOCKED`；沒有outgoing edge。Direct evidence、successor lineage、mapping stop與claim boundary見[S10 formal report](ductile-origami-warmstart/reports/staged/s10-stage1-entry-gate-report.md)；早期[blocker memo](ductile-origami-warmstart/reports/gen0-factorization-blocker-memo.md)只保留為historical recovery evidence。
 
-Post-closeout R12確認S10的raw-boundary fixture與Ductile operational valid-support domain錯位，且non-finite-only Formocast rejection不重現pinned finite sentinel／runtime queue語意。因此新增獨立[S10R1 design](ductile-origami-warmstart/s10r1-stage1-valid-support-entry-recovery-design.md)，由S00 readiness、S10 terminal provenance與committed amendment作administrative prerequisites；這些虛線關係不是S10 scientific edge。只有post-audited `S10R1:S1_ENTRY_GO -> S11`。S10R1 negative／inconclusive／`CHANGES_REQUIRED`或未完成皆維持edge `null`。`S1_ENTRY_DEGRADED_PROXY`、two-size mode、H5 pilot、single-cluster pilot或任何縮減方案仍必須先停在`blocked-awaiting-user-decision`；沒有核准的downgrade edge。
+R12曾核准S10R1；A32後續在quiescent safe boundary取消該execution。S10R1固定為
+`cancelled / BLOCKED / not_evaluated / edge=null`，不建立scientific report或
+completion；stochastic non-discovery不是scientific inconclusive或absence proof。
+新的[S10R2 design](ductile-origami-warmstart/s10r2-stage1-support-aware-entry-recovery-design.md)
+是sibling checkpoint。S00 readiness、S10 terminal provenance與A32 status只作
+administrative prerequisites；虛線不是scientific edge，且S10R1 artifacts禁止重用。
+只有post-audited `S10R2:S1_ENTRY_GO -> S11`。所有downgrade仍先停在
+`blocked-awaiting-user-decision`。
 
 ### Stable criterion IDs
 
@@ -114,7 +137,9 @@ Checkpoint designs只能引用下列parent IDs，不得自行改門檻：
 語意：
 
 - `S00_EVIDENCE_READY`：observer neutrality、checkpoint/resume parity、lineage lock與artifact reconciliation全部通過。
-- `S1_ENTRY_GO`：§2 entry gates通過，且actual YAML guidance可追溯。Durable S10不會重新發出此edge；目前只有S10R1可依R12 amendment產生新的checkpoint-scoped `S1_ENTRY_GO`。
+- `S1_ENTRY_GO`：§2 entry gates通過，且actual YAML guidance可追溯。S10與已取消的
+  S10R1都不會發出此edge；只有S10R2可產生新的checkpoint-scoped
+  `S1_ENTRY_GO`。
 - `S1_ENTRY_DEGRADED_PROXY`：§2 entry gates通過，但只能使用exact-space GEKO branch proxy；另需user downgrade approval。
 - `S1_ENTRY_BLOCKED`：§2.8任一hard stop成立。
 - `S1_GUIDANCE_LOCKED`：§4–§5 model-only frame、gene decisions、weights、shuffle與hash在real labels前完成鎖定。
@@ -134,22 +159,44 @@ Checkpoint designs只能引用下列parent IDs，不得自行改門檻：
 
 只有`lock_state=effective`、`execution_status=ready`與`checkpoint_state=LOCKED_READY`可開始產生outcome-bearing evidence。`approved`只代表設計審查完成。
 
-### Future checkpoint closeout contract
+`scientific_gate`是不可合併或繞過的outcome／claim／authority edge；
+`execution_tranche`可讓相容adjacent gates共享planner、implementer、verifier、run root
+與repair ledger；`closure_unit`可共享terminal report/update/staged audit/commit，
+但不改gate order或outcome。`live_run_state`與`committed_projection_state`必須分開；
+partial working-tree evidence只能屬於前者。
 
-每次只處理一個active checkpoint：
+### Governance tranches
+
+| Execution tranche | Gates／risk tier | Closure unit |
+| --- | --- | --- |
+| `T-S10R2` | S10R2=`R2` | `CU-S10R2` standalone |
+| `T-S1-MECHANISM` | S11=`R2` → S12=`R2` → S13=`R1` | `CU-S1-MECHANISM` |
+| `T-S20` | S20=`R1` | `CU-S20` standalone |
+| `T-S3-REPLICATION` | S30=`R2` → S31=`R1` | `CU-S3-REPLICATION` |
+| `T-S4-LEARNED-RESIDUAL` | S40=`R2` → S41=`R1` | `CU-S4-LEARNED-RESIDUAL` |
+
+### Future gate／tranche closeout contract
+
+每次只執行dependency-ready gate：
 
 1. 讀取committed repository rule、skill、charter、parent與design revisions。
 2. 將design maximum boundary縮成exact implementation與delivery whitelists。
-3. 由獨立planners建立Plan-A與frozen Plan-B。
-4. 建立effective lock；lock前不得產生outcome evidence。
-5. Fresh implementer實作，fresh verifier依Plan-B獨立驗證。
+3. 在outcome evidence前建立durable machine-readable frozen contract、驗證
+   human/machine parity並seal effective lock。
+4. 鎖定risk tier與cumulative wall-time／CPU／GPU／storage／throughput／repair／
+   thread budgets；generation、successor、replacement、new root不得reset。
+5. Planner／implementer／fresh verifier依governance floor執行。
 6. `CHANGES_REQUIRED`只修active checkpoint並重驗；consequential issue先走`design-discussion`。
 7. Technical`PASS`只進`VERIFIED_PENDING_CLOSEOUT`。
-8. 建立self-contained formal report，更新parent的checkpoint-specific hunk與current design status，並同步active index的verified lifecycle projection。
-9. 原verifier給`CLOSEOUT_ACK`。
-10. Exact-path isolated commit與post-commit audit成功後才是`CHECKPOINT_COMPLETE`。
+8. Internal positive只sealdesign指定的compact durable gate record，依verified frozen
+   edge留在同tranche繼續；不刪scientific gate、不先宣告closure complete。
+9. Internal negative／inconclusive產生該gate planned terminal report並停止；final
+   gate report整合prior gate records。
+10. Terminal staged audit、`CLOSEOUT_ACK`、isolated commit與post-commit audit成功後，
+    才更新`committed_projection_state`與closure unit。
 
-Positive、negative與inconclusive在evidence integrity完整時都需report／closeout／commit。Durable`BLOCKED`不是完成；`skipped_by_gate`／`not_activated`只由上游checkpoint記錄，不建立自己的report或commit。
+Positive、negative與inconclusive都要durable outcome closure。Operational
+`BLOCKED`不是scientific completion；`skipped_by_gate`／`not_activated`不建立假report。
 
 ### 2026-07-25 pre-execution authority amendment
 
@@ -173,6 +220,43 @@ Positive、negative與inconclusive在evidence integrity完整時都需report／c
 - **Measurement authority：**Ductile validity、Formocast model sentinel與runtime queue status分欄；至少一個預鎖score-blind sentinel-risk valid row須觀察exact `9999999.9/0`與source-order guard parity。Threshold `>1`誠實記`prediction_disabled`，不得為製造rejection而修改。
 - **使用者授權：**使用者已委派`/data1/perlee`內的此類block由design-discussion共識決定，不需再次停下核准；本共識授權上述五路徑baseline與S10R1 checkpoint closeout commit，明確不授權push。
 - **剩餘不確定性：**尚未證明exact-ten valid coverage、sentinel guard observation、anchor codegen／correctness或noise會通過；這些必須由S10R1 fresh evidence決定，不得預寫結果。
+
+### 2026-07-28 A32 cancellation、S10R2與tiered-governance amendment
+
+- **Trigger：**S10R1 mandatory nominal-boundary selector偏離核心Formocast
+  factorization問題；repair generations、verification loops、wall-time與transient
+  storage已超出合理research budget。
+- **User decision／safe boundary：**append-only S10R1 governance chain的A32 event核准
+  停止S10R1。Generation 0已atomic retire並byte-identical sealed；generation 1未建立
+  effective L0、selection、mapping、GPU、noise、decision或formal outcome，且沒有
+  scientific／GPU／pytest writer或governance flock。
+- **Durable S10R1 interpretation：**
+  `execution_status=cancelled / checkpoint_state=BLOCKED /
+  scientific_outcome=not_evaluated / edge=null`；不是`CHECKPOINT_COMPLETE`，不建立
+  scientific report。Generation 0／1只作diagnostic provenance，所有empirical／
+  repair artifacts禁止重用；stochastic non-discovery不是`FT-INCONCLUSIVE`或absence
+  proof。
+- **S10R2 decision：**新增sibling
+  [S10R2](ductile-origami-warmstart/s10r2-stage1-support-aware-entry-recovery-design.md)，
+  risk tier=`R2`、standalone tranche／closure；只在observed operational valid
+  support內建立exact-ten mapping，並把deterministic sentinel/helper conformance與
+  random corpus分離。只有`S10R2:S1_ENTRY_GO`可啟動S11。
+- **Preserved science：**S11–S41全部scientific gates、criterion edges、hypotheses、
+  thresholds、samples、seeds、claims與Stage 1/2/3/4 timeboxes完整保留；沒有proxy、
+  two-size、workload或acceptance downgrade。
+- **Tiered governance：**execution floor固定為
+  `b0561d2c9216a58a9d71b8e839c47efaa51f9c00`；建立S10R2、
+  S11+S12+S13、S20、S30+S31、S40+S41五個tranches／closure units。Internal positive
+  使用compact gate record繼續；internal terminal negative／inconclusive產生planned
+  report；final report整合prior records。
+- **Resource authority：**所有wall-time、CPU/GPU、storage、throughput、
+  pre-empirical engineering、repair與fresh-thread budgets跨generation、successor、
+  sibling、replacement與new root累計；本amendment不授權reset。Stage timebox是hard
+  cap，不是完成承諾。
+- **Current state projection：**本次只更新documentation／authority；不建立protocol
+  code、tests、contract、lock、artifact、scientific report、commit或push。Working-tree
+  amendment屬`live_run_state`；在future exact-path commit與post-audit前，不把它誤稱
+  已完成的`committed_projection_state`。
 
 ### Downgrade user gates
 
@@ -198,6 +282,14 @@ Mapping靠猜、coverage／correctness不完整或judgment pool不足者不具�
 ## Part I — Stage 1：七日 Gen0 mechanism protocol
 
 > 本檔原有 D1–D7 嚴謹性完整保留。Part I 的數值、公式、locks 與 gates 不因新增後續 stages 而降低。
+
+七日是Stage 1全部hands-on work的exact hard cap，不是完成承諾。S10R2、S11、S12、
+S13每次entry都先帶入同lineage已消耗的wall-time、CPU/GPU time、storage、
+throughput samples、pre-empirical engineering、repair rounds與fresh role threads；
+generation、successor、sibling checkpoint、replacement role或new root不能重置。
+Preflight不能證明剩餘cap足夠完成該dependency-ready gate及closure buffer時，停止並
+形成decision packet或原設計允許的terminal outcome，不縮samples／seeds／sizes／
+criteria。
 
 ## 0. Stage 1 objective 與完成定義
 
@@ -380,31 +472,53 @@ Derived mapping 可接受，但必須：
 
 多個 gene values 若映射成完全相同的 Formocast input，視為 model tie，不得捏造 sensitivity。
 
-#### S10R1 valid-support／status overlay
+#### S10R2 support-aware／helper-conformance overlay
 
-原S10已依其frozen raw-boundary selector完成為negative，本節不追溯修改該次
-execution。S10R1的ten-config corpus改為：
+原S10保持durable negative；S10R1依A32取消為
+`cancelled / BLOCKED / not_evaluated / edge=null`，其diagnostic artifacts禁止重用。
+新的S10R2在任何Formocast／GFLOPS前執行固定CPU validity-only discovery：
 
-- 先以actual GA probabilities及同一`valid_fn`保存accepted occurrences與
-  multiplicity，再以預鎖deterministic set-cover選exact 10 distinct valid configs；
-- coverage atoms只來自預鎖YAML／source，不得依Formocast、GFLOPS、noise或
-  observed sample extrema選擇；
-- global與missing-atom conditional streams分開保存；每stream使用512 nominal-draw
-  chunks，上限`250 * 11,405 = 2,851,250`，最後truncated chunk為434 draws，
-  並在第一個exact-ten coverage可行boundary停止；
-- fixed-cap non-discovery為`FT-INCONCLUSIVE`；只有complete support proof可把
-  absent atom判為`FT-BLOCKED-MAPPING`；
-- 仍保存raw／resolved config、全部required mapping fields／provenance、hash與
-  status，但Ductile validity、Formocast finite early-terminate sentinel及
-  whole-cohort runtime queue status必須分欄；
-- 「可能被Formocast reject」在S10R1具體化為至少一個預鎖、score-blind、
-  source-guard-targeted valid config×size，執行時須觀察exact
-  `microSeconds=9999999.9, hitRate=0`與source-order guard parity；
-- resolved `PredictionThreshold > 1`時runtime status是
-  `prediction_disabled`，不得改threshold製造rejection。
+- 每個candidate value分類為`supported_witnessed`、`support_unobserved`或
+  `support_proven_absent`；stochastic non-discovery永遠只能是`unobserved`，只有
+  complete proof可判`absent`；
+- 任一value是unobserved／proven-absent時，該residual gene不具S11 guidance
+  eligibility；actual YAML baseline groups／weights／uniform semantics不變，且不阻止
+  unrelated genes或entry；
+- L0在任何draw前建立complete candidate-atom registry：30 axes的每個exact typed
+  value都有deterministic ID、value hash、YAML pointer、source symbol/blob、
+  pre-draw roles與priority。`prelocked_candidate_atoms`只由全部eligible residual
+  candidate rows機械形成；first／last／`-1/-2`另形成diagnostic target roles，不會
+  單獨成為mandatory mapping atoms；
+- 固定512-draw chunks。Global必須exact執行32 chunks／16,384 nominal draws，無
+  early stop；完成第32 chunk後，才從sealed diagnostic registry中對final
+  `support_unobserved` rows依prelocked priority取前15個conditional targets。每個
+  activated conditional也exact執行32 chunks／16,384 draws，無result-driven early
+  stop或extension；總上限262,144；
+- Post-discovery mandatory set機械固定為
+  `(prelocked_candidate_atoms ∩ supported_witnessed) ∪
+  (always_required_structural_atoms ∩ structurally_witnessed)`；本版第二項為empty。
+  Exact-ten使用prelocked greedy set-cover／first-occurrence tie-break，不能在看到
+  support後重新挑「source-semantic」atoms；
+- Cap內少於10 distinct witnesses、mandatory cover不可行／需超過10 configs，或
+  complete proof顯示overall少於10 distinct valid configs，都為
+  `inconclusive / FT-INCONCLUSIVE / edge=null`；
+- mapping gate是exact ten ×三sizes的A/B parity、完整field provenance、30/30無
+  mapping failure；random corpus不需要命中Formocast sentinel；
+- deterministic score-blind helper與subsequent mapping/runtime interpretation必須
+  使用同一S10R2 native adapter，直接呼叫pinned
+  `Formocast::predictedPerformance`與`SolutionIterator::checkSolution`／
+  `AllSolutionsIterator::preProblem` queue path。Contract／lock綁native blobs、
+  helper symbol/binary hash與host adapter hash；separate oracle只能compare。Verifier
+  必須fault-inject helper/path/source/adapter substitutions並證明fail closed；
+- sorted exact-ten hashes的indices `0,4,9`仍是三anchors；correctness全過後仍執行
+  3 anchors ×3 sizes ×7 repeats =63 noise cells。Locked
+  generate／compile／smoke／nonzero correctness可重現失敗使用
+  `FT-BLOCKED-CORRECTNESS`。
 
-Exact selector、two-lock ordering、nominal-attempt ledger與failure matrix見
-[S10R1 design](ductile-origami-warmstart/s10r1-stage1-valid-support-entry-recovery-design.md)。
+S10R2完整identity、schedule、selector、helper fixture、outcome matrix、future
+contract／lock／artifact／report paths見
+[S10R2 design](ductile-origami-warmstart/s10r2-stage1-support-aware-entry-recovery-design.md)。
+只有`S10R2:S1_ENTRY_GO`可啟動S11；claim只限observed operational valid support。
 
 ### 2.4 Size registry
 
@@ -487,7 +601,10 @@ delta_noise = exp(P95({d_ar})) - 1
 - smoke／correctness失敗；
 - 剩餘可工作時間少於5日。
 
-輸出 [blocker memo](#111-report-paths)，不得建立假裝執行過的 MVP report。
+Historical S10 hard access／artifact blocker才輸出[blocker memo](#111-report-paths)。
+S10R2依自己的outcome matrix：pre-evidence resource failure是operational
+`BLOCKED`／decision packet；evidence-integrity完整的negative或inconclusive寫入
+S10R2 formal report。不得建立假裝執行過的MVP report。
 
 ---
 
@@ -1061,6 +1178,7 @@ median_quality_F / median_quality_G >= 1 / (1 + delta_noise)
 | --- | --- |
 | 無 GPU／YAML／artifact | `FT-BLOCKED-ACCESS` |
 | Mapping需猜值或 parity失敗 | `FT-BLOCKED-MAPPING` |
+| Locked generate／compile／smoke／nonzero correctness可重現失敗 | `FT-BLOCKED-CORRECTNESS` |
 | Whole ranking gate失敗 | `FT-MODEL-RANK` |
 | Whole rank好、model marginal差、oracle好 | `FT-MODEL-MARGINAL` |
 | Cross-fitted oracle也差 | `FT-HOOK-EXPRESSIVENESS` |
@@ -1214,6 +1332,11 @@ D1–D2 access／artifact／mapping blocked：
 
 `study_docs/research/ductile-origami-warmstart/reports/gen0-factorization-blocker-memo.md`
 
+此memo只屬historical S10 hard blocker。S10R1依A32取消，沒有scientific report。
+S10R2 positive、negative或inconclusive的唯一report是：
+
+`study_docs/research/ductile-origami-warmstart/reports/staged/s10r2-stage1-support-aware-entry-report.md`
+
 D5 或 D6 已形成 empirical evidence，不論 positive、negative 或 inconclusive：
 
 `study_docs/research/ductile-origami-warmstart/reports/gen0-factorization-mvp-report.md`
@@ -1259,11 +1382,14 @@ D5 或 D6 已形成 empirical evidence，不論 positive、negative 或 inconclu
 - [ ] Pinned Ductile／GEKO／TensileLite／Formocast revisions
 - [ ] Actual `group_i`／weights／candidate order confirmed
 - [ ] Actual `soo/reduce_fn` confirmed
+- [ ] S10R2 cumulative resource preflight and durable contract／lock sealed
+- [ ] CPU validity-only support classification complete within 262,144 nominal draws
 - [ ] 10-config mapping parity passed
-- [ ] Two or three same-space sizes locked
+- [ ] Exact three same-space sizes locked
+- [ ] Separate deterministic sentinel／runtime-queue helper conformance passed
 - [ ] gfx942 slot booked
-- [ ] Smoke／correctness passed
-- [ ] Noise pilot and `delta_noise` locked
+- [ ] Three-anchor smoke／correctness passed
+- [ ] 63-cell noise pilot and `delta_noise` locked
 - [ ] Study mode recorded
 - [ ] Real GFLOPS remains sealed until model-only lock
 
@@ -1459,7 +1585,7 @@ Counterfactual natural stop只作 diagnostic，不是實際wall-time證據。
 - `FT-SHORT-HORIZON-REGRESSION`：AUC正向，但 final verified non-inferiority失敗。
 - `FT-EVALUATION-SUPPORT`：formal run未達事前 `U_floor`。
 - `FT-ENTROPY-ONLY`：F不勝S。
-- `FT-PLUMBING`、`FT-INCONCLUSIVE` 與 correctness failure沿用 Stage 1。
+- `FT-PLUMBING`、`FT-INCONCLUSIVE` 與`FT-BLOCKED-CORRECTNESS`沿用 Stage 1。
 
 Stage 1的 `FT-WASHOUT-UNTESTED` 在 Stage 2結束後必須改成具體結果。
 
@@ -1467,6 +1593,8 @@ Stage 1的 `FT-WASHOUT-UNTESTED` 在 Stage 2結束後必須改成具體結果。
 
 - hands-on target：4工作日；
 - hard cap：5工作日，包含分析與 decision report；
+- target與hard cap都不是完成承諾；entry preflight不通過即停止，不能以H5、縮arms或
+  縮seeds保留原claim；
 - entry前依 actual resolved population、adaptive decay與 `C` sizes鎖 proposal與 candidate×size request cap；
 - nominal `3×5×10×64` 只能作 requested-population參考，不是正式GPU cap；
 - 不得只完成部分 arms／seeds後仍判 positive。
@@ -1571,6 +1699,7 @@ Technical reserve只能替換：
 ### 17.3 Stage 3 time／resource cap
 
 - hard cap：7工作日；
+- hard cap不是完成承諾；entry preflight必須帶入S30／S31同lineage全部既有消耗；
 - entry前鎖完整兩-cluster D5與GA budget；
 - GPU cap依 Stage 2實際消耗與兩-cluster request估算，不靠cache／dedup的樂觀節省啟動；
 - 保留 report工作日與10% failure buffer。
@@ -1595,7 +1724,7 @@ Report：
 
 ### 18.2 不得啟動
 
-- `FT-BLOCKED-ACCESS`／`FT-BLOCKED-MAPPING`；
+- `FT-BLOCKED-ACCESS`／`FT-BLOCKED-MAPPING`／`FT-BLOCKED-CORRECTNESS`；
 - `FT-HOOK-EXPRESSIVENESS`；
 - `FT-PLUMBING`；
 - `FT-GEN0-MECHANISM`；
@@ -1725,6 +1854,7 @@ Learned oracle gap必須strictly小於Formocast oracle gap。
 ### 19.5 Stage 4 timebox
 
 - hard cap：5工作日；
+- hard cap不是完成承諾；S40／S41 cumulative preflight不足即依原gate停止；
 - 預設不新增超過一個 label-only cluster；
 - 資料 gate未過立即停止，不用較弱 split救回。
 
@@ -1745,6 +1875,19 @@ Report：
 - 保留已確認GPU allocation的10%作noise／failed-measurement buffer；
 - 確認完整 formal panel可在cap內完成；
 - 不因已開始就縮 seeds／arms／clusters後沿用原 claim。
+- 以governance baseline
+  `b0561d2c9216a58a9d71b8e839c47efaa51f9c00`建立cumulative ledger，至少逐
+  gate／command記wall-time、CPU time、GPU time、peak與retained storage、
+  attempted／accepted／mapped／compiled／measured throughput，以及
+  pre-empirical engineering、repair rounds與fresh role threads；
+- 帶入同scientific stage／gate lineage在所有generation、successor、sibling
+  checkpoint、replacement role、process restart與new run root的prior consumption；
+  沒有human明列的新authority／carry-over boundary就不得reset；
+- pre-empirical engineering最多20% stage cap；planned throughput首1%後重估
+  wall-time與storage；projection超過原估2倍、任何frozen cap exceed，或預設
+  transient storage 5 GiB不足時，safe-boundary pause並提交decision packet；
+- entry preflight必須證明剩餘hard cap足以完成完整formal panel、terminal report與
+  buffer；hard cap是停止界線，不是完成承諾，也不允許optional stopping。
 
 ### 20.2 Claim ladder
 
@@ -1769,7 +1912,20 @@ Report：
 - Hook、plumbing、Gen0、washout、regression、heuristic-saturation failures → 停止該 intervention branch。
 - Negative／inconclusive也必須建立對應report，不只記成功案例。
 
-### 20.4 Owner-led future handoff
+### 20.4 Gate record與closure integration
+
+- `S10R2`與`S20`是standalone tranche／closure。
+- `S11+S12+S13`、`S30+S31`、`S40+S41`各共享一個execution tranche與closure
+  unit，但每個scientific gate及edge保持獨立。
+- Internal positive只建立design指定的compact durable gate record，在fresh verifier
+  確認frozen edge後繼續；不提前建立重複full report，也不把closure unit標complete。
+- Internal terminal negative／inconclusive建立該design既定formal report並停止；
+  `CHANGES_REQUIRED`只在repair budget內重驗，不是scientific outcome。
+- Final gate report整合全部prior compact records、各gate verdict、resource ledger與
+  claim boundary。Closure commit／post-audit前，partial狀態只屬
+  `live_run_state`，不得回填`committed_projection_state`。
+
+### 20.5 Owner-led future handoff
 
 只有 Stage 3成功且核心團隊有興趣後，才可把以下列為 handoff idea：
 
@@ -1780,7 +1936,7 @@ Report：
 
 它們不是 internship stage，也不恢復舊 M00–M09權威。
 
-### 20.5 Stage-specific artifacts
+### 20.6 Stage-specific artifacts
 
 Stage 2至少保存：
 

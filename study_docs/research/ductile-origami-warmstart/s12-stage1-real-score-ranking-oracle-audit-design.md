@@ -7,6 +7,11 @@ execution_status: gated
 checkpoint_state: DESIGN_APPROVED
 scientific_outcome: not_evaluated
 lock_state: absent
+risk_tier: R2
+governance_baseline: b0561d2c9216a58a9d71b8e839c47efaa51f9c00
+scientific_gate: S12
+execution_tranche: T-S1-MECHANISM
+closure_unit: CU-S1-MECHANISM
 hypothesis_id: S12-H1
 dependencies:
   - checkpoint_id: S11
@@ -31,6 +36,9 @@ allowed_outgoing_edges:
   - criterion_id: predictor_specific_failure_and_oracle_positive
     target_checkpoint: S40
 formal_report_path: reports/staged/s12-stage1-real-score-audit-report.md
+compact_positive_gate_record_path: protocol/v1/evidence/gate-records/s12-d5-pass.json
+tranche_final_report_path: reports/gen0-factorization-mvp-report.md
+terminal_report_integration: terminal_here_on_nonpass_else_integrated_by_S13
 blocker_path: null
 future_effective_lock_path: protocol/v1/locks/s12-stage1-real-score-audit-lock.json
 implementation_boundary_max:
@@ -83,6 +91,24 @@ consensus_status: approved_two_reviewer_agree
 - Borderline、ordinary fail、hook failure、coverage/noise failure都不解鎖S13或S40。
 
 兩條edge各自綁定其criteria；oracle-positive edge不能被當成D5 PASS。
+
+### 3.1 Gate／tranche／closure governance
+
+- `risk_tier=R2`、`scientific_gate=S12`、
+  `execution_tranche=T-S1-MECHANISM`、`closure_unit=CU-S1-MECHANISM`。
+- 第一筆real label前，依governance baseline
+  `b0561d2c9216a58a9d71b8e839c47efaa51f9c00`完成cumulative resource preflight，
+  seal durable machine-readable contract與effective lock。S10R2、S11與S12已消耗的
+  wall-time、CPU/GPU、storage、throughput、repair與thread budget跨generation、
+  successor與new root累計。
+- `D5_PASS`只seal compact durable record
+  `protocol/v1/evidence/gate-records/s12-d5-pass.json`，在verified frozen edge後留在
+  同一tranche進S13；closure unit尚未完成。
+- Borderline、negative、inconclusive或合法predictor-specific negative是terminal
+  internal outcome，產生S12 planned report並停止S1主路徑；只有明列的oracle-positive
+  conditional edge可另送S40。
+- S13 final report整合S11／S12 gate records。`live_run_state`不得被投影成committed
+  fact；`committed_projection_state`只在CU-S1 terminal commit與post-audit後更新。
 
 ## 4. Maximum implementation 與 delivery boundary
 
@@ -152,11 +178,14 @@ S12不能說明actual Gen0、H10 persistence或held-out replication。
 
 ## 8. Formal report 與 closeout
 
-唯一formal report：
-
-`reports/staged/s12-stage1-real-score-audit-report.md`
-
-它必須包含raw overlap counts、ties、coverage、weighted/unweighted metrics、ESS、oracle diagnosis、all failure rows、outcome與可以／不能支持的claim。S12不提前建立S13 rollup。Conditional S40 edge只在S12 closeout record明列trigger且完成commit audit後存在。
+S12 positive使用compact gate record
+`protocol/v1/evidence/gate-records/s12-d5-pass.json`並繼續同tranche。S12若
+borderline／negative／inconclusive而成為terminal，唯一formal report是
+`reports/staged/s12-stage1-real-score-audit-report.md`，必須包含raw overlap counts、
+ties、coverage、weighted/unweighted metrics、ESS、oracle diagnosis、all failure
+rows、先前gate records、outcome與可以／不能支持的claim。若S13成為tranche final，
+S13 report整合S12 positive record，不另建重複positive report。Conditional S40 edge
+只在S12 terminal record明列trigger並完成對應closure audit後存在。
 
 ## 9. Design-consensus record
 

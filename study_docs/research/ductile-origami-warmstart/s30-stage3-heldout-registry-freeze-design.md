@@ -7,6 +7,11 @@ execution_status: gated
 checkpoint_state: DESIGN_APPROVED
 scientific_outcome: not_evaluated
 lock_state: absent
+risk_tier: R2
+governance_baseline: b0561d2c9216a58a9d71b8e839c47efaa51f9c00
+scientific_gate: S30
+execution_tranche: T-S3-REPLICATION
+closure_unit: CU-S3-REPLICATION
 hypothesis_id: S30-H1
 dependencies:
   - checkpoint_id: S20
@@ -23,6 +28,9 @@ allowed_outgoing_edges:
   - criterion_id: S3_REGISTRY_PROCEDURE_LOCKED
     target_checkpoint: S31
 formal_report_path: reports/staged/s30-heldout-registry-freeze-report.md
+compact_positive_gate_record_path: protocol/v1/evidence/gate-records/s30-s3-registry-locked.json
+tranche_final_report_path: reports/bounded-regime-replication-report.md
+terminal_report_integration: terminal_here_on_nonpass_else_integrated_by_S31
 blocker_path: null
 future_effective_lock_path: protocol/v1/locks/s30-stage3-heldout-registry-freeze-lock.json
 implementation_boundary_max:
@@ -33,6 +41,7 @@ delivery_boundary_max:
   - protocol/v1/**
   - reports/staged/s30-heldout-registry-freeze-report.md
   - ../ductile-origami-warmstart-experiment-plan.md
+  - README.md
   - s30-stage3-heldout-registry-freeze-design.md
 forbidden_downstream_roots:
   - reports/bounded-regime-replication-report.md
@@ -72,6 +81,24 @@ S3_REGISTRY_PROCEDURE_LOCKED -> S31
 ```
 
 Single-cluster pilot或不完整budget不能通過S30；若提出，先`blocked-awaiting-user-decision`，即使獲准也不解鎖original S31。
+
+### 3.1 Gate／tranche／closure governance
+
+- `risk_tier=R2`、`scientific_gate=S30`、
+  `execution_tranche=T-S3-REPLICATION`、`closure_unit=CU-S3-REPLICATION`。
+- 第一筆Stage-3 Formocast score或label前，依
+  `b0561d2c9216a58a9d71b8e839c47efaa51f9c00`做cumulative resource preflight，
+  freeze durable machine-readable contract並seal effective lock。Stage-3
+  registry、reserve、recovery、generation、successor與new root共享wall-time、
+  CPU/GPU、storage、throughput、repair與thread budgets。
+- Stage 3 hard cap仍精確為7工作日且不是完成承諾；entry必須證明完整S30+S31
+  panel、report buffer與failure buffer可在剩餘cap內完成。
+- Positive只seal compact record
+  `protocol/v1/evidence/gate-records/s30-s3-registry-locked.json`，在verified frozen
+  edge後留在同一tranche進S31；closure unit尚未完成。
+- Negative／inconclusive是terminal internal outcome，產生S30 planned report並停止。
+  S31 final report若可達，必須整合S30 record。`committed_projection_state`只在
+  CU-S3 terminal commit與post-audit後更新。
 
 ## 4. Maximum implementation 與 delivery boundary
 
@@ -143,11 +170,13 @@ S30只證明replication registry與procedure已凍結，不證明transfer效果�
 
 ## 8. Formal report 與 closeout
 
-唯一formal report：
-
-`reports/staged/s30-heldout-registry-freeze-report.md`
-
-Report記錄registry identities、selection rule、reserve/cutover、denominator、frozen hashes、budget證據與seal audit，但不含任何Stage 3 outcome。只有positive committed closeout解鎖S31。
+S30 positive使用compact gate record
+`protocol/v1/evidence/gate-records/s30-s3-registry-locked.json`並繼續同tranche。
+S30若negative／inconclusive而成為terminal，唯一formal report才是
+`reports/staged/s30-heldout-registry-freeze-report.md`；它記錄registry identities、
+selection rule、reserve/cutover、denominator、frozen hashes、budget證據、seal
+audit與先前records，但不虛構S31 outcome。若S31成為tranche final，其report整合S30
+positive record，不另建重複positive report。
 
 ## 9. Design-consensus record
 
