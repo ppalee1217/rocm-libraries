@@ -176,12 +176,11 @@ def witnesses(count: int = 10, required: set[str] | None = None):
     return rows
 
 
-def test_contract_loads_and_is_still_pre_evidence():
+def test_contract_loads_with_frozen_pre_evidence_semantics():
     contract = load_contract()
     assert contract["checkpoint_id"] == "S10R2"
     assert contract["status"] == "frozen_pre_evidence"
     assert contract["resource"]["numeric_relock"]["caps"]["wall_s"] == 11827
-    assert not (PROTOCOL / "locks/s10r2-stage1-support-aware-entry-lock.json").exists()
 
 
 def test_contract_canonical_human_machine_parity():
@@ -939,10 +938,30 @@ def test_contract_native_fixture_is_complete_and_reproduces_locked_transcript():
     assert materialized["cohort"][1]["check_solution"] is False
 
 
-def test_runner_contract_and_dry_schedule_do_not_authorize_formal_evidence():
+def test_runner_contract_and_dry_schedule_preserve_lock_lifecycle(
+    monkeypatch, tmp_path
+):
+    committed_lock = PROTOCOL / "locks/s10r2-stage1-support-aware-entry-lock.json"
     result = runner.validate_contract()
     assert result["human_machine_parity"] == "PASS"
-    assert result["formal_evidence_authorized"] is False
+    if committed_lock.is_file():
+        _, expected_lock_digest = runner.require_effective_lock(
+            committed_lock,
+            enforce_allocation_window=False,
+        )
+        assert result["formal_evidence_authorized"] is True
+        assert result["effective_lock_digest"] == expected_lock_digest
+    else:
+        assert result["formal_evidence_authorized"] is False
+        assert result["effective_lock_digest"] is None
+
+    isolated_missing_lock = tmp_path / "isolated-no-lock.json"
+    monkeypatch.setattr(runner, "LOCK_PATH", isolated_missing_lock)
+    isolated = runner.validate_contract()
+    assert isolated["human_machine_parity"] == "PASS"
+    assert isolated["formal_evidence_authorized"] is False
+    assert isolated["effective_lock_digest"] is None
+
     schedule = runner.dry_run_schedule(15)
     assert schedule["formal_draws_executed"] == 0
     assert schedule["total_draws"] == 262_144
