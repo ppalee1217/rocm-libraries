@@ -241,6 +241,50 @@ target一律當hard pause或cumulative successor debit的文字。Future machine
 contract、lock、ledger、report、artifacts及
 `inconclusive / FT-INCONCLUSIVE / edge=null`完全immutable，不做resource-only rerun。
 
+### 1.13 A38 S10R3 bounded-cover entry recovery
+
+2026-07-29，S10R2已post-audited closeout為
+`CHECKPOINT_COMPLETE / inconclusive / FT-INCONCLUSIVE / edge=null`；其fresh
+support discovery觀察到90個mandatory atoms，而frozen deterministic greedy
+exact-ten selector需要18個configs才能full cover。這是合法的S10R2 result，不可
+重開或重標。
+
+兩位fresh `gpt-5.6-sol / xhigh` reviewers完成兩輪cross-examination與一輪
+evidence-backed final。兩方共同支持新的post-label R3 sibling
+[S10R3](ductile-origami-warmstart/s10r3-stage1-bounded-cover-entry-recovery-design.md)：
+
+- S10R3使用fresh registry、與舊runs disjoint的seed namespace及fresh append-only
+  ledger；S10R1 artifacts與S10R2 accepted rows、support states、activated targets、
+  cover、seeds、mapping／GPU／noise及decision都禁止作S10R3 gate evidence；
+- support schedule、three-state classification及mandatory mapping set
+  `prelocked_candidate_atoms ∩ supported_witnessed`保持不變；
+- prelocked selector改為
+  `deterministic_greedy_set_cover_v2_bounded_k20`，令
+  `K=max(10,C_greedy)`、`K_max=20`。`C_greedy`只表示frozen greedy full-cover
+  cardinality，不宣稱mathematical minimum；
+- fresh witnesses少於10或`C_greedy>20`時誠實結束為
+  `inconclusive / FT-INCONCLUSIVE / edge=null`，不得事後加solver、draw、seed、
+  selector或提高cap；
+- mapping改為每pass exact `3K` rows，最多60 rows/pass；anchors為sorted hashes的
+  `{0,floor((K-1)/2),K-1}`。Correctness仍是9 cells，noise仍是63 cells，所有
+  native helper/fault、correctness、`CV P95 <= 0.5%`與`delta_noise` criteria不變；
+- S11–S13 samples、seeds、thresholds、workloads、claims與internal edges不變。
+  只有post-audited `S10R3:S1_ENTRY_GO -> S11`可啟動mechanism tranche。
+
+舊`C_greedy=18`只作post-label design diagnostic，用來說明為何事前選
+`K_max=20`；它不是S10R3 formal evidence或成功保證。Non-gating
+`L_axis=max witnessed mandatory values on one residual axis`可提供cover lower bound；
+若`L_axis<=20`但greedy over-cap，必須明寫沒有排除其他20筆內cover。
+
+Reviewers保留的planner count、resource projection與GPU availability dissent，已由
+Codex adapter、A37及使用者既有free-card指示解析。使用者以「全部核准」明確核准：
+two planners＋one adversarial auditor＋Main implementation＋one fresh verifier（連同
+design reviewers共R3 `6/6` threads）、A37 planning semantics、只在existing
+`perlee`內直接使用目前free eligible gfx942且不需reservation，以及五路徑authority
+commit與後續`implement-verify-loop`。不授權push。Initial
+`12669 wall-s / 65285 CPU-s / 2901 GPU-s / 2 GiB`只作planning estimates；
+scientific draw／cell／repair／thread caps仍是hard boundaries。
+
 ---
 
 ## 2. 研究問題與假設
@@ -660,9 +704,11 @@ S00 -> S10 [terminal negative; edge=null]
   \          \
    +----------+-- administrative/provenance only --> S10R2
                                                      |
-                                                     +-- S1_ENTRY_GO --> S11 -> S12 -> S13 -> S20 -> S30 -> S31
-                                                                                 \                         \
-                                                                                  +---- conditional ------> S40 -> S41
+                                                     +-- terminal inconclusive; edge=null --> S10R3
+                                                                                              |
+                                                                                              +-- S1_ENTRY_GO --> S11 -> S12 -> S13 -> S20 -> S30 -> S31
+                                                                                                                  \                         \
+                                                                                                                   +---- conditional ------> S40 -> S41
 
 S10R1 [A32 cancelled; A33 identity-only tombstone; edge=null; reuse forbidden]
 ```
@@ -670,7 +716,8 @@ S10R1 [A32 cancelled; A33 identity-only tombstone; edge=null; reuse forbidden]
 S00／S10到S10R2的關係不是scientific outgoing edge。S10R1是sibling diagnostic
 record，不是S10R2 parent或evidence source；A32固定它為
 `cancelled / not_evaluated / edge=null`，A33只退休physical artifacts。
-S10R2 negative、inconclusive、
+S10R2已terminalize為inconclusive/null；它對S10R3只提供immutable terminal
+provenance，不提供formal evidence或scientific edge。S10R3 negative、inconclusive、
 `CHANGES_REQUIRED`或未完成都不會啟動S11。
 
 M00–M09移入`ductile-origami-warmstart/legacy/`，只保留歷史正文：
@@ -708,11 +755,16 @@ M00–M09移入`ductile-origami-warmstart/legacy/`，只保留歷史正文：
   [S10R2 Stage 1 support-aware entry report](ductile-origami-warmstart/reports/staged/s10r2-stage1-support-aware-entry-report.md)。
   S10R2 technical verification為`PASS`，scientific outcome為
   `inconclusive / FT-INCONCLUSIVE / edge=null`；不覆寫S10 report，也不啟動S11。
+- S10R3唯一formal report是
+  `ductile-origami-warmstart/reports/staged/s10r3-stage1-bounded-cover-entry-report.md`；
+  現在不存在且不得建立placeholder。只有sealed formal execution後才依outcome
+  matrix建立。
 - S40 data insufficiency是formal scientific negative，寫入`reports/staged/s40-stage4-activation-report.md`；不建立data-insufficiency blocker memo。
 - `skipped_by_gate`／`not_activated`由上游report與closeout記錄，不建立自己的report或commit。
 - Internal positive scientific gate使用compact durable record並在同tranche繼續；
   internal terminal negative／inconclusive產生planned report；final gate report整合
-  prior records。Tranches固定為S10R2、S11+S12+S13、S20、S30+S31、S40+S41。
+  prior records。Tranches固定為historical S10R2、S10R3、S11+S12+S13、S20、
+  S30+S31、S40+S41。
 - Positive、negative與inconclusive在evidence integrity完整時都需durable outcome
   closure、parent update、`CLOSEOUT_ACK`、isolated commit與post-commit audit。
 - Technical`PASS`只是`VERIFIED_PENDING_CLOSEOUT`；完成全部closeout後才是`CHECKPOINT_COMPLETE`。
@@ -734,4 +786,7 @@ exact-ten cover需要18 configs，故terminalize為
 `inconclusive / FT-INCONCLUSIVE / edge=null`。A36只把non-material resource
 accounting缺口降為technical caveat，不改scientific result。Closure commit與
 post-audit完成後，S10R2 projection為`CHECKPOINT_COMPLETE`；因沒有positive edge，
-S11維持`not_activated`。本closeout不授權push。
+S11維持`not_activated`。A38已核准S10R3 bounded-cover sibling；current next
+dependency-ready checkpoint是`S10R3`，但formal evidence必須等待future contract、
+adversarial audit與effective lock seal。只有其post-audited positive才啟動S11。
+本authority不授權push。

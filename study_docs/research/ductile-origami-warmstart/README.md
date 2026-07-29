@@ -1,7 +1,7 @@
 # Ductile Factorized Guidance — Active Checkpoint Index
 
 > **Active-state authority banner：**本研究目前是
-> `pre_empirical / stage1_entry_inconclusive`。S00是durable positive，
+> `pre_empirical / s10r3_design_approved`。S00是durable positive，
 > S10是durable `negative / S1_ENTRY_BLOCKED / edge=null`，兩者不變。User-authorized
 > A32已在safe boundary取消S10R1：operational
 > `cancelled / BLOCKED`、scientific `not_evaluated`、`edge=null`，沒有scientific
@@ -15,8 +15,9 @@
 > evidence integrity或scientific result的resource-accounting缺口定為non-blocking
 > caveat，不要求resource-only rerun；A37 prospectively取消internal resource target
 > 與cumulative ledger作blanket hard gate，改為record＋notify＋continue，只有
-> material safety／availability／completion／evidence boundary才暫停；
-> 只有S10R2的post-audited `S1_ENTRY_GO`可啟動S11。
+> material safety／availability／completion／evidence boundary才暫停。A38已核准
+> R3 sibling S10R3，S10R2保持immutable inconclusive/null；只有S10R3的post-audited
+> `S1_ENTRY_GO`可啟動S11。
 >
 > **唯一 active 導航入口：**本 README。`legacy/` 內的 M00–M09 仍是 dead-protocol archive，不能提供 schema、hash、lock、registry、criterion、fixture、test或 PASS evidence；S00 positive只支持CPU-only evidence foundation。
 >
@@ -56,6 +57,7 @@ hypothesis、criterion、edge或timebox。
 | S10 | Stage 1 access／artifact／mapping／noise gate | `approved` | `completed` | `CHECKPOINT_COMPLETE` | `negative` | `effective (successor-003)` | [report](reports/staged/s10-stage1-entry-gate-report.md) |
 | S10R1 | Cancelled nominal-boundary recovery diagnostics | `approved` | `cancelled` | `BLOCKED` | `not_evaluated` | `superseded` | none (A32 operational record only) |
 | S10R2 | Stage 1 support-aware entry recovery | `approved` | `completed` | `CHECKPOINT_COMPLETE` | `inconclusive` | `effective` | [report](reports/staged/s10r2-stage1-support-aware-entry-report.md) |
+| S10R3 | Stage 1 bounded-cover entry recovery | `approved` | `not_started` | `DESIGN_APPROVED` | `not_evaluated` | `absent` | `reports/staged/s10r3-stage1-bounded-cover-entry-report.md` |
 | S11 | Stage 1 model-only factorization／guidance lock | `approved` | `gated` | `DESIGN_APPROVED` | `not_activated` | `absent` | `reports/staged/s11-stage1-model-only-factorization-report.md` |
 | S12 | Stage 1 real-score／ranking／oracle audit | `approved` | `gated` | `DESIGN_APPROVED` | `not_evaluated` | `absent` | `reports/staged/s12-stage1-real-score-audit-report.md` |
 | S13 | Stage 1 actual Gen0 mechanism | `approved` | `gated` | `DESIGN_APPROVED` | `not_evaluated` | `absent` | `reports/gen0-factorization-mvp-report.md` |
@@ -71,6 +73,7 @@ Designs：
 - [S10 — Stage 1 entry access／mapping gate](s10-stage1-entry-access-mapping-gate-design.md)
 - [S10R1 — Cancelled recovery diagnostic record](s10r1-stage1-valid-support-entry-recovery-design.md)
 - [S10R2 — Stage 1 support-aware entry recovery](s10r2-stage1-support-aware-entry-recovery-design.md)
+- [S10R3 — Stage 1 bounded-cover entry recovery](s10r3-stage1-bounded-cover-entry-recovery-design.md)
 - [S11 — Stage 1 model-only factorization](s11-stage1-model-only-factorization-design.md)
 - [S12 — Stage 1 real-score audit](s12-stage1-real-score-ranking-oracle-audit-design.md)
 - [S13 — Stage 1 actual Gen0](s13-stage1-actual-gen0-mechanism-design.md)
@@ -88,6 +91,7 @@ flowchart TD
   s10["S10 Stage 1 entry"]
   s10r1["S10R1 Cancelled diagnostics"]
   s10r2["S10R2 Support-aware entry"]
+  s10r3["S10R3 Bounded-cover entry"]
   s11["S11 Model-only factorization"]
   s12["S12 Real-score audit"]
   s13["S13 Actual Gen0"]
@@ -101,7 +105,8 @@ flowchart TD
   s00 -. "administrative readiness" .-> s10r2
   s10 -. "terminal provenance only; no scientific edge" .-> s10r2
   s10r1 -. "A32 status only; evidence reuse forbidden" .-> s10r2
-  s10r2 -->|"S1_ENTRY_GO"| s11
+  s10r2 -. "terminal inconclusive provenance; evidence reuse forbidden" .-> s10r3
+  s10r3 -->|"S1_ENTRY_GO"| s11
   s11 -->|"S1_GUIDANCE_LOCKED"| s12
   s12 -->|"D5_PASS"| s13
   s13 -->|"D6_MECHANISM_POSITIVE"| s20
@@ -128,7 +133,10 @@ flowchart TD
 - 新[S10R2 design](s10r2-stage1-support-aware-entry-recovery-design.md)是sibling，不是
   S10R1 successor。S00 readiness、S10 terminal provenance與A32 status只作
   administrative prerequisites；虛線不是scientific edge，且S10R1 evidence reuse
-  forbidden。S10R2是唯一新的`S1_ENTRY_GO`來源。
+  forbidden。S10R2已closeout為inconclusive/null。A38新增
+  [S10R3](s10r3-stage1-bounded-cover-entry-recovery-design.md)；S10R2對它只提供
+  immutable terminal provenance，不提供formal evidence。S10R3是唯一新的
+  `S1_ENTRY_GO`來源。
 - `S1_ENTRY_DEGRADED_PROXY`、two-size mode、H5 pilot、single-cluster pilot或任何縮減不會自動形成 outgoing edge；必須先停在 `blocked-awaiting-user-decision`。
 - S12／S31 只有 parent 明列的 predictor-specific、oracle-positive evidence可送入 S40。
 - S40 沒有合法 trigger時不執行，由上游 report記 `not_activated`；不替 S40 建假 report或commit。
@@ -158,6 +166,7 @@ flowchart TD
 | Execution tranche | Risk tiers | Scientific gates | Closure unit |
 | --- | --- | --- | --- |
 | `T-S10R2` | S10R2=`R2` | S10R2 | `CU-S10R2` standalone |
+| `T-S10R3` | S10R3=`R3` | S10R3 | `CU-S10R3` standalone |
 | `T-S1-MECHANISM` | S11/S12=`R2`, S13=`R1` | S11 → S12 → S13 | `CU-S1-MECHANISM` |
 | `T-S20` | S20=`R1` | S20 | `CU-S20` standalone |
 | `T-S3-REPLICATION` | S30=`R2`, S31=`R1` | S30 → S31 | `CU-S3-REPLICATION` |
@@ -195,6 +204,8 @@ completion；`skipped_by_gate`／`not_activated`不建立假report。
   path不得建立。
 - S10R2唯一formal report是
   `reports/staged/s10r2-stage1-support-aware-entry-report.md`，且不覆寫S10 report。
+- S10R3唯一formal report是
+  `reports/staged/s10r3-stage1-bounded-cover-entry-report.md`；現在不得建立placeholder。
 - S40 data insufficiency是科學 negative，寫入 S40 formal report；不使用 data-insufficiency blocker memo。
 - Outcome evidence已開始後，即使中途失敗，也不得退回 blocker memo來避開 formal negative／inconclusive report。
 - S11／S12／S30／S40 internal positive使用各design指定compact gate record；若
@@ -300,6 +311,43 @@ completion；`skipped_by_gate`／`not_activated`不建立假report。
 - S10R2 A36、contract、lock、ledger、artifacts、formal report及
   `inconclusive / FT-INCONCLUSIVE / edge=null`完全immutable；不做resource-only
   rerun，也不因此啟動S11。
+
+### 6.6 2026-07-29 A38 S10R3 bounded-cover entry
+
+- S10R2以frozen exact-ten selector觀察到90個mandatory atoms、greedy cover 18，
+  因而正確closeout為`inconclusive / FT-INCONCLUSIVE / edge=null`。A38不重開或
+  重標它；舊18只作design diagnostic。
+- Fresh reviewers`/root/s1_recovery_design_a`與`/root/s1_recovery_design_b`完成兩輪
+  cross-examination及一輪evidence-backed final。使用者以「全部核准」核准共同的
+  bounded-K scientific package、三項execution-authority解析、五路徑authority
+  commit與後續`implement-verify-loop`；不授權push。
+- 新S10R3固定fresh registry、disjoint seeds與append-only ledger。S10R1 artifacts及
+  S10R2 rows／support／targets／cover／seeds／mapping／GPU／noise／decision全部禁止
+  作formal evidence。
+- Discovery仍是global `32×512`加最多15個conditional targets各`32×512`，
+  total max `512 chunks / 262,144 draws`；無early stop、extension或seed retry。
+- Mandatory set仍是
+  `prelocked_candidate_atoms ∩ supported_witnessed`。Selector固定：
+
+  ```text
+  C_greedy = deterministic_greedy_set_cover_v2_bounded_k20的full-cover cardinality
+  K        = max(10, C_greedy)
+  K_max    = 20
+  ```
+
+  `C_greedy`不稱minimum。Fresh witnesses少於10或`C_greedy>20`即
+  inconclusive/null，不得labels後改solver、draw、seed或cap。
+- Mapping A/B各exact `3K` rows，最多60 rows/pass；anchors為sorted hashes的
+  `{0,floor((K-1)/2),K-1}`。Correctness仍9 cells、noise仍63 cells，S11–S13
+  scientific workload、threshold、claim與internal edges不變。
+- R3角色配置為two planners、one adversarial auditor、Main implementation與one
+  fresh verifier；連同兩位design reviewers為`6/6` threads，沒有replacement
+  headroom，repair最多3 rounds。
+- `12669 wall-s / 65285 CPU-s / 2901 GPU-s / 2 GiB`只作A37 planning estimates。
+  GPU／ROCm command只在existing `perlee`；每phase直接選目前free eligible gfx942，
+  不需reservation或exclusivity，但必須鎖定identity、foreign-PID rejection、
+  interruption與append-only resume。
+- 只有post-audited `S10R3:S1_ENTRY_GO`啟動S11；其他outcome都保持edge null。
 
 ## 7. Downgrade review gate
 

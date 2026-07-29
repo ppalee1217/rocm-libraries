@@ -14,11 +14,11 @@ execution_tranche: T-S1-MECHANISM
 closure_unit: CU-S1-MECHANISM
 hypothesis_id: S11-H1
 dependencies:
-  - checkpoint_id: S10R2
+  - checkpoint_id: S10R3
     required_edge: S1_ENTRY_GO
 entry_criteria:
   - S00_EVIDENCE_READY
-  - post_audited_S10R2_S1_ENTRY_GO
+  - post_audited_S10R3_S1_ENTRY_GO
 criterion_refs:
   - S1_GUIDANCE_LOCKED
 failure_ids:
@@ -63,7 +63,7 @@ consensus_status: approved_two_reviewer_agree
 
 ## 2. Hypothesis 與 falsification
 
-**S11-H1：**在S10R2以相同actual YAML／source pins重新鎖定的Ductile-valid
+**S11-H1：**在S10R3以相同actual YAML／source pins重新鎖定的Ductile-valid
 space中，Formocast能對至少一個eligible residual gene產生符合parent model-only
 criteria的穩定prior，並可無損轉成與`SearchSpace.map`完全對齊的weights與shuffled
 control。
@@ -81,12 +81,15 @@ control。
 
 S11需要S00 foundation、immutable S10 terminal provenance、S10R1的A32
 `cancelled / not_evaluated / edge=null` tombstone、A33 identity-only retirement
-record，以及S10R2的positive formal
-closeout／isolated commit／post-commit audit。S10與S10R1都沒有outgoing edge；
-只有post-audited `S10R2:S1_ENTRY_GO`能啟動S11。S10R2 negative／inconclusive／
+record、S10R2的immutable
+`CHECKPOINT_COMPLETE / inconclusive / FT-INCONCLUSIVE / edge=null` provenance，
+以及S10R3的positive formal closeout／isolated commit／post-commit audit。S10、
+S10R1與S10R2都沒有outgoing edge；只有post-audited
+`S10R3:S1_ENTRY_GO`能啟動S11。S10R3 negative／inconclusive／
 `CHANGES_REQUIRED`或未完成都保持S11`not_activated`，且本dependency amendment
-沒有proxy／reduced-mode edge。S10R1任何generation、test、cache或evidence都禁止
-重用。
+沒有proxy／reduced-mode edge。S10R1任何artifact，以及S10R2 accepted rows、
+support states、targets、cover、seeds、mapping／GPU／noise／decision都禁止作S11
+formal evidence。
 
 唯一outgoing edge：
 
@@ -100,10 +103,12 @@ S1_GUIDANCE_LOCKED -> S12
 
 - `risk_tier=R2`、`scientific_gate=S11`、
   `execution_tranche=T-S1-MECHANISM`、`closure_unit=CU-S1-MECHANISM`。
-- 執行前依`b0561d2c9216a58a9d71b8e839c47efaa51f9c00`重做cumulative resource
-  preflight，先seal durable machine-readable contract與effective lock；S10R2／S11
-  的wall-time、CPU/GPU、storage、throughput、repair與thread消耗不能由new
-  generation／successor／root歸零。
+- 執行前依A37與current governance重做resource planning，先seal durable
+  machine-readable contract與effective lock。Historical known usage與
+  `UNKNOWN` measurement boundary保留作provenance，但不單獨debit S11 entry；
+  missing telemetry或internal planning target crossing只record＋notify。只有A37
+  material safety／availability／full-workload／optional-stopping／evidence condition
+  才pause。Scientific sample／seed／repair／thread與downgrade gates仍是hard。
 - Positive只seal compact durable gate record
   `protocol/v1/evidence/gate-records/s11-s1-guidance-locked.json`並在verified frozen
   edge後留在同一tranche進S12；此時closure unit尚未`COMPLETE`。
@@ -141,12 +146,13 @@ Future lock：
 
 `protocol/v1/locks/s11-stage1-model-only-factorization-lock.json`
 
-它綁定S10 immutable terminal provenance、S10R1 A32 cancellation、S10R2 positive
-closure、frozen YAML／space／groups／weights／sizes／support-aware valid mapping、study mode、
+它綁定S10 immutable terminal provenance、S10R1 A32 cancellation、S10R2 immutable
+inconclusive/null provenance、S10R3 positive closure、frozen
+YAML／space／groups／weights／sizes／support-aware valid mapping、study mode、
 Formocast／validity revisions、parent constants、randomness bundles、
-label-seal evidence、Plan-B、exact whitelists與report target。S10R2的
-ten-config corpus只作mapping／conformance fixture；S11仍須建立自己的
-multiplicity-preserving occurrence frame。
+label-seal evidence、Plan-B、exact whitelists與report target。S10R3的fresh exact-K
+corpus只作mapping／conformance fixture；不得假設它是十筆。S11仍須建立自己的
+multiplicity-preserving occurrence frame，且不得從S10R2 outcome artifacts建立它。
 
 Outputs至少包括：
 
@@ -179,7 +185,7 @@ S11能說明model-only factorization是否可建立，不能說明real ranking�
 | Guidance完整且label-blind鎖定 | positive closeout | S12 |
 | 無guidable gene／lambda退化 | negative formal closeout | 無 |
 | Support／stability不足 | negative或inconclusive formal closeout | 無 |
-| Mapping缺陷來自S10R2 authority | 停止並記failure；不得猜值 | 無 |
+| Mapping缺陷來自S10R3 authority | 停止並記failure；不得猜值 | 無 |
 | Label leakage | evidence invalid；新lock／fresh pool後全量重跑 | 無 |
 | Proxy scope需要再縮減 | `blocked-awaiting-user-decision` | 無 |
 
@@ -242,3 +248,32 @@ record與claim boundary。若S13成為tranche final，S13 report整合本record�
   並以具單位wall／CPU／GPU caps與完整panel buffer重做preflight。
 - 本amendment不改S11 hypothesis、4,096／8,192 occurrences、128／256 conditional
   support、thresholds、weights、shuffle、label seal、claim、edge或timebox。
+
+### 2026-07-29 A38 S10R3 dependency amendment
+
+- S10R2已依其frozen exact-ten criterion closeout為
+  `CHECKPOINT_COMPLETE / inconclusive / FT-INCONCLUSIVE / edge=null`。它保持
+  immutable，沒有S11 edge；舊`C_greedy=18`只作S10R3 design diagnostic。
+- 使用者核准新的R3 sibling S10R3。S10R3使用fresh registry、disjoint seeds、
+  append-only ledger與bounded deterministic exact-K：
+
+  ```text
+  K = max(10, C_greedy)
+  K_max = 20
+  ```
+
+  只有post-audited `S10R3:S1_ENTRY_GO`可activate既有
+  `T-S1-MECHANISM` reservation並啟動S11。
+- S11把fresh S10R3 exact-K corpus當mapping／conformance fixture，不假設固定十筆；
+  自己的4,096／8,192 accepted-occurrence frame、128／256 conditional support、
+  eligible-gene criteria、`alpha`、`epsilon`、lambda grid、weights、shuffle、
+  label seal、outgoing `S1_GUIDANCE_LOCKED -> S12`與claim全部不變。
+- S10R1與S10R2 outcome-bearing artifacts禁止作S11 evidence。S10R2只保留terminal
+  provenance；S10R3 exact-K rows也只能作entry fixture，不能替代S11自己的
+  multiplicity-preserving frame。
+- S11 entry採A37 resource semantics：known／`UNKNOWN`歷史帳保留但不單獨debit
+  successor；planning variance只record＋notify，只有material safety、availability、
+  full-workload、optional-stopping或evidence condition暫停。Scientific workload、
+  repair/thread caps與downgrade gates不變。
+- A38未改S11的scientific hypothesis、samples、seeds、thresholds、workloads、
+  failure taxonomy、report path、internal edge或claim，也不授權push。
