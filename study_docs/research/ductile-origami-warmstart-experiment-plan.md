@@ -16,7 +16,10 @@
 > A34已核准prospective calibration boundary；A35另將R2 repair round上限由3提高為6，
 > 已消耗rounds完整carry over且不改scientific criteria。A36再明定不影響workload、
 > stopping、evidence integrity或scientific result的resource-accounting缺口只作
-> non-blocking caveat，不要求resource-only rerun。只有
+> non-blocking caveat，不要求resource-only rerun；A37 further supersedes internal
+> resource target與cumulative ledger作blanket hard gate的舊文字，改為
+> record＋notify＋continue，只有material safety／availability／completion／evidence
+> boundary才暫停。只有
 > post-audited `S10R2:S1_ENTRY_GO`可啟動S11。
 >
 > **Foundation provenance：**active `protocol/v1/`與S00 report是fresh foundation；退役M00內容仍不得作schema、hash、lock、registry、fixture、test或PASS evidence。S00只支持CPU-only evidence semantics，不是GPU／performance結果。
@@ -383,6 +386,40 @@ Positive、negative與inconclusive都要durable outcome closure。Operational
 - **Authority limits：**本amendment不授權push、刪除evidence、重寫ledger、縮減
   scientific workload，或將nonpositive outcome改寫成GO。
 
+### 2026-07-29 A37 prospective resource-progress priority
+
+- **Trigger：**A36只處理S10R2 post-label accounting caveat；general rule、本plan與
+  `implement-verify-loop`仍把`>2x`、internal time／storage／throughput target及
+  cumulative consumption寫成blanket hard pause／successor debit。使用者明確要求
+  resource ledger若不影響整體實驗，就不要過度在意並以完整研究進度為優先。
+- **Design discussion：**fresh reviewers`/root/resource_rule_review_a`與
+  `/root/resource_rule_review_b`使用相同`gpt-5.6-sol / xhigh`及相同repo evidence，
+  各自提出立場，完成一輪cross-examination及一輪evidence-backed final。雙方均
+  `AGREE`取消nonmaterial blanket gate；接受保留真正availability／safety／evidence
+  hard boundary，並拒絕刪除歷史帳、縮scientific workload或讓labels決定停止。
+- **Prospective rule：**resource usage預設是operational planning metadata，不是
+  scientific estimand、acceptance criterion或successor-entry debit。Known usage及
+  parent／child／inclusive boundary以best effort保留；`UNKNOWN`不補造、不寫成0。
+  Missing telemetry、`>2x` projection、internal day／wall／CPU／GPU／storage／
+  throughput／pre-empirical target crossing與historical cumulative consumption只需
+  record＋notify；long-running work開始前通知，但通知不是approval gate。
+- **Material pause：**只有direct或materially indicative operational evidence連到
+  unsafe continuation、external／platform／allocation限制、實際資源不足、完整
+  frozen workload／verification／closure／artifact preservation無法完成、
+  label-dependent stopping／selection、required workload／claim change、evidence
+  不可驗證，或labels前明確凍結的scientific resource／comparability boundary時，
+  才safe-boundary pause。Bare `UNKNOWN`、internal target crossing或cumulative total
+  不能單獨構成material evidence。
+- **Unaffected hard boundaries：**scientific sample／draw／seed／arm／population／
+  generation／repetition caps、repair／thread caps、downgrade gate、evidence retention、
+  claim boundary、destructive／push／container authority全部不變。本amendment不授權
+  啟動任何checkpoint。
+- **Supersession／immutability：**A37 prospectively supersedes本plan中把internal
+  resource target一律當hard pause或cumulative successor debit的舊文字；future
+  machine contract／validator必須採相同語意。S10R2 A36、contract、lock、ledger、
+  artifacts、report及`inconclusive / FT-INCONCLUSIVE / edge=null`完全immutable，
+  不做resource-only rerun，也不因此產生S11 edge。
+
 ### Downgrade user gates
 
 `DEGRADED_PROXY`、two-size／reduced-regime、S2 H5 resource-bounded pilot、single-cluster Stage 3 pilot，以及任何減少workloads、runs、seeds、metrics、validation、acceptance或scope的方案，都必須先產生完整decision packet並停在`blocked-awaiting-user-decision`。Diagnostic partial run不能滿足checkpoint或解鎖下游。
@@ -408,13 +445,14 @@ Mapping靠猜、coverage／correctness不完整或judgment pool不足者不具�
 
 > 本檔原有 D1–D7 嚴謹性完整保留。Part I 的數值、公式、locks 與 gates 不因新增後續 stages 而降低。
 
-七日是Stage 1全部hands-on work的exact hard cap，不是完成承諾。S10R2、S11、S12、
-S13每次entry都先帶入同lineage已消耗的wall-time、CPU/GPU time、storage、
-throughput samples、pre-empirical engineering、repair rounds與fresh role threads；
-generation、successor、sibling checkpoint、replacement role或new root不能重置。
-Preflight不能證明剩餘cap足夠完成該dependency-ready gate及closure buffer時，停止並
-形成decision packet或原設計允許的terminal outcome，不縮samples／seeds／sizes／
-criteria。
+七日是Stage 1全部hands-on work的planning target，不是完成承諾或successor-entry
+debit。S10R2、S11、S12、S13每次entry都保留同lineage已知wall-time、CPU/GPU、
+storage、throughput與pre-empirical usage及其measurement boundary作best-effort
+provenance；`UNKNOWN`不補造。Repair rounds與fresh role threads仍跨generation、
+successor、sibling checkpoint、replacement role或new root依governance hard caps累計。
+Preflight評估dependency-ready gate、closure buffer與artifact preservation；只超過
+internal planning target時record＋notify後繼續完整frozen workload，只有A37 material
+condition成立才safe-boundary pause，不縮samples／seeds／sizes／criteria。
 
 ## 0. Stage 1 objective 與完成定義
 
@@ -1715,12 +1753,13 @@ Counterfactual natural stop只作 diagnostic，不是實際wall-time證據。
 
 Stage 1的 `FT-WASHOUT-UNTESTED` 在 Stage 2結束後必須改成具體結果。
 
-### 15.5 Stage 2 time／resource cap
+### 15.5 Stage 2 time／resource planning
 
 - hands-on target：4工作日；
-- hard cap：5工作日，包含分析與 decision report；
-- target與hard cap都不是完成承諾；entry preflight不通過即停止，不能以H5、縮arms或
-  縮seeds保留原claim；
+- planning threshold：5工作日，包含分析與decision report；
+- target／threshold不是完成承諾或automatic stop；跨越時record＋notify後繼續完整
+  workload。只有A37 material condition成立才pause，不能以H5、縮arms或縮seeds
+  保留原claim；
 - entry前依 actual resolved population、adaptive decay與 `C` sizes鎖 proposal與 candidate×size request cap；
 - nominal `3×5×10×64` 只能作 requested-population參考，不是正式GPU cap；
 - 不得只完成部分 arms／seeds後仍判 positive。
@@ -1822,12 +1861,14 @@ Technical reserve只能替換：
 
 兩個 sizes是同一 cluster內 repeated conditions，不是兩個 independent generalization units。
 
-### 17.3 Stage 3 time／resource cap
+### 17.3 Stage 3 time／resource planning
 
-- hard cap：7工作日；
-- hard cap不是完成承諾；entry preflight必須帶入S30／S31同lineage全部既有消耗；
+- planning threshold：7工作日；
+- threshold不是完成承諾或entry debit；entry preflight保留S30／S31同lineage已知
+  usage與measurement boundary作best-effort provenance；
 - entry前鎖完整兩-cluster D5與GA budget；
-- GPU cap依 Stage 2實際消耗與兩-cluster request估算，不靠cache／dedup的樂觀節省啟動；
+- GPU planning estimate依Stage 2實際消耗與兩-cluster request估算，不靠cache／
+  dedup的樂觀節省啟動；
 - 保留 report工作日與10% failure buffer。
 
 Report：
@@ -1973,14 +2014,17 @@ Learned oracle gap必須strictly小於Formocast oracle gap。
 
 `S4_LEARNED_RESIDUAL_POSITIVE`要求每個primary held-out unit三項全部通過。Tie不算positive；required support或coverage缺失是inconclusive。沒有使用outer labels重選features／genes／thresholds是必要validity condition。
 
-不得自行加入effect margin、CI/significance requirement、x-of-y relaxation、oracle-gap ratio，或修改data floor、split、time cap與claim；任何此類變更都需user review。
+不得自行加入effect margin、CI/significance requirement、x-of-y relaxation、
+oracle-gap ratio，或修改data floor、split、scientific resource／comparability
+boundary與claim；任何此類變更都需user review。
 
 預設不跑 actual GA。只有另有第五個 prospectively sealed cluster與 fresh mentor gate，才可設計 actual GA validation；不屬於預設 internship承諾。
 
 ### 19.5 Stage 4 timebox
 
-- hard cap：5工作日；
-- hard cap不是完成承諾；S40／S41 cumulative preflight不足即依原gate停止；
+- planning threshold：5工作日；
+- threshold不是完成承諾或entry debit；S40／S41 preflight只在A37 material
+  condition成立時停止；
 - 預設不新增超過一個 label-only cluster；
 - 資料 gate未過立即停止，不用較弱 split救回。
 
@@ -1993,27 +2037,28 @@ Report：
 
 ## 20. Cross-stage resource、claim 與 lifecycle rules
 
-### 20.1 Resource reservation
+### 20.1 Resource planning 與 material boundary
 
 每個 stage entry前：
 
-- 保留至少1工作日或剩餘可工作時間15%作最終 synthesis，取較大者；
-- 保留已確認GPU allocation的10%作noise／failed-measurement buffer；
-- 確認完整 formal panel可在cap內完成；
+- 以至少1工作日或預估工作時間15%作最終synthesis planning buffer，取較大者；
+- 以可用GPU時間的10%作noise／failed-measurement planning buffer；
+- 評估完整formal panel、verification、closure與artifact preservation；
 - 不因已開始就縮 seeds／arms／clusters後沿用原 claim。
 - 以governance baseline
-  `b0561d2c9216a58a9d71b8e839c47efaa51f9c00`建立cumulative ledger，至少逐
-  gate／command記wall-time、CPU time、GPU time、peak與retained storage、
-  attempted／accepted／mapped／compiled／measured throughput，以及
-  pre-empirical engineering、repair rounds與fresh role threads；
-- 帶入同scientific stage／gate lineage在所有generation、successor、sibling
-  checkpoint、replacement role、process restart與new run root的prior consumption；
-  沒有human明列的新authority／carry-over boundary就不得reset；
-- pre-empirical engineering最多20% stage cap；planned throughput首1%後重估
-  wall-time與storage；projection超過原估2倍、任何frozen cap exceed，或預設
-  transient storage 5 GiB不足時，safe-boundary pause並提交decision packet；
-- entry preflight必須證明剩餘hard cap足以完成完整formal panel、terminal report與
-  buffer；hard cap是停止界線，不是完成承諾，也不允許optional stopping。
+  `b0561d2c9216a58a9d71b8e839c47efaa51f9c00`建立best-effort ledger，逐gate／
+  command記measurement boundary、wall-time、CPU/GPU、peak與retained storage、
+  attempted／accepted／mapped／compiled／measured throughput、pre-empirical
+  engineering、repair rounds與fresh role threads；`UNKNOWN`不補造；
+- Known usage跨generation、successor、sibling checkpoint、replacement role、
+  restart與new run root保留，不刪除或偽稱reset；resource cumulative total不單獨
+  debit successor entry，repair／thread hard caps仍照常累計；
+- 首1% throughput後重估。20% pre-empirical share、2x projection、internal
+  wall／CPU／GPU／storage／throughput target或5 GiB transient target crossing時
+  record＋notify後繼續完整frozen workload；
+- 只有A37 material condition成立才safe-boundary pause並提交decision packet。
+  Runtime／planning variance不允許optional stopping，scientific sample／execution
+  caps及downgrade gate不受影響。
 
 ### 20.2 Claim ladder
 

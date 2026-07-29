@@ -224,27 +224,30 @@ closure/
      `lstat`／hash inventory。
    - 已完成upstream checkpoints的commit、verdict與report identity。
    - 兩層whitelist、formal report/parent path與禁止接觸的downstream paths。
-10. 凍結 resource contract：
-    - Pre-empirical engineering 最多使用 stage cap 的 20%。
-    - 預設 transient storage cap 是 5 GiB，除非 approved design 明定其他值。
-    - 記錄 wall-time、storage、throughput assumptions 與 safe boundaries。
-    - 同一 scientific gate/lineage 已消耗的 wall-time、CPU/GPU time、storage、
-      throughput samples 與 pre-empirical engineering budget，必須跨 generation、
-      successor、replacement role、process restart 與 new run root 累積。除非 human
-      明確批准新的 authority/contract，任何一項都不可 reset；新 contract 必須記錄
-      prior consumption、carry-over 與明確批准的 reset boundary。
-    - Resource telemetry預設是operational safety／planning control，不是scientific
-      outcome criterion。只有direct evidence顯示或實質指向cap exceed、unsafe
-      continuation、label-dependent stopping／selection、required workload不完整或
-      scientific evidence不可驗證時，accounting defect才是hard blocker。Fixed workload、
-      evidence chain與independent reproduction完整、沒有label-driven stopping且沒有
-      direct cap-exceed evidence時，fine-grained／parent-process telemetry缺口記為
-      non-blocking caveat並prospective修正；不得只為完善資源記帳重跑outcome-bearing
-      work，也不得用此分類創造scientific edge。
+10. 凍結 resource planning 與 material boundary：
+    - 記錄 pre-empirical share、wall-time、CPU/GPU、storage、throughput assumptions、
+      first-1% reforecast point、2x variance、預設5 GiB transient target與safe boundaries。
+      這些預設是planning targets，不是hard gates。
+    - Long-running work開始前通知使用者；planning target跨越時記錄並通知後繼續完整
+      frozen workload。通知不是approval gate。
+    - 同一scientific gate/lineage的known usage與parent／child／inclusive measurement
+      boundary跨generation、successor、replacement role、restart與new root保留作
+      best-effort provenance。不得刪除、補造或把`UNKNOWN`寫成0；historical cumulative
+      total不單獨debit successor-entry authority。
+    - 只有direct或materially indicative operational evidence連到unsafe continuation、
+      external／platform／allocation限制、compute／memory／storage不足、完整workload／
+      verification／closure／artifact preservation無法完成、label-dependent stopping／
+      selection、required workload／claim change、evidence不可驗證，或approved pre-label
+      design明確凍結的scientific resource boundary時，才是hard pause gate。Bare
+      `UNKNOWN`、2x variance、internal planning-cap crossing或cumulative total不是此類
+      evidence。不得只為完善記帳重跑outcome-bearing work。
+    - Scientific sample／draw／seed／arm／population／generation／repetition caps、
+      repair／thread caps、downgrade gates與evidence requirements不受本條放寬。
 11. 從 approved design 擷取 durable machine-readable frozen contract，至少包含 gate
     ID/tier、labels、criteria、outcome/edge matrix、evidence/measurement/claim boundary、
-    fixtures、lineage、whitelists、authority、repair budget、resource cap、downgrade gate
-    與 lock identity。人工與機器表示必須可追溯；不一致時停止。
+    fixtures、lineage、whitelists、authority、repair budget、resource planning targets、
+    任何explicit hard resource boundary、downgrade gate與lock identity。人工與機器
+    表示必須可追溯；不一致時停止。
 12. R2/R3 由 adversarial oracle/authority auditor 在 labels 前檢查 contract 完整性、
     post-label invariants、authority 與 claim boundary。修正後重新 hash。
 13. Contract 與 lock 經 tracked commit 或 approved immutable mechanism seal 後，才允許
@@ -291,7 +294,8 @@ Execution plan 必須盡量具體，但不可偽造尚未查證的 code path、c
 
 Planner 完成後，Main agent：
 
-1. 確認 plan 忠於 frozen contract、whitelist、hard edges 與 resource cap。
+1. 確認 plan 忠於 frozen contract、whitelist、hard edges、resource planning targets
+   與任何explicit hard resource boundary。
 2. 確認 machine-readable contract 可獨立驗證 objective、positive/negative/inconclusive/
    blocked outcome、criteria、unacceptable fallback、evidence 與 next edge；不可把這些
    authority 留在 natural-language plan。
@@ -315,13 +319,14 @@ constraints，但不得取得修改 contract 的 authority：
 - 不得 commit、push、install dependency、存取 credentials 或做 external writes。
 - 將每個 changed file、behavior、command、exit code、artifact、deviation、未完成項目寫入 `impl_report.md`。
 - 回覆只包含 terse status、changed-file list 與 report path。
-- Pre-empirical engineering 達 stage cap 20% 時停止增加 scaffolding。
-- 完成 planned workload 的最初 1% 後，以 observed throughput 重新預測 wall-time 與
-  storage。若 projection 超過原估計 2 倍，或任何 wall-time/storage/throughput budget
-  已超限，於 safe boundary 暫停並提交 decision packet。
-- Runtime duration 本身不得成為 optional stopping 或選擇性保留 outcome 的理由；但
-  已凍結 budget exceed 是硬 gate。Decision packet 必須列 live state、completed/missing
-  work、projection、storage、可保留 evidence、preserve-plan alternatives 與 downgrade impact。
+- 追蹤pre-empirical share；完成planned workload最初1%後，以observed throughput重估
+  wall-time與storage。20%、2x、5 GiB或其他internal planning target跨越時記錄並通知，
+  不等待approval且繼續完整frozen workload。
+- Runtime duration、planning variance、missing telemetry或cumulative total本身不得
+  optional stop或選擇性保留outcome。只有Step 0列出的material hard-pause evidence
+  成立時，才在safe boundary暫停並提交decision packet；packet列live state、
+  completed/missing work、projection、storage、可保留evidence、preserve-plan
+  alternatives與downgrade impact。
 
 Implementer 回覆後，Main agent：
 
@@ -401,7 +406,7 @@ Verifier contract：
   still-running結果；scientific negative outcome依frozen design記錄，不得偽裝成
   effect success。
 - Frozen contract/lock hash、measurement lineage、resource decision 與 label boundary
-  完整，且沒有未處理的material budget gate或downgrade。符合Step 0
+  完整，且沒有未處理的material hard resource boundary或downgrade。符合Step 0
   resource-materiality條件的non-blocking accounting caveat必須記錄，但不單獨阻止
   technical `PASS`。
 
@@ -474,9 +479,9 @@ Repair round 是一個 verifier finding 被送修、實作回應並重新驗證�
 
 ### Honest exits
 
-達 risk-tier repair/thread cap、同一 finding 連續兩 rounds 無 progress、resource gate
-暫停後無 approved decision、所需工作/硬體/資料/環境超出 scope、現有 evidence 無法
-判定，或只支持 inconclusive 而不足以支持原 claim 時，停止並誠實升級，不假裝完成。
+達risk-tier repair/thread cap、同一finding連續兩rounds無progress、material resource
+gate暫停後無approved decision、所需工作／硬體／資料／環境超出scope、現有evidence
+無法判定，或只支持inconclusive而不足以支持原claim時，停止並誠實升級，不假裝完成。
 
 ## Step 5：Closure-unit report、parent update、closeout 與 commit
 

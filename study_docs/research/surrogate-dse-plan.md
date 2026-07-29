@@ -210,6 +210,37 @@ operational safety／planning control，而不是默認scientific estimand：
 - 本amendment不能創造或改寫scientific outcome／edge。S10R2的
   `inconclusive / FT-INCONCLUSIVE / edge=null`仍不啟動S11。
 
+### 1.12 A37 prospective resource-progress priority
+
+2026-07-29，使用者進一步要求不要讓resource ledger、內部timebox或估算偏差阻礙
+完整研究。Fresh reviewers`/root/resource_rule_review_a`與
+`/root/resource_rule_review_b`以相同`gpt-5.6-sol / xhigh`、相同repo evidence
+獨立審查，完成一輪cross-examination及一輪evidence-backed final；兩方均
+`AGREE`：
+
+- 本研究的resource usage預設是operational planning metadata，不是scientific
+  estimand、acceptance criterion或successor-entry debit。Known usage及其
+  parent／child／inclusive boundary以best effort保留；`UNKNOWN`不補造也不寫成0；
+- missing telemetry、`>2x` projection、internal day／wall／CPU／GPU／storage／
+  throughput／pre-empirical target crossing或historical cumulative consumption只需
+  record＋notify，不自動pause、rerun、阻止entry或縮減fixed workload。Long-running
+  work開始前通知，但通知不是approval gate；
+- 只有direct或materially indicative operational evidence連到unsafe continuation、
+  external／platform／allocation限制、實際資源不足、完整workload／verification／
+  closure／artifact preservation無法完成、label-dependent stopping／selection、
+  workload／claim change、evidence不可驗證，或labels前明確凍結的scientific
+  resource／comparability boundary時，才在safe boundary暫停。Bare `UNKNOWN`、內部
+  cap crossing或cumulative total不能單獨構成material evidence；
+- scientific sample／draw／seed／arm／population／generation／repetition caps、
+  repair／thread caps、downgrade gate及evidence／claim boundary全部不變。
+
+A37 prospectively supersedes本charter及parent plan中把internal resource planning
+target一律當hard pause或cumulative successor debit的文字。Future machine contract
+必須採相同語意；若resource quantity本身要成為hard scientific／external boundary，
+必須在labels前明列exact quantity、measurement boundary與理由。S10R2的A36、
+contract、lock、ledger、report、artifacts及
+`inconclusive / FT-INCONCLUSIVE / edge=null`完全immutable，不做resource-only rerun。
+
 ---
 
 ## 2. 研究問題與假設
@@ -339,21 +370,25 @@ flowchart LR
 
 ### 4.3 Stage-gated timeboxes
 
-- Stage 1：exact hard cap為最多七個hands-on工作日。
-- Stage 2：target四日、exact hard cap五日。
-- Stage 3：exact hard cap七日。
-- Stage 4：exact hard cap五日，且不是必跑stage。
-- Target與hard cap都不是完成承諾；entry resource preflight無法證明完整panel、
-  report與buffer可在剩餘cap內完成時必須停止。
-- 每個 stage entry前必須確認能完成完整 arms／seeds／clusters，並保留至少一個 report工作日與 failure buffer。
-- 資源不足時輸出 partial／inconclusive，不靠縮 seeds、arms、horizon或clusters保留原 claim。
+- Stage 1：planning target最多七個hands-on工作日。
+- Stage 2：target四日、planning threshold五日。
+- Stage 3：planning threshold七日。
+- Stage 4：planning threshold五日，且不是必跑stage。
+- Timebox不是完成承諾或successor-entry debit。Entry先估完整panel、report與buffer；
+  若只超過internal target，record＋notify後繼續完整frozen workload。
+- 每個stage entry前評估完整arms／seeds／clusters、report工作與failure buffer。只有
+  A37 material condition成立時才safe-boundary pause；不得從bare `UNKNOWN`或
+  cumulative total推定不足。
+- 實際資源不足時輸出partial／inconclusive，不靠縮seeds、arms、horizon或clusters
+  保留原claim。
 - D1–D2 access／artifact／mapping gate 未過：停止 empirical work，不以 CPU-only 結果冒充效能研究。
-- 同stage／gate lineage的wall-time、CPU/GPU time、storage、throughput samples、
-  pre-empirical engineering、repair rounds與fresh role threads跨generation、
-  successor、sibling、replacement與new root累計；沒有human明列authority不得reset。
-- Governance baseline `b0561d2c9216a58a9d71b8e839c47efaa51f9c00`要求
-  pre-empirical engineering最多20% stage cap、首1% throughput後重估；projection
-  超過2倍或frozen budget exceed時safe-boundary pause。
+- 同stage／gate lineage的known wall-time、CPU/GPU、storage、throughput與
+  pre-empirical usage跨generation、successor、sibling、replacement與new root保留作
+  best-effort provenance，不刪除、不補造；不單獨debit successor entry。Repair rounds
+  與fresh role threads仍依governance hard caps累計。
+- 首1% throughput後重估；20% pre-empirical share、2x projection與5 GiB transient
+  target crossing只觸發record＋notify。Scientific sample/execution caps與A37 material
+  boundary仍是hard gates。
 
 ---
 

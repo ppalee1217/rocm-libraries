@@ -13,7 +13,9 @@
 > post-audit已通過；A34核准prospective calibration boundary，A35再將R2 repair
 > round上限由3提高為6且不重置已消耗rounds；A36另將不影響workload、stopping、
 > evidence integrity或scientific result的resource-accounting缺口定為non-blocking
-> caveat，不要求resource-only rerun；
+> caveat，不要求resource-only rerun；A37 prospectively取消internal resource target
+> 與cumulative ledger作blanket hard gate，改為record＋notify＋continue，只有
+> material safety／availability／completion／evidence boundary才暫停；
 > 只有S10R2的post-audited `S1_ENTRY_GO`可啟動S11。
 >
 > **唯一 active 導航入口：**本 README。`legacy/` 內的 M00–M09 仍是 dead-protocol archive，不能提供 schema、hash、lock、registry、criterion、fixture、test或 PASS evidence；S00 positive只支持CPU-only evidence foundation。
@@ -167,9 +169,9 @@ flowchart TD
 2. 將 design 的 maximum boundary縮成 exact path/symbol implementation whitelist與delivery whitelist。
 3. 在任何outcome evidence前建立durable machine-readable frozen contract、驗證
    human/machine parity並seal effective lock。
-4. 依`b0561d2c92`治理floor鎖risk tier、repair/thread/resource budgets，且所有
-   wall-time、CPU/GPU、storage、throughput與pre-empirical engineering跨generation、
-   successor、replacement、new root累計，不得reset。
+4. 依`b0561d2c92`治理floor鎖risk tier與repair/thread hard caps；resource planning
+   依A37保留known usage及measurement boundary作best-effort provenance，跨generation、
+   successor、replacement、new root不刪除／補造，但不單獨debit successor entry。
 5. Planner／implementer／fresh verifier依risk tier與frozen contract執行。
 6. `CHANGES_REQUIRED`只修 active checkpoint並重驗；consequential design issue先走 `design-discussion`。
 7. Technical `PASS`只進入`VERIFIED_PENDING_CLOSEOUT`。
@@ -271,6 +273,33 @@ completion；`skipped_by_gate`／`not_activated`不建立假report。
 - A36不創造scientific edge。S10R2仍為
   `inconclusive / FT-INCONCLUSIVE / edge=null`，不能啟動S11；後續正式研究需新的
   entry recovery authority。
+
+### 6.5 2026-07-29 A37 prospective resource-progress priority
+
+- 使用者明確要求resource ledger若不影響整體實驗，就不要過度在意並以完整研究進度
+  為優先。Fresh reviewers`/root/resource_rule_review_a`與
+  `/root/resource_rule_review_b`以相同`gpt-5.6-sol / xhigh`及repo evidence完成
+  獨立立場、一輪cross-examination與一輪final；雙方均`AGREE`。
+- Resource usage預設是operational planning metadata，不是scientific estimand、
+  acceptance criterion或successor-entry debit。Known usage及parent／child／inclusive
+  boundary以best effort保留；`UNKNOWN`不補造、不寫成0。
+- Missing telemetry、`>2x` projection、internal day／wall／CPU／GPU／storage／
+  throughput／pre-empirical target crossing與historical cumulative consumption只需
+  record＋notify。Long-running work開始前通知，但通知不是approval gate；完整frozen
+  workload繼續。
+- 只有direct或materially indicative evidence連到unsafe continuation、external／
+  platform／allocation限制、實際資源不足、完整workload／verification／closure／
+  artifact preservation無法完成、optional／label-dependent stopping、workload／
+  claim change、evidence不可驗證，或labels前明確凍結的scientific resource boundary
+  時，才safe-boundary pause。Bare `UNKNOWN`、internal target或cumulative total不是
+  material evidence。
+- A37 prospectively supersedes internal resource planning target作blanket hard pause及
+  cumulative successor debit的舊文字；scientific sample／execution caps、repair／
+  thread caps、downgrade／evidence／claim gates不變。Future machine contract必須採
+  相同語意。
+- S10R2 A36、contract、lock、ledger、artifacts、formal report及
+  `inconclusive / FT-INCONCLUSIVE / edge=null`完全immutable；不做resource-only
+  rerun，也不因此啟動S11。
 
 ## 7. Downgrade review gate
 

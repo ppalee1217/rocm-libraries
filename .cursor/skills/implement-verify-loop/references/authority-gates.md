@@ -29,30 +29,28 @@ Keep these gates unchanged:
 - Require human review for destructive non-run-artifact operations, overlap
   with unrelated user changes, forbidden host/container use, ambiguous
   source/spec/target/scope/user preference.
-- Notify the user before starting a long-running command or experiment, then
-  proceed within the frozen resource contract. Runtime duration alone must not
-  permit optional stopping. However, a projection over 2x the original,
-  wall-time/storage/throughput budget exceed, or the default 5 GiB transient
-  storage cap is a hard pause gate: stop at a safe boundary and send a decision
-  packet. Reforecast after the first 1% of planned throughput; pre-empirical
-  engineering may consume at most 20% of the stage cap.
-- For the same scientific gate/lineage, consumed wall-time, CPU/GPU time,
-  storage, throughput samples, and pre-empirical engineering budget accumulate
-  across generations, successors, replacement roles, process restarts, and new
-  run roots. None may reset without explicit human-approved new
-  authority/contract, which must record prior consumption, carry-over, and the
-  approved reset boundary.
-- Treat resource telemetry as operational safety/planning evidence, not as a
-  scientific outcome criterion unless the approved design explicitly measures
-  resource use. A resource-accounting gap is a hard blocker only when direct
-  evidence shows or materially indicates a cap exceed, unsafe continuation,
-  label-dependent stopping/selection, incomplete required work, or compromised
-  scientific evidence. If the fixed workload and evidence chain are complete,
-  the result independently reproduces, stopping was label-blind, and no direct
-  cap exceed is evidenced, record missing fine-grained or parent-process
-  telemetry as a non-blocking caveat and repair it prospectively. Do not rerun
-  outcome-bearing work only to perfect accounting. This classification cannot
-  create or alter a scientific edge.
+- Notify the user before starting long-running work and when first-1%,
+  pre-empirical-share, 2x, wall/CPU/GPU/storage/throughput, or default 5 GiB
+  planning targets are crossed. Notification is not an approval gate; record
+  the variance and continue the complete frozen workload.
+- Preserve known cumulative resource usage and its parent/child/inclusive
+  measurement boundary across generations, successors, replacement roles,
+  restarts, and new run roots as best-effort provenance. Never erase, invent,
+  or silently treat `UNKNOWN` as zero. Historical consumption, missing
+  telemetry, a 2x projection, or an internal planning-cap crossing does not by
+  itself pause work or debit successor-entry authority.
+- Pause at a safe boundary only when direct or materially indicative
+  operational evidence ties continuation to unsafe operation; an
+  external/platform/allocation limit; unavailable compute, memory, or storage;
+  inability to complete the full frozen workload, verification, closure, or
+  artifact preservation; label-dependent stopping/selection; a required
+  workload or claim change; compromised evidence; or an exact resource
+  quantity/boundary frozen pre-label as a scientific/comparability criterion.
+  Bare `UNKNOWN`, planning variance, internal cap crossing, or cumulative total
+  is not such evidence. Do not rerun outcome-bearing work only to perfect
+  accounting. Scientific sample/execution caps, repair/thread caps, downgrade
+  gates, and evidence requirements remain hard and this rule cannot create or
+  alter a scientific edge.
 - Apply the experiment's separate user gate for every downgrade.
 - Any destructive or post-label contract/lock/protocol/fixture/threshold/
   selection/lineage/claim change is R3 and requires its authority gate.

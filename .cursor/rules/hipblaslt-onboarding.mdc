@@ -102,28 +102,30 @@ prior context; explanations must build up from the basics.
   approves more. Stop when the same finding has two rounds without material progress.
   Generations, successors, renames, replacements, or fresh threads cannot reset counts. Total
   fresh role-thread caps for one gate/lineage are R2 = 5 and R3 = 6.
-- Pre-empirical engineering may consume at most 20% of the stage cap. Reforecast wall-time and
-  storage after the first 1% of planned throughput. A projection above 2x the original or any
-  wall-time/storage/throughput budget exceed requires a safe-boundary pause and decision packet.
-  Runtime alone never permits optional stopping, but a frozen budget exceed is a gate. Unless an
-  approved design says otherwise, transient storage is capped at 5 GiB.
-- For the same scientific gate/lineage, all consumed wall-time, CPU/GPU time, storage,
-  throughput samples, and pre-empirical engineering budget accumulate across generations,
-  successors, replacement roles, process restarts, and new run roots. None may reset unless a
-  human explicitly approves new authority/contract; that contract must record prior
-  consumption, carry-over, and the expressly approved reset boundary.
-- Resource telemetry is an operational safety and planning control, not a scientific outcome or
-  claim criterion unless the approved design explicitly makes resource use the measured
-  quantity. A resource-accounting defect is blocking only when direct evidence shows or
-  materially indicates a frozen cap exceed, unsafe continuation, label-dependent
-  stopping/selection, an incomplete required workload, or corrupted/unverifiable scientific
-  evidence. When a fixed workload completed, its schedule and evidence chain verify, the
-  headline result independently reproduces, no label-driven stopping occurred, and there is no
-  direct evidence of a cap exceed, missing fine-grained or parent-process accounting is a
-  non-blocking technical caveat. Record it and improve telemetry prospectively; do not rerun
-  outcome-bearing work solely to perfect resource accounting. This rule never creates or
-  changes a scientific outcome/edge, and it cannot unlock a dependent gate whose scientific
-  edge is absent.
+- Treat pre-empirical share, wall-time, CPU/GPU time, storage, throughput, the first-1%
+  reforecast, a 2x variance, and the default 5 GiB transient-storage ceiling as operational
+  planning targets by default. Notify the user before long-running work and when a planning
+  target is crossed, but notification is not an approval gate and the complete frozen workload
+  continues. A target becomes hard only when an approved pre-label design explicitly freezes
+  the exact resource quantity and boundary as a scientific/comparability criterion or as an
+  external, physical, allocation, or safety limit.
+- Preserve known cumulative resource usage and its parent/child/inclusive measurement boundary
+  across generations, successors, replacement roles, process restarts, and new run roots as
+  best-effort provenance. Never erase, fabricate, or silently present `UNKNOWN` as zero.
+  Historical consumption, missing telemetry, a projection above 2x, or an internal planning-cap
+  exceed does not by itself pause, terminate, or debit successor-entry authority.
+- Resource telemetry is operational planning evidence, not a scientific outcome or claim
+  criterion by default. Pause at a safe boundary only when direct or materially indicative
+  operational evidence ties continuation to unsafe operation; an external/platform limit;
+  unavailable compute, allocation, memory, or storage; inability to complete the full frozen
+  workload, verification, closure, or artifact preservation; label-dependent stopping or
+  selection; a required workload/claim change; corrupted or unverifiable evidence; or an
+  explicitly frozen scientific resource boundary. Bare `UNKNOWN`, planning variance, internal
+  cap crossing, or cumulative total is not such evidence. Record nonmaterial gaps and improve
+  telemetry prospectively; never rerun outcome-bearing work solely to perfect accounting. This
+  rule does not relax scientific sample/draw/seed/arm/population/generation/repetition caps,
+  repair/thread caps, downgrade gates, or evidence requirements, and it never creates or changes
+  a scientific outcome/edge.
 - Technical verification and staged closeout may be one fresh verifier pass when implementation
   is stable and the complete staged draft is ready; record separate technical and closeout
   verdicts. Any later staged change requires the affected audit again. Post-commit audit remains
