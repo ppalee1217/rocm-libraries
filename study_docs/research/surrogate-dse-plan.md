@@ -670,8 +670,9 @@ M00–M09移入`ductile-origami-warmstart/legacy/`，只保留歷史正文：
 - S10R1沒有scientific report；current bytes只保留A32 cancellation tombstone與A33
   retirement manifest。
 - S10R2唯一formal report是
-  `ductile-origami-warmstart/reports/staged/s10r2-stage1-support-aware-entry-report.md`，
-  且不覆寫S10 report。
+  [S10R2 Stage 1 support-aware entry report](ductile-origami-warmstart/reports/staged/s10r2-stage1-support-aware-entry-report.md)。
+  S10R2 technical verification為`PASS`，scientific outcome為
+  `inconclusive / FT-INCONCLUSIVE / edge=null`；不覆寫S10 report，也不啟動S11。
 - S40 data insufficiency是formal scientific negative，寫入`reports/staged/s40-stage4-activation-report.md`；不建立data-insufficiency blocker memo。
 - `skipped_by_gate`／`not_activated`由上游report與closeout記錄，不建立自己的report或commit。
 - Internal positive scientific gate使用compact durable record並在同tranche繼續；
@@ -693,8 +694,9 @@ M00–M09移入`ductile-origami-warmstart/legacy/`，只保留歷史正文：
 2026-07-24設計核准時不是執行Stage 1 D1–D2；第一個可開始的checkpoint是S00。
 2026-07-25 authority amendment與後續S00／S10 durable closeout保持有效。
 2026-07-26 R12曾核准S10R1，但2026-07-28 user-authorized A32已在safe boundary取消
-該execution，沒有scientific outcome或edge。Current active recovery改為S10R2；
-本次只更新documentation／authority，不建立protocol code／tests、report、commit或
-push。Working-tree amendment屬`live_run_state`；current committed governance
-baseline仍是`b0561d2c9216a58a9d71b8e839c47efaa51f9c00`，直到future exact-path
-authority commit與post-audit才更新`committed_projection_state`。
+該execution，沒有scientific outcome或edge。S10R2完成固定support discovery後，
+exact-ten cover需要18 configs，故terminalize為
+`inconclusive / FT-INCONCLUSIVE / edge=null`。A36只把non-material resource
+accounting缺口降為technical caveat，不改scientific result。Closure commit與
+post-audit完成後，S10R2 projection為`CHECKPOINT_COMPLETE`；因沒有positive edge，
+S11維持`not_activated`。本closeout不授權push。

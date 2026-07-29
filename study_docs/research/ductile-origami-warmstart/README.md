@@ -1,16 +1,15 @@
 # Ductile Factorized Guidance — Active Checkpoint Index
 
 > **Active-state authority banner：**本研究目前是
-> `pre_empirical / stage1_support_aware_recovery_approved`。S00是durable positive，
+> `pre_empirical / stage1_entry_inconclusive`。S00是durable positive，
 > S10是durable `negative / S1_ENTRY_BLOCKED / edge=null`，兩者不變。User-authorized
 > A32已在safe boundary取消S10R1：operational
 > `cancelled / BLOCKED`、scientific `not_evaluated`、`edge=null`，沒有scientific
 > report且不是`CHECKPOINT_COMPLETE`；generation 0／1只作diagnostic lineage並
 > 禁止重用。A33另授權identity-only retirement；bulk artifacts不再保留。新的
-> sibling S10R2 committed projection仍為
-> `BLOCKED / not_evaluated / risk_tier=R2`；live formal evidence已terminalize為
-> `inconclusive / FT-INCONCLUSIVE / edge=null`，正等待A36後的fresh verification與
-> closeout。A33 retirement
+> sibling S10R2已由fresh verifier technical `PASS`，scientific outcome為
+> `inconclusive / FT-INCONCLUSIVE / edge=null`；本次closure commit與post-audit後
+> projection為`CHECKPOINT_COMPLETE`。A33 retirement
 > post-audit已通過；A34核准prospective calibration boundary，A35再將R2 repair
 > round上限由3提高為6且不重置已消耗rounds；A36另將不影響workload、stopping、
 > evidence integrity或scientific result的resource-accounting缺口定為non-blocking
@@ -54,7 +53,7 @@ hypothesis、criterion、edge或timebox。
 | S00 | Evidence／lineage／checkpoint-resume foundation | `approved` | `completed` | `CHECKPOINT_COMPLETE` | `positive` | `effective (successor-001)` | [report](reports/staged/s00-foundation-verification-report.md) |
 | S10 | Stage 1 access／artifact／mapping／noise gate | `approved` | `completed` | `CHECKPOINT_COMPLETE` | `negative` | `effective (successor-003)` | [report](reports/staged/s10-stage1-entry-gate-report.md) |
 | S10R1 | Cancelled nominal-boundary recovery diagnostics | `approved` | `cancelled` | `BLOCKED` | `not_evaluated` | `superseded` | none (A32 operational record only) |
-| S10R2 | Stage 1 support-aware entry recovery | `approved` | `blocked` | `BLOCKED` | `not_evaluated` | `absent` | `reports/staged/s10r2-stage1-support-aware-entry-report.md` |
+| S10R2 | Stage 1 support-aware entry recovery | `approved` | `completed` | `CHECKPOINT_COMPLETE` | `inconclusive` | `effective` | [report](reports/staged/s10r2-stage1-support-aware-entry-report.md) |
 | S11 | Stage 1 model-only factorization／guidance lock | `approved` | `gated` | `DESIGN_APPROVED` | `not_activated` | `absent` | `reports/staged/s11-stage1-model-only-factorization-report.md` |
 | S12 | Stage 1 real-score／ranking／oracle audit | `approved` | `gated` | `DESIGN_APPROVED` | `not_evaluated` | `absent` | `reports/staged/s12-stage1-real-score-audit-report.md` |
 | S13 | Stage 1 actual Gen0 mechanism | `approved` | `gated` | `DESIGN_APPROVED` | `not_evaluated` | `absent` | `reports/gen0-factorization-mvp-report.md` |

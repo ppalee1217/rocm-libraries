@@ -4,16 +4,15 @@
 >
 > **研究 scope／claim authority：**[Formocast Factorized Gen0 Guidance Feasibility Study — Research Charter](surrogate-dse-plan.md)。
 >
-> **狀態：**`pre_empirical / stage1_support_aware_recovery_approved`。S00是durable
+> **狀態：**`pre_empirical / stage1_entry_inconclusive`。S00是durable
 > positive；S10是durable `negative / S1_ENTRY_BLOCKED / edge=null`，兩者不變。
 > User-authorized A32已在safe boundary取消S10R1：operational
 > `cancelled / BLOCKED`、scientific `not_evaluated`、`edge=null`，沒有scientific
 > report且不是`CHECKPOINT_COMPLETE`；generation 0／1只作diagnostic lineage並
 > 禁止重用。A33另授權identity-only retirement；bulk artifacts不再保留。
-> 新的sibling S10R2 committed projection仍是`BLOCKED / not_evaluated / R2`；
-> live formal evidence已terminalize為
-> `inconclusive / FT-INCONCLUSIVE / edge=null`，正等待A36後的fresh verification與
-> closeout。A33 retirement已完成，
+> 新的sibling S10R2已由fresh verifier technical `PASS`，scientific outcome為
+> `inconclusive / FT-INCONCLUSIVE / edge=null`；本次closure commit與post-audit後
+> projection為`CHECKPOINT_COMPLETE`。A33 retirement已完成，
 > A34已核准prospective calibration boundary；A35另將R2 repair round上限由3提高為6，
 > 已消耗rounds完整carry over且不改scientific criteria。A36再明定不影響workload、
 > stopping、evidence integrity或scientific result的resource-accounting缺口只作
@@ -65,7 +64,7 @@ orchestration／resource floor；它不能靜默修改上列scientific authority
 | S00 | Evidence contract／lineage／observability foundation | approved | completed | CHECKPOINT_COMPLETE | positive | effective (`successor-001`) | [design](ductile-origami-warmstart/s00-evidence-contract-lineage-observability-design.md) | [report](ductile-origami-warmstart/reports/staged/s00-foundation-verification-report.md) |
 | S10 | Stage 1 access／artifact／mapping／noise gate | approved | completed | CHECKPOINT_COMPLETE | negative | effective (`successor-003`) | [design](ductile-origami-warmstart/s10-stage1-entry-access-mapping-gate-design.md) | [report](ductile-origami-warmstart/reports/staged/s10-stage1-entry-gate-report.md) |
 | S10R1 | Cancelled nominal-boundary recovery diagnostics | approved | cancelled | BLOCKED | not_evaluated | superseded | [design](ductile-origami-warmstart/s10r1-stage1-valid-support-entry-recovery-design.md) | none (A32 operational record only) |
-| S10R2 | Stage 1 support-aware entry recovery | approved | blocked | BLOCKED | not_evaluated | absent | [design](ductile-origami-warmstart/s10r2-stage1-support-aware-entry-recovery-design.md) | `reports/staged/s10r2-stage1-support-aware-entry-report.md` |
+| S10R2 | Stage 1 support-aware entry recovery | approved | completed | CHECKPOINT_COMPLETE | inconclusive | effective | [design](ductile-origami-warmstart/s10r2-stage1-support-aware-entry-recovery-design.md) | [report](ductile-origami-warmstart/reports/staged/s10r2-stage1-support-aware-entry-report.md) |
 | S11 | Stage 1 model-only factorization／guidance lock | approved | gated | DESIGN_APPROVED | not_activated | absent | [design](ductile-origami-warmstart/s11-stage1-model-only-factorization-design.md) | `reports/staged/s11-stage1-model-only-factorization-report.md` |
 | S12 | Stage 1 D5 real-score／oracle audit | approved | gated | DESIGN_APPROVED | not_evaluated | absent | [design](ductile-origami-warmstart/s12-stage1-real-score-ranking-oracle-audit-design.md) | `reports/staged/s12-stage1-real-score-audit-report.md` |
 | S13 | Stage 1 actual Gen0 mechanism | approved | gated | DESIGN_APPROVED | not_evaluated | absent | [design](ductile-origami-warmstart/s13-stage1-actual-gen0-mechanism-design.md) | `reports/gen0-factorization-mvp-report.md` |
@@ -1504,22 +1503,23 @@ D5 或 D6 已形成 empirical evidence，不論 positive、negative 或 inconclu
 
 ## 12. Current execution checklist
 
-- [ ] Frozen generated YAML with provenance
-- [ ] Pinned Ductile／GEKO／TensileLite／Formocast revisions
-- [ ] Actual `group_i`／weights／candidate order confirmed
-- [ ] Actual `soo/reduce_fn` confirmed
-- [ ] S10R2 cumulative resource preflight and durable contract／lock sealed
-- [ ] CPU validity-only support classification complete within 262,144 nominal draws
-- [ ] 10-config mapping parity passed
-- [ ] Exact three same-space sizes locked
-- [ ] Separate deterministic sentinel／runtime-queue helper conformance passed
-- [ ] gfx942 slot booked
-- [ ] Three-anchor smoke／correctness passed
-- [ ] 63-cell noise pilot and `delta_noise` locked
-- [ ] Study mode recorded
-- [ ] Real GFLOPS remains sealed until model-only lock
+- [x] Frozen generated YAML with provenance
+- [x] Pinned Ductile／GEKO／TensileLite／Formocast revisions
+- [x] Actual `group_i`／weights／candidate order confirmed
+- [x] Actual `soo/reduce_fn` confirmed
+- [x] S10R2 cumulative resource preflight and durable contract／lock sealed
+- [x] CPU validity-only support classification complete within 262,144 nominal draws
+- [ ] 10-config mapping parity：`not_activated_by_FT-INCONCLUSIVE`
+- [x] Exact three same-space sizes locked
+- [ ] Separate sentinel／runtime helper conformance：`not_activated_by_gate`
+- [ ] gfx942 execution：`not_activated_by_gate`
+- [ ] Three-anchor smoke／correctness：`not_activated_by_gate`
+- [ ] 63-cell noise pilot：`not_activated_by_gate`
+- [x] Study mode and evidence boundary recorded
+- [x] Real GFLOPS remained sealed
 
-在上述entry conditions完成前，本experiment plan只是一份預註冊設計，不代表實驗已ready或已產生結果。
+S10R2已形成可重現的`inconclusive / FT-INCONCLUSIVE / edge=null`。未勾選項目是依
+frozen gate合法未啟動，不是可補跑的缺漏；S11沒有eligibility。
 
 ---
 

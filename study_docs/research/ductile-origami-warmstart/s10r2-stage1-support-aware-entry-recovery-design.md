@@ -3,12 +3,12 @@ checkpoint_id: S10R2
 title: Stage 1 support-aware entry recovery
 stage: 1
 design_status: approved
-execution_status: blocked
-checkpoint_state: BLOCKED
-scientific_outcome: not_evaluated
-lock_state: absent
-resource_relock_state: calibration_authority_approved_numeric_caps_pending
-risk_tier: R2
+execution_status: completed
+checkpoint_state: CHECKPOINT_COMPLETE
+scientific_outcome: inconclusive
+lock_state: effective
+resource_relock_state: complete_with_A36_nonblocking_caveat
+risk_tier: R3
 governance_baseline: b0561d2c9216a58a9d71b8e839c47efaa51f9c00
 scientific_gate: S10R2
 execution_tranche: T-S10R2
@@ -26,7 +26,7 @@ entry_criteria:
   - post_audited_S10R1_identity_only_retirement
   - exact_S10_source_and_actual_YAML_identity
   - durable_cumulative_resource_relock_and_preflight_pass
-operational_block_reason: numeric_resource_relock_and_preflight_required
+operational_block_reason: null
 criterion_refs:
   - S1_ENTRY_GO
   - S1_ENTRY_BLOCKED
