@@ -214,6 +214,30 @@ outcome matrix、edge、claim、resource caps、allocation values或evidence bou
 - 本amendment不授權push；正式evidence仍必須等待更新後的frozen contract、
   `AUDIT_PASS`、effective lock seal commit及post-seal audit。
 
+### 2.3 A36 post-label resource-accounting materiality amendment
+
+2026-07-29，使用者明確授權不要讓不影響整體科學實驗的resource-accounting缺口
+阻礙進度。這是R3 post-label authority；它不覆寫既有contract／lock／ledger，而只
+釐清technical verification與closeout的resource materiality：
+
+- Resource telemetry是operational safety／planning control，不是S10R2 scientific
+  estimand。只有direct evidence顯示或實質指向frozen cap exceed、unsafe
+  continuation、label-dependent stopping／selection、required workload不完整或
+  scientific evidence不可驗證時，resource-accounting finding才是blocking。
+- S10R2完成固定448 chunks／229,376 draws，沒有early stop或extension；support與
+  exact-ten headline由fresh independent process重現。External selection wall
+  `8924.894379 s`與post-hoc full-panel projection
+  `11010.038318274363 s`均沒有顯示超過frozen `11827 s` wall cap。Parent CPU exact
+  value仍是`UNKNOWN`，必須在report列為measurement caveat，但單憑此unknown不要求
+  resource-only rerun。
+- Existing effective contract、lock、terminal ledger、classification與decision bytes
+  保持immutable。Fresh verifier依本較新的human authority重驗；不建立new run root，
+  不重播outcome-bearing draws，也不更改schedule、seeds、selector、criterion、
+  scientific outcome或claim。
+- 本amendment只解除non-material resource-accounting technical blocker。既有
+  `inconclusive / FT-INCONCLUSIVE / edge=null`保持不變，不能產生
+  `S1_ENTRY_GO`或啟動S11。
+
 ## 3. Frozen actual-S10 identity
 
 Future contract必須逐項重驗並綁定下列controlled inputs：
@@ -500,7 +524,8 @@ audit。
 | Locked generate／compile／smoke／nonzero correctness可重現失敗 | `negative / S1_ENTRY_BLOCKED / FT-BLOCKED-CORRECTNESS` | S10R2 terminal report | `null` |
 | Cap內不足10 witnesses、exact-ten cover不可行、complete proof少於10 overall或63-cell noise不穩定 | `inconclusive / FT-INCONCLUSIVE` | S10R2 terminal report | `null` |
 | Harness／schema／API／guard／queue／lineage實作缺陷 | `CHANGES_REQUIRED`，scientific outcome仍`not_evaluated` | 限budget修復並全量重驗；不是terminal scientific report | `null` |
-| Resource preflight或frozen budget不通過 | operational `BLOCKED`，scientific outcome仍`not_evaluated` | safe-boundary decision packet | `null` |
+| Pre-evidence resource preflight不通過，或direct evidence顯示／實質指向frozen cap exceed、unsafe continuation、label-dependent stopping／selection、required workload不完整或scientific evidence不可驗證 | operational `BLOCKED`，scientific outcome仍`not_evaluated` | safe-boundary decision packet | `null` |
+| Post-execution resource-accounting缺口符合A36 non-materiality條件 | 依其他frozen scientific evidence判定，不另改outcome | formal report記non-blocking caveat並prospective改善telemetry；不得只為記帳重跑 | 依既有scientific outcome；本列不能創造edge |
 
 S10R2是新的、也是唯一的`S1_ENTRY_GO`來源。S10、S10R1、diagnostic generation、
 proxy、two-size、reduced workload、helper-only pass或partial corpus都不能啟動S11。

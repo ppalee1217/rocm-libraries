@@ -1,0 +1,74 @@
+schema_version: 1
+amendment_id: S10R2-A36-RESOURCE-ACCOUNTING-MATERIALITY
+authority_date: "2026-07-29"
+risk_tier: R3
+authority_source: explicit_user_direction
+purpose: >-
+  Keep resource telemetry proportional to its actual effect on scientific
+  validity and avoid rerunning completed outcome-bearing work solely to perfect
+  non-material resource accounting.
+
+resource_materiality:
+  default_role: operational_safety_and_planning_control
+  scientific_estimand_by_default: false
+  blocking_conditions:
+    - direct_or_material_evidence_of_frozen_cap_exceed
+    - unsafe_continuation
+    - label_dependent_stopping_or_selection
+    - incomplete_required_workload
+    - corrupted_or_unverifiable_scientific_evidence
+  non_blocking_conditions_required:
+    - fixed_workload_complete
+    - schedule_and_append_only_evidence_chain_verified
+    - headline_result_independently_reproduced
+    - no_label_driven_stopping_or_selection
+    - no_direct_evidence_of_cap_exceed
+  non_blocking_action:
+    - record_technical_caveat
+    - improve_telemetry_prospectively_when_material
+    - do_not_rerun_outcome_bearing_work_only_for_accounting
+
+s10r2_application:
+  executed_schedule:
+    chunks: 448
+    draws: 229376
+    early_stop: false
+    extension: false
+  resource_evidence:
+    selection_ledger_wall_s: 3561.4237106395885
+    selection_external_wall_s: 8924.894379
+    parent_cpu_s: UNKNOWN
+    post_hoc_full_panel_wall_projection_s: 11010.038318274363
+    frozen_wall_cap_s: 11827
+    direct_cap_exceed_evidence: false
+  verification_evidence:
+    raw_schedule_and_chain: PASS
+    support_reproduction: PASS
+    exact_ten_reproduction: REPRODUCED_FT_INCONCLUSIVE
+    label_dependent_stopping_evidence: false
+  resource_finding_classification: non_blocking_technical_caveat
+  resource_only_rerun_required: false
+
+immutable_evidence:
+  contract_sha256: 4cc630a9f285807727cf901b6f0c1a2350d8dc7ce7f1297bf31a6de027a7b691
+  effective_lock_sha256: c356f7f9053518b96f8fd9a58481750ac86ca1f93e6ad5ba3515187296cc80e8
+  support_classification_file_sha256: 060051dad1faf2da68e32350d8e371fe4d266ad7df157cfcb179d05ea6cdacd2
+  decision_file_sha256: 8b420539307c0b35b269d1ac7843b604fda346e70de294fd63c9b174cd75af4d
+  decision_semantic_digest: 62df3543b3c4cc4135ce7b32d6266ebd42f9a14a89f865ac337a29a3bed6d976
+  rewrite_allowed: false
+
+scientific_boundary:
+  outcome: inconclusive
+  failure_id: FT-INCONCLUSIVE
+  edge: null
+  creates_positive_edge: false
+  s11_authorized: false
+  exact_ten_criterion_changed: false
+  claim_changed: false
+
+authority_limits:
+  push_authorized: false
+  evidence_deletion_authorized: false
+  ledger_rewrite_authorized: false
+  workload_reduction_authorized: false
+  nonpositive_to_go_reclassification_authorized: false

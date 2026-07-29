@@ -112,6 +112,18 @@ prior context; explanations must build up from the basics.
   successors, replacement roles, process restarts, and new run roots. None may reset unless a
   human explicitly approves new authority/contract; that contract must record prior
   consumption, carry-over, and the expressly approved reset boundary.
+- Resource telemetry is an operational safety and planning control, not a scientific outcome or
+  claim criterion unless the approved design explicitly makes resource use the measured
+  quantity. A resource-accounting defect is blocking only when direct evidence shows or
+  materially indicates a frozen cap exceed, unsafe continuation, label-dependent
+  stopping/selection, an incomplete required workload, or corrupted/unverifiable scientific
+  evidence. When a fixed workload completed, its schedule and evidence chain verify, the
+  headline result independently reproduces, no label-driven stopping occurred, and there is no
+  direct evidence of a cap exceed, missing fine-grained or parent-process accounting is a
+  non-blocking technical caveat. Record it and improve telemetry prospectively; do not rerun
+  outcome-bearing work solely to perfect resource accounting. This rule never creates or
+  changes a scientific outcome/edge, and it cannot unlock a dependent gate whose scientific
+  edge is absent.
 - Technical verification and staged closeout may be one fresh verifier pass when implementation
   is stable and the complete staged draft is ready; record separate technical and closeout
   verdicts. Any later staged change requires the affected audit again. Post-commit audit remains

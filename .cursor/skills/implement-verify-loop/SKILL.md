@@ -233,6 +233,14 @@ closure/
       successor、replacement role、process restart 與 new run root 累積。除非 human
       明確批准新的 authority/contract，任何一項都不可 reset；新 contract 必須記錄
       prior consumption、carry-over 與明確批准的 reset boundary。
+    - Resource telemetry預設是operational safety／planning control，不是scientific
+      outcome criterion。只有direct evidence顯示或實質指向cap exceed、unsafe
+      continuation、label-dependent stopping／selection、required workload不完整或
+      scientific evidence不可驗證時，accounting defect才是hard blocker。Fixed workload、
+      evidence chain與independent reproduction完整、沒有label-driven stopping且沒有
+      direct cap-exceed evidence時，fine-grained／parent-process telemetry缺口記為
+      non-blocking caveat並prospective修正；不得只為完善資源記帳重跑outcome-bearing
+      work，也不得用此分類創造scientific edge。
 11. 從 approved design 擷取 durable machine-readable frozen contract，至少包含 gate
     ID/tier、labels、criteria、outcome/edge matrix、evidence/measurement/claim boundary、
     fixtures、lineage、whitelists、authority、repair budget、resource cap、downgrade gate
@@ -393,7 +401,9 @@ Verifier contract：
   still-running結果；scientific negative outcome依frozen design記錄，不得偽裝成
   effect success。
 - Frozen contract/lock hash、measurement lineage、resource decision 與 label boundary
-  完整，且沒有未處理的 budget gate 或 downgrade。
+  完整，且沒有未處理的material budget gate或downgrade。符合Step 0
+  resource-materiality條件的non-blocking accounting caveat必須記錄，但不單獨阻止
+  technical `PASS`。
 
 ## Step 4：Adjudicate 與修正迴圈
 

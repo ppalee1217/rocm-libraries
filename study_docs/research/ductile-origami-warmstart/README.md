@@ -7,10 +7,14 @@
 > `cancelled / BLOCKED`、scientific `not_evaluated`、`edge=null`，沒有scientific
 > report且不是`CHECKPOINT_COMPLETE`；generation 0／1只作diagnostic lineage並
 > 禁止重用。A33另授權identity-only retirement；bulk artifacts不再保留。新的
-> sibling S10R2目前為`BLOCKED / not_evaluated / risk_tier=R2`。A33 retirement
+> sibling S10R2 committed projection仍為
+> `BLOCKED / not_evaluated / risk_tier=R2`；live formal evidence已terminalize為
+> `inconclusive / FT-INCONCLUSIVE / edge=null`，正等待A36後的fresh verification與
+> closeout。A33 retirement
 > post-audit已通過；A34核准prospective calibration boundary，A35再將R2 repair
-> round上限由3提高為6且不重置已消耗rounds；final numeric resource relock與
-> preflight仍待完成；
+> round上限由3提高為6且不重置已消耗rounds；A36另將不影響workload、stopping、
+> evidence integrity或scientific result的resource-accounting缺口定為non-blocking
+> caveat，不要求resource-only rerun；
 > 只有S10R2的post-audited `S1_ENTRY_GO`可啟動S11。
 >
 > **唯一 active 導航入口：**本 README。`legacy/` 內的 M00–M09 仍是 dead-protocol archive，不能提供 schema、hash、lock、registry、criterion、fixture、test或 PASS evidence；S00 positive只支持CPU-only evidence foundation。
@@ -250,6 +254,24 @@ completion；`skipped_by_gate`／`not_activated`不建立假report。
 - Numeric relock前S10R2仍是`BLOCKED / not_evaluated / edge=null`。本authority不改
   workload、criteria、outcome matrix、claim或DAG，也不授權formal evidence、push、
   dependency install、container lifecycle mutation或downgrade。
+
+### 6.4 2026-07-29 A36 resource-accounting materiality
+
+- Resource telemetry預設是operational safety／planning control，不是scientific
+  outcome criterion。只有direct cap-exceed／safety evidence、label-dependent
+  stopping／selection、required workload不完整或scientific evidence不可驗證時才
+  blocking。
+- S10R2 fixed schedule與append-only evidence完整，headline
+  `inconclusive / FT-INCONCLUSIVE`已由fresh independent process重現；沒有early
+  stop、schedule drift、label-driven selection或direct cap-exceed evidence。
+  Validator-child以外的wall／CPU缺口因此依A36列non-blocking caveat，不要求只為
+  資源記帳重跑。
+- 既有contract、lock、terminal ledger、support classification與decision保持
+  immutable；fresh verifier需依A36重新出具technical verdict，formal report需揭露
+  caveat與measurement boundary。
+- A36不創造scientific edge。S10R2仍為
+  `inconclusive / FT-INCONCLUSIVE / edge=null`，不能啟動S11；後續正式研究需新的
+  entry recovery authority。
 
 ## 7. Downgrade review gate
 

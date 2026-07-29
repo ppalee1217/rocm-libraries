@@ -42,6 +42,17 @@ Keep these gates unchanged:
   run roots. None may reset without explicit human-approved new
   authority/contract, which must record prior consumption, carry-over, and the
   approved reset boundary.
+- Treat resource telemetry as operational safety/planning evidence, not as a
+  scientific outcome criterion unless the approved design explicitly measures
+  resource use. A resource-accounting gap is a hard blocker only when direct
+  evidence shows or materially indicates a cap exceed, unsafe continuation,
+  label-dependent stopping/selection, incomplete required work, or compromised
+  scientific evidence. If the fixed workload and evidence chain are complete,
+  the result independently reproduces, stopping was label-blind, and no direct
+  cap exceed is evidenced, record missing fine-grained or parent-process
+  telemetry as a non-blocking caveat and repair it prospectively. Do not rerun
+  outcome-bearing work only to perfect accounting. This classification cannot
+  create or alter a scientific edge.
 - Apply the experiment's separate user gate for every downgrade.
 - Any destructive or post-label contract/lock/protocol/fixture/threshold/
   selection/lineage/claim change is R3 and requires its authority gate.

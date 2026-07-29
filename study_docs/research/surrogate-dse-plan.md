@@ -193,6 +193,23 @@ cross-examination與一輪final positions，兩方均`AGREE`：
 samples、sizes、DAG、claim或downgrade gate；A33釋放的physical capacity仍不是
 historical accounting reset。
 
+### 1.11 A36 resource-accounting materiality amendment
+
+2026-07-29，使用者明確要求不要讓對整體科學實驗沒有實質影響的resource-accounting
+缺口阻礙研究進度。此R3 post-label authority將resource telemetry重新釐清為
+operational safety／planning control，而不是默認scientific estimand：
+
+- 只有direct evidence顯示或實質指向frozen cap exceed、unsafe continuation、
+  label-dependent stopping／selection、required workload不完整或scientific evidence
+  不可驗證時，resource-accounting finding才是blocking；
+- fixed workload完整、schedule／append-only evidence chain通過、headline result由
+  independent process重現、沒有label-driven stopping且沒有direct cap-exceed evidence
+  時，缺少fine-grained或parent-process telemetry只記non-blocking technical caveat；
+- 不得只為完善資源記帳重跑outcome-bearing workload；後續在真正
+  resource-critical的run中prospective改善telemetry；
+- 本amendment不能創造或改寫scientific outcome／edge。S10R2的
+  `inconclusive / FT-INCONCLUSIVE / edge=null`仍不啟動S11。
+
 ---
 
 ## 2. 研究問題與假設

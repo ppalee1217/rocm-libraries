@@ -10,10 +10,14 @@
 > `cancelled / BLOCKED`、scientific `not_evaluated`、`edge=null`，沒有scientific
 > report且不是`CHECKPOINT_COMPLETE`；generation 0／1只作diagnostic lineage並
 > 禁止重用。A33另授權identity-only retirement；bulk artifacts不再保留。
-> 新的sibling S10R2目前是`BLOCKED / not_evaluated / R2`；A33 retirement已完成，
+> 新的sibling S10R2 committed projection仍是`BLOCKED / not_evaluated / R2`；
+> live formal evidence已terminalize為
+> `inconclusive / FT-INCONCLUSIVE / edge=null`，正等待A36後的fresh verification與
+> closeout。A33 retirement已完成，
 > A34已核准prospective calibration boundary；A35另將R2 repair round上限由3提高為6，
-> 已消耗rounds完整carry over且不改scientific criteria。Final numeric resource relock與
-> preflight尚未通過。只有
+> 已消耗rounds完整carry over且不改scientific criteria。A36再明定不影響workload、
+> stopping、evidence integrity或scientific result的resource-accounting缺口只作
+> non-blocking caveat，不要求resource-only rerun。只有
 > post-audited `S10R2:S1_ENTRY_GO`可啟動S11。
 >
 > **Foundation provenance：**active `protocol/v1/`與S00 report是fresh foundation；退役M00內容仍不得作schema、hash、lock、registry、fixture、test或PASS evidence。S00只支持CPU-only evidence semantics，不是GPU／performance結果。
@@ -352,6 +356,33 @@ Positive、negative與inconclusive都要durable outcome closure。Operational
 - **Progression：**更新後的frozen contract必須綁定本authority amendment並重新取得
   adversarial `AUDIT_PASS`；其後仍須effective lock seal commit與post-seal audit，
   才能開始formal evidence。A35不授權push或downgrade。
+
+### 2026-07-29 A36 resource-accounting materiality amendment
+
+- **Trigger：**S10R2已完成固定448 chunks／229,376 draws；fresh verifier重現
+  `inconclusive / FT-INCONCLUSIVE / edge=null`，但發現ledger只記validator child
+  wall／CPU。Ledger wall為`3561.4237106395885 s`，external selection wall為
+  `8924.894379 s`，parent CPU為`UNKNOWN`。Post-hoc full-panel wall projection為
+  `11010.038318274363 s`，低於frozen `11827 s` cap；沒有direct evidence顯示cap
+  exceed、early stop、schedule drift或label-dependent selection。
+- **User decision：**使用者明確要求不要過度放大不影響整體實驗的resource-accounting
+  缺口，並要求修改治理規則、以整體實驗進行為優先。
+- **Materiality rule：**resource telemetry是operational safety／planning control；
+  除非resource use本身是approved scientific estimand，只有direct evidence顯示或
+  實質指向cap exceed、unsafe continuation、label-dependent stopping／selection、
+  required workload不完整或scientific evidence不可驗證時才blocking。Fixed workload、
+  evidence chain與independent reproduction完整且沒有direct cap-exceed evidence時，
+  fine-grained／parent-process accounting缺口只作non-blocking caveat。
+- **S10R2 application：**既有contract、lock、terminal ledger、support classification
+  與decision全部保持immutable；不建立resource-only fresh run。Fresh verifier可依
+  本amendment重驗並在formal report記錄resource caveat。A36不把S10R2改成positive，
+  不改exact-ten criterion、outcome matrix、claim或edge。
+- **Progression boundary：**S10R2仍是
+  `inconclusive / FT-INCONCLUSIVE / edge=null`，所以resource caveat即使解除technical
+  blocker也不能啟動S11。後續必須依新的合法entry recovery authority取得positive
+  edge，或只做明標diagnostic、不得冒充formal S11 evidence。
+- **Authority limits：**本amendment不授權push、刪除evidence、重寫ledger、縮減
+  scientific workload，或將nonpositive outcome改寫成GO。
 
 ### Downgrade user gates
 
