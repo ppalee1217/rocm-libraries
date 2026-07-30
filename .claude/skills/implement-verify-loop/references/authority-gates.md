@@ -10,14 +10,30 @@
 Use risk-tiered, contract-first governance:
 
 - Freeze R0-R3 risk before labels; after labels permit escalation only.
-- Use bounded dual-agent `design-discussion` only for material protocol, claim,
-  measurement-lineage, or authority ambiguity. It has at most two
+- Use bounded dual-agent `design-discussion` only for material experiment
+  protocol, claim, measurement-lineage, stopping-rule, or scientific-authority
+  ambiguity. It has at most two
   cross-examination rounds, one evidence-backed final round, and 60 total agent
   wall-minutes.
-- Continue without repeated human approval when agreement preserves the frozen
-  contract and uses existing authority. At a cap or material dissent, preserve
-  both positions and escalate; never force `AGREE`.
+- Always submit the resulting unified recommendation or preserved dissent to
+  the user before changing or resuming the affected experiment-design path;
+  reviewer agreement is not design authority.
+- For a consequential non-design blocker, multiple contract-preserving repair
+  choices, or two repair rounds without material progress, use two independent
+  operational reviewers with the same bounded cross-examination procedure.
+  Prefer fresh threads when headroom exists; otherwise resume two independent
+  non-implementer roles and disclose their lineage. Their agreed
+  non-destructive, contract/authority-preserving action
+  is pre-authorized and may proceed without another user round-trip. At
+  operational dissent, the Main agent may proceed only with the minimum action
+  uniquely compelled by the frozen contract and direct evidence; otherwise
+  route the issue to its experiment-design, missing-authority, or safety gate.
 - Do not use a planner, auditor, verifier, or consensus to invent authority.
+- Every R0-R3 gate has a six-round repair cap. Two rounds without material
+  progress trigger operational adjudication instead of immediate termination;
+  a seventh repair still requires new human authority. Do not terminalize an
+  achievable goal merely for ordinary `CHANGES_REQUIRED`, a recoverable test or
+  process failure, or nonmaterial resource accounting variance.
 
 Keep these gates unchanged:
 

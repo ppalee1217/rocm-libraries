@@ -3,7 +3,7 @@ name: implement-verify-loop
 description: >-
   Executes risk-tiered engineering and experiment work from an approved design
   using one transient execution plan, a durable machine-readable frozen
-  contract, bounded repair, and independent verification. Preserves hard
+  contract, six-round repair, and independent verification. Preserves hard
   scientific gates while allowing compatible gates to share an execution
   tranche and terminal closeout. Use for preregistered checkpoints with clear
   acceptance, evidence, authority, and report targets. Do not use to invent an
@@ -82,11 +82,11 @@ renaming、replacement 或 fresh thread 都不能重設 tier、repair count 或 
 - Verifier 依 frozen contract 與 direct evidence 判斷，不依 transient execution plan
   的步驟選擇判斷。
 
-## Unexpected design issue adjudication
+## Unexpected experiment-design issue adjudication
 
-只有執行中出現會實質改變 protocol、measurement／claim boundary、lineage 或 authority
-的 ambiguity，才使用 `design-discussion`。機械修復、已有唯一 contract-preserving
-答案、普通 code choice 或單純資源等待不觸發：
+只有執行中出現會實質改變 experiment protocol、measurement／claim boundary、lineage、
+stopping rule 或 scientific authority 的 ambiguity，才使用 `design-discussion`。機械
+修復、已有唯一 contract-preserving 答案、普通 code choice 或單純資源等待不觸發：
 
 - 以完全相同、自足且不暗示偏好的 prompt，啟動兩個額外的 fresh
   reviewers，並套用該 skill 的 cap。
@@ -96,8 +96,9 @@ renaming、replacement 或 fresh thread 都不能重設 tier、repair count 或 
   boundary 與最小 decision packet，交 human escalation。
 - 這兩個 reviewers 不取代 planner、oracle/authority auditor、implementer 或 verifier，
   也不得直接修改 implementation 或創造 authority。
-- 若雙方在 cap 內同意且完整保留 frozen contract/authority，Main agent 記錄裁決後可
-  繼續；否則保留 dissent，不得把分歧改寫成 consensus。
+- 無論雙方形成 unified conclusion 或 preserved dissent，Main agent 都先建立
+  decision packet 並暫停 affected design path，等待使用者決定；雙方同意不能取代
+  experiment-design authority。
 
 適用情況包括：
 
@@ -114,13 +115,14 @@ renaming、replacement 或 fresh thread 都不能重設 tier、repair count 或 
 若 finding 只有一個明確、execution whitelist 內且不改 frozen contract 的機械式修復，直接
 resume 原 implementer/verifier，不需啟動 design discussion。
 
-### Consensus 後的 user-review boundary
+### Experiment-design user-review boundary
 
-- 若 consensus 完整保留 approved design、frozen contract、acceptance、evidence source、
-  report target、checkpoint DAG/gates、whitelist/authority invariants 與 claim
-  boundary，Main agent 記錄裁決後直接繼續，不需再向使用者尋求同意。
-- 任何時點只要 consensus 證明繼續工作必須**打破或修改原訂 plan/authority**，才將
-  consensus與change packet交給使用者審查。這包括修改frozen goal/contract、
+- Experiment-design issue 必須把兩位 reviewers 的 unified conclusion 或 preserved
+  dissent 交給使用者；在使用者批准前，不得修改或恢復 affected design path。這項
+  gate 即使 consensus 保留現有 design 也適用，因為是否接受該 design interpretation
+  由使用者決定。
+- 任何時點只要 consensus 證明繼續工作必須**打破或修改原訂 plan/authority**，change
+  packet 必須明列修改 frozen goal/contract、
   acceptance/threshold、planned evidence、report target、checkpoint order/gate、
   preregistered fixture/measurement boundary、approved whitelist、immutable
   lock/lifecycle invariant或允許的 claim。
@@ -134,6 +136,27 @@ resume 原 implementer/verifier，不需啟動 design discussion。
   dissent、round/time usage 與 final responses。不可只連到 transient artifact。
 - Consensus不能創造push、credentials、external-system write、dependency install、
   container mutation或其他缺少的platform authority。
+
+## Non-design blocker operational adjudication
+
+下列非 experiment-design 狀況若沒有唯一機械答案，且會使工作停止、需要在多個
+contract-preserving 修復間選擇，或同一 finding 連續兩輪沒有 material progress，
+啟動兩個 independent operational reviewers。Thread budget 有 headroom 時使用 fresh
+threads；沒有 headroom 時 resume 兩個未參與該修復實作、彼此獨立的既有角色並揭露
+prior roles，不得藉此重設或規避 thread cap：
+
+- 兩方收到相同 neutral prompt、frozen contract、current diff、direct failure evidence
+  與明確的 non-design boundary。
+- 沿用 `design-discussion` 的最多兩輪 cross-examination、一次 evidence-backed final
+  與 60 agent wall-minute 上限，但不得把 operational adjudication 寫成 scientific
+  design authority。
+- 兩方 `AGREE` 的 non-destructive、contract/authority-preserving action 已由 repository
+  owner 預先授權；Main agent 記錄後直接執行，不再等待使用者。
+- 若兩方仍 dissent，Main agent 只能執行 frozen contract 與 direct evidence 唯一要求
+  的最小、可逆、非破壞性方案。若沒有這種方案，才依實際性質轉入 experiment-design、
+  missing-authority 或 safety gate；不得假造 unified conclusion。
+- Ordinary deterministic fix 不需為了形式而啟動雙 reviewer。Operational reviewers
+  不取代 fresh verifier，且新 thread、generation 或 successor 不能重設 repair count。
 
 ## Scientific gates, execution tranches, and closure units
 
@@ -421,10 +444,10 @@ Main agent 每輪將以下內容追加到 `adjudication.md`：
 
 Repair round 是一個 verifier finding 被送修、實作回應並重新驗證的完整 cycle：
 
-- R0/R1 每個 gate 最多 2 rounds。
-- R2 最多 6 rounds。
-- R3 最多 3 rounds；超過只能取得 human approval。
-- 同一 finding 連續 2 rounds 沒有 material progress，立即停止。
+- R0、R1、R2、R3 每個 gate 都最多 6 rounds；第 7 輪只能取得新的 human approval。
+- 同一 finding 連續 2 rounds 沒有 material progress時，先執行 non-design dual-agent
+  operational adjudication，再決定剩餘 budget 內的修復；不得只因這個訊號終止整體
+  goal。
 - Generation、successor、renaming、replacement、role/thread restart 或搬到新 run root
   都不能重設計數。
 - 同一 gate/lineage 累計 fresh role threads 上限：R2 = 5，R3 = 6。Planner、auditor、
@@ -449,11 +472,13 @@ Repair round 是一個 verifier finding 被送修、實作回應並重新驗證�
 2. 若 finding 只有唯一、contract-preserving 的 in-scope 修復，且仍在 repair budget
    內，直接進入原
    implementer/verifier repair loop。
-3. 若 finding 暴露 material protocol/claim/authority ambiguity 或多個
-   合理方向，先依 `Unexpected design issue adjudication` 完成 dual-agent
-   `design-discussion`；不得先改 source 或 authority。
-4. Consensus 保留 frozen contract 時，Main agent 記錄後直接執行；任何 preserved
-   dissent、cap reached 或 contract/authority change 都提交使用者審查並等待決定。
+3. 若 finding 暴露 material experiment protocol/claim/lineage/stopping-rule/
+   scientific-authority ambiguity，先依 `Unexpected experiment-design issue
+   adjudication` 完成 dual-agent `design-discussion`，再將結論交使用者；不得先改
+   source 或 authority。
+4. 若是多個 consequential、contract-preserving 的非設計修復方向，或同一 finding
+   已兩輪無 material progress，依 `Non-design blocker operational adjudication`
+   取得預授權結論後繼續。
 5. 將 blocking IDs、`verify_report.md`、required changes 與 current changed paths resume 給原 implementer。
 6. Implementer 修正後更新 `impl_report.md`，並只回傳短 status 與 paths。
 7. Main agent 再做 whitelist/baseline check。
@@ -461,27 +486,33 @@ Repair round 是一個 verifier finding 被送修、實作回應並重新驗證�
    - 提供 addressed finding IDs、new diff、commands/artifacts 與 remaining uncertainties。
    - 要求重新讀 current files 並 fresh rerun relevant checks。
    - 不可只相信 repair summary。
-9. 在 repair/thread budget 內重複；達 cap 時 honest exit，不得自動開 generation 重算。
+9. 在 repair/thread budget 內重複。不得因普通 `CHANGES_REQUIRED`、可修復 test failure
+   或非實質資源記帳問題提前結束；達第 6 輪仍無 `PASS` 時才 honest exit，不得自動開
+   generation 重算。
 
 修正迴圈期間 active gate 不變；只有邊界完全獨立且 label-blind 的 preparations 可平行。
 
 ### BLOCKED 或 evidence request
 
 - Main agent 可執行短、可逆且在授權範圍內的 evidence command，並記錄 exact command、cwd、exit code 與 artifacts，再 resume verifier。
-- 遇到 material protocol/claim/authority ambiguity 才走 bounded dual-agent
-  `design-discussion`；deterministic disposable artifact recovery 依 reference 自動處理。
-- 只有 consensus 顯示繼續必須改 frozen contract/authority、bounded discussion 保留
-  material dissent，或操作需要尚未取得的
-  external/platform authority，才詢問使用者。
+- 遇到 material experiment protocol/claim/lineage/stopping-rule/scientific-authority
+  ambiguity，走 bounded dual-agent `design-discussion` 並一律將結論交使用者；
+  deterministic disposable artifact recovery 依 reference 自動處理。
+- 非設計 blocker 先依 operational adjudication 使用既有 authority 自主解決。只有
+  experiment-design decision、缺少 destructive/external/platform authority、hard
+  safety/scientific boundary，或第 6 repair round 後仍無有效路徑才停止 affected path。
 - 若環境無法取得必要 evidence，terminal state 是 `BLOCKED`，不是 `PASS`。
 - `BLOCKED` 或 evidence request 停止該 dependency path 的 outcome-bearing work；只允許
   邊界不重疊的 independent label-blind preparation。
 
 ### Honest exits
 
-達risk-tier repair/thread cap、同一finding連續兩rounds無progress、material resource
+達第 6 repair round或thread cap且dual-agent operational adjudication仍找不到
+authority-preserving路徑、experiment-design decision等待使用者、material resource
 gate暫停後無approved decision、所需工作／硬體／資料／環境超出scope、現有evidence
-無法判定，或只支持inconclusive而不足以支持原claim時，停止並誠實升級，不假裝完成。
+無法判定，或只支持inconclusive而不足以支持原claim時，停止affected path並誠實升級，
+不假裝完成。同一finding兩輪無progress只是強制adjudication訊號，不再單獨構成
+terminal exit。
 
 ## Step 5：Closure-unit report、parent update、closeout 與 commit
 

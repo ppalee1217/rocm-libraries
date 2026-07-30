@@ -241,7 +241,8 @@ record與claim boundary。若S13成為tranche final，S13 report整合本record�
   不是reset。
 - `T-S1-MECHANISM`取得reserved、尚未activated的prospective allowance：最多5個
   new fresh role threads與3個new repair rounds；S11→S13內不得由internal edge、
-  generation或new root再reset，且S13仍受R1 gate-specific最多2 repairs。
+  generation或new root再reset，且S13仍受R1 gate-specific最多2 repairs。這是A34
+  historical boundary；prospective repair caps後由A44統一supersede為6。
 - Reservation不構成S11 entry或resource preflight pass。只有post-audited
   `S10R2:S1_ENTRY_GO`可activate；entry時仍須把S10R2後的actual prospective
   consumption帶入shared Stage-1 7-day／1.4-day pre-empirical／5-GiB envelope，
@@ -268,6 +269,20 @@ record與claim boundary。若S13成為tranche final，S13 report整合本record�
   自己的4,096／8,192 accepted-occurrence frame、128／256 conditional support、
   eligible-gene criteria、`alpha`、`epsilon`、lambda grid、weights、shuffle、
   label seal、outgoing `S1_GUIDANCE_LOCKED -> S12`與claim全部不變。
+
+### 2026-07-30 A44 universal six-round repair amendment
+
+- 所有prospective R0–R3 gate-specific repair cap統一為6 rounds；因此
+  `T-S1-MECHANISM`尚未activated的repair allowance與S11、S12、S13各gate上限都以6
+  為準。既有消耗完整carry over，S11→S13 internal edge、generation、replacement、
+  restart或new root都不能reset，第7輪仍需新的human authority。
+- 本amendment只改execution governance；不改S11 entry dependency、4,096／8,192
+  accepted-occurrence frame、128／256 conditional support、eligible-gene criteria、
+  `alpha`、`epsilon`、lambda grid、weights、shuffle、label seal、claim、edge或
+  timebox。
+- Experiment-design ambiguity仍須雙agent交互詰問後交使用者決定；非設計
+  contract-preserving雙agent共識已預授權直接執行。本authority不授權push、
+  downgrade、destructive operation、dependency install或container mutation。
 - S10R1與S10R2 outcome-bearing artifacts禁止作S11 evidence。S10R2只保留terminal
   provenance；S10R3 exact-K rows也只能作entry fixture，不能替代S11自己的
   multiplicity-preserving frame。

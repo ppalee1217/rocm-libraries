@@ -17,7 +17,8 @@
 > 與cumulative ledger作blanket hard gate，改為record＋notify＋continue，只有
 > material safety／availability／completion／evidence boundary才暫停。A38已核准
 > R3 sibling S10R3，S10R2保持immutable inconclusive/null；只有S10R3的post-audited
-> `S1_ENTRY_GO`可啟動S11。
+> `S1_ENTRY_GO`可啟動S11。A44把所有prospective R0–R3 repair cap統一為6 rounds，
+> 並把experiment-design user gate與非設計dual-agent預授權分開。
 >
 > **唯一 active 導航入口：**本 README。`legacy/` 內的 M00–M09 仍是 dead-protocol archive，不能提供 schema、hash、lock、registry、criterion、fixture、test或 PASS evidence；S00 positive只支持CPU-only evidence foundation。
 >
@@ -258,7 +259,8 @@ completion；`skipped_by_gate`／`not_activated`不建立假report。
   A33釋放空間不是historical reset。
 - Authority commit post-audit後，`T-S10R2`取得prospective 5 new threads／3 new
   repairs；`T-S1-MECHANISM`先reserve同樣5/3，只有S10R2 GO後activate，S11→S13內
-  不再reset，且S13仍受R1最多2 repairs。
+  不再reset，且S13仍受R1最多2 repairs。這是A34 historical boundary；prospective
+  repair caps後由A44統一supersede為6。
 - S10R2→S13共享新的prospective 7 hands-on days、1.4 pre-empirical days與5 GiB
   transient ceiling。先做outcome-blind calibration；具單位wall／CPU／GPU caps、
   confirmed GPU allocation、buffer、contract parity與effective lock全數成立後才
@@ -342,12 +344,26 @@ completion；`skipped_by_gate`／`not_activated`不建立假report。
   scientific workload、threshold、claim與internal edges不變。
 - R3角色配置為two planners、one adversarial auditor、Main implementation與one
   fresh verifier；連同兩位design reviewers為`6/6` threads，沒有replacement
-  headroom，repair最多3 rounds。
+  headroom。A44後repair最多6 rounds，rounds 1–3完整carry over。
 - `12669 wall-s / 65285 CPU-s / 2901 GPU-s / 2 GiB`只作A37 planning estimates。
   GPU／ROCm command只在existing `perlee`；每phase直接選目前free eligible gfx942，
   不需reservation或exclusivity，但必須鎖定identity、foreign-PID rejection、
   interruption與append-only resume。
 - 只有post-audited `S10R3:S1_ENTRY_GO`啟動S11；其他outcome都保持edge null。
+
+### 6.7 2026-07-30 A44 universal six-round repair與goal persistence
+
+- 所有prospective R0–R3 repair cap都是6 rounds；已消耗rounds不重置，第7輪仍需
+  新human authority。S10R3因此由`3/3`改為`3/6`。
+- Experiment-design ambiguity仍由兩個獨立agents完成bounded cross-examination，
+  並將unified recommendation或dissent交使用者決定後才恢復affected path。
+- 非設計阻塞、多個contract-preserving repairs或同一finding兩輪無material progress，
+  可由兩個獨立agents裁決；共同non-destructive、contract/authority-preserving
+  結論已預授權直接執行。沒有thread headroom時resume既有獨立non-implementer roles。
+- 普通`CHANGES_REQUIRED`、可修復test/process failure與nonmaterial resource-accounting
+  variance不再提前terminalize可完成的goal。本authority不改scientific criteria、
+  schedule、outcome／edge、claim，也不授權push、downgrade、destructive operation、
+  dependency install或container mutation。
 
 ## 7. Downgrade review gate
 

@@ -93,10 +93,21 @@ prior context; explanations must build up from the basics.
 - Track `live_run_state` separately from `committed_projection_state`. Partial artifacts and
   working-tree progress belong only to live state; committed projection changes only after the
   durable closeout commit and post-commit audit.
-- Repair rounds are bounded: R0/R1 at most 2, R2 at most 6, and R3 at most 3 unless a human
-  approves more. Stop when the same finding has two rounds without material progress.
-  Generations, successors, renames, replacements, or fresh threads cannot reset counts. Total
-  fresh role-thread caps for one gate/lineage are R2 = 5 and R3 = 6.
+- Repair rounds are bounded at six for every R0-R3 gate. Reaching two consecutive rounds
+  without material progress triggers the non-design dual-agent adjudication below before another
+  repair; it does not by itself terminate the overall goal. A unified, contract-preserving repair
+  decision may continue within the six-round budget. Generations, successors, renames,
+  replacements, or fresh threads cannot reset counts, and a seventh repair requires new human
+  authority. Total fresh role-thread caps for one gate/lineage remain R2 = 5 and R3 = 6.
+- While an explicitly requested goal remains achievable under existing authority, do not
+  terminalize it merely because of `CHANGES_REQUIRED`, an ordinary test failure, missing
+  nonmaterial telemetry, planning variance, a recoverable process/environment interruption, or
+  another contract-preserving implementation blocker. Exhaust safe in-scope diagnosis, repair,
+  rerun, and the authorized dual-agent operational adjudication within their frozen caps while
+  keeping the user informed. Pause for the user only at the experiment-design gate below or when
+  continuation genuinely needs missing destructive/external/platform authority, would violate a
+  hard scientific or safety boundary, or has exhausted the six-round budget with no valid
+  authority-preserving path.
 - Treat pre-empirical share, wall-time, CPU/GPU time, storage, throughput, the first-1%
   reforecast, a 2x variance, and the default 5 GiB transient-storage ceiling as operational
   planning targets by default. Notify the user before long-running work and when a planning
@@ -180,25 +191,37 @@ prior context; explanations must build up from the basics.
   and a plausible mechanism. State the measurement boundary, sample size, repetitions, metrics,
   and what the result cannot support.
 
-### Bound material design discussion and preserve dissent
+### Bound design discussion, operational adjudication, and preserve dissent
 
-- Trigger `design-discussion` only for material protocol, measurement/claim/lineage, or authority
-  ambiguity. Do not trigger it for mechanical repairs, deterministic artifact recovery, ordinary
-  implementation choices, or resource waiting.
+- Trigger `design-discussion` only for material experiment-design ambiguity involving protocol,
+  measurement/claim/lineage, stopping rules, or scientific authority. Do not trigger it for
+  mechanical repairs, deterministic artifact recovery, ordinary implementation choices, or
+  resource waiting.
 - Give two fresh independent reviewers the same neutral prompt and evidence. Allow at most two
   cross-examination rounds plus one evidence-backed final round, with at most 60 total agent
   wall-minutes. A new thread or renamed issue cannot reset either cap.
-- Do not force `AGREE`. If both reviewers agree within the cap and the decision preserves the
-  frozen contract and existing authority, record it and continue. At any material dissent,
-  timeout, round cap, or time cap, preserve both positions, evidence boundaries, shared points,
-  and the smallest decision packet, then escalate to the user.
+- Do not force `AGREE`. For an experiment-design issue, preserve the reviewers' unified
+  conclusion or dissent and always pause for the user's decision before changing or resuming the
+  affected design path; reviewer agreement is analysis, not design authority.
+- For a non-design issue that would otherwise stop progress, has multiple consequential
+  contract-preserving repairs, or has repeated for two rounds without material progress, use two
+  independent operational reviewers with the same bounded cross-examination procedure. Use
+  fresh threads when thread headroom exists; otherwise resume two independent non-implementer
+  roles and disclose their prior roles instead of bypassing the thread cap.
+  If they agree on a non-destructive action that preserves the frozen contract and existing
+  authority, the repository owner pre-authorizes the Main agent to record and execute it without
+  another user round-trip. If they dissent, preserve both positions; the Main agent may proceed
+  only with an action uniquely compelled by the frozen contract and direct evidence. Otherwise
+  reclassify the unresolved issue under the applicable experiment-design, authority, or safety
+  gate instead of inventing consensus.
 - A frozen-contract change includes a changed goal, acceptance threshold, evidence source,
   report target, gate order/edge, preregistered fixture or measurement boundary, whitelist,
   immutable lock/lifecycle invariant, lineage, or allowed claim. After labels, such a change is
   R3 and cannot be made through reviewer consensus alone.
 - `CHANGES_REQUIRED` alone is not a contract change. A contract-preserving in-scope repair,
   rerun, correctly isolated test harness, or explicitly designed negative branch does not need
-  repeated human approval.
+  repeated human approval and should not terminalize an achievable goal before the six-round
+  repair budget is exhausted.
 - Reviewer agreement cannot invent the user's initial intent or grant missing commit/push,
   credential, external-system, dependency-installation, container, or destructive authority.
 

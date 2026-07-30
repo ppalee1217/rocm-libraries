@@ -386,10 +386,27 @@ R3 governance固定：
 - Main agent實作，不另開implementer thread；
 - 一位未參與實作的fresh verifier；
 - 合計`6/6` fresh role threads，沒有pre-authorized replacement；
-- R3 repair最多3 rounds；同一finding連續兩輪無material progress即停止。
+- A44後R3 repair最多6 rounds；已使用rounds 1–3完整carry over。同一finding連續
+  兩輪無material progress時先做non-design dual-agent operational adjudication，
+  不再單獨構成terminal stop。
 
-需要第七個fresh thread或第四個repair round時必須取得新的human authority；不得用
-generation、successor、restart或new root重置。
+需要第七個fresh thread或第七個repair round時必須取得新的human authority；thread
+cap沒有headroom時，A44允許resume兩個未參與該repair實作的既有獨立角色進行
+operational adjudication，不得用generation、successor、restart或new root重置。
+
+### 9.1 2026-07-30 A44 execution-governance amendment
+
+使用者將所有prospective R0–R3 repair cap統一為6 rounds，並要求在goal仍可依既有
+authority完成時不要因普通`CHANGES_REQUIRED`、可修復test/process failure或
+nonmaterial resource-accounting variance提前中斷。S10R3由`3/3`擴為`3/6`，下一輪
+是round 4；這不改scientific hypothesis、search space、schedule、seed、selector、
+mapping、correctness/noise criteria、outcome matrix、claim或edge。
+
+Experiment-design議題仍須兩個獨立agents完成bounded cross-examination，並無論
+unified recommendation或dissent都交使用者決定。非設計阻塞的兩-agent共同
+non-destructive、contract/authority-preserving修復已預授權直接執行。第7輪、
+destructive/external/platform authority、hard safety/scientific boundary、push、
+downgrade與container mutation仍不在本amendment授權內。
 
 ## 10. Contract、seal 與formal evidence order
 

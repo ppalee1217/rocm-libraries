@@ -1,13 +1,14 @@
 ---
 name: design-discussion
-description: Uses two independent reviewers for bounded deliberation of material protocol, claim, measurement-lineage, or authority ambiguity. Allows at most two cross-examination rounds plus one evidence-backed final round and 60 total agent wall-minutes; preserves dissent and escalates instead of forcing agreement. Do not use for lookups, mechanical repairs, ordinary implementation choices, resource waiting, or questions already resolved by a frozen contract.
+description: Uses two independent reviewers for bounded deliberation of material experiment-design ambiguity in protocol, claim, measurement-lineage, stopping rules, or scientific authority. Allows at most two cross-examination rounds plus one evidence-backed final round and 60 total agent wall-minutes, then gives the unified recommendation or preserved dissent to the user for a decision. Never applies an experiment-design decision autonomously. Do not use for lookups, mechanical repairs, ordinary implementation choices, resource waiting, or questions already resolved by a frozen contract.
 ---
 
 # Design Discussion
 
 用兩個彼此獨立的 reviewers 降低單一觀點的盲點。Main agent 是 orchestrator：準備
-共同 prompt、轉交雙方論點、查核證據、執行 round/time cap，最後寫回 consensus 或
-保留 dissent 的 human decision packet。
+共同 prompt、轉交雙方論點、查核證據、執行 round/time cap，最後把 unified
+recommendation 或 preserved dissent 整理成 human decision packet。Experiment-design
+決定必須由使用者核准，reviewer consensus 本身不授權變更或恢復 affected design path。
 
 ## Model policy
 
@@ -138,17 +139,19 @@ Main agent 是透明 relay，不得把自己的偏好偽裝成另一方意見。
 6. Cap 不是失敗，也不是默認任何一方勝出。不得以多數、語氣、model、Main agent 偏好
    或時間壓力強迫 `AGREE`、刪除 objection 或偽造 consensus。
 
-## User escalation boundary
+## User decision boundary
 
 對 implement/verify 過程中的 unexpected design issue：
 
-- 兩方 `AGREE` 的 consensus若保留 frozen goal、acceptance、planned evidence、
-  report target、checkpoint order/gates、approved whitelist/authority invariants與
-  claim boundary，Main agent直接寫回並繼續，不需額外詢問使用者。
+- 兩方 `AGREE` 時，把 consensus、evidence boundary、risks 與最小 approval question
+  交給使用者；即使它保留 frozen goal、acceptance、planned evidence、report target、
+  checkpoint order/gates、approved whitelist/authority invariants 與 claim boundary，
+  也不得在使用者決定前恢復 affected design path。
 - 任一 material `DISSENT` 或 cap reached 都保留原 frozen contract，提交 human decision
   packet；不可在等待期間修改 source、authority、labels 或 claim。
-- 任何時點只要consensus顯示繼續必須打破或修改上述plan/authority，才將change
-  packet交給使用者審查；不必等checkpoint完成後才升級。
+- 任何時點只要consensus顯示繼續必須打破或修改上述plan/authority，change packet
+  必須額外列出 exact amendment 與重新 seal／rerun impact；不必等checkpoint完成後才
+  升級。
 - Ordinary in-scope repair、fresh rerun、原 plan 已定義的 negative branch、或把
   brittle test harness修成正確表達同一 acceptance，都不是自動 human gate。
 - 這個consensus不能擴張frozen delivery whitelist或scoped commit authority，也不能
@@ -157,10 +160,12 @@ Main agent 是透明 relay，不得把自己的偏好偽裝成另一方意見。
 - Initial request若沒有唯一 goal、scope或 target，仍須釐清；兩個 agents不能替
   使用者發明原始意圖。
 
-## Step 5：由 Main agent 寫回文件
+## Step 5：由 Main agent 保存 packet，核准後寫回 authority
 
-Unified conclusion 成立時寫回 approved decision；有 dissent 時只寫回 clearly
-non-authoritative decision packet 與 preserved positions，不得把任一立場標成定案。
+使用者決定前，unified conclusion 與 dissent 都只能寫成 clearly non-authoritative
+decision packet，不得把 reviewer recommendation 標成 approved design。使用者明確
+核准後，Main agent 才將 approved decision 寫回 governing design／authority；若使用者
+未核准，保留 frozen state 與 packet。
 
 - Main agent 親自整合內容；不可直接貼上任一 subagent 的原始回答。
 - 更新文件中最自然的既有章節；只有沒有合適位置時才新增設計決策章節。
@@ -178,7 +183,8 @@ non-authoritative decision packet 與 preserved positions，不得把任一立�
 - 實際啟動本skill的issue另記兩位reviewers的substantive objections、採納/捨棄方案、
   shared consensus 或 preserved dissent、round/time usage 與 final responses；不要貼
   raw chat 或 private chain-of-thought。
-- 只有兩方 `AGREE` 才標示共同確認；否則清楚標示 `PENDING_HUMAN_DECISION`。
+- 只有兩方 `AGREE` 才標示 unified recommendation；在使用者決定前，兩種結果都清楚
+  標示 `PENDING_HUMAN_DECISION`。
 - 遵守目標文件既有語言、格式與 repo 文件規範。
 - 不覆蓋無關的使用者變更。
 
@@ -224,8 +230,9 @@ run root 與一個 terminal closeout，但不得共享或改寫彼此的 outcome
 
 ## 完成條件
 
-本 skill 在「consensus 已寫回」或「dissent 已保存並升級」其中一個 terminal state
-成立時完成：
+本 skill 的 deliberation 在「unified recommendation 已保存並提交使用者」或「dissent
+已保存並提交使用者」其中一個 terminal state 成立時完成；affected experiment-design
+path 仍等待使用者決定：
 
 - 兩個 fresh reviewers 收到相同初始 prompt。
 - Budget 允許時，雙方至少完成一輪針對彼此實際論點的交互詰問；若 initial positions
@@ -233,9 +240,9 @@ run root 與一個 terminal closeout，但不得共享或改寫彼此的 outcome
 - Factual crux 已以可取得的證據查核，或明確列為未驗證。
 - Cross-examination 不超過兩輪，final positions 不超過一輪，且總 agent wall-time
   不超過 60 分鐘。
-- A、B 都 `AGREE` 同一 candidate，或 material dissent 已原樣保存並 human escalated。
-- Main agent 已把 approved design 或 non-authoritative decision packet 寫回唯一、
-  正確的 target document。
+- A、B 都 `AGREE` 同一 candidate，或 material dissent 已原樣保存。
+- Main agent 已把 non-authoritative decision packet 寫回唯一、正確的 target document
+  並交使用者；只有取得明確核准後，才可另行寫成 approved design。
 - 若為 multi-gate 實驗，parent plan 已建立 gate/tranche/closure mapping，且每個 gate
   都有可執行的獨立設計／contract 與預先指定的 closure report 或 terminal blocker path。
 

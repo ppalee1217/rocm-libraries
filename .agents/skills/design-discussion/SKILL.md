@@ -1,6 +1,6 @@
 ---
 name: design-discussion
-description: Uses two independent GPT-5.6 Sol subagents to deliberate experiment or implementation design, repeatedly cross-examine assumptions and evidence until both explicitly confirm one consensus, and preserve the resulting decision for the governing design and experiment report. Use for experiment design, architecture or approach selection, hypothesis validation strategy, ambiguous result interpretation, unexpected implementation or verification design issues, and other consequential design-direction decisions. Do not use for lookups, mechanical edits, implementation execution, or choices with an obvious conventional default.
+description: Uses two independent reviewers for bounded deliberation of material experiment-design ambiguity in protocol, claim, measurement-lineage, stopping rules, or scientific authority. Allows at most two cross-examination rounds plus one evidence-backed final round and 60 total agent wall-minutes, then gives the unified recommendation or preserved dissent to the user for a decision. Never applies an experiment-design decision autonomously. Do not use for lookups, mechanical repairs, ordinary implementation choices, resource waiting, or questions already resolved by a frozen contract.
 ---
 
 # Design Discussion

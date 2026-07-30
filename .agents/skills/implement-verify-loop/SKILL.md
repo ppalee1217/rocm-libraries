@@ -1,17 +1,13 @@
 ---
 name: implement-verify-loop
 description: >-
-  Implements, independently verifies, reports, and commits exactly one stable
-  checkpoint indexed by an authoritative parent experiment plan, using two
-  independent planners, a fresh implementer, and a fresh verifier. Routes
-  consequential design issues through two additional fresh design-discussion
-  subagents until both confirm one consensus. For a multi-checkpoint
-  experiment, repeats the full plan → implement → verify/fix → report → parent
-  update → closeout audit → commit loop sequentially; never starts downstream
-  work before the active checkpoint is committed and audited. Use for
-  experiment checkpoints with complete acceptance criteria and report targets.
-  Do not use for initial design, rules maintenance, trivial edits, or ambiguous
-  goals.
+  Executes risk-tiered engineering and experiment work from an approved design
+  using one transient execution plan, a durable machine-readable frozen
+  contract, six-round repair, and independent verification. Preserves hard
+  scientific gates while allowing compatible gates to share an execution
+  tranche and terminal closeout. Use for preregistered checkpoints with clear
+  acceptance, evidence, authority, and report targets. Do not use to invent an
+  ambiguous design or silently weaken a locked protocol.
 ---
 
 # Implement and Verify Loop
@@ -28,7 +24,9 @@ completely. Follow it with these Codex runtime mappings:
   `reasoning_effort: xhigh`.
 - Use `fork_turns: none` for every fresh subagent and provide the complete
   role-specific prompt and artifact paths explicitly.
-- Issue the two planner `spawn_agent` calls before waiting for either result.
+- The canonical workflow uses one execution planner by default. When it calls
+  for a paired design or operational review, issue both reviewer
+  `spawn_agent` calls before waiting for either result.
 - Treat `resume` as `followup_task` addressed to the same saved implementer,
   verifier, or planner agent ID.
 - Record the Codex task name or agent ID wherever the canonical workflow asks

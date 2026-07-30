@@ -20,6 +20,9 @@
 > resource target與cumulative ledger作blanket hard gate的舊文字，改為
 > record＋notify＋continue，只有material safety／availability／completion／evidence
 > boundary才暫停。A38新增R3 sibling S10R3；S10R2保持immutable inconclusive/null。
+> A44再將所有prospective R0–R3 repair cap統一為6 rounds，既有消耗完整carry over；
+> experiment-design議題經兩個獨立reviewers交互詰問後仍須使用者決定，非設計阻塞的
+> contract-preserving共識則已預授權直接執行。
 > 只有post-audited `S10R3:S1_ENTRY_GO`可啟動S11。
 >
 > **Foundation provenance：**active `protocol/v1/`與S00 report是fresh foundation；退役M00內容仍不得作schema、hash、lock、registry、fixture、test或PASS evidence。S00只支持CPU-only evidence semantics，不是GPU／performance結果。
@@ -334,7 +337,8 @@ Positive、negative與inconclusive都要durable outcome closure。Operational
 - **Prospective enforcement：**承載本決策的exact-path authority commit通過
   post-audit後，`T-S10R2`可使用new threads`<=5`／new repairs`<=3`；
   `T-S1-MECHANISM`先reserve同樣5/3、只有S10R2 GO後activate，且S11→S13內不得
-  再reset；S13仍受R1最多2 repairs。S10R2→S13共享prospective Stage-1 hands-on
+  再reset；S13仍受R1最多2 repairs。這是A34當時的boundary，prospective repair
+  caps後由A44統一supersede為6。S10R2→S13共享prospective Stage-1 hands-on
   `<=7 days`、pre-empirical`<=1.4 days`及transient storage`<=5 GiB`。
 - **Two-stage relock：**第一階段只授權exact count-bounded、outcome-blind
   synthetic／foundation calibration，禁止actual validity/support、Formocast、
@@ -361,7 +365,8 @@ Positive、negative與inconclusive都要durable outcome closure。Operational
 - **Scope：**只擴張R2 repair governance，不改任何scientific hypothesis、search
   space、workload、seed、threshold、criterion、outcome／edge matrix、claim、
   resource cap、allocation value或evidence boundary。`T-S1-MECHANISM`原reserved
-  5-thread／3-repair allowance與S13 R1最多2 repairs不變。
+  5-thread／3-repair allowance與S13 R1最多2 repairs在A35當時不變；prospective
+  repair caps後由A44統一supersede為6。
 - **Progression：**更新後的frozen contract必須綁定本authority amendment並重新取得
   adversarial `AUDIT_PASS`；其後仍須effective lock seal commit與post-seal audit，
   才能開始formal evidence。A35不授權push或downgrade。
@@ -480,7 +485,8 @@ Positive、negative與inconclusive都要durable outcome closure。Operational
   helper/fault、`CV P95<=0.5%`、`delta_noise`與no-replacement criteria不變。
 - **Role boundary：**已使用兩個design reviewers；Codex adapter另用two planners、
   one adversarial auditor、Main implementation與one fresh verifier，合計R3
-  `6/6` threads，沒有replacement headroom。R3 repair最多3 rounds。
+  `6/6` threads，沒有replacement headroom。A44生效後R3 repair最多6 rounds；
+  rounds 1–3完整carry over。
 - **Resource/GPU：**initial
   `12669 wall-s / 65285 CPU-s / 2901 GPU-s / 2 GiB`是A37 planning estimates，
   crossing只record＋notify；只有A37 material condition暫停。所有GPU／ROCm command
@@ -490,6 +496,29 @@ Positive、negative與inconclusive都要durable outcome closure。Operational
 - **Preserved downstream：**S11–S13的4,096／8,192 occurrences、128／256 support、
   samples、seeds、thresholds、workloads、criteria、claims與internal edges全部不變；
   S11只把entry dependency與mapping fixture改綁fresh S10R3 exact-K output。
+
+### 2026-07-30 A44 universal six-round repair與goal-persistence amendment
+
+- **User decision：**所有prospective R0–R3 checkpoint repair cap統一為6 rounds。
+  已消耗rounds完整carry over；generation、successor、replacement、restart或new root
+  不能歸零，第7輪仍需新的human authority。
+- **S10R3 effect：**原R3 `3/3`擴為`3/6`，下一輪是round 4。這只修改execution
+  governance，不改scientific hypothesis、search space、draw／seed／cell schedule、
+  selector、mapping、correctness/noise threshold、outcome matrix、claim或edge。
+- **Design gate：**experiment protocol、measurement／claim／lineage、stopping rule或
+  scientific authority議題，必須由兩個獨立agents完成bounded cross-examination，
+  再把unified recommendation或preserved dissent交使用者決定；consensus本身不授權
+  design變更。
+- **Non-design authority：**會使goal停止的非設計問題、多個contract-preserving修復
+  方向或同一finding兩輪無material progress，可由兩個獨立agents交互詰問。其共同
+  non-destructive、contract/authority-preserving結論已預授權Main agent直接執行。
+  Thread cap沒有headroom時resume兩個未參與該修復實作的既有獨立角色，不以新thread
+  規避cap。
+- **Persistence：**普通`CHANGES_REQUIRED`、可修復test/process failure、nonmaterial
+  resource-accounting variance不得提前terminalize仍可在既有authority內完成的goal。
+  Missing destructive/external/platform authority、hard safety/scientific boundary與
+  第6輪後仍無有效路徑仍是真實stop gate。A44不授權push、downgrade、container
+  mutation或destructive cleanup。
 
 ### Downgrade user gates
 

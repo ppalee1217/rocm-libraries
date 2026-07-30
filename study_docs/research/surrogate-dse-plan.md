@@ -180,7 +180,8 @@ cross-examination與一輪final positions，兩方均`AGREE`：
   threads`>=10`、repairs`>=11`與其餘`UNKNOWN`全部保留；
 - authority commit post-audit後，只向前建立`T-S10R2`與reserved
   `T-S1-MECHANISM`各5 new threads／3 new repairs的enforcement counters；
-  S13仍受R1最多2 repairs，internal edges與new roots都不再reset；
+  S13仍受R1最多2 repairs，internal edges與new roots都不再reset；這些A34
+  prospective repair caps後由A44統一supersede為6；
 - S10R2→S13共享新的prospective 7 hands-on days、最多1.4 pre-empirical days與
   5 GiB transient ceiling；
 - 先做不接觸actual validity/support、Formocast、GFLOPS、correctness/noise labels或
@@ -284,6 +285,23 @@ design reviewers共R3 `6/6` threads）、A37 planning semantics、只在existing
 commit與後續`implement-verify-loop`。不授權push。Initial
 `12669 wall-s / 65285 CPU-s / 2901 GPU-s / 2 GiB`只作planning estimates；
 scientific draw／cell／repair／thread caps仍是hard boundaries。
+
+### 1.14 A44 universal six-round repair與goal persistence
+
+2026-07-30，使用者將所有prospective R0–R3 repair cap統一為6 rounds；既有消耗完整
+carry over，不能由generation、successor、replacement、restart或new root歸零，
+第7輪仍需新的human authority。S10R3因此從`3/3`擴為`3/6`，下一輪是round 4。
+
+Experiment-design議題仍必須由兩個獨立agents完成bounded cross-examination，並把
+unified recommendation或preserved dissent交使用者決定。非設計阻塞、多個
+contract-preserving修復方向或同一finding兩輪無material progress，則可由兩個
+獨立agents裁決；其共同non-destructive、contract/authority-preserving結論已預授權
+直接執行。普通`CHANGES_REQUIRED`、可修復test/process failure與nonmaterial
+resource-accounting variance不得提前terminalize可依既有authority完成的goal。
+
+A44只改execution governance，不改任何scientific hypothesis、search space、workload、
+seed、threshold、criterion、outcome／edge matrix、claim或evidence boundary，也不授權
+push、downgrade、destructive operation、dependency install或container mutation。
 
 ---
 
