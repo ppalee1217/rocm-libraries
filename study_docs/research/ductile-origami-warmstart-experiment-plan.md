@@ -636,6 +636,27 @@ Positive、negative與inconclusive都要durable outcome closure。Operational
   selector、mapping、correctness／noise、outcome matrix、claim、report或edge；formal
   evidence仍必須等fresh A46.1 reseal、current plans、A46 lock與post-commit audit全過。
 
+### 2026-07-30 A46.2 experiment-scoped external workspace drift
+
+- **User decision：**unrelated、non-overlapping、non-agent-attributed external worktree
+  drift只需append-only record與notification，不再以global worktree equality阻止實驗。
+- **Qualification：**path必須在所有active implementation／execution／delivery／
+  authority／source／input／evidence／lock／report／run boundaries之外；未staged、
+  未進current exact commit；沒有current-workflow touch；不影響dependency、
+  reproducibility、evidence、claim或closeout；且continuation完全不需更動該path。
+- **Action：**保留original baseline，新增successor observation並標
+  `UNKNOWN_EXTERNAL`；不得restore、delete、quarantine、stage、commit或推定owner
+  授權刪除。任何overlap、agent attribution、index／commit collision、evidence impact、
+  qualification不足或required mutation仍走原human／destructive gate。
+- **S10R3 application：**三個pre-existing untracked
+  `implement-verify-loop-origin/` files目前absent。它們不屬S10R3 scope，未被A46.1
+  exact-five commit修改，current workflow沒有可追溯touch，且不影響S10R3
+  reproduction或evidence；保存successor observation後不再阻止fresh Phase-1 audit。
+- **Scientific boundary：**不改hypothesis、source／YAML、search space、schedule、
+  criteria、outcome matrix、claim、report或edge；S10R3仍是
+  `not_evaluated / edge=null`，formal evidence仍須等待current reseal、plans、
+  effective lock與post-commit audits。
+
 ### Downgrade user gates
 
 `DEGRADED_PROXY`、two-size／reduced-regime、S2 H5 resource-bounded pilot、single-cluster Stage 3 pilot，以及任何減少workloads、runs、seeds、metrics、validation、acceptance或scope的方案，都必須先產生完整decision packet並停在`blocked-awaiting-user-decision`。Diagnostic partial run不能滿足checkpoint或解鎖下游。

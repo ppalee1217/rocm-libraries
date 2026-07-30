@@ -488,6 +488,32 @@ count或maximum。
 mapping、correctness／noise、outcome matrix、claim、report或edge。Formal evidence仍
 必須等A46.1 reseal、current plans、fresh A46 lock及post-commit audit全部通過。
 
+### 9.5 2026-07-30 A46.2 experiment-scoped external workspace drift
+
+使用者核准workspace isolation以active experiment boundary為準。Pre-existing path的
+external modification／appearance／disappearance只有在下列條件全部有direct
+evidence時，才是`external_unrelated_drift`：
+
+1. 位於所有S10R3 implementation、execution-artifact、delivery、authority、source／
+   input、evidence、lock、report與run-root boundaries之外；
+2. 未staged、未進current exact commit，current workflow也無path touch；
+3. 不影響dependency resolution、build input、reproducibility、evidence、claim、
+   gate或closeout；
+4. continuation不需restore、delete、quarantine、overwrite、stage、commit或其他
+   mutation。
+
+符合時original baseline保持historical immutable，Main append successor observation，
+記錄known prior/current `lstat`／Git／index state、`UNKNOWN_EXTERNAL` attribution、
+boundary checks與commit-path proof，notification後繼續。這不授權對unrelated path做
+任何動作；若任一qualification不成立，原human／destructive gate仍適用。
+
+Current finding `S10R3-P1-A46-1-PC-AUD-001`涉及的三個
+`implement-verify-loop-origin/` untracked files完全在S10R3 boundaries之外，未被
+A46.1 exact-five commit修改，current workflow無可追溯touch，且implementation、
+verification與formal evidence都不依賴其bytes。它們以`UNKNOWN_EXTERNAL` absent
+successor observation保存後不再阻止Phase-1 post-commit audit。本節不改任何
+scientific oracle、workload、criterion、outcome／edge、claim或evidence boundary。
+
 ## 10. Contract、seal 與formal evidence order
 
 Future exact planning必須把maximum boundary縮成exact implementation/delivery

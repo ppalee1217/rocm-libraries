@@ -387,6 +387,28 @@ history；contract floor `>=9`只作最低歷史保護，不是live count。這�
 hypothesis、search space、schedule、criterion、outcome／edge、claim或evidence
 boundary，也不授權formal evidence、push或其他原本禁止的動作。
 
+### 1.18 A46.2 experiment-scoped external workspace drift
+
+2026-07-30，使用者核准以experiment-scoped workspace audit取代global unrelated
+worktree equality。Pre-existing path的外部變動只有在direct evidence確認它完全位於
+active implementation／execution／delivery／authority／source／input／evidence／lock／
+report／run-root boundaries之外、未進index或current exact commit、沒有current
+workflow touch、無reproducibility或scientific impact，且continuation不需更動該path
+時，才分類為`external_unrelated_drift`。
+
+符合者保留原baseline為historical observation，另append successor observation，
+attribution記為`UNKNOWN_EXTERNAL`，通知後繼續；不得restore、delete、quarantine、
+stage、commit或以disappearance推定owner授權刪除。Scope overlap、agent attribution、
+index／commit collision、evidence impact、qualification不足或需要path mutation時，
+原human／destructive gate不變。
+
+S10R3的current incident只涉及三個pre-existing untracked
+`implement-verify-loop-origin/` files。它們不在任何S10R3 whitelist／authority／
+evidence／run boundary，未被A46.1 exact-five commit修改，current workflow沒有可追溯
+touch，且S10R3不需其bytes；因此保存unknown-attribution successor observation後，
+該external drift不再阻止Phase-1 post-commit audit。Scientific projection、
+`not_evaluated / edge=null`與formal-evidence prohibition均不變。
+
 ---
 
 ## 2. 研究問題與假設

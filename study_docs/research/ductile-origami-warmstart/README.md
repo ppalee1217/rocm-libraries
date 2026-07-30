@@ -457,6 +457,23 @@ completion；`skipped_by_gate`／`not_activated`不建立假report。
 - Scientific/oracle projection保持不變；formal evidence仍未啟動，outcome維持
   `not_evaluated / edge=null`。
 
+### 6.11 2026-07-30 A46.2 experiment-scoped external workspace drift
+
+- Workspace audit改為只檢查exact current-workflow writes、index／commit paths與
+  experiment-relevant protected state；unrelated external paths不需全域byte equality。
+- 只有path完全位於S10R3 implementation／execution／delivery／authority／source／
+  input／evidence／lock／report／run boundaries之外、未被current workflow觸碰、
+  未進index／commit、不影響reproducibility或claim，且不需對該path做任何mutation，
+  才可記為`external_unrelated_drift`並notification後繼續。
+- Original baseline維持immutable historical observation；successor observation記錄
+  prior/current state、`UNKNOWN_EXTERNAL` attribution與boundary proof。不得restore、
+  delete、quarantine、stage、commit或把absence當作刪除授權。
+- Current S10R3 incident的三個`implement-verify-loop-origin/` untracked files符合此
+  分類：它們與S10R3 scope／evidence無重疊，A46.1 exact-five commit未觸碰，且workflow
+  不需要其bytes。保存successor observation後，fresh Phase-1 audit可繼續。
+- 本治理修正不改science；S10R3保持`not_evaluated / edge=null`，只有post-audited
+  `S10R3:S1_ENTRY_GO`可啟動S11。
+
 ## 7. Downgrade review gate
 
 以下狀況一律先產生decision packet並停在`blocked-awaiting-user-decision`：

@@ -1,8 +1,8 @@
 # Copyright Advanced Micro Devices, Inc., or its affiliates.
 # SPDX-License-Identifier: MIT
 
-schema_version: 5
-contract_id: S10R3-A46-UNCAPPED-PLAN-RESEAL-V2
+schema_version: 6
+contract_id: S10R3-A46-2-EXPERIMENT-SCOPED-DRIFT-RESEAL-V3
 checkpoint_id: S10R3
 payload_state: PREIMPLEMENTATION_SCIENTIFIC_SEAL_PAYLOAD
 scientific_outcome: not_evaluated
@@ -14,8 +14,8 @@ identity:
   closure_unit: CU-S10R3
   risk_tier: R3
   hypothesis_id: S10R3-H1
-  base_head: e7e894eb96b2abf477d7a847da6e06d5a1e23f4c
-  authority_amendment: A46.1
+  base_head: bb5440a1e97cb2f47a67ed2b0c4ec3c3a849ce0a
+  authority_amendment: A46.2
   contract_path: study_docs/research/ductile-origami-warmstart/protocol/v1/s10r3-stage1-bounded-cover-entry-contract.yaml
   effective_lock_path: study_docs/research/ductile-origami-warmstart/protocol/v1/locks/s10r3-stage1-bounded-cover-entry-lock.json
   formal_report_path: study_docs/research/ductile-origami-warmstart/reports/staged/s10r3-stage1-bounded-cover-entry-report.md
@@ -32,6 +32,8 @@ authority:
     - effective_execution_lock
     - direct_evidence_and_terminal_report
   committed_history:
+    governance_experiment_scoped_drift_commit: bb5440a1e97cb2f47a67ed2b0c4ec3c3a849ce0a
+    a46_1_phase1_reseal_commit: b3ffc11fdd71eb3060f103fd122a3820b5d7e2c2
     a46_phase1_reseal_commit: e7e894eb96b2abf477d7a847da6e06d5a1e23f4c
     governance_reviewer_repair_commit: 10b7d10ca7e197f7d93e1afd821805d4a65b1684
     governance_six_round_commit: 3abb7ecf36e84a519a962533eb600f13b4b2b37c
@@ -42,16 +44,16 @@ authority:
   phase1_authority_projection:
     - id: research_charter
       path: study_docs/research/surrogate-dse-plan.md
-      sha256: 8d166ff10021f87c4cb63cf2725d25dd1a409d724e37aa42ffe820e89e9c61d4
+      sha256: 8052f48a1f3e07db0e0e13bb6b9425de3171ee913b283f2f15a12bbc1dcab9c1
     - id: experiment_plan
       path: study_docs/research/ductile-origami-warmstart-experiment-plan.md
-      sha256: fbe5552700860b56d3031dbd706deb9e9a58c1b463ea540ca7d83bdfd0ff8140
+      sha256: 78c1149bfe94d70f3f7317224e3bf13edae1a8b81cfb53646393dd4450ed32fb
     - id: checkpoint_index
       path: study_docs/research/ductile-origami-warmstart/README.md
-      sha256: 64039b9c901eb3142aa7e42a4f18574a9bb22111654d87bb78a76c36a55c80c1
+      sha256: c7fa7f6f5cc5fb0c5edba0b1b3f8a91583d81cd77daf131d117196302a3a9a44
     - id: checkpoint_design
       path: study_docs/research/ductile-origami-warmstart/s10r3-stage1-bounded-cover-entry-recovery-design.md
-      sha256: cbc3cee00605f6bf8c4f1cfb9e475fd570bdf254d00be1e93ef7cbe87db120fa
+      sha256: 4ec71e97b511482dd2681226897914fab714c2485f82a060cc00111711fb5275
   user_authority:
     clean_restart_scope:
       delete_uncommitted_s10r3_implementation: true
@@ -65,6 +67,9 @@ authority:
     non_design_boundary: non_destructive_and_contract_authority_preserving
     user_interruption_boundary: result_driven_change_to_original_experiment_plan_or_scientific_direction
     no_repeated_user_gate_for_same_feature_pre_evidence_alignment: true
+    external_unrelated_drift_policy: record_notify_continue_if_fully_nonoverlapping_nonagent_and_no_mutation
+    global_unrelated_worktree_equality_is_gate: false
+    unrelated_path_mutation_authorized: false
     push_authorized: false
     workflow_file_staging_authorized: false
     dependency_install_authorized: false
@@ -72,10 +77,10 @@ authority:
     scientific_change_authorized: false
 
 workflow_authority_manifest:
-  base_head: e7e894eb96b2abf477d7a847da6e06d5a1e23f4c
+  base_head: bb5440a1e97cb2f47a67ed2b0c4ec3c3a849ce0a
   identity_semantics: content_addressed_current_workflow_authority
   standalone_reconstruction_claimed: false
-  drift_policy: fail_closed
+  drift_policy: fail_closed_on_experiment_overlap_otherwise_record_notify_continue
   entries:
     - path: AGENTS.md
       sha256: d6f163de760751465c6615efd2b33bb549470f8f8d73ce70c62e6c01ee7f9d21
@@ -84,33 +89,33 @@ workflow_authority_manifest:
       git_state: modified
       committed: false
     - path: CLAUDE.md
-      sha256: aa679c5bdb41a3f4f9fa4e10fe933226b7629947cb919397499af7ccc1608130
+      sha256: 82ce427afc7454e3f09c2747ed0d27a61bf96b5b571400e493b1b00b3c11ddf4
       mode: "0664"
-      size_bytes: 25136
+      size_bytes: 27256
       git_state: committed_at_base_head
       committed: true
     - path: .cursor/rules/hipblaslt-onboarding.mdc
-      sha256: 60cb586d90962a96446311f31fa5c15d4aab9aed9ffa417988712d2eab1a894b
+      sha256: c3c462e4e448c7e3a86fcb8cd767a3195ddf98e909fb34100338fd4f17ece358
       mode: "0664"
-      size_bytes: 25308
+      size_bytes: 27428
       git_state: committed_at_base_head
       committed: true
     - path: .cursor/skills/implement-verify-loop/SKILL.md
-      sha256: 5c43a40180e1c2a8f3cffd6d10819afbf159baf6b16ae06304a03dd9d5b45cf3
+      sha256: c92e2affdef6511a9b942e2238490bb8bb62577a11926e8744d6b43e252a27ee
       mode: "0664"
-      size_bytes: 43983
+      size_bytes: 46146
       git_state: committed_at_base_head
       committed: true
     - path: .cursor/skills/implement-verify-loop/references/planning-contract.md
-      sha256: cf8e687fb32cf81ac97ad94eae4f064a4a0a7bd6febbe842d0522b5f55a03507
+      sha256: 4cb35eda1cb9b162b28d40474af6d0d602942d0e4ee31655bbccb4246ac689f6
       mode: "0664"
-      size_bytes: 10484
+      size_bytes: 10957
       git_state: committed_at_base_head
       committed: true
     - path: .cursor/skills/implement-verify-loop/references/authority-gates.md
-      sha256: 4333a6f69058321864cf8d1f1d5e9bb33ca51019265f6094baf85383fc3cc209
+      sha256: b56a1cd42dea0b6308726b89eafbeb4a9534b8811313703b8e24f4249d6dd3f6
       mode: "0664"
-      size_bytes: 8979
+      size_bytes: 11841
       git_state: committed_at_base_head
       committed: true
     - path: .cursor/skills/design-discussion/SKILL.md
@@ -120,21 +125,21 @@ workflow_authority_manifest:
       git_state: committed_at_base_head
       committed: true
     - path: .agents/skills/implement-verify-loop/SKILL.md
-      sha256: 141ef4d63054ad550f339e2ffbd38f7c3351e47aadfc1bd185d8364d6c1097e8
+      sha256: b2130358fb533a64097ef98e3e8ef0c60321a7e049a5001a9296a21e1bef49b6
       mode: "0664"
-      size_bytes: 45217
+      size_bytes: 47380
       git_state: committed_at_base_head
       committed: true
     - path: .agents/skills/implement-verify-loop/references/planning-contract.md
-      sha256: cf8e687fb32cf81ac97ad94eae4f064a4a0a7bd6febbe842d0522b5f55a03507
+      sha256: 4cb35eda1cb9b162b28d40474af6d0d602942d0e4ee31655bbccb4246ac689f6
       mode: "0664"
-      size_bytes: 10484
+      size_bytes: 10957
       git_state: committed_at_base_head
       committed: true
     - path: .agents/skills/implement-verify-loop/references/authority-gates.md
-      sha256: 4333a6f69058321864cf8d1f1d5e9bb33ca51019265f6094baf85383fc3cc209
+      sha256: b56a1cd42dea0b6308726b89eafbeb4a9534b8811313703b8e24f4249d6dd3f6
       mode: "0664"
-      size_bytes: 8979
+      size_bytes: 11841
       git_state: committed_at_base_head
       committed: true
     - path: .agents/skills/design-discussion/SKILL.md
@@ -144,21 +149,21 @@ workflow_authority_manifest:
       git_state: modified
       committed: false
     - path: .claude/skills/implement-verify-loop/SKILL.md
-      sha256: 5c43a40180e1c2a8f3cffd6d10819afbf159baf6b16ae06304a03dd9d5b45cf3
+      sha256: c92e2affdef6511a9b942e2238490bb8bb62577a11926e8744d6b43e252a27ee
       mode: "0664"
-      size_bytes: 43983
+      size_bytes: 46146
       git_state: committed_at_base_head
       committed: true
     - path: .claude/skills/implement-verify-loop/references/planning-contract.md
-      sha256: cf8e687fb32cf81ac97ad94eae4f064a4a0a7bd6febbe842d0522b5f55a03507
+      sha256: 4cb35eda1cb9b162b28d40474af6d0d602942d0e4ee31655bbccb4246ac689f6
       mode: "0664"
-      size_bytes: 10484
+      size_bytes: 10957
       git_state: committed_at_base_head
       committed: true
     - path: .claude/skills/implement-verify-loop/references/authority-gates.md
-      sha256: 4333a6f69058321864cf8d1f1d5e9bb33ca51019265f6094baf85383fc3cc209
+      sha256: b56a1cd42dea0b6308726b89eafbeb4a9534b8811313703b8e24f4249d6dd3f6
       mode: "0664"
-      size_bytes: 8979
+      size_bytes: 11841
       git_state: committed_at_base_head
       committed: true
   parity_requirements:
@@ -179,7 +184,7 @@ seal_protocol:
       - study_docs/research/ductile-origami-warmstart/README.md
       - study_docs/research/ductile-origami-warmstart/s10r3-stage1-bounded-cover-entry-recovery-design.md
       - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r3-stage1-bounded-cover-entry-contract.yaml
-    required_audit_verdict: AUDIT_PASS_PREIMPLEMENTATION_A46_1
+    required_audit_verdict: AUDIT_PASS_PREIMPLEMENTATION_A46_2
     lock_identity_rule:
       algorithm: git_commit_oid_plus_raw_contract_sha256
       self_commit_oid_embedded_in_contract: false
@@ -233,12 +238,12 @@ role_governance:
     implementation_participation_forbidden: true
     commit_authority: false
   counters:
-    repair_rounds_completed_before_current_cycle: 11
-    repair_cycle_in_progress: 12
+    repair_rounds_completed_before_current_cycle: 14
+    repair_cycle_in_progress: 15
     repair_rounds_used_on_previous_phase1_audit_pass: 6
     repair_rounds_stop_cap: null
     repair_count_is_stop_gate: false
-    next_complete_finding_cycle_if_required: 12
+    next_complete_finding_cycle_if_required: 15
     lock_repair_count_rule: equals_complete_append_only_provenance_at_lock_build_time
     fresh_role_threads_used_before_implementer: 7
     fresh_role_threads_maximum: 9
@@ -717,6 +722,22 @@ write_boundaries:
       - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/phase1-a46-1-post-commit-audit.md
         writer: adversarial_auditor
       - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/phase1-a46-1-post-commit-audit-verdict.json
+        writer: adversarial_auditor
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/phase1-a46-2-audit.md
+        writer: adversarial_auditor
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/phase1-a46-2-audit-verdict.json
+        writer: adversarial_auditor
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/phase1-a46-2-reaudit-cycle-14.md
+        writer: adversarial_auditor
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/phase1-a46-2-reaudit-cycle-14-verdict.json
+        writer: adversarial_auditor
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/phase1-a46-2-reaudit-cycle-15.md
+        writer: adversarial_auditor
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/phase1-a46-2-reaudit-cycle-15-verdict.json
+        writer: adversarial_auditor
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/phase1-a46-2-post-commit-audit.md
+        writer: adversarial_auditor
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/phase1-a46-2-post-commit-audit-verdict.json
         writer: adversarial_auditor
       - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/plan_b.md
         writer: main
