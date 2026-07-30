@@ -18,7 +18,9 @@
 > material safety／availability／completion／evidence boundary才暫停。A38已核准
 > R3 sibling S10R3，S10R2保持immutable inconclusive/null；只有S10R3的post-audited
 > `S1_ENTRY_GO`可啟動S11。A44把所有prospective R0–R3 repair cap統一為6 rounds，
-> 並把experiment-design user gate與非設計dual-agent預授權分開。
+> 並把experiment-design user gate與非設計dual-agent預授權分開。A45以clean
+> execution baseline與雙seal lifecycle對齊current `.agents` workflow；S10R3保持
+> `not_evaluated / edge=null`，repair `4/6`、threads `7/9`，scientific plan不變。
 >
 > **唯一 active 導航入口：**本 README。`legacy/` 內的 M00–M09 仍是 dead-protocol archive，不能提供 schema、hash、lock、registry、criterion、fixture、test或 PASS evidence；S00 positive只支持CPU-only evidence foundation。
 >
@@ -39,7 +41,9 @@
 3. 本頁索引的 checkpoint design：implementation handoff、maximum boundary、artifact/evidence binding。
 4. Durable machine-readable frozen contract與checkpoint effective lock：在evidence前把
    committed authorities、criteria/matrix、resources、Plan-B、exact whitelists、
-   inputs、fixtures與seeds綁成不可變執行實例。
+   inputs、fixtures與seeds綁成不可變執行實例。S10R3依A45先seal
+   scientific/oracle contract，再於fresh label-blind implementation後seal exact
+   effective execution lock；第二seal前`outcome_access=false`。
 5. Compact positive gate record或terminal formal report：只記verified evidence、
    outcome、edge與closeout，不得反向修改前四層。
 
@@ -157,8 +161,10 @@ flowchart TD
 這些欄位不可互相代用。Technical `PASS` 只會進入 `VERIFIED_PENDING_CLOSEOUT`；只有 formal report、parent hunk、`CLOSEOUT_ACK`、isolated commit與post-commit audit全過，才是 `CHECKPOINT_COMPLETE`。
 
 `scientific_gate`是不能合併或繞過的outcome／claim／authority edge；
-`execution_tranche`可讓相容adjacent gates共享planner、implementer、verifier、run root
-與repair ledger；`closure_unit`可共享terminal report/update/staged audit/commit，但
+`execution_tranche`可讓相容adjacent gates共享Main planning context、environment、
+run root與repair ledger；每個scientific gate仍有自己的Plan-B、Plan-A、fresh
+implementer與fresh verifier。`closure_unit`可共享terminal
+report/update/staged audit/commit，但
 不能改gate order或把outcomes混成一個。`live_run_state`保存working-tree／partial
 進度；`committed_projection_state`只在closure commit與post-commit audit後更新。
 
@@ -182,7 +188,8 @@ flowchart TD
 4. 依`b0561d2c92`治理floor鎖risk tier與repair/thread hard caps；resource planning
    依A37保留known usage及measurement boundary作best-effort provenance，跨generation、
    successor、replacement、new root不刪除／補造，但不單獨debit successor entry。
-5. Planner／implementer／fresh verifier依risk tier與frozen contract執行。
+5. Main依序建立goal/oracle Plan-B與decision-complete Plan-A；fresh implementer與
+   fresh verifier依visibility boundary、risk tier與frozen contract執行。
 6. `CHANGES_REQUIRED`只修 active checkpoint並重驗；consequential design issue先走 `design-discussion`。
 7. Technical `PASS`只進入`VERIFIED_PENDING_CLOSEOUT`。
 8. Internal positive gate只seal其design指定的compact durable gate record，依verified
@@ -200,7 +207,11 @@ completion；`skipped_by_gate`／`not_activated`不建立假report。
 ## 6. Report、blocker與skip policy
 
 - 每份 active design只有一個 formal report path。
-- 唯一預註冊 blocker memo是 S10 的 `reports/gen0-factorization-blocker-memo.md`，只用於 hard access／artifact／mapping blocker。
+- S10的`reports/gen0-factorization-blocker-memo.md`仍是唯一scientific-entry
+  blocker memo，只用於該checkpoint的hard access／artifact／mapping blocker。
+- S10R3另有唯一non-scientific operational lifecycle packet
+  `protocol/v1/evidence/s10r3-operational-blocker.json`；它只依A45/A37 policy保存
+  durable `BLOCKED`／resume，不是formal report或scientific completion。
 - S10R1依A32取消，沒有scientific report、blocker memo或completion；舊planned report
   path不得建立。
 - S10R2唯一formal report是
@@ -364,6 +375,58 @@ completion；`skipped_by_gate`／`not_activated`不建立假report。
   variance不再提前terminalize可完成的goal。本authority不改scientific criteria、
   schedule、outcome／edge、claim，也不授權push、downgrade、destructive operation、
   dependency install或container mutation。
+
+### 6.8 2026-07-30 A45 S10R3 clean restart與雙seal alignment
+
+- 使用者要求刪除全部未提交S10R3 implementation、tests、manifests、contract draft、
+  cache與舊run artifacts，只保留committed scientific design／parent authority，再依
+  current `.agents` workflow從clean execution baseline重啟。Cleanup時沒有effective
+  lock、formal evidence、outcome、report或edge；S10R3仍是
+  `not_evaluated / edge=null`。
+- Fresh reviewers`/root/s10r3_restart_design_a`與
+  `/root/s10r3_restart_design_b`完成一輪cross-examination及一輪evidence-backed
+  final，兩方都`AGREE`：以同一scientific contract的Phase 1 seal加既有
+  effective-lock path的Phase 2 binding解除sequencing cycle，完全不改scientific
+  plan。
+- Phase 1 contract凍結完整scientific/oracle projection、三個exact write boundaries、
+  role visibility、`4/6` repair、`7/9` threads、final-binding schema及prelocked
+  invalidation matrix；implementation binding保持fail-closed
+  `required_pending`，`outcome_access=false`。Current workflow bytes只綁content
+  identity與honest Git state，不stage。
+- Execution-artifact boundary不遞迴授權整個run root：control-plane逐path列出，
+  artifact-only子目錄才可用明確descendant semantics，且不得成為delivery。Phase 1
+  同時固定Phase 2 lock的完整property／type／cardinality／null／unknown-field
+  rejection、path-mode-hash record、state／audit與canonical self-hash schema。
+- Phase 1 exact-path local commit與post-audit後，Main先freeze Plan-B，再建立Plan-A；
+  Main不實作。Fresh implementer只讀Plan-A及必要frozen constraints，建立fresh
+  label-blind implementation、tests、build、registry與fixture。
+- Phase 2 existing effective lock綁定Phase 1、Plan hashes、所有pre-label source／test／
+  schema／adapter／native binary／toolchain／argv／registry／fixture identities，
+  並證明outcome artifacts absent。Existing auditor pass、lock exact-path local commit
+  與post-seal audit全過後才是`LOCKED_READY`，在此之前不得執行formal evidence。
+- Bound-byte repair必須建立append-only successor lock；labels後依prelocked
+  invalidation matrix從最早受影響phase重跑，無證明時full rerun。Source／seed／
+  registry／ledger／discovery semantics改變時從first draw重跑，不得依outcome挑suffix。
+- Cleanup不重置lineage。歷史threads `5`加兩位reviewers為`7/9`，僅保留fresh
+  implementer與fresh verifier；repair為`4/6`。Deleted S10R3 bytes／verdicts／plans與
+  S10R1／S10R2 empirical evidence全部禁止重用。
+- Phase 1首次audit後以cycle 5補齊machine-contract boundary/schema/blocker policy；
+  fresh re-audit關閉artifact boundary，但反例仍要求補強audit cross-field、fixed
+  source/projection digest、formal-scope absence與resume lineage。Cycle 5以
+  `CHANGES_REQUIRED`完成；最後cycle 6 fresh re-audit通過時seal為`6/6`，scientific
+  projection不變。
+- 使用者澄清，只有實驗結果導致必須更動原實驗計畫並選擇新scientific方向時才需要
+  中斷決定；同一commit／feature內、pre-evidence且plan-preserving的implementation／
+  verification／lifecycle alignment與non-destructive、contract-preserving blocker
+  均預授權直接完成。
+- A45不改hypothesis、search space、draw／seed／cell schedule、selector／`K_max`、
+  mapping、correctness／noise threshold、outcome matrix、claim、report或唯一positive
+  edge，也不授權push、downgrade、dependency install或額外container mutation。
+- S10R3唯一operational blocker packet為
+  `protocol/v1/evidence/s10r3-operational-blocker.json`，只在A37 material condition
+  於safe boundary成立時建立。它是可恢復的durable lifecycle state，不是scientific
+  report／completion／edge；Main以append-only events保存`blocked`／`resumed`，
+  blocked與resume都使用contract預鎖的exact parent projection與isolated commit policy。
 
 ## 7. Downgrade review gate
 

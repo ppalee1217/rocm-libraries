@@ -1,0 +1,2112 @@
+# Copyright Advanced Micro Devices, Inc., or its affiliates.
+# SPDX-License-Identifier: MIT
+
+schema_version: 3
+contract_id: S10R3-A45-DUAL-SEAL-V1
+checkpoint_id: S10R3
+payload_state: PREIMPLEMENTATION_SCIENTIFIC_SEAL_PAYLOAD
+scientific_outcome: not_evaluated
+edge: null
+
+identity:
+  scientific_gate: S10R3
+  execution_tranche: T-S10R3
+  closure_unit: CU-S10R3
+  risk_tier: R3
+  hypothesis_id: S10R3-H1
+  base_head: 3abb7ecf36e84a519a962533eb600f13b4b2b37c
+  authority_amendment: A45
+  contract_path: study_docs/research/ductile-origami-warmstart/protocol/v1/s10r3-stage1-bounded-cover-entry-contract.yaml
+  effective_lock_path: study_docs/research/ductile-origami-warmstart/protocol/v1/locks/s10r3-stage1-bounded-cover-entry-lock.json
+  formal_report_path: study_docs/research/ductile-origami-warmstart/reports/staged/s10r3-stage1-bounded-cover-entry-report.md
+  positive_gate_record_path: study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/gate-records/s10r3-s1-entry-go.json
+  operational_blocker_path: study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s10r3-operational-blocker.json
+
+authority:
+  order:
+    - research_charter
+    - experiment_plan
+    - checkpoint_index
+    - checkpoint_design
+    - this_machine_contract
+    - effective_execution_lock
+    - direct_evidence_and_terminal_report
+  committed_history:
+    governance_six_round_commit: 3abb7ecf36e84a519a962533eb600f13b4b2b37c
+    s10r3_authority_commit: befb6f7be2af1951ffc45cafb9ce3079e38c9629
+    s10r2_closeout_commit: abf3f036dd2c2b58a23bb86605d9f562bbce7033
+    s00_closeout_commit: 8d1be2af3e5033ee74a1a8e3b31536f132a014cb
+    s10_closeout_commit: 48c26297fc6815e6edfcc89b8503e47370fedc53
+  phase1_authority_projection:
+    - id: research_charter
+      path: study_docs/research/surrogate-dse-plan.md
+      sha256: 199219a994ce8e9d94e6410a51288d64b780f0fc110f24a8ed120fc1b4e6e3c9
+    - id: experiment_plan
+      path: study_docs/research/ductile-origami-warmstart-experiment-plan.md
+      sha256: 2e88aab7e9d2e232a43515f29b90959d17c7afb3f591695537538fbe24760d3c
+    - id: checkpoint_index
+      path: study_docs/research/ductile-origami-warmstart/README.md
+      sha256: a48367f47bb0fd487f093f1ff0e872ba39c030800891686dd1df5c1aca150c88
+    - id: checkpoint_design
+      path: study_docs/research/ductile-origami-warmstart/s10r3-stage1-bounded-cover-entry-recovery-design.md
+      sha256: f6225cfb1a742ff5feba0d25dfd78d3e6db884b168e43bae8448cc304b11eb26
+  user_authority:
+    clean_restart_scope:
+      delete_uncommitted_s10r3_implementation: true
+      preserve_committed_scientific_authority: true
+      deleted_bytes_reusable: false
+    fresh_role_thread_cap: 9
+    verifier_repair_cap: 6
+    non_design_blockers_auto_authorized: true
+    non_design_boundary: non_destructive_and_contract_authority_preserving
+    user_interruption_boundary: result_driven_change_to_original_experiment_plan_or_scientific_direction
+    no_repeated_user_gate_for_same_feature_pre_evidence_alignment: true
+    push_authorized: false
+    workflow_file_staging_authorized: false
+    dependency_install_authorized: false
+    additional_container_mutation_authorized: false
+    scientific_change_authorized: false
+
+workflow_authority_manifest:
+  base_head: 3abb7ecf36e84a519a962533eb600f13b4b2b37c
+  identity_semantics: content_addressed_working_tree_authority_not_committed_provenance
+  standalone_reconstruction_claimed: false
+  drift_policy: fail_closed
+  entries:
+    - path: AGENTS.md
+      sha256: d6f163de760751465c6615efd2b33bb549470f8f8d73ce70c62e6c01ee7f9d21
+      mode: "0664"
+      size_bytes: 1932
+      git_state: modified
+      committed: false
+    - path: CLAUDE.md
+      sha256: 4d9a1ae7ceda1d1067ad8fbf0f70f2a241defc038c25876b0eb61411b094afd9
+      mode: "0664"
+      size_bytes: 24822
+      git_state: modified
+      committed: false
+    - path: .cursor/rules/hipblaslt-onboarding.mdc
+      sha256: 2df479b2d43929dd154391c6a188210ae8fb84f1924634b8455c97361e26ec39
+      mode: "0664"
+      size_bytes: 24994
+      git_state: modified
+      committed: false
+    - path: .cursor/skills/implement-verify-loop/SKILL.md
+      sha256: e8d274a0e82c65844af732c63d823b0b5b9c1d5233115ac8d9d353bde480c812
+      mode: "0664"
+      size_bytes: 42826
+      git_state: modified
+      committed: false
+    - path: .cursor/skills/implement-verify-loop/references/planning-contract.md
+      sha256: 85b2b4292ac48e1fb82472496e741878e43b365581f610799f5cf04207dab864
+      mode: "0664"
+      size_bytes: 10394
+      git_state: untracked
+      committed: false
+    - path: .cursor/skills/implement-verify-loop/references/authority-gates.md
+      sha256: e7d055754ffbd1d784bc684c1ad256297a7416508b6a885f8391121f8a60a455
+      mode: "0664"
+      size_bytes: 8744
+      git_state: modified
+      committed: false
+    - path: .cursor/skills/design-discussion/SKILL.md
+      sha256: e0ef8bc7fd3f14b7550fda1d4008339c3c6c3af517190a37c259ce2903dd3cd3
+      mode: "0664"
+      size_bytes: 15515
+      git_state: committed_at_base_head
+      committed: true
+    - path: .agents/skills/implement-verify-loop/SKILL.md
+      sha256: 37f265d6ee723fc1c4e481adf162535955edd1f7d2aad5153dff57183d0faee5
+      mode: "0664"
+      size_bytes: 44060
+      git_state: modified
+      committed: false
+    - path: .agents/skills/implement-verify-loop/references/planning-contract.md
+      sha256: 85b2b4292ac48e1fb82472496e741878e43b365581f610799f5cf04207dab864
+      mode: "0664"
+      size_bytes: 10394
+      git_state: untracked
+      committed: false
+    - path: .agents/skills/implement-verify-loop/references/authority-gates.md
+      sha256: e7d055754ffbd1d784bc684c1ad256297a7416508b6a885f8391121f8a60a455
+      mode: "0664"
+      size_bytes: 8744
+      git_state: untracked
+      committed: false
+    - path: .agents/skills/design-discussion/SKILL.md
+      sha256: 1d46673ef14b4c2eaf1bcbb8a074ec853ad401a8fe16bcaa461ec8fe9f196dbc
+      mode: "0664"
+      size_bytes: 16439
+      git_state: modified
+      committed: false
+    - path: .claude/skills/implement-verify-loop/SKILL.md
+      sha256: e8d274a0e82c65844af732c63d823b0b5b9c1d5233115ac8d9d353bde480c812
+      mode: "0664"
+      size_bytes: 42826
+      git_state: modified
+      committed: false
+    - path: .claude/skills/implement-verify-loop/references/planning-contract.md
+      sha256: 85b2b4292ac48e1fb82472496e741878e43b365581f610799f5cf04207dab864
+      mode: "0664"
+      size_bytes: 10394
+      git_state: untracked
+      committed: false
+    - path: .claude/skills/implement-verify-loop/references/authority-gates.md
+      sha256: e7d055754ffbd1d784bc684c1ad256297a7416508b6a885f8391121f8a60a455
+      mode: "0664"
+      size_bytes: 8744
+      git_state: modified
+      committed: false
+  parity_requirements:
+    planning_contract_three_way_sha256_equal: true
+    authority_gates_three_way_sha256_equal: true
+    cursor_and_claude_implement_skill_sha256_equal: true
+    agents_runtime_mapping_difference_allowed: true
+
+seal_protocol:
+  phase1:
+    name: PREIMPLEMENTATION_SCIENTIFIC_SEAL
+    outcome_access: false
+    implementation_binding: required_pending
+    pending_binding_is_valid_for_formal_execution: false
+    exact_commit_paths:
+      - study_docs/research/surrogate-dse-plan.md
+      - study_docs/research/ductile-origami-warmstart-experiment-plan.md
+      - study_docs/research/ductile-origami-warmstart/README.md
+      - study_docs/research/ductile-origami-warmstart/s10r3-stage1-bounded-cover-entry-recovery-design.md
+      - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r3-stage1-bounded-cover-entry-contract.yaml
+    required_audit_verdict: AUDIT_PASS_PREIMPLEMENTATION
+    lock_identity_rule:
+      algorithm: git_commit_oid_plus_raw_contract_sha256
+      self_commit_oid_embedded_in_contract: false
+    post_commit_audit_required: true
+    plan_b_allowed_after_post_audit: true
+    plan_a_allowed_only_after_plan_b_freeze: true
+  phase2:
+    name: EFFECTIVE_EXECUTION_BINDING
+    lock_path: study_docs/research/ductile-origami-warmstart/protocol/v1/locks/s10r3-stage1-bounded-cover-entry-lock.json
+    exact_commit_paths:
+      - study_docs/research/ductile-origami-warmstart/protocol/v1/locks/s10r3-stage1-bounded-cover-entry-lock.json
+    required_audit_verdict: AUDIT_PASS_POST_BINDING
+    post_commit_audit_required: true
+    source_intermediate_commit_required: false
+    required_lock_state_after_post_audit: effective
+    required_execution_status_after_post_audit: ready
+    required_checkpoint_state_after_post_audit: LOCKED_READY
+    formal_evidence_allowed_only_after_post_audit: true
+  terminal:
+    name: CU-S10R3
+    closeout_ack_required: true
+    exact_path_local_commit_only: true
+    post_commit_audit_required: true
+    push: false
+
+role_governance:
+  main:
+    authors_plan_b: true
+    authors_plan_a: true
+    implements_source: false
+    stages_only_exact_authorized_paths: true
+  adversarial_auditor:
+    task_id: /root/s10r3_adversarial_auditor
+    lineage: resumed_existing_fresh_role
+    old_verdict_reusable: false
+    may_read_contract: true
+    may_read_plan_b: true
+    may_read_plan_a_for_parity_only: true
+    may_implement: false
+  implementer:
+    fresh_required: true
+    plan_a_visible: true
+    plan_b_visible: false
+    contract_edit_authority: false
+    plan_edit_authority: false
+    commit_authority: false
+  verifier:
+    fresh_required: true
+    plan_b_visible: true
+    plan_a_visible: false
+    implementation_participation_forbidden: true
+    commit_authority: false
+  counters:
+    repair_rounds_completed_before_current_cycle: 5
+    repair_cycle_in_progress: 6
+    repair_rounds_used_on_phase1_audit_pass: 6
+    repair_rounds_maximum: 6
+    next_complete_finding_cycle_if_required: null
+    fresh_role_threads_used_before_implementer: 7
+    fresh_role_threads_maximum: 9
+    reserved_fresh_implementer_threads: 1
+    reserved_fresh_verifier_threads: 1
+    reset_on_restart_generation_or_new_root: false
+
+scientific_oracle:
+  objective: credible_reproducible_stage1_entry_boundary_within_fresh_observed_operational_valid_support
+  hypothesis: fresh_operational_valid_support_is_coverable_by_prelocked_deterministic_greedy_mapping_corpus_with_k_at_most_20_and_all_entry_measurement_gates_pass
+  claim_boundary:
+    answers:
+      - bounded_cover_mapping_boundary_completeness
+      - native_measurement_path_conformance
+      - correctness_and_noise_entry_readiness
+    does_not_answer:
+      - Formocast_ranking_accuracy
+      - factorization_efficacy
+      - prior_mass_improvement
+      - Gen0_improvement
+      - absence_of_unobserved_candidates
+      - mathematical_minimum_cover
+      - production_readiness
+  baseline_yaml_semantics_unchanged: true
+  only_allowed_positive_edge:
+    criterion_id: S1_ENTRY_GO
+    target_checkpoint: S11
+  all_other_edges: null
+
+upstream_lineage:
+  - checkpoint_id: S00
+    required_state: CHECKPOINT_COMPLETE
+    required_outcome: positive
+    required_edge: S00_EVIDENCE_READY
+  - checkpoint_id: S10
+    required_state: CHECKPOINT_COMPLETE
+    required_outcome: negative
+    required_criterion: S1_ENTRY_BLOCKED
+  - checkpoint_id: S10R1
+    required_execution_state: cancelled
+    required_scientific_outcome: not_evaluated
+    required_edge: null
+  - checkpoint_id: S10R2
+    required_state: CHECKPOINT_COMPLETE
+    required_outcome: inconclusive
+    required_failure_id: FT-INCONCLUSIVE
+    required_edge: null
+
+source_identity:
+  ductile:
+    ref: refs/remotes/origin/ductile_integration
+    commit: 5d6bdc8a6438b5fc73a96e46a907f9a5b1cd4e39
+  geko:
+    ref: refs/remotes/origin/users/pkamd/geko_pr
+    commit: d32abacfd13579d1f523f035b7a10b0734c4ac47
+  actual_yaml:
+    path: study_docs/research/ductile-origami-warmstart/protocol/v1/inputs/s10-generated.yaml
+    git_blob: 1fd6fb401d5baebd4665a87e9002687fb725b2dc
+    sha256: faaa8d65014d30646b89b84a8e97395539e52684bef7b430804a63ef2d64cf36
+  candidate_construction:
+    path: projects/hipblaslt/tensilelite/Tensile/BenchmarkStructs.py
+    git_blob_at_ductile_commit: 4968b29b5eacddc56b20c42cb4b2c1e3d8d6f406
+  native_formocast:
+    source_path: shared/origami/src/simulator/tensilelite/formocast_simulator.cpp
+    source_blob_at_ductile_commit: cac2b324984a9fe2e1fadb018702486545e86e80
+    header_path: shared/origami/include/origami/simulator/tensilelite/formocast_simulator.hpp
+    header_blob_at_ductile_commit: 96741965d34f2da1b0a08eaecab15e72082a78bc
+    symbol: "origami::Formocast::predictedPerformance() const"
+  runtime_queue:
+    source_path: projects/hipblaslt/tensilelite/client/src/SolutionIterator.cpp
+    source_blob_at_ductile_commit: 33e86cfc4bf3d4ce8fa8da194b94c024bbb5639f
+    header_path: projects/hipblaslt/tensilelite/client/include/SolutionIterator.hpp
+    header_blob_at_ductile_commit: bad091c0f299f30c4235bc8313c9e8f134fa66a5
+    symbols:
+      - "SolutionIterator::checkSolution(ContractionSolution&, ContractionProblemGemm&, bool)"
+      - "AllSolutionsIterator::preProblem"
+  search_space:
+    ordered_axis_count: 30
+    ordered_axes_and_candidate_order_sha256: 926a6d9502546dda22ea2edc483c0f61ef74b3e378bcf32f222f17130bb668a3
+    expanded_groups_sha256: 0526a9b3c1d8a1bbe1db2cb03616bfda6e5a1f2dfad3826c0747d8dcb3ab9140
+    expanded_group_cardinalities:
+      - 9918
+      - 3
+      - 2
+    search_space_map_sha256: 5785871bc0779fb67627943ef2ed5fde8e96647be7e0bb0db4f770473cd7a1a0
+    baseline_weights_sha256: 56c34446385e93138944082b1801649271fd6a49df948aa41017cb05d012f34f
+    group_0_positional_weight_count: 9918
+    weight_beta: 0.25
+  problem:
+    dtype: B/B/S
+    layout: NN
+    batched: true
+    soo: false
+    reduce_fn: max
+    n_elements_to_validate: 128
+    sizes_m_n_batch_k:
+      - id: small
+        value: [8, 8, 1, 128]
+      - id: medium
+        value: [256, 256, 1, 1024]
+      - id: large
+        value: [2304, 1024, 1, 214336]
+
+fresh_evidence_boundary:
+  deleted_s10r3_bytes_reusable: false
+  deleted_s10r3_plans_reusable: false
+  deleted_s10r3_verdicts_reusable: false
+  s10r1_empirical_reuse: false
+  s10r2_empirical_reuse: false
+  fresh_candidate_registry_required: true
+  fresh_seed_namespace_required: true
+  fresh_append_only_ledger_required: true
+  fresh_support_mapping_gpu_noise_decision_required: true
+  pure_helper_source_reuse:
+    allowed_only_if_exact_source_hash_bound: true
+    old_artifact_state_reads_forbidden: true
+    independent_s10r3_tests_required: true
+    auditor_acceptance_required: true
+
+seed_protocol:
+  namespace_label: "S10R3|A45|clean-restart|2026-07-30|v1"
+  namespace_sha256: 6cff1a13675818285047f6b64d97c7918bd0453974623d9ede59cb313be79ca6
+  derivation:
+    algorithm: sha256_domain_separated_u64_be
+    input_fields:
+      - namespace_label_utf8
+      - stream_id_utf8
+      - conditional_atom_id_or_GLOBAL_utf8
+      - chunk_index_u64_be
+      - draw_index_u64_be
+    output: first_8_digest_bytes_as_unsigned_big_endian_integer
+  disjointness_rule:
+    checkpoint_and_amendment_domain_separation_required: true
+    seed_retry_forbidden: true
+    old_seed_import_forbidden: true
+
+candidate_atom_registry:
+  output_path: study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r3-candidate-atom-registry.json
+  created_before_first_draw: true
+  source: fresh_rebuild_from_pinned_source_and_actual_yaml
+  required_fields:
+    - atom_id
+    - axis_name
+    - typed_value
+    - canonical_value_bytes
+    - yaml_pointer
+    - source_symbol_and_blob
+    - nominal_role_flags
+    - operational_semantic_category
+    - deterministic_priority
+    - conditional_eligibility
+  prelocked_candidate_atom_rule: all_values_of_ungrouped_and_currently_unweighted_and_frozen_free_residual_axes_with_cardinality_greater_than_1
+  conditional_diagnostic_atom_rule:
+    - all_prelocked_candidate_atoms
+    - first_and_last_candidate_of_each_axis
+    - exact_typed_integer_minus_2_or_minus_1
+  conditional_priority_tuple:
+    - sentinel_rank
+    - axis_scope_rank
+    - boundary_rank
+    - axis_index
+    - value_index
+    - atom_id
+
+support_protocol:
+  validator: pinned_ductile_valid_fn
+  states:
+    supported_witnessed: at_least_one_fresh_complete_accepted_config_contains_value
+    support_unobserved: no_fresh_witness_in_fixed_schedule_and_no_complete_absence_proof
+    support_proven_absent: finite_exhaustive_or_sound_constraint_or_independently_validated_complete_proof
+  stochastic_zero_implies_proven_absent: false
+  gene_guidance_eligibility: every_value_must_be_supported_witnessed
+  unsupported_or_unobserved_gene_blocks_other_genes_or_entry: false
+  baseline_yaml_semantics_unchanged: true
+
+discovery_schedule:
+  chunk_size_draws: 512
+  global_stream:
+    chunks: 32
+    draws: 16384
+    early_stop: false
+  conditional_activation:
+    occurs_after_complete_global: true
+    target_rule: highest_prelocked_priority_atoms_still_support_unobserved
+    maximum_targets: 15
+  each_activated_conditional:
+    chunks: 32
+    draws: 16384
+    fixed_atom_on_every_draw: true
+    early_stop: false
+  total:
+    maximum_chunks: 512
+    maximum_draws: 262144
+  forbidden:
+    - seed_retry
+    - target_replacement
+    - extension
+    - old_row_reuse
+    - outcome_dependent_priority
+    - outcome_dependent_schedule
+    - redraw_completed_chunk
+  interruption:
+    safe_boundary: atomic_complete_chunk
+    resume_requires_same_phase1_contract_and_effective_lock: true
+    append_only_ledger: true
+
+bounded_cover_selector:
+  mandatory_mapping_atoms: prelocked_candidate_atoms_intersection_supported_witnessed
+  always_required_structural_atoms: []
+  selector_id: deterministic_greedy_set_cover_v2_bounded_k20
+  occurrence_order:
+    - stream_rank
+    - conditional_priority_rank
+    - chunk_index
+    - draw_index
+    - config_hash
+  step_rule: select_config_with_maximum_gain_over_remaining_mandatory_atoms
+  tie_break:
+    - first_occurrence_order
+    - config_hash
+  c_greedy_semantics: frozen_greedy_full_cover_cardinality_not_mathematical_minimum
+  k_rule: max_10_and_c_greedy
+  k_maximum: 20
+  pad_when_c_greedy_less_than_10: first_occurrence_order_from_remaining_fresh_distinct_witnesses
+  final_order: config_hash_ascending
+  inconclusive_conditions:
+    - fresh_distinct_valid_witnesses_less_than_10
+    - greedy_does_not_cover_all_mandatory_atoms
+    - c_greedy_greater_than_20
+  post_label_solver_or_cap_change_forbidden: true
+  non_gating_lower_bound:
+    formula: maximum_fresh_witnessed_mandatory_value_count_on_any_single_residual_axis
+    id: L_axis
+    disclosure_if_l_axis_at_most_20_and_greedy_over_cap: global_minimum_cover_feasibility_not_evaluated
+
+mapping_protocol:
+  corpus_size: exact_K
+  passes:
+    - id: A
+      required_rows: 3_times_K
+    - id: B
+      required_rows: 3_times_K
+      fresh: true
+  maximum_rows_per_pass: 60
+  required_parity:
+    - raw_config
+    - resolved_solution
+    - canonical_hash
+    - size_mapping
+    - formocast_input
+    - required_field_provenance
+  forbidden:
+    - guessed_required_field
+    - unresolved_required_field
+    - mapping_failure
+    - replacement
+    - proxy
+    - config_K_plus_1
+
+native_conformance:
+  score_blind_fixture_required: true
+  fixture_prelocked_before_labels: true
+  native_path_required: "origami::Formocast::predictedPerformance() const"
+  runtime_paths_required:
+    - "SolutionIterator::checkSolution(ContractionSolution&, ContractionProblemGemm&, bool)"
+    - "AllSolutionsIterator::preProblem"
+  required_semantics:
+    - source_guard_first_true_order
+    - early_terminate_pair
+    - stable_sort
+    - ties
+    - threshold_index_and_value
+    - queue_prefix
+  independent_oracle_can_replace_native: false
+  fail_closed_faults:
+    - native_helper_binary_or_path
+    - source_blob_or_guard_order
+    - host_adapter
+    - runtime_check_solution_or_queue_semantics
+  harness_schema_adapter_guard_or_queue_defect_outcome: CHANGES_REQUIRED
+
+gpu_and_measurement:
+  container: perlee
+  other_containers_forbidden: true
+  container_start_stop_restart_recreate_forbidden: true
+  dependency_install_forbidden: true
+  architecture: gfx942
+  card_selection:
+    rule: choose_any_currently_free_eligible_gfx942_card_at_each_gpu_phase
+    reservation_required: false
+    exclusivity_claimed: false
+    foreign_pid_rejection: true
+    identity_capture_required: true
+  interruption:
+    safe_boundary: atomic_complete_cell
+    completed_cells_immutable: true
+    append_only_resume: true
+    unfavorable_result_discard_forbidden: true
+  anchors:
+    source: final_K_config_hashes_sorted_ascending
+    indices:
+      - 0
+      - floor_of_K_minus_1_divided_by_2
+      - K_minus_1
+    replacement: false
+  correctness:
+    anchors: 3
+    sizes: 3
+    total_cells: 9
+    requirements:
+      - generate
+      - compile
+      - smoke
+      - nonzero_correctness
+    all_must_pass_before_noise: true
+  noise:
+    anchors: 3
+    sizes: 3
+    repeats: 7
+    total_cells: 63
+    reduce_fn: max
+    cv_p95_maximum_percent: 0.5
+    delta_noise: parent_definition
+
+criteria:
+  - id: S10R3-C01
+    description: phase1_and_phase2_authority_lineage_and_lock_integrity
+  - id: S10R3-C02
+    description: fresh_registry_seed_ledger_and_no_forbidden_evidence_reuse
+  - id: S10R3-C03
+    description: complete_fixed_support_discovery_and_three_state_classification
+  - id: S10R3-C04
+    description: deterministic_bounded_cover_selector_and_exact_K_corpus
+  - id: S10R3-C05
+    description: exact_3K_mapping_A_B_and_field_provenance
+  - id: S10R3-C06
+    description: native_formocast_and_runtime_queue_conformance_with_fault_tests
+  - id: S10R3-C07
+    description: nine_cell_generate_compile_smoke_nonzero_correctness
+  - id: S10R3-C08
+    description: complete_63_cell_noise_panel_and_threshold
+  - id: S10R3-C09
+    description: canonical_decision_and_independent_reproduction
+  - id: S10R3-C10
+    description: fresh_verifier_full_goal_alignment_and_terminal_closeout
+
+outcome_matrix:
+  - id: positive
+    condition: all_required_criteria_and_closeout_pass
+    scientific_outcome: positive
+    criterion_id: S1_ENTRY_GO
+    failure_id: null
+    edge: S11
+    report: required
+    positive_gate_record: required
+  - id: negative_mapping
+    condition: valid_bounded_K_exists_but_required_mapping_or_field_provenance_reproducibly_fails
+    scientific_outcome: negative
+    criterion_id: S1_ENTRY_BLOCKED
+    failure_id: FT-BLOCKED-MAPPING
+    edge: null
+    report: required
+  - id: negative_correctness
+    condition: locked_generate_compile_smoke_or_nonzero_correctness_reproducibly_fails_with_harness_and_identity_intact
+    scientific_outcome: negative
+    criterion_id: S1_ENTRY_BLOCKED
+    failure_id: FT-BLOCKED-CORRECTNESS
+    edge: null
+    report: required
+  - id: inconclusive
+    condition: witness_floor_or_bounded_cover_or_noise_stability_condition_fails
+    scientific_outcome: inconclusive
+    criterion_id: null
+    failure_id: FT-INCONCLUSIVE
+    edge: null
+    report: required
+  - id: changes_required
+    condition: harness_schema_api_guard_queue_lineage_or_implementation_defect
+    scientific_outcome: not_evaluated
+    criterion_id: CHANGES_REQUIRED
+    failure_id: null
+    edge: null
+    report: forbidden_until_terminal_scientific_outcome
+  - id: operational_blocked
+    condition: material_safety_availability_completion_or_evidence_boundary
+    scientific_outcome: not_evaluated
+    criterion_id: BLOCKED
+    failure_id: null
+    edge: null
+    report: operational_packet_required_no_scientific_report
+    scientific_terminal: false
+    resume_allowed: true
+
+formal_execution_order:
+  steps:
+    - cpu_support_discovery
+    - support_classification_seal
+    - bounded_exact_K_selection
+    - mapping_A_B
+    - native_sentinel_runtime_conformance
+    - gpu_environment_identity
+    - smoke_correctness
+    - noise
+    - decision
+    - independent_reproduction_and_fresh_verification
+    - terminal_closeout
+  stop_on_first_terminal_outcome_or_repair_gate: true
+  later_phase_before_prior_pass_forbidden: true
+
+write_boundaries:
+  implementation:
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/run_s10r3_entry.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/schemas/s10r3-entry.schema.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r3/__init__.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r3/conformance.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r3/contract.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r3/correctness.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r3/ledger.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r3/mapping.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r3/native_adapter.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r3/native_formocast_runtime_adapter.cpp
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r3/selector.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r3/state_machine.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r3/support.py
+    - projects/hipblaslt/tensilelite/Tensile/Tests/unit/test_ductile_s10r3_entry.py
+  execution_artifacts:
+    run_root_write_inference: forbidden
+    control_plane_descendant_inference: forbidden
+    control_plane_exact_files:
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/baseline.md
+        writer: main
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gate-map.md
+        writer: main
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/adjudication.md
+        writer: main
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/subagents.md
+        writer: main
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/tranche-state.json
+        writer: main
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/phase1-audit.md
+        writer: adversarial_auditor
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/phase1-audit-verdict.json
+        writer: adversarial_auditor
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/phase1-reaudit-cycle-05.md
+        writer: adversarial_auditor
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/phase1-reaudit-cycle-05-verdict.json
+        writer: adversarial_auditor
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/phase1-reaudit-cycle-06.md
+        writer: adversarial_auditor
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/phase1-reaudit-cycle-06-verdict.json
+        writer: adversarial_auditor
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/phase1-post-commit-audit.md
+        writer: adversarial_auditor
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/phase1-post-commit-audit-verdict.json
+        writer: adversarial_auditor
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/plan_b.md
+        writer: main
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/plan_b.freeze.json
+        writer: main
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/plan_b-audit.md
+        writer: adversarial_auditor
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/plan_b-audit-verdict.json
+        writer: adversarial_auditor
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/plan_a.md
+        writer: main
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/plan_a.freeze.json
+        writer: main
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/implementer-report.md
+        writer: fresh_implementer
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/implementer-report.json
+        writer: fresh_implementer
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/repair-cycle-05.md
+        writer: main
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/repair-cycle-05.json
+        writer: main
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/repair-cycle-06.md
+        writer: main
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/repair-cycle-06.json
+        writer: main
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/phase2-audit.md
+        writer: adversarial_auditor
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/phase2-audit-verdict.json
+        writer: adversarial_auditor
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/phase2-post-commit-audit.md
+        writer: adversarial_auditor
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/phase2-post-commit-audit-verdict.json
+        writer: adversarial_auditor
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/execution-notifications.md
+        writer: main
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/verifier-report.md
+        writer: fresh_verifier
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/verifier-verdict.json
+        writer: fresh_verifier
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/delivery-manifest.json
+        writer: main
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/staged-audit.md
+        writer: fresh_verifier
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/staged-audit-verdict.json
+        writer: fresh_verifier
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/closeout.md
+        writer: main
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/post-commit-audit.md
+        writer: fresh_verifier
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/post-commit-audit-verdict.json
+        writer: fresh_verifier
+    control_plane_policy:
+      delivery: false
+      unknown_control_plane_path: forbidden
+      overwrite_prior_audit_or_plan_freeze: forbidden
+      symlink_or_path_escape: forbidden
+    scoped_artifact_directories:
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/prelabel-build/
+        writer_roles: [fresh_implementer]
+        artifact_classes: [native_binary, object, build_metadata, compiler_output]
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/prelabel-fixtures/
+        writer_roles: [fresh_implementer]
+        artifact_classes: [synthetic_fixture, registry_candidate, adapter_fixture]
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/prelabel-tests/
+        writer_roles: [fresh_implementer]
+        artifact_classes: [test_log, coverage_log, fault_injection_log]
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/formal-cpu/
+        writer_roles: [main]
+        artifact_classes: [append_only_ledger, raw_draw, chunk_root, command_root, support_intermediate]
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/formal-mapping/
+        writer_roles: [main]
+        artifact_classes: [raw_mapping_row, mapping_intermediate, mapping_log]
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/formal-native/
+        writer_roles: [main]
+        artifact_classes: [native_result, conformance_result, fault_result, native_log]
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/formal-gpu/
+        writer_roles: [main]
+        artifact_classes: [environment_capture, generated_kernel, compiled_binary, correctness_cell, noise_cell, gpu_log]
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/reproduction/
+        writer_roles: [fresh_verifier]
+        artifact_classes: [reproduction_build, reproduction_log, independent_result, fault_reproduction]
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/logs/
+        writer_roles: [main, fresh_implementer, adversarial_auditor, fresh_verifier]
+        artifact_classes: [stdout, stderr, exact_argv, timing, resource_notification]
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/scratch/
+        writer_roles: [main, fresh_implementer, fresh_verifier]
+        artifact_classes: [disposable_intermediate, atomic_temporary]
+    scoped_artifact_policy:
+      descendant_semantics: every_file_and_directory_strictly_below_the_named_prefix_is_authorized_only_for_the_declared_roles_and_classes
+      control_plane_bytes_below_scoped_directories: forbidden
+      symlink_or_path_escape: forbidden
+      cross_scope_rename: forbidden
+      delivery: false
+    durable_exact_paths:
+      - study_docs/research/ductile-origami-warmstart/protocol/v1/locks/s10r3-stage1-bounded-cover-entry-lock.json
+      - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r3-candidate-atom-registry.json
+      - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r3-support-classification.json
+      - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r3-mapping-corpus.json
+      - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r3-sentinel-conformance.json
+      - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r3-size-registry.json
+      - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s10r3-smoke-correctness.json
+      - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s10r3-noise-pilot.json
+      - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s10r3-decision.json
+      - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s10r3-operational-blocker.json
+      - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/gate-records/s10r3-s1-entry-go.json
+  delivery:
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/run_s10r3_entry.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r3-stage1-bounded-cover-entry-contract.yaml
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/schemas/s10r3-entry.schema.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r3/__init__.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r3/conformance.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r3/contract.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r3/correctness.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r3/ledger.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r3/mapping.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r3/native_adapter.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r3/native_formocast_runtime_adapter.cpp
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r3/selector.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r3/state_machine.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r3/support.py
+    - projects/hipblaslt/tensilelite/Tensile/Tests/unit/test_ductile_s10r3_entry.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/locks/s10r3-stage1-bounded-cover-entry-lock.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r3-candidate-atom-registry.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r3-support-classification.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r3-mapping-corpus.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r3-sentinel-conformance.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r3-size-registry.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s10r3-smoke-correctness.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s10r3-noise-pilot.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s10r3-decision.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s10r3-operational-blocker.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/gate-records/s10r3-s1-entry-go.json
+    - study_docs/research/ductile-origami-warmstart/reports/staged/s10r3-stage1-bounded-cover-entry-report.md
+    - study_docs/research/ductile-origami-warmstart-experiment-plan.md
+    - study_docs/research/surrogate-dse-plan.md
+    - study_docs/research/ductile-origami-warmstart/README.md
+    - study_docs/research/ductile-origami-warmstart/s10r3-stage1-bounded-cover-entry-recovery-design.md
+    - study_docs/research/ductile-origami-warmstart/s11-stage1-model-only-factorization-design.md
+  protected_unrelated_paths:
+    - .agents/**
+    - .claude/**
+    - .cursor/**
+    - AGENTS.md
+    - CLAUDE.md
+    - study_docs/research/ductile-origami-warmstart/reports/staged/s00-foundation-verification-report.md
+    - study_docs/research/ductile-origami-warmstart/reports/staged/s10-stage1-entry-gate-report.md
+    - study_docs/research/ductile-origami-warmstart-experiment-guide.md
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r2/**
+
+implementation_binding_schema:
+  status: required_pending
+  final_lock_schema_version: 1
+  json_schema_draft: "http://json-schema.org/draft-07/schema#"
+  canonical_json:
+    encoding: UTF-8
+    sort_keys: true
+    separators: compact
+    allow_nan: false
+    exact_json_type_identity_required: true
+  scientific_oracle_projection_definition:
+    source_document: this_phase1_contract_after_strict_yaml_parse
+    selected_top_level_properties:
+      - scientific_oracle
+      - upstream_lineage
+      - source_identity
+      - fresh_evidence_boundary
+      - seed_protocol
+      - candidate_atom_registry
+      - support_protocol
+      - discovery_schedule
+      - bounded_cover_selector
+      - mapping_protocol
+      - native_conformance
+      - gpu_and_measurement
+      - criteria
+      - outcome_matrix
+      - formal_execution_order
+      - verifier_oracle
+      - terminalization
+    selection_rule: construct_one_object_with_exact_selected_property_names_and_complete_parsed_values_no_other_properties
+    normalization:
+      yaml_aliases: resolved
+      yaml_tags: safe_core_types_only
+      mapping_keys: UTF-8_strings
+      sequence_order: preserved
+      integer_and_boolean_types: preserved
+      null_type: preserved
+      strings: exact_unicode_codepoints
+    canonical_serialization:
+      format: JSON
+      encoding: UTF-8
+      sort_keys: true
+      separators: [",", ":"]
+      ensure_ascii: false
+      allow_nan: false
+    digest:
+      algorithm: sha256
+      expected_sha256: 185c6ae6c7b255c1330b4723b8a241ba111c0d23715bdb28149b024f78729e1e
+    effective_lock_field: phase1.scientific_oracle_projection_sha256
+    equality_required: true
+  fixed_source_identity_map:
+    ductile_commit:
+      identity_type: git_commit
+      identity: 5d6bdc8a6438b5fc73a96e46a907f9a5b1cd4e39
+    geko_commit:
+      identity_type: git_commit
+      identity: d32abacfd13579d1f523f035b7a10b0734c4ac47
+    actual_yaml:
+      identity_type: git_blob_and_sha256
+      identity: "1fd6fb401d5baebd4665a87e9002687fb725b2dc:faaa8d65014d30646b89b84a8e97395539e52684bef7b430804a63ef2d64cf36"
+    candidate_construction_blob:
+      identity_type: git_blob
+      identity: 4968b29b5eacddc56b20c42cb4b2c1e3d8d6f406
+    native_formocast_source_blob:
+      identity_type: git_blob
+      identity: cac2b324984a9fe2e1fadb018702486545e86e80
+    native_formocast_header_blob:
+      identity_type: git_blob
+      identity: 96741965d34f2da1b0a08eaecab15e72082a78bc
+    runtime_queue_source_blob:
+      identity_type: git_blob
+      identity: 33e86cfc4bf3d4ce8fa8da194b94c024bbb5639f
+    runtime_queue_header_blob:
+      identity_type: git_blob
+      identity: bad091c0f299f30c4235bc8313c9e8f134fa66a5
+    ordered_axes_and_candidate_order:
+      identity_type: sha256
+      identity: 926a6d9502546dda22ea2edc483c0f61ef74b3e378bcf32f222f17130bb668a3
+    expanded_groups:
+      identity_type: sha256
+      identity: 0526a9b3c1d8a1bbe1db2cb03616bfda6e5a1f2dfad3826c0747d8dcb3ab9140
+    search_space_map:
+      identity_type: sha256
+      identity: 5785871bc0779fb67627943ef2ed5fde8e96647be7e0bb0db4f770473cd7a1a0
+    baseline_weights:
+      identity_type: sha256
+      identity: 56c34446385e93138944082b1801649271fd6a49df948aa41017cb05d012f34f
+  effective_lock_json_schema:
+    "$schema": "http://json-schema.org/draft-07/schema#"
+    type: object
+    additionalProperties: false
+    required:
+      - schema_version
+      - lock_id
+      - checkpoint_id
+      - payload_state
+      - lifecycle
+      - phase1
+      - plans
+      - implementation_binding
+      - runtime_binding
+      - input_binding
+      - governance_binding
+      - boundary_binding
+      - outcome_absence
+      - audit_request
+      - self_identity
+    properties:
+      schema_version:
+        type: integer
+        const: 1
+      lock_id:
+        type: string
+        const: S10R3-A45-EFFECTIVE-LOCK-V1
+      checkpoint_id:
+        type: string
+        const: S10R3
+      payload_state:
+        type: string
+        const: EFFECTIVE_EXECUTION_BINDING
+      lifecycle:
+        type: object
+        additionalProperties: false
+        required:
+          - lock_state
+          - execution_status
+          - checkpoint_state
+          - scientific_outcome
+          - edge
+          - formal_evidence_allowed
+        properties:
+          lock_state:
+            type: string
+            const: effective
+          execution_status:
+            type: string
+            const: ready
+          checkpoint_state:
+            type: string
+            const: LOCKED_READY
+          scientific_outcome:
+            type: string
+            const: not_evaluated
+          edge:
+            type: "null"
+          formal_evidence_allowed:
+            type: boolean
+            const: false
+      phase1:
+        type: object
+        additionalProperties: false
+        required:
+          - seal_commit_oid
+          - contract_path
+          - contract_raw_sha256
+          - contract_canonical_sha256
+          - scientific_oracle_projection_sha256
+        properties:
+          seal_commit_oid:
+            $ref: "#/definitions/git_oid"
+          contract_path:
+            type: string
+            const: study_docs/research/ductile-origami-warmstart/protocol/v1/s10r3-stage1-bounded-cover-entry-contract.yaml
+          contract_raw_sha256:
+            $ref: "#/definitions/sha256"
+          contract_canonical_sha256:
+            $ref: "#/definitions/sha256"
+          scientific_oracle_projection_sha256:
+            $ref: "#/definitions/sha256"
+      plans:
+        type: object
+        additionalProperties: false
+        required:
+          - plan_b
+          - plan_a
+        properties:
+          plan_b:
+            allOf:
+              - $ref: "#/definitions/frozen_plan_record"
+              - properties:
+                  path:
+                    const: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/plan_b.md
+          plan_a:
+            type: object
+            additionalProperties: false
+            required: [path, sha256, size_bytes, revision]
+            properties:
+              path:
+                type: string
+                const: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/plan_a.md
+              sha256:
+                $ref: "#/definitions/sha256"
+              size_bytes:
+                type: integer
+                minimum: 1
+              revision:
+                type: integer
+                minimum: 1
+                maximum: 6
+      implementation_binding:
+        type: object
+        additionalProperties: false
+        required:
+          - status
+          - required_path_set
+          - files
+        properties:
+          status:
+            type: string
+            const: complete
+          required_path_set:
+            type: array
+            const:
+              - study_docs/research/ductile-origami-warmstart/protocol/v1/run_s10r3_entry.py
+              - study_docs/research/ductile-origami-warmstart/protocol/v1/schemas/s10r3-entry.schema.json
+              - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r3/__init__.py
+              - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r3/conformance.py
+              - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r3/contract.py
+              - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r3/correctness.py
+              - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r3/ledger.py
+              - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r3/mapping.py
+              - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r3/native_adapter.py
+              - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r3/native_formocast_runtime_adapter.cpp
+              - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r3/selector.py
+              - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r3/state_machine.py
+              - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r3/support.py
+              - projects/hipblaslt/tensilelite/Tensile/Tests/unit/test_ductile_s10r3_entry.py
+          files:
+            type: array
+            minItems: 14
+            maxItems: 14
+            uniqueItems: true
+            items:
+              $ref: "#/definitions/file_record"
+      runtime_binding:
+        type: object
+        additionalProperties: false
+        required:
+          - native_binary
+          - toolchain
+          - command_templates
+          - final_k_binary_rule
+        properties:
+          native_binary:
+            $ref: "#/definitions/file_record"
+          toolchain:
+            type: array
+            minItems: 4
+            maxItems: 4
+            uniqueItems: true
+            items:
+              $ref: "#/definitions/tool_record"
+          command_templates:
+            type: array
+            minItems: 14
+            maxItems: 14
+            uniqueItems: true
+            items:
+              $ref: "#/definitions/command_record"
+          final_k_binary_rule:
+            type: object
+            additionalProperties: false
+            required:
+              - prelabel_instance_required
+              - generation_admission
+              - lineage_key_fields
+              - replacement
+            properties:
+              prelabel_instance_required:
+                type: boolean
+                const: false
+              generation_admission:
+                type: string
+                const: only_after_locked_exact_K_and_before_corresponding_correctness_cell
+              lineage_key_fields:
+                type: array
+                const: [effective_lock_sha256, config_hash, size_id, toolchain_sha256, exact_argv_sha256]
+              replacement:
+                type: boolean
+                const: false
+      input_binding:
+        type: object
+        additionalProperties: false
+        required:
+          - required_identity_ids
+          - source_and_yaml_identities
+          - required_registry_fixture_ids
+          - registry_and_fixtures
+        properties:
+          required_identity_ids:
+            type: array
+            const:
+              - ductile_commit
+              - geko_commit
+              - actual_yaml
+              - candidate_construction_blob
+              - native_formocast_source_blob
+              - native_formocast_header_blob
+              - runtime_queue_source_blob
+              - runtime_queue_header_blob
+              - ordered_axes_and_candidate_order
+              - expanded_groups
+              - search_space_map
+              - baseline_weights
+          source_and_yaml_identities:
+            type: array
+            minItems: 12
+            maxItems: 12
+            uniqueItems: true
+            items:
+              $ref: "#/definitions/named_identity_record"
+          required_registry_fixture_ids:
+            type: array
+            const: [candidate_atom_registry, size_registry, sentinel_fixture]
+          registry_and_fixtures:
+            type: array
+            minItems: 3
+            maxItems: 3
+            uniqueItems: true
+            items:
+              $ref: "#/definitions/named_file_record"
+      governance_binding:
+        type: object
+        additionalProperties: false
+        required:
+          - risk_tier
+          - main_role
+          - auditor_role
+          - implementer_role
+          - verifier_role
+          - repair_rounds_used
+          - repair_rounds_maximum
+          - fresh_role_threads_used
+          - fresh_role_threads_maximum
+        properties:
+          risk_tier:
+            type: string
+            const: R3
+          main_role:
+            type: string
+            const: /root
+          auditor_role:
+            type: string
+            const: /root/s10r3_adversarial_auditor
+          implementer_role:
+            type: string
+            pattern: "^/root/s10r3_[a-z0-9_]*implementer[a-z0-9_]*$"
+          verifier_role:
+            type: string
+            pattern: "^/root/s10r3_[a-z0-9_]*verifier[a-z0-9_]*$"
+          repair_rounds_used:
+            type: integer
+            minimum: 5
+            maximum: 6
+          repair_rounds_maximum:
+            type: integer
+            const: 6
+          fresh_role_threads_used:
+            type: integer
+            const: 9
+          fresh_role_threads_maximum:
+            type: integer
+            const: 9
+      boundary_binding:
+        type: object
+        additionalProperties: false
+        required:
+          - implementation_boundary_sha256
+          - execution_artifact_boundary_sha256
+          - delivery_boundary_sha256
+          - protected_unrelated_boundary_sha256
+          - unknown_write_path
+        properties:
+          implementation_boundary_sha256:
+            $ref: "#/definitions/sha256"
+          execution_artifact_boundary_sha256:
+            $ref: "#/definitions/sha256"
+          delivery_boundary_sha256:
+            $ref: "#/definitions/sha256"
+          protected_unrelated_boundary_sha256:
+            $ref: "#/definitions/sha256"
+          unknown_write_path:
+            type: string
+            const: forbidden
+      outcome_absence:
+        type: object
+        additionalProperties: false
+        required:
+          - checked_path_set
+          - checked_scope_set
+          - records
+          - scope_records
+          - operational_lineage
+          - checked_at_utc
+        properties:
+          checked_path_set:
+            type: array
+            const:
+              - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r3-support-classification.json
+              - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r3-mapping-corpus.json
+              - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s10r3-smoke-correctness.json
+              - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s10r3-noise-pilot.json
+              - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s10r3-decision.json
+              - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/gate-records/s10r3-s1-entry-go.json
+              - study_docs/research/ductile-origami-warmstart/reports/staged/s10r3-stage1-bounded-cover-entry-report.md
+          checked_scope_set:
+            type: array
+            const:
+              - agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/formal-cpu/
+              - agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/formal-mapping/
+              - agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/formal-native/
+              - agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/formal-gpu/
+              - agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/reproduction/
+          records:
+            type: array
+            minItems: 7
+            maxItems: 7
+            uniqueItems: true
+            items:
+              $ref: "#/definitions/absence_record"
+          scope_records:
+            type: array
+            minItems: 5
+            maxItems: 5
+            uniqueItems: true
+            items:
+              $ref: "#/definitions/scope_absence_record"
+          operational_lineage:
+            oneOf:
+              - type: object
+                additionalProperties: false
+                required: [state, packet_present]
+                properties:
+                  state:
+                    type: string
+                    const: never_blocked
+                  packet_present:
+                    type: boolean
+                    const: false
+              - type: object
+                additionalProperties: false
+                required:
+                  - state
+                  - packet_present
+                  - packet_file
+                  - packet_schema_valid
+                  - last_event_type
+                  - restored_projection_verified
+                properties:
+                  state:
+                    type: string
+                    const: resumed
+                  packet_present:
+                    type: boolean
+                    const: true
+                  packet_file:
+                    $ref: "#/definitions/file_record"
+                  packet_schema_valid:
+                    type: boolean
+                    const: true
+                  last_event_type:
+                    type: string
+                    const: resumed
+                  restored_projection_verified:
+                    type: boolean
+                    const: true
+          checked_at_utc:
+            $ref: "#/definitions/date_time"
+      audit_request:
+        type: object
+        additionalProperties: false
+        required:
+          - requested_verdict
+          - auditor_role
+          - audit_artifact_path
+          - outcome_absence_projection_sha256
+          - audit_checks
+        properties:
+          requested_verdict:
+            type: string
+            const: AUDIT_PASS_POST_BINDING
+          auditor_role:
+            type: string
+            const: /root/s10r3_adversarial_auditor
+          audit_artifact_path:
+            type: string
+            const: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/phase2-audit-verdict.json
+          outcome_absence_projection_sha256:
+            $ref: "#/definitions/sha256"
+          audit_checks:
+            type: array
+            const:
+              - schema_and_unknown_field_rejection
+              - phase1_and_plan_b_survival
+              - exact_path_mode_hash_and_binary_binding
+              - source_yaml_registry_fixture_parity
+              - role_counter_and_whitelist_parity
+              - outcome_artifact_absence
+              - canonical_self_hash
+      self_identity:
+        type: object
+        additionalProperties: false
+        required:
+          - algorithm
+          - canonicalization
+          - hash_scope
+          - placeholder
+          - canonical_self_sha256
+          - phase2_seal_commit_oid_embedded
+        properties:
+          algorithm:
+            type: string
+            const: sha256
+          canonicalization:
+            type: string
+            const: utf8_sorted_keys_compact_separators_no_nan_exact_json_types
+          hash_scope:
+            type: string
+            const: entire_lock_with_self_identity_canonical_self_sha256_replaced_by_64_ascii_zeroes
+          placeholder:
+            type: string
+            const: "0000000000000000000000000000000000000000000000000000000000000000"
+          canonical_self_sha256:
+            $ref: "#/definitions/sha256"
+          phase2_seal_commit_oid_embedded:
+            type: boolean
+            const: false
+    definitions:
+      sha256:
+        type: string
+        pattern: "^[0-9a-f]{64}$"
+      git_oid:
+        type: string
+        pattern: "^[0-9a-f]{40}$"
+      date_time:
+        type: string
+        format: date-time
+      file_record:
+        type: object
+        additionalProperties: false
+        required: [path, mode, size_bytes, sha256, git_state]
+        properties:
+          path:
+            type: string
+            minLength: 1
+          mode:
+            type: string
+            pattern: "^0[0-7]{3}$"
+          size_bytes:
+            type: integer
+            minimum: 0
+          sha256:
+            $ref: "#/definitions/sha256"
+          git_state:
+            type: string
+            enum: [tracked_modified, tracked_clean, untracked, ignored]
+      named_file_record:
+        type: object
+        additionalProperties: false
+        required: [id, file]
+        properties:
+          id:
+            type: string
+            enum: [candidate_atom_registry, size_registry, sentinel_fixture]
+          file:
+            $ref: "#/definitions/file_record"
+      named_identity_record:
+        type: object
+        additionalProperties: false
+        required: [id, identity_type, identity]
+        properties:
+          id:
+            type: string
+            enum:
+              - ductile_commit
+              - geko_commit
+              - actual_yaml
+              - candidate_construction_blob
+              - native_formocast_source_blob
+              - native_formocast_header_blob
+              - runtime_queue_source_blob
+              - runtime_queue_header_blob
+              - ordered_axes_and_candidate_order
+              - expanded_groups
+              - search_space_map
+              - baseline_weights
+          identity_type:
+            type: string
+            enum: [git_commit, git_blob, sha256, git_blob_and_sha256]
+          identity:
+            type: string
+            minLength: 40
+            maxLength: 129
+      tool_record:
+        type: object
+        additionalProperties: false
+        required: [id, path, version, sha256]
+        properties:
+          id:
+            type: string
+            enum: [python, pytest, cxx_compiler, rocm_toolchain]
+          path:
+            type: string
+            minLength: 1
+          version:
+            type: string
+            minLength: 1
+          sha256:
+            $ref: "#/definitions/sha256"
+      command_record:
+        type: object
+        additionalProperties: false
+        required: [id, cwd, exact_argv, environment]
+        properties:
+          id:
+            type: string
+            enum:
+              - validate_contract
+              - build_registry
+              - offline_tests
+              - support_discovery
+              - support_classification
+              - bounded_cover_selection
+              - mapping_pass_a
+              - mapping_pass_b
+              - native_conformance
+              - gpu_environment
+              - correctness
+              - noise
+              - decision
+              - reproduction
+          cwd:
+            type: string
+            minLength: 1
+          exact_argv:
+            type: array
+            minItems: 1
+            maxItems: 128
+            items:
+              type: string
+          environment:
+            type: array
+            minItems: 0
+            maxItems: 64
+            uniqueItems: true
+            items:
+              type: object
+              additionalProperties: false
+              required: [name, value]
+              properties:
+                name:
+                  type: string
+                  pattern: "^[A-Z_][A-Z0-9_]*$"
+                value:
+                  type: string
+      frozen_plan_record:
+        type: object
+        additionalProperties: false
+        required: [path, sha256, size_bytes, frozen]
+        properties:
+          path:
+            type: string
+            minLength: 1
+          sha256:
+            $ref: "#/definitions/sha256"
+          size_bytes:
+            type: integer
+            minimum: 1
+          frozen:
+            type: boolean
+            const: true
+      absence_record:
+        type: object
+        additionalProperties: false
+        required: [path, exists]
+        properties:
+          path:
+            type: string
+            minLength: 1
+          exists:
+            type: boolean
+            const: false
+      scope_absence_record:
+        type: object
+        additionalProperties: false
+        required: [path, exists, descendant_count]
+        properties:
+          path:
+            type: string
+            minLength: 1
+          exists:
+            type: boolean
+            const: false
+          descendant_count:
+            type: integer
+            const: 0
+  semantic_validation_invariants:
+    - implementation_binding_files_paths_equal_required_path_set_exactly_once
+    - source_and_yaml_identity_ids_equal_required_identity_ids_exactly_once
+    - every_source_and_yaml_identity_type_and_value_equals_fixed_source_identity_map_for_its_id
+    - registry_and_fixture_ids_equal_required_registry_fixture_ids_exactly_once
+    - command_template_ids_equal_all_command_id_enum_values_exactly_once
+    - toolchain_ids_equal_all_tool_id_enum_values_exactly_once
+    - outcome_absence_record_paths_equal_checked_path_set_exactly_once
+    - outcome_absence_scope_record_paths_equal_checked_scope_set_exactly_once
+    - every_checked_scope_is_absent_with_zero_descendants_before_effective_lock
+    - operational_lineage_is_exactly_never_blocked_absent_or_schema_valid_resumed_present
+    - never_blocked_operational_lineage_requires_operational_blocker_path_absent
+    - resumed_operational_lineage_packet_file_path_equals_identity_operational_blocker_path
+    - every_file_record_matches_current_bytes_mode_size_hash_and_git_state
+    - plan_b_hash_matches_frozen_plan_b_and_plan_a_revision_is_current
+    - boundary_hashes_use_canonical_json_of_corresponding_phase1_boundary
+    - scientific_oracle_projection_sha256_is_recomputed_exactly_from_scientific_oracle_projection_definition
+    - outcome_absence_projection_sha256_covers_checked_paths_checked_scopes_and_operational_lineage
+    - canonical_self_sha256_recomputes_under_placeholder_rule
+    - phase2_external_audit_targets_exact_raw_and_canonical_lock_hashes
+    - phase2_external_audit_outcome_absence_projection_sha256_equals_lock_audit_request_value
+    - audit_pass_requires_all_checks_pass_and_zero_findings
+    - any_failed_check_or_any_finding_requires_changes_required
+    - unknown_property_or_unknown_write_path_fails_closed
+  external_phase2_audit_artifact_schema:
+    "$schema": "http://json-schema.org/draft-07/schema#"
+    type: object
+    additionalProperties: false
+    required:
+      - schema_version
+      - checkpoint_id
+      - phase
+      - verdict
+      - auditor_role
+      - lock_path
+      - lock_raw_sha256
+      - lock_canonical_self_sha256
+      - outcome_absence_projection_sha256
+      - checks
+      - findings
+    properties:
+      schema_version:
+        type: integer
+        const: 1
+      checkpoint_id:
+        type: string
+        const: S10R3
+      phase:
+        type: string
+        const: EFFECTIVE_EXECUTION_BINDING
+      verdict:
+        type: string
+        enum: [AUDIT_PASS_POST_BINDING, CHANGES_REQUIRED]
+      auditor_role:
+        type: string
+        const: /root/s10r3_adversarial_auditor
+      lock_path:
+        type: string
+        const: study_docs/research/ductile-origami-warmstart/protocol/v1/locks/s10r3-stage1-bounded-cover-entry-lock.json
+      lock_raw_sha256:
+        $ref: "#/definitions/sha256"
+      lock_canonical_self_sha256:
+        $ref: "#/definitions/sha256"
+      outcome_absence_projection_sha256:
+        $ref: "#/definitions/sha256"
+      checks:
+        type: object
+        additionalProperties: false
+        required:
+          - schema_and_unknown_field_rejection
+          - phase1_and_plan_b_survival
+          - exact_path_mode_hash_and_binary_binding
+          - source_yaml_registry_fixture_parity
+          - role_counter_and_whitelist_parity
+          - outcome_artifact_absence
+          - canonical_self_hash
+        properties:
+          schema_and_unknown_field_rejection:
+            type: string
+            enum: [PASS, FAIL]
+          phase1_and_plan_b_survival:
+            type: string
+            enum: [PASS, FAIL]
+          exact_path_mode_hash_and_binary_binding:
+            type: string
+            enum: [PASS, FAIL]
+          source_yaml_registry_fixture_parity:
+            type: string
+            enum: [PASS, FAIL]
+          role_counter_and_whitelist_parity:
+            type: string
+            enum: [PASS, FAIL]
+          outcome_artifact_absence:
+            type: string
+            enum: [PASS, FAIL]
+          canonical_self_hash:
+            type: string
+            enum: [PASS, FAIL]
+      findings:
+        type: array
+        maxItems: 64
+        items:
+          type: object
+          additionalProperties: false
+          required: [id, severity, blocks_phase2_seal, summary]
+          properties:
+            id:
+              type: string
+              minLength: 1
+            severity:
+              type: string
+              enum: [minor, major, critical]
+            blocks_phase2_seal:
+              type: boolean
+            summary:
+              type: string
+              minLength: 1
+    oneOf:
+      - properties:
+          verdict:
+            const: AUDIT_PASS_POST_BINDING
+          checks:
+            properties:
+              schema_and_unknown_field_rejection:
+                const: PASS
+              phase1_and_plan_b_survival:
+                const: PASS
+              exact_path_mode_hash_and_binary_binding:
+                const: PASS
+              source_yaml_registry_fixture_parity:
+                const: PASS
+              role_counter_and_whitelist_parity:
+                const: PASS
+              outcome_artifact_absence:
+                const: PASS
+              canonical_self_hash:
+                const: PASS
+          findings:
+            maxItems: 0
+      - allOf:
+          - properties:
+              verdict:
+                const: CHANGES_REQUIRED
+          - anyOf:
+              - properties:
+                  checks:
+                    properties:
+                      schema_and_unknown_field_rejection:
+                        const: FAIL
+              - properties:
+                  checks:
+                    properties:
+                      phase1_and_plan_b_survival:
+                        const: FAIL
+              - properties:
+                  checks:
+                    properties:
+                      exact_path_mode_hash_and_binary_binding:
+                        const: FAIL
+              - properties:
+                  checks:
+                    properties:
+                      source_yaml_registry_fixture_parity:
+                        const: FAIL
+              - properties:
+                  checks:
+                    properties:
+                      role_counter_and_whitelist_parity:
+                        const: FAIL
+              - properties:
+                  checks:
+                    properties:
+                      outcome_artifact_absence:
+                        const: FAIL
+              - properties:
+                  checks:
+                    properties:
+                      canonical_self_hash:
+                        const: FAIL
+              - properties:
+                  findings:
+                    minItems: 1
+    definitions:
+      sha256:
+        type: string
+        pattern: "^[0-9a-f]{64}$"
+  conditional_outcome_dependent_bindings:
+    final_K_binaries:
+      prelabel_instance_required: false
+      generation_admission_and_lineage_rules_prelocked: true
+  required_pending_allowed_in_effective_lock: false
+  plan_b_survival:
+    plan_b_sha256_unchanged: true
+    phase1_contract_sha256_unchanged: true
+    scientific_oracle_projection_canonical_bytes_unchanged: true
+    schema_and_canonicalization_unchanged: true
+    whitelist_expansion_forbidden: true
+    only_predeclared_binding_fields_may_be_filled: true
+
+invalidation_matrix:
+  default_if_unproven: full_formal_rerun_from_first_draw
+  entries:
+    - component_class: phase1_scientific_oracle_contract_or_plan_b
+      change_after_phase1_seal: result_driven_plan_change_requires_user_direction
+      evidence_reuse: forbidden
+    - component_class: source_seed_registry_ledger_discovery_validator_or_selector
+      earliest_rerun_phase: cpu_support_discovery
+      evidence_reuse: forbidden
+    - component_class: any_other_bound_implementation_test_schema_adapter_binary_toolchain_or_fixture
+      earliest_rerun_phase: cpu_support_discovery
+      evidence_reuse: forbidden_unless_phase1_matrix_is_later_refined_before_labels_and_mechanically_proves_unaffected_prefix
+    - component_class: effective_lock_binding_only_before_labels
+      earliest_rerun_phase: none
+      required_action: rebind_reaudit_reseal_before_formal_evidence
+    - component_class: report_or_parent_projection_only
+      earliest_rerun_phase: none
+      required_action: closeout_reaudit
+  outcome_dependent_suffix_selection_forbidden: true
+  append_only_successor_lock_required_for_any_bound_byte_change: true
+
+resource_planning:
+  estimates:
+    wall_s: 12669
+    cpu_s: 65285
+    gpu_s: 2901
+    transient_storage_bytes: 2147483648
+  default_transient_target_bytes: 5368709120
+  notification_points:
+    - before_long_running_work
+    - first_1_percent
+    - projected_2x
+    - internal_wall_cpu_gpu_storage_or_throughput_target
+  notification_is_approval_gate: false
+  material_hard_pause_conditions:
+    - unsafe_continuation
+    - external_platform_or_allocation_limit
+    - actual_compute_memory_or_storage_unavailable
+    - full_workload_verification_closeout_or_artifact_preservation_impossible
+    - label_dependent_stopping_or_selection
+    - required_workload_or_claim_change
+    - evidence_unverifiable
+    - prelabel_explicit_scientific_resource_boundary
+  nonmaterial_accounting_variance_blocks_progress: false
+
+operational_blocker_policy:
+  classification: durable_recoverable_operational_pause
+  scientific_terminal: false
+  checkpoint_complete: false
+  path: study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s10r3-operational-blocker.json
+  writer_role: main
+  writer_exclusivity: true
+  activation:
+    requires_material_condition_from_resource_planning: true
+    safe_atomic_boundary_required: true
+    direct_condition_evidence_required: true
+    completed_evidence_preserved: true
+    unfavorable_result_discard_forbidden: true
+    scientific_report_substitution_forbidden: true
+  blocked_projection:
+    execution_status: paused
+    checkpoint_state: BLOCKED
+    scientific_outcome: not_evaluated
+    edge: null
+  conditional_delivery: activated_only
+  parent_projection_paths:
+    - study_docs/research/surrogate-dse-plan.md
+    - study_docs/research/ductile-origami-warmstart-experiment-plan.md
+    - study_docs/research/ductile-origami-warmstart/README.md
+    - study_docs/research/ductile-origami-warmstart/s10r3-stage1-bounded-cover-entry-recovery-design.md
+  blocked_state_commit:
+    exact_paths:
+      - study_docs/research/surrogate-dse-plan.md
+      - study_docs/research/ductile-origami-warmstart-experiment-plan.md
+      - study_docs/research/ductile-origami-warmstart/README.md
+      - study_docs/research/ductile-origami-warmstart/s10r3-stage1-bounded-cover-entry-recovery-design.md
+      - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s10r3-operational-blocker.json
+    isolated_local_commit: true
+    push: false
+    required_trailers:
+      - "Scientific-Gate: S10R3"
+      - "Operational-State: BLOCKED"
+      - "Scientific-Outcome: not_evaluated"
+      - "Edge: null"
+  resume:
+    standing_authority_when_scientific_plan_unchanged: true
+    user_decision_required_only_for_result_driven_scientific_plan_or_direction_change: true
+    append_resumed_event_to_same_packet: true
+    exact_commit_paths_equal_blocked_state_commit_paths: true
+    condition_must_be_proven_cleared: true
+    completed_evidence_remains_immutable: true
+    same_effective_lock_allowed_only_if_all_bound_identities_unchanged: true
+    binding_drift_requires_append_only_successor_effective_lock: true
+    restored_state_rule: latest_valid_pre_block_execution_and_checkpoint_state
+    post_resume_audit_required: true
+  packet_json_schema:
+    "$schema": "http://json-schema.org/draft-07/schema#"
+    type: object
+    additionalProperties: false
+    required:
+      - schema_version
+      - packet_id
+      - checkpoint_id
+      - phase1_contract
+      - effective_lock
+      - state
+      - scientific_outcome
+      - edge
+      - terminal_scientific
+      - trigger
+      - preserved_evidence
+      - events
+      - live_run_state
+      - committed_projection_state
+    properties:
+      schema_version:
+        type: integer
+        const: 1
+      packet_id:
+        type: string
+        const: S10R3-A45-OPERATIONAL-BLOCKER
+      checkpoint_id:
+        type: string
+        const: S10R3
+      phase1_contract:
+        type: object
+        additionalProperties: false
+        required: [commit_oid, raw_sha256]
+        properties:
+          commit_oid:
+            type: string
+            pattern: "^[0-9a-f]{40}$"
+          raw_sha256:
+            type: string
+            pattern: "^[0-9a-f]{64}$"
+      effective_lock:
+        type: object
+        additionalProperties: false
+        required: [present, commit_oid, raw_sha256]
+        properties:
+          present:
+            type: boolean
+          commit_oid:
+            type: [string, "null"]
+            pattern: "^[0-9a-f]{40}$"
+          raw_sha256:
+            type: [string, "null"]
+            pattern: "^[0-9a-f]{64}$"
+      state:
+        type: string
+        enum: [blocked, resumed]
+      scientific_outcome:
+        type: string
+        const: not_evaluated
+      edge:
+        type: "null"
+      terminal_scientific:
+        type: boolean
+        const: false
+      trigger:
+        type: object
+        additionalProperties: false
+        required:
+          - condition_id
+          - detected_at_utc
+          - safe_boundary
+          - direct_evidence
+        properties:
+          condition_id:
+            type: string
+            enum:
+              - unsafe_continuation
+              - external_platform_or_allocation_limit
+              - actual_compute_memory_or_storage_unavailable
+              - full_workload_verification_closeout_or_artifact_preservation_impossible
+              - label_dependent_stopping_or_selection
+              - required_workload_or_claim_change
+              - evidence_unverifiable
+              - prelabel_explicit_scientific_resource_boundary
+          detected_at_utc:
+            type: string
+            format: date-time
+          safe_boundary:
+            type: object
+            additionalProperties: false
+            required: [kind, phase, cursor]
+            properties:
+              kind:
+                type: string
+                enum: [pre_formal, atomic_chunk, atomic_cell, phase_boundary, closeout_boundary]
+              phase:
+                type: string
+                minLength: 1
+              cursor:
+                type: [string, integer, "null"]
+          direct_evidence:
+            type: array
+            minItems: 1
+            maxItems: 64
+            uniqueItems: true
+            items:
+              type: object
+              additionalProperties: false
+              required: [path_or_command, sha256_or_exit_code, observation]
+              properties:
+                path_or_command:
+                  type: string
+                  minLength: 1
+                sha256_or_exit_code:
+                  type: [string, integer]
+                observation:
+                  type: string
+                  minLength: 1
+      preserved_evidence:
+        type: array
+        maxItems: 4096
+        uniqueItems: true
+        items:
+          type: object
+          additionalProperties: false
+          required: [path, sha256, immutable]
+          properties:
+            path:
+              type: string
+              minLength: 1
+            sha256:
+              type: string
+              pattern: "^[0-9a-f]{64}$"
+            immutable:
+              type: boolean
+              const: true
+      events:
+        type: array
+        minItems: 1
+        maxItems: 64
+        items:
+          type: object
+          additionalProperties: false
+          required:
+            - event_index
+            - event_type
+            - at_utc
+            - reason
+            - direct_evidence
+            - state_before
+            - state_after
+            - authority
+          properties:
+            event_index:
+              type: integer
+              minimum: 0
+            event_type:
+              type: string
+              enum: [blocked, resumed]
+            at_utc:
+              type: string
+              format: date-time
+            reason:
+              type: string
+              minLength: 1
+            direct_evidence:
+              type: array
+              minItems: 1
+              maxItems: 64
+              uniqueItems: true
+              items:
+                type: object
+                additionalProperties: false
+                required: [path_or_command, sha256_or_exit_code, observation]
+                properties:
+                  path_or_command:
+                    type: string
+                    minLength: 1
+                  sha256_or_exit_code:
+                    type: [string, integer]
+                  observation:
+                    type: string
+                    minLength: 1
+            state_before:
+              type: string
+              enum: [DESIGN_APPROVED, LOCKED_READY, RUNNING, VERIFIED_PENDING_CLOSEOUT, BLOCKED]
+            state_after:
+              type: string
+              enum: [BLOCKED, DESIGN_APPROVED, LOCKED_READY, RUNNING, VERIFIED_PENDING_CLOSEOUT]
+            authority:
+              type: string
+              enum: [A45_material_condition_policy, user_result_driven_scientific_direction_decision]
+      live_run_state:
+        type: object
+        additionalProperties: false
+        required: [execution_status, checkpoint_state, last_complete_phase, resume_cursor]
+        properties:
+          execution_status:
+            type: string
+            enum: [not_started, paused, ready, running, verified_pending_closeout]
+          checkpoint_state:
+            type: string
+            enum: [DESIGN_APPROVED, BLOCKED, LOCKED_READY, RUNNING, VERIFIED_PENDING_CLOSEOUT]
+          last_complete_phase:
+            type: [string, "null"]
+          resume_cursor:
+            type: [string, integer, "null"]
+      committed_projection_state:
+        type: object
+        additionalProperties: false
+        required: [head, execution_status, checkpoint_state, scientific_outcome, edge]
+        properties:
+          head:
+            type: string
+            pattern: "^[0-9a-f]{40}$"
+          execution_status:
+            type: string
+            enum: [not_started, paused, ready, running, verified_pending_closeout]
+          checkpoint_state:
+            type: string
+            enum: [DESIGN_APPROVED, BLOCKED, LOCKED_READY, RUNNING, VERIFIED_PENDING_CLOSEOUT]
+          scientific_outcome:
+            type: string
+            const: not_evaluated
+          edge:
+            type: "null"
+  semantic_validation_invariants:
+    - event_indices_are_zero_based_contiguous_and_append_only
+    - first_event_is_blocked
+    - packet_state_equals_last_event_event_type
+    - blocked_event_state_after_is_BLOCKED
+    - resumed_event_state_before_is_BLOCKED_and_state_after_is_not_BLOCKED
+    - last_event_state_after_equals_live_run_state_checkpoint_state
+    - last_event_state_after_equals_committed_projection_state_checkpoint_state_after_isolated_commit
+    - resumed_event_requires_direct_condition_clearance_evidence
+    - effective_lock_null_fields_if_and_only_if_present_is_false
+    - preserved_evidence_hashes_match_existing_immutable_bytes
+    - parent_projection_matches_packet_state
+    - phase2_operational_lineage_preserves_and_hash_binds_resumed_packet_instead_of_requiring_absence
+    - no_scientific_outcome_report_completion_or_edge_created
+    - no_completed_unfavorable_evidence_deleted_or_replaced
+
+verifier_oracle:
+  fresh_verifier_required: true
+  implementer_report_is_ground_truth: false
+  headline_reproduction: independently_reproduce_complete_contract_decision_from_direct_evidence
+  required_checks:
+    - phase1_and_phase2_hash_and_authority_integrity
+    - plan_b_contract_parity
+    - complete_fixed_schedule_and_no_partial_completion
+    - fresh_registry_seed_ledger_and_forbidden_reuse_absence
+    - bounded_cover_and_exact_K_reproduction
+    - mapping_A_B_and_field_provenance_reproduction
+    - native_and_runtime_fault_reproduction
+    - correctness_and_noise_completeness
+    - canonical_outcome_and_edge_reproduction
+    - implementation_and_delivery_whitelist
+  unacceptable_fallbacks:
+    - partial_timeout_killed_or_still_running_as_complete
+    - trusting_implementer_summary_without_fresh_reproduction
+    - changing_test_threshold_fixture_workload_metric_goal_or_claim_to_pass
+    - proxy_baseline_or_evidence_source
+    - fewer_draws_targets_rows_cells_repeats_or_sizes
+    - outcome_dependent_schedule_seed_target_selector_or_rerun
+    - old_s10r1_s10r2_or_deleted_s10r3_evidence
+    - guessed_mapping_field_or_replacement
+    - independent_oracle_substituted_for_native_path
+    - unbound_implementation_or_pending_effective_lock
+    - downstream_s11_implementation_or_evidence
+
+terminalization:
+  technical_pass_state: VERIFIED_PENDING_CLOSEOUT
+  checkpoint_complete_requires:
+    - formal_report
+    - parent_and_index_projection
+    - closeout_ack
+    - exact_path_terminal_commit
+    - post_commit_audit
+  positive_negative_and_inconclusive_all_require_terminal_report: true
+  changes_required_is_scientific_report: false
+  operational_blocked_uses_packet_not_scientific_report: true
+  operational_blocked_is_recoverable_not_checkpoint_complete: true
+  only_post_audited_positive_activates_s11: true

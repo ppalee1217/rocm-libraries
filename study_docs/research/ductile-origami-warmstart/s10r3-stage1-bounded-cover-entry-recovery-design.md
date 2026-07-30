@@ -8,7 +8,7 @@ checkpoint_state: DESIGN_APPROVED
 scientific_outcome: not_evaluated
 lock_state: absent
 risk_tier: R3
-governance_baseline: d0d6fb11c5e000a90acc03567e2339bd506fefbe
+governance_baseline: 3abb7ecf36e84a519a962533eb600f13b4b2b37c
 scientific_gate: S10R3
 execution_tranche: T-S10R3
 closure_unit: CU-S10R3
@@ -24,6 +24,7 @@ dependencies:
     required_terminal: CHECKPOINT_COMPLETE_inconclusive_edge_null
 entry_criteria:
   - committed_A38_S10R3_authority_amendment
+  - committed_A45_S10R3_dual_seal_execution_alignment
   - exact_S10_source_and_actual_YAML_identity
   - no_S10R1_or_S10R2_empirical_reuse
   - durable_S10R3_contract_and_effective_lock_before_labels
@@ -40,7 +41,7 @@ allowed_outgoing_edges:
 compact_positive_gate_record_path: protocol/v1/evidence/gate-records/s10r3-s1-entry-go.json
 formal_report_path: reports/staged/s10r3-stage1-bounded-cover-entry-report.md
 terminal_report_integration: standalone_report_integrates_s10r3_gate_record
-blocker_path: null
+blocker_path: protocol/v1/evidence/s10r3-operational-blocker.json
 future_frozen_contract_path: protocol/v1/s10r3-stage1-bounded-cover-entry-contract.yaml
 future_effective_lock_path: protocol/v1/locks/s10r3-stage1-bounded-cover-entry-lock.json
 future_artifact_paths:
@@ -52,6 +53,7 @@ future_artifact_paths:
   - protocol/v1/evidence/s10r3-smoke-correctness.json
   - protocol/v1/evidence/s10r3-noise-pilot.json
   - protocol/v1/evidence/s10r3-decision.json
+  - protocol/v1/evidence/s10r3-operational-blocker.json
 implementation_boundary_max:
   - protocol/v1/run_s10r3_entry.py
   - protocol/v1/s10r3/**
@@ -378,7 +380,7 @@ closure／artifact preservation無法完成、label-dependent stopping／selecti
 workload/claim change、evidence不可驗證，或pre-label明確凍結的scientific resource
 boundary。
 
-R3 governance固定：
+下列是A38核准時的historical R3 governance配置：
 
 - 兩位已完成A38 design discussion的reviewers；
 - Codex adapter要求的兩位fresh independent execution planners；
@@ -408,17 +410,111 @@ non-destructive、contract/authority-preserving修復已預授權直接執行。
 destructive/external/platform authority、hard safety/scientific boundary、push、
 downgrade與container mutation仍不在本amendment授權內。
 
+### 9.2 2026-07-30 A45 clean-restart execution alignment
+
+使用者要求刪除全部未提交S10R3 implementation、tests、manifests、contract draft、
+cache與舊run artifacts，保留committed scientific design與parent authority，再依
+current `.agents` `implement-verify-loop`從clean execution baseline重啟。Cleanup時
+不存在effective lock、formal evidence、outcome、report或edge；S10R3保持
+`not_evaluated / edge=null`，舊S10R3 bytes／verdicts／plans及S10R1／S10R2 empirical
+evidence全部禁止重用。
+
+Current workflow prospectively supersedes A38的execution-role配置：
+
+- Main agent親自依序建立Plan-B與Plan-A，不使用planner subagent，也不實作source；
+- existing adversarial auditor只以原thread對fresh bytes重做contract、Plan-B及
+  effective-binding audit，舊verdict無效；
+- 一位fresh implementer只讀Plan-A與必要frozen constraints，不得讀Plan-B；
+- 一位fresh verifier只讀frozen contract／effective lock／Plan-B與direct evidence，
+  不得讀Plan-A；
+- 使用者將S10R3 fresh-thread cap提高為`9`。Cleanup前歷史用量`5`，A45兩位fresh
+  reviewers後為`7/9`，只保留implementer與verifier；沒有replacement headroom；
+- repair為`4/6` used，restart／new root／cleanup不重置。
+
+Phase 1首次audit在上述carryover後開啟repair cycle 5；該cycle只補齊exact artifact
+boundary、effective-lock machine schema與operational blocker lifecycle，不改science。
+Fresh re-audit關閉artifact boundary，但以counterexamples確認audit PASS cross-field、
+fixed source values、scientific projection digest、formal-scope absence與resume lineage
+仍需fail-closed補強，因此cycle 5以`CHANGES_REQUIRED`完成並開啟最後cycle 6。Cycle 6
+fresh re-audit通過時sealed counter為`6/6`。
+
+Fresh reviewers`/root/s10r3_restart_design_a`與
+`/root/s10r3_restart_design_b`以相同evidence完成一輪cross-examination及一輪
+evidence-backed final，兩方都`AGREE`§10的雙seal alignment。它只改execution
+authority／lifecycle，不改本design的scientific內容。
+
+使用者澄清：只有實驗結果導致必須更動原實驗計畫並選擇新scientific方向時，才需要
+中斷交由使用者決定。同一commit／feature內、pre-evidence且不改hypothesis、workload、
+threshold、outcome matrix、claim或edge的implementation／verification／lifecycle
+alignment，以及所有non-destructive、contract／authority-preserving blocker都已
+預授權持續處理到本輪implementation與verification結束。
+
 ## 10. Contract、seal 與formal evidence order
 
 Future exact planning必須把maximum boundary縮成exact implementation/delivery
-whitelists。任何outcome label前：
+whitelists。A45使用同一scientific contract與既有effective-lock path的兩個pre-label
+seal phases。
 
-1. 建立durable machine-readable frozen contract；
-2. 綁定authorities、criteria、outcome matrix、fresh seed namespace、registry、
-   selector、fixtures、implementation hashes、resource semantics與whitelists；
-3. 由fresh adversarial auditor取得`AUDIT_PASS`；
-4. 以tracked commit或approved immutable mechanism seal contract與effective lock；
-5. post-seal audit確認outcome artifacts仍不存在、hash與authority parity正確。
+### 10.1 Phase 1 scientific／oracle seal
+
+Main先在既有future contract path建立durable machine-readable contract，綁定：
+
+- committed authorities、current user-mandated workflow content identities與honest
+  Git state；
+- hypothesis、criteria、outcome／edge matrix、evidence／measurement／claim boundary；
+- source／YAML／groups／weights／sizes／seed namespace／fixed schedule／registry／
+  mandatory set／selector／mapping／conformance／correctness／noise語意；
+- implementation、execution-artifact與delivery三個exact write boundaries；
+- forbidden reuse／downstream roots、resource semantics、downgrade gate；
+- repair／thread counters、role visibility、final-binding schema、canonicalization、
+  exact required paths與prelocked component-to-phase invalidation matrix。
+
+Phase 1不得填假implementation hashes。Contract必須標示
+`implementation_binding=required_pending`與`outcome_access=false`，任何未完成
+binding都fail closed。Existing auditor對fresh contract bytes取得
+`AUDIT_PASS_PREIMPLEMENTATION`後，以本design、charter、parent、README與contract的
+exact-path local commit seal；commit OID與contract SHA形成immutable
+preimplementation lock identity。Post-commit audit後，Main才可先freeze Plan-B、
+取得contract／Plan-B parity，再建立Plan-A。
+
+Phase 1的execution-artifact boundary不得用整個run root作遞迴whitelist。Control-plane
+檔案必須逐路徑列出；build／run／scratch／log／raw／intermediate／reproduction只有在
+具名artifact-only子目錄中，明定descendant semantics、writer roles、artifact class、
+non-delivery及control-plane exclusion後才可寫入。Phase 2 lock schema也必須在Phase 1
+完整固定property tree、field names、JSON types/cardinality/null rules、
+`additionalProperties` policy、path/mode/hash record、state／audit shape與canonical
+self-hash rule，不得只列binding group名稱。
+
+### 10.2 Phase 2 effective execution binding
+
+Fresh implementer依Plan-A建立label-blind implementation、tests、schema、adapters、
+build、registry與fixtures。Formal support discovery、mapping、native outcome、
+GPU correctness、noise與decision仍禁止。
+
+既有effective-lock path之後綁定：
+
+- Phase 1 contract／commit identity；
+- frozen Plan-B hash與Plan-A revision hash；
+- 全部pre-label implementation／test／schema／adapter exact path、mode與SHA-256；
+- pre-label native helper binary、toolchain與exact argv；
+- fresh registry／fixture／input identities；
+- roles／counters、whitelists與outcome-artifact absence。
+
+Outcome-dependent final-K binaries不在labels前fabricate；Phase 1 contract只預鎖其
+generation、admission與lineage rules。Existing auditor取得
+`AUDIT_PASS_POST_BINDING`後，只對effective lock做exact-path local seal commit，再做
+post-seal audit。只有`lock_state=effective`、`execution_status=ready`、
+`checkpoint_state=LOCKED_READY`且所有required binding非pending時，才可開始formal
+evidence。
+
+Phase 2不得修改Phase 1 contract或Plan-B。Plan-B只有在其hash、Phase 1 contract hash、
+canonical scientific/oracle projection、whitelists與schema全部不變，且只填入
+predeclared binding fields時保持有效；否則fail closed。
+
+任何bound-byte repair都建立append-only successor effective lock。Labels後只可依
+Phase 1預鎖的invalidation matrix從最早受影響phase重跑；無機械證明時完整重跑。
+Source／seed／registry／ledger／discovery semantics改變時從first draw重跑，不得依
+observed outcome挑選suffix。
 
 之後formal order固定：
 
@@ -461,6 +557,16 @@ technical verdict、parent/index projection、`CLOSEOUT_ACK`、exact-path closur
 post-commit audit。`CHANGES_REQUIRED`不是scientific report；operational BLOCKED只依
 future contract的terminalization policy處理。
 
+Operational `BLOCKED`的唯一durable packet固定為
+`protocol/v1/evidence/s10r3-operational-blocker.json`。它只在A37 material condition
+於safe atomic boundary成立時使用，保存已完成evidence，不能冒充scientific report、
+completion或edge，也不能抹除不利結果。Contract必須預鎖其JSON schema、Main-only
+writer、conditional delivery、parent blocked projection、isolated blocked-state commit
+與append-only event history。阻塞解除且scientific plan未變時，Main可依使用者standing
+authority追加`resumed` event並以同一組exact parent paths提交resume projection；若
+contract／lock binding drift則先建立successor lock。只有實驗結果要求更動原計畫或
+scientific方向時才需要使用者決定。
+
 A38 design discussion使用兩位fresh `gpt-5.6-sol / xhigh` reviewers，完成兩輪
 cross-examination與一輪evidence-backed final。兩方對scientific bounded-K package
 一致，只在planner count、resource projection與GPU availability authority保留dissent。
@@ -474,3 +580,13 @@ cross-examination與一輪evidence-backed final。兩方對scientific bounded-K 
 - 明確不授權push。
 
 本核准建立合法研究路徑，不保證S10R3 positive，也不預先啟動S11。
+
+A45 clean-restart alignment保留A38作historical scientific authority，不重寫其
+bounded-K decision。兩位fresh reviewers對雙seal、current workflow role ownership、
+`4/6` repair與`7/9 -> 9/9` thread carryover一致`AGREE`。使用者已授權同一
+commit／feature內的plan-preserving implementation、verification與lifecycle問題直接
+完成；只有未來實驗結果迫使原實驗計畫改變scientific方向時才回到user decision。
+A45授權四份governing authority＋contract的Phase 1 exact-path local seal commit、
+既有effective-lock path的Phase 2 exact-path local seal commit，以及原已授權的terminal
+closeout；不授權push、workflow-file staging、downgrade、dependency install、額外
+container mutation或scientific change。

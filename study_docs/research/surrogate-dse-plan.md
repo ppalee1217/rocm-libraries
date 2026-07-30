@@ -303,6 +303,54 @@ A44只改execution governance，不改任何scientific hypothesis、search space
 seed、threshold、criterion、outcome／edge matrix、claim或evidence boundary，也不授權
 push、downgrade、destructive operation、dependency install或container mutation。
 
+### 1.15 A45 S10R3 clean-restart execution alignment
+
+2026-07-30，使用者要求刪除S10R3全部未提交implementation、tests、manifests、
+contract draft、cache與舊`agent_run`，保留本charter、parent、active index與S10R3
+design的committed scientific authority，並依current `.agents`
+`implement-verify-loop`從clean execution baseline重啟。刪除時沒有effective lock、
+formal evidence、outcome、report或edge；scientific state保持
+`not_evaluated / edge=null`，且舊bytes、舊verdict與S10R1／S10R2 empirical evidence
+全部禁止重用。
+
+Current workflow要求Main先建立並freeze goal/oracle Plan-B、再建立decision-complete
+Plan-A，且Main不得實作source；每個gate使用fresh implementer與fresh verifier。
+這和A38歷史two-planner／Main-implementation配置，以及「同一pre-plan seal已包含final
+implementation hashes」形成execution sequencing衝突。Fresh reviewers
+`/root/s10r3_restart_design_a`與`/root/s10r3_restart_design_b`完成一輪
+cross-examination與一輪evidence-backed final，兩方均`AGREE`採用不改scientific
+plan的雙seal alignment：
+
+1. Phase 1先seal完整scientific/oracle contract；final implementation binding保持
+   `required_pending`且`outcome_access=false`。Seal後Main才依序建立Plan-B與Plan-A。
+2. Fresh implementer只做label-blind implementation、tests、build、registry與fixture。
+3. Phase 2使用既有effective-lock path綁定exact implementation/runtime identities；
+   auditor pass、tracked seal與post-seal audit全過後才可產生formal evidence。
+4. Execution-artifact boundary不授權整個run root；control-plane逐path列出，只有
+   具名artifact-only子目錄可用explicit descendant semantics，且不進delivery。
+   Phase 1並完整固定Phase 2 lock property/type/cardinality/null/unknown-field
+   rejection、path-mode-hash records、state／audit與canonical self-hash schema。
+5. A37 material condition的唯一durable lifecycle packet固定為
+   `protocol/v1/evidence/s10r3-operational-blocker.json`；它以Main-only append events
+   保存blocked／resumed與既有evidence，不是scientific report、completion或edge。
+   Safe resume及exact parent projection／isolated commit policy在Phase 1預鎖。
+
+S10R3 thread cap由使用者明確提高為`9`；cleanup前已知`5`個歷史threads，本次兩位
+reviewers後為`7/9`，只保留一位fresh implementer與一位fresh verifier。Repair
+`4/6`完整carry over。Restart、new root與刪除transient bytes都不重置計數。
+Phase 1首次audit findings使用cycle 5補machine-contract completeness；fresh re-audit
+關閉artifact boundary，但反例仍要求補audit cross-field、fixed source/projection
+digest、formal-scope absence與resume lineage。Cycle 5以`CHANGES_REQUIRED`完成；最後
+cycle 6 fresh re-audit通過時sealed counter為`6/6`，不改任何scientific criteria或
+edge。
+
+使用者另澄清：只有實驗結果導致必須更動原實驗計畫並選擇新scientific方向時才中斷
+交由使用者決定；同一commit／feature內、pre-evidence且不改hypothesis、workload、
+threshold、outcome matrix、claim或edge的implementation／verification／lifecycle
+alignment不需重複介入。所有非設計、non-destructive、contract／authority-preserving
+blocker已預授權持續處理到本輪implementation與verification結束。A45不授權push、
+downgrade、dependency install、額外container mutation或scientific change。
+
 ---
 
 ## 2. 研究問題與假設
@@ -765,6 +813,10 @@ M00–M09移入`ductile-origami-warmstart/legacy/`，只保留歷史正文：
   floor，但不能改scientific authority。
 - Future outcome evidence前必須先建立durable machine-readable frozen contract、
   驗證human/machine parity並seal effective lock。
+- S10R3依A45使用雙seal：先以tracked contract commit固定scientific/oracle
+  projection與final-binding requirement，再於fresh label-blind implementation後以
+  既有effective-lock path綁定exact execution bytes。第二seal與post-seal audit前禁止
+  formal evidence；這不改其他checkpoint的scientific lifecycle。
 - S10 hard access／artifact／mapping blocker才使用：
   - `ductile-origami-warmstart/reports/gen0-factorization-blocker-memo.md`
 - S10R1沒有scientific report；current bytes只保留A32 cancellation tombstone與A33
