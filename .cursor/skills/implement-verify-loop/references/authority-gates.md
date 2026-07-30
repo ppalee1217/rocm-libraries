@@ -29,11 +29,14 @@ Use risk-tiered, contract-first governance:
   uniquely compelled by the frozen contract and direct evidence; otherwise
   route the issue to its experiment-design, missing-authority, or safety gate.
 - Do not use a planner, auditor, verifier, or consensus to invent authority.
-- Every R0-R3 gate has a six-round repair cap. Two rounds without material
-  progress trigger operational adjudication instead of immediate termination;
-  a seventh repair still requires new human authority. Do not terminalize an
-  achievable goal merely for ordinary `CHANGES_REQUIRED`, a recoverable test or
-  process failure, or nonmaterial resource accounting variance.
+- Every R0-R3 gate keeps an append-only repair ledger without a numeric
+  stop/approval cap. Two rounds without material progress trigger operational
+  adjudication instead of termination. A responsible verifier/auditor finding
+  with one contract-preserving correction, or two operational reviewers'
+  agreement that such a repair is required, authorizes Main to continue
+  regardless of accumulated repair count. Do not terminalize an achievable
+  goal merely for repair count, ordinary `CHANGES_REQUIRED`, a recoverable test
+  or process failure, or nonmaterial resource accounting variance.
 
 Keep these gates unchanged:
 
@@ -64,9 +67,9 @@ Keep these gates unchanged:
   quantity/boundary frozen pre-label as a scientific/comparability criterion.
   Bare `UNKNOWN`, planning variance, internal cap crossing, or cumulative total
   is not such evidence. Do not rerun outcome-bearing work only to perfect
-  accounting. Scientific sample/execution caps, repair/thread caps, downgrade
-  gates, and evidence requirements remain hard and this rule cannot create or
-  alter a scientific edge.
+  accounting. Scientific sample/execution caps, thread caps, repair-review
+  gates, downgrade gates, and evidence requirements remain hard and this rule
+  cannot create or alter a scientific edge.
 - Apply the experiment's separate user gate for every downgrade.
 - Any destructive or post-label contract/lock/protocol/fixture/threshold/
   selection/lineage/claim change is R3 and requires its authority gate.
@@ -103,8 +106,8 @@ Require all of the following:
   report, delivery, or other independent value.
 - Recovery only restores baseline absence. It does not change the goal,
   Plan-B, acceptance, evidence/measurement boundary, report, DAG/gate, claim,
-  implementation/delivery whitelist, commit authority, or another authority
-  gate.
+  implementation, execution-artifact, or delivery whitelist, commit
+  authority, or another authority gate.
 
 Exclude tracked, staged/index, committed, pre-existing untracked/ignored,
 attribution-ambiguous, concurrently/user-modified, other-workspace/repository/

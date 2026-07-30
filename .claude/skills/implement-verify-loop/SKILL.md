@@ -2,17 +2,20 @@
 name: implement-verify-loop
 description: >-
   Executes risk-tiered engineering and experiment work from an approved design
-  using one transient execution plan, a durable machine-readable frozen
-  contract, six-round repair, and independent verification. Preserves hard
-  scientific gates while allowing compatible gates to share an execution
-  tranche and terminal closeout. Use for preregistered checkpoints with clear
-  acceptance, evidence, authority, and report targets. Do not use to invent an
-  ambiguous design or silently weaken a locked protocol.
+  using Main-authored transient implementation and goal-oracle plans, a durable
+  machine-readable frozen contract, reviewer-governed uncapped repair, and independent
+  verification. Preserves hard scientific gates while allowing compatible
+  gates to share an execution tranche and terminal closeout. Use for
+  preregistered checkpoints with clear acceptance, evidence, authority, and
+  report targets. Do not use to invent an ambiguous design or silently weaken
+  a locked protocol.
 ---
 
 # Implement and Verify Loop
 
-Main agent 是 orchestrator：解析 authoritative bundle、凍結風險與 outcome contract、保護 baseline、管理有界角色與資源，並保存可追溯裁決與證據。
+Main agent 是 orchestrator：解析 authoritative bundle、凍結風險與 outcome contract、
+保護 baseline、親自準備 Plan-A 與 Plan-B、管理有界角色與資源，並保存可追溯裁決與
+證據。Main agent 不得把兩份 plan 委派給 planner subagent，也不得親自實作 source change。
 
 Verifier `PASS` 只代表 technical verification 通過並進入
 `VERIFIED_PENDING_CLOSEOUT`。正式 report、parent update、`CLOSEOUT_ACK`、
@@ -24,9 +27,9 @@ Verifier `PASS` 只代表 technical verification 通過並進入
 
 - `scientific_gate` 是預註冊 outcome、claim 或 authority decision 的硬邊；不得合併、
   重排或用共享 closeout 繞過。
-- `execution_tranche` 是可共享 planner、implementer、verifier、run root 與 repair
-  ledger 的一段相容工作。Fresh implementer 不是必要條件；同一 implementer 可在
-  tranche 內延續，但每個 outcome-bearing R1-R3 gate 仍須 fresh verifier。
+- `execution_tranche` 是可共享 Main planning context、environment/setup、run root 與
+  repair ledger 的一段相容工作。每個 scientific gate 仍有自己的 Plan-A、frozen
+  Plan-B、fresh implementer 與 fresh verifier；只有同一 gate 的 repair 才 resume 原角色。
 - `closure_unit` 是一個或多個相容 adjacent gates 的 terminal evidence/report/parent
   update/staging/commit 單位。它不改變 gate order，也不把多個 outcome 混成一個。
 - Parent plan index 中的 stable checkpoint 必須明確對應上述三種單位；`step`、
@@ -73,14 +76,16 @@ renaming、replacement 或 fresh thread 都不能重設 tier、repair count 或 
   較弱能力冒充符合需求。只有 approved contract 明定 capability 不可替代時才停止。
 - Same-model fresh threads 只提供 process independence，不是 scientific replication；
   報告不得把它當作獨立資料、獨立實驗或統計重現。
-- 預設一個 execution planner。R2/R3 另加一個 fresh adversarial oracle/authority
-  auditor，在 labels 前挑戰 frozen contract、lineage 與 authority。
-- Fresh implementer 不是強制角色；Main agent 或既有 implementer 可在同一 execution
-  tranche 內延續。角色延續與變更都記錄在 lineage。
+- Main agent 是唯一 Plan-A/Plan-B author；不得建立 planning subagent。R2/R3 另加一個
+  fresh adversarial oracle/authority auditor，在 labels 前挑戰 frozen contract、
+  Plan-B parity、lineage 與 authority，但 auditor 不得代寫 plan。
+- 每個 scientific gate 使用一個 fresh implementer；Main agent 不實作。Repair resume
+  同一 implementer，進入另一 gate 時不得沿用該 thread。
 - Outcome-bearing R1-R3 必須由未參與該 gate 實作的 fresh verifier 驗證 frozen
-  contract。Repair 可 resume 同一 verifier；若更換 verifier，replacement 必須完整重驗。
-- Verifier 依 frozen contract 與 direct evidence 判斷，不依 transient execution plan
-  的步驟選擇判斷。
+  contract與Plan-B。Repair 可 resume 同一 verifier；若更換 verifier，replacement
+  必須完整重驗。
+- Verifier 依 frozen contract、frozen Plan-B 與 direct evidence 判斷，禁止讀取
+  Plan-A，也不得依 implementer 選擇的步驟判斷。
 
 ## Unexpected experiment-design issue adjudication
 
@@ -94,8 +99,8 @@ stopping rule 或 scientific authority 的 ambiguity，才使用 `design-discuss
   累計最多 60 agent wall-minutes。
 - 不強迫 `AGREE`。在任一 cap 到達時停止辯論，保存雙方 dissent、共同點、evidence
   boundary 與最小 decision packet，交 human escalation。
-- 這兩個 reviewers 不取代 planner、oracle/authority auditor、implementer 或 verifier，
-  也不得直接修改 implementation 或創造 authority。
+- 這兩個 reviewers 不取代 Main plan author、oracle/authority auditor、implementer 或
+  verifier，也不得直接修改 plan、implementation 或創造 authority。
 - 無論雙方形成 unified conclusion 或 preserved dissent，Main agent 都先建立
   decision packet 並暫停 affected design path，等待使用者決定；雙方同意不能取代
   experiment-design authority。
@@ -152,11 +157,16 @@ prior roles，不得藉此重設或規避 thread cap：
   design authority。
 - 兩方 `AGREE` 的 non-destructive、contract/authority-preserving action 已由 repository
   owner 預先授權；Main agent 記錄後直接執行，不再等待使用者。
+- Responsible verifier／auditor 的具體 finding 若只導出一個 non-destructive、
+  contract/authority-preserving 修復，該 finding 本身即是 reviewer support；不需為了
+  repair 次數再啟動 dual review。只有多個 consequential 方向、authority 分類歧義或
+  兩輪無 material progress 時才需要兩位 operational reviewers。
 - 若兩方仍 dissent，Main agent 只能執行 frozen contract 與 direct evidence 唯一要求
   的最小、可逆、非破壞性方案。若沒有這種方案，才依實際性質轉入 experiment-design、
   missing-authority 或 safety gate；不得假造 unified conclusion。
 - Ordinary deterministic fix 不需為了形式而啟動雙 reviewer。Operational reviewers
-  不取代 fresh verifier，且新 thread、generation 或 successor 不能重設 repair count。
+  不取代 fresh verifier。Repair count 只作 append-only provenance；新 thread、
+  generation 或 successor 不得刪除歷史，但累計數字不形成 stop 或 approval gate。
 
 ## Scientific gates, execution tranches, and closure units
 
@@ -165,8 +175,9 @@ prior roles，不得藉此重設或規避 thread cap：
 1. 先建立 scientific gate DAG、hard edges、execution tranche 與 closure unit mapping。
 2. Hard scientific edges 永遠不軟化：dependent gate 只有在 upstream outcome 已依
    frozen contract verified 後才可進入。
-3. 相容 adjacent gates 可共享 planner、implementer、verifier、run root、repair ledger，
-   並在一個 terminal closeout 完成，但每個 gate 保留獨立 contract criterion、outcome、
+3. 相容 adjacent gates 可共享 Main planning context、environment/setup、run root、
+   repair ledger，並在一個 terminal closeout 完成；每個 gate 仍保留獨立 Plan-A、
+   frozen Plan-B、fresh implementer、fresh verifier、contract criterion、outcome、
    evidence lineage 與 verdict。
 4. Independent label-blind preparations 可平行，前提是 write、artifact、index、run root、
    evidence 與 authority boundaries 不重疊；任何 outcome reveal 仍受各自 hard edge。
@@ -197,7 +208,8 @@ tranche-state.json
 gates/
   <gate-id>/
     baseline.md
-    execution-plan.md
+    plan_a.md
+    plan_b.md
     frozen-contract.snapshot.json
     impl_report.md
     verify_report.md
@@ -229,10 +241,15 @@ closure/
 3. 解析 scientific gate DAG、tranche/closure mapping、acceptance/oracle、
    evidence/claim boundary、status/outcome vocabulary、report/blocker target與
    terminalization policy。
-4. 凍結兩層whitelist：
+4. 凍結三個 write boundaries：
    - `implementation_whitelist`：implementer可修改的source/test/config/design deliverables。
-   - `delivery_whitelist`：前者加formal report、parent checkpoint-specific hunk及明確
-     授權的durable amendment/artifact。
+   - `execution_artifact_whitelist`：approved commands可建立或更新的exact transient
+     build/run/scratch/log/raw/intermediate/final artifact paths；它們不是delivery，
+     不得只因被列入此處就stage或commit。
+   - `delivery_whitelist`：可在 terminal closeout stage/commit 的 exact durable paths，
+     例如 implementation whitelist 中授權的 deliverables、formal report、parent
+     checkpoint-specific hunk 及明確授權的 durable amendment/artifact；不得包含只屬於
+     execution artifact whitelist 的 transient paths。
 5. 在 outcome labels 前分類並凍結 R0-R3 tier；R2/R3 預約 adversarial auditor。
 6. 確認 scoped authority。只有既有明確 authority 涵蓋時，才可在 terminal closure
    對 exact delivery paths 做 isolated commit；push、PR、credentials、external write、
@@ -246,7 +263,7 @@ closure/
    - Plan commands會觸及的ignored／non-Git roots之targeted absence，或既有path的
      `lstat`／hash inventory。
    - 已完成upstream checkpoints的commit、verdict與report identity。
-   - 兩層whitelist、formal report/parent path與禁止接觸的downstream paths。
+   - 三個write boundaries、formal report/parent path與禁止接觸的downstream paths。
 10. 凍結 resource planning 與 material boundary：
     - 記錄 pre-empirical share、wall-time、CPU/GPU、storage、throughput assumptions、
       first-1% reforecast point、2x variance、預設5 GiB transient target與safe boundaries。
@@ -265,10 +282,11 @@ closure/
       `UNKNOWN`、2x variance、internal planning-cap crossing或cumulative total不是此類
       evidence。不得只為完善記帳重跑outcome-bearing work。
     - Scientific sample／draw／seed／arm／population／generation／repetition caps、
-      repair／thread caps、downgrade gates與evidence requirements不受本條放寬。
+      thread caps、repair-review gates、downgrade gates與evidence requirements不受本條放寬。
 11. 從 approved design 擷取 durable machine-readable frozen contract，至少包含 gate
     ID/tier、labels、criteria、outcome/edge matrix、evidence/measurement/claim boundary、
-    fixtures、lineage、whitelists、authority、repair budget、resource planning targets、
+    fixtures、lineage、implementation/execution-artifact/delivery whitelists、authority、
+    repair ledger／reviewer policy、resource planning targets、
     任何explicit hard resource boundary、downgrade gate與lock identity。人工與機器
     表示必須可追溯；不一致時停止。
 12. R2/R3 由 adversarial oracle/authority auditor 在 labels 前檢查 contract 完整性、
@@ -281,64 +299,65 @@ closure/
 15. 每進入新 tranche 或 baseline drift 時重做 relevant capture；共享 tranche 不代表
     可沿用 stale evidence。
 
-## Step 1：建立一份 transient execution plan
+## Step 1：Main agent 建立 Plan-B 與 Plan-A
 
-預設只建立一個 execution planner。它收到一份 `BASE REQUIREMENTS` block：
+開始本 Step 前，完整讀取並套用
+[Main-authored Plan-A / Plan-B contract](references/planning-contract.md)。
+Main agent 親自建立兩份 transient artifacts，不得啟動 planner subagent：
 
-- Repo root、source note/spec 路徑與必要 context。
-- Active gate、tranche/closure mapping、risk tier、main objective 與 scope。
-- Authoritative parent/design、durable frozen-contract/lock paths 與 hashes、formal report
-  path、implementation/delivery whitelists 與 scoped authority。
-- Verified upstream gate evidence、允許的 dependency edge 與 downstream exclusion。
-- Frozen required behavior、acceptance criteria 與 outcome/next-edge matrix。
-- Constraints、compatibility boundaries 與禁止事項。
-- Known user changes、resource contract、可用環境、evidence/artifact paths。
-- 明確說明只負責 planning，不實作 source change。
+1. 先只依 authoritative bundle 與 sealed durable contract 建立 verifier-facing
+   `plan_b.md`。它描述 overall verification objective、required end state、acceptance
+   evidence boundary、headline reproduction、allowed outcomes/edges 與 unacceptable
+   fallbacks，不包含 per-file implementation steps。
+2. R0/R1 由 Main agent 檢查 Plan-B 與 contract parity；R2/R3 另由既有 fresh
+   adversarial auditor review。通過後記錄 SHA-256 並標示 `FROZEN`，才可開始 Plan-A。
+3. Main agent 以 read-only inspection 查明 relevant code、tests、configs、fixtures、
+   commands、environment 與 artifacts，建立 implementer-facing `plan_a.md`。
+4. Plan-A 必須 decision-complete，並盡可能完整指定每個 code change 與實驗細節；
+   不可把可查明的事留給 implementer 猜。沒有適用值的 required field 要寫 `N/A`
+   與理由。
+5. 只有 Plan-A 預先定義 candidate branches、investigation boundary、deterministic
+   decision table、permitted changes 與 escalation triggers 時，implementer 才可執行
+   bounded spike。
 
-Planner 只允許寫 transient `execution-plan.md`。要求內容：
-
-- Objective 與 scope restatement。
-- Exact implementation whitelist 或清楚的 whitelist scope。
-- Whitelist 只能服務 active/dependency-ready gates；明列 dependent paths 為禁止修改。
-- 每個檔案預計修改的 symbol、anchor、behavior 與 reuse pattern。
-- 若需 spike，列出 hypotheses、調查位置、decision criteria 與可接受邊界。
-- Compatibility、error handling、data/measurement boundary。
-- Implementer 可執行的 verification commands 與預期可觀察結果。
-- Implementer 不能執行而需 verifier/使用者提供的 evidence。
-- `impl_report.md` 必須記錄的內容與 deviation policy。
-- Pre-empirical engineering、wall-time、storage、throughput estimates、first-1% reforecast
-  point 與 safe pause boundaries。
-
-Execution plan 必須盡量具體，但不可偽造尚未查證的 code path、command 或行號。它可
-隨 implementation discovery 修訂並保留 revision ledger，因此不是 outcome authority，
-也不得覆蓋 durable frozen contract。
+Plan-B 是 frozen goal/oracle view，Plan-A 是可 version 的 implementation/experiment
+plan；兩者都不是 outcome authority，也不得覆蓋 durable frozen contract。
 
 ### Main agent plan gate
 
-Planner 完成後，Main agent：
+Main agent：
 
-1. 確認 plan 忠於 frozen contract、whitelist、hard edges、resource planning targets
-   與任何explicit hard resource boundary。
+1. 確認 Plan-A 與 Plan-B 都忠於 frozen contract、whitelists、hard edges、resource
+   planning targets 與任何 explicit hard resource boundary。
 2. 確認 machine-readable contract 可獨立驗證 objective、positive/negative/inconclusive/
-   blocked outcome、criteria、unacceptable fallback、evidence 與 next edge；不可把這些
-   authority 留在 natural-language plan。
-3. R2/R3 必須取得 fresh adversarial auditor 的 `AUDIT_PASS`；finding 只可在 labels 前
-   以 traceable contract revision 修正。Labels 後只能 R3 escalation。
-4. 在 `adjudication.md` 記錄 execution-plan revision、contract hash、lock identity、
-   tier、auditor result 與 `SEALED` state。
+   blocked outcome、criteria、unacceptable fallbacks、evidence 與 next edge；不可把
+   authority 只留在 natural-language plans。
+3. 確認 Plan-B 在 Plan-A 之前完成 freeze，且沒有 Plan-A implementation choice 污染。
+4. 確認 Plan-A 已列 exact implementation instructions、完整適用的 experiment
+   parameters、commands、artifacts、self-checks 與 bounded-spike decision table。
+5. R2/R3 必須取得 fresh adversarial auditor 的 `AUDIT_PASS`；finding 只可在 labels 前
+   以 traceable contract/plan revision 修正。Labels 後只能依既有 R3 gate 處理。
+6. 在 `adjudication.md` 記錄 Plan-A revision/hash、frozen Plan-B hash、contract hash、
+   lock identity、tier、auditor result 與 `SEALED` state。
 
-## Step 2：在 execution tranche 實作與執行
+## Step 2：Fresh implementer 實作與執行
 
-Fresh implementer 不是 mandatory。Main agent 可啟動 implementer，或讓同一 implementer
-沿用 tranche thread。Implementer 收到 transient execution plan 與必要的 frozen
-constraints，但不得取得修改 contract 的 authority：
+每個 active scientific gate 都啟動一個 fresh implementer。Main agent 不得親自實作，
+另一個 gate 也不得沿用此 implementer；只有同一 gate 的 repair 才 resume 原 thread。
+Implementer 收到完整 Plan-A、必要 frozen constraints、baseline 與 artifact paths，
+不得讀取或接收 Plan-B，也不得取得修改 contract 或任何 plan 的 authority：
 
-- 在 current workspace 實作 dependency-ready gate 的 execution plan。
-- 只修改 implementation whitelist 內的 paths，以及本 run 的 `impl_report.md`。
+- 在 current workspace 實作 dependency-ready gate 的 Plan-A。
+- 只修改 implementation whitelist、execution artifact whitelist 內的 exact paths，
+  以及本 run 的 `impl_report.md`。
 - 不得修改、補stub、順手抽象化或預建任何downstream checkpoint path/behavior。
 - 先檢查檔案 current content，避免覆蓋 baseline 中的 user changes。
-- Plan 留有 spike 時，在 frozen goal、direction 與 decision criteria 內完成探索並記錄選擇理由。
-- 執行 execution plan 中可執行的 verification commands。
+- Plan-A 留有 bounded spike 時，只能依其 candidate branches、deterministic decision
+  table 與 permitted changes 選擇，並記錄 direct evidence 與理由。
+- 遇到 Plan-A 未涵蓋、evidence ambiguous、或會影響 behavior/measurement/evidence/
+  claim/contract/authority 的選擇時，不做 speculative change；回覆
+  `BLOCKED_PLAN_GAP` 與 evidence。
+- 執行 Plan-A 中可執行的 verification commands。
 - 不得 commit、push、install dependency、存取 credentials 或做 external writes。
 - 將每個 changed file、behavior、command、exit code、artifact、deviation、未完成項目寫入 `impl_report.md`。
 - 回覆只包含 terse status、changed-file list 與 report path。
@@ -361,6 +380,13 @@ Implementer 回覆後，Main agent：
      再重做本 Step。
    - 其他情況立即向使用者呈現delta；不可單方面revert、delete、stash、覆蓋或擴張whitelist。
 4. 若 implementer 自己已知未完成，不啟動假驗證；先在 scope 內 resume implementer 補齊，或誠實升級。
+5. `BLOCKED_PLAN_GAP` 時由 Main agent 先查明 evidence；只有能在 unchanged frozen
+   contract 內決定時才建立有 revision/hash ledger 的新 Plan-A 並 resume implementer。
+   若會改 contract、Plan-B 或 scientific design，改走既有 design/R3 authority gate。
+   Plan gap 本身永遠不算 verifier repair round；resume 後若 verifier 產生 finding，
+   只有該完整 implement→verify cycle 才追加一筆 repair provenance。同一 Plan-A gap 連續兩次
+   沒有 material progress 時，先走 non-design operational adjudication，再決定是否
+   還有 authority-preserving path。
 
 ## Step 3：Fresh verifier 依 frozen contract 驗證
 
@@ -368,19 +394,22 @@ Outcome-bearing R1-R3 gate 必須啟動未參與該 gate implementation 的 fres
 R0 可依風險由 Main agent 做 deterministic check。Verifier 收到：
 
 - Durable frozen contract/lock 與 exact seal hash。
+- Frozen `plan_b.md` 與 exact SHA-256。
 - Baseline references。
 - Current implementation diff 與 changed paths。
 - Source/test/artifact paths。
 - `impl_report.md` 作為待查證的 claim，不是 ground truth。
 - 下列 verifier contract。
 
-Verifier 可讀 execution plan 了解路徑，但 acceptance 只由 frozen contract 決定；不得因
-plan 或 implementer 選擇而改 goal、threshold、evidence boundary 或 outcome matrix。
+Verifier 明確禁止讀取或接收 `plan_a.md`。Acceptance 由 frozen contract 決定，Plan-B
+只提供 goal/oracle view；不得因 implementer 選擇而改 goal、threshold、evidence
+boundary 或 outcome matrix。Plan-B 與 contract 不一致時必須 fail closed。
 
 Verifier contract：
 
 - 不修改 source、tests、configs、approved design、frozen contract 或 lock。
-- 只可寫本 run 的 `verify_report.md`、`verdict.json` 與明確允許的 reproduction artifacts。
+- 只可寫本 run 的 `verify_report.md`、`verdict.json`，以及明確允許且列在
+  execution artifact whitelist 的 reproduction artifacts。
 - 重新讀 current code 與 surrounding call paths。
 - 逐項以 direct evidence 判斷 frozen acceptance criteria。
 - 確認diff只包含active checkpoint implementation whitelist，且沒有downstream
@@ -437,21 +466,27 @@ Verifier contract：
 
 Main agent 每輪將以下內容追加到 `adjudication.md`：
 
-- Iteration number、risk tier 與 frozen contract/lock hash。
+- Iteration number、risk tier、Plan-A revision/hash、frozen Plan-B hash 與 frozen
+  contract/lock hash。
 - Implementer changed paths 與 evidence。
 - Verifier verdict、blocking finding IDs 與 evidence requests。
 - Main agent 的判斷、下一步與未解風險。
 
 Repair round 是一個 verifier finding 被送修、實作回應並重新驗證的完整 cycle：
 
-- R0、R1、R2、R3 每個 gate 都最多 6 rounds；第 7 輪只能取得新的 human approval。
+- R0、R1、R2、R3 的 repair rounds 全數追加記錄，但沒有 numeric maximum；repair
+  count 不得成為 stop、approval、success 或 completion gate。
+- Responsible verifier／auditor 已確認且只有一個 contract-preserving 修復時直接執行；
+  多個 consequential 方向或 authority 分類歧義由兩位 operational reviewers 裁決。
+  兩位同意修復必要且不改 experiment design 時直接執行，不需 human approval。
 - 同一 finding 連續 2 rounds 沒有 material progress時，先執行 non-design dual-agent
-  operational adjudication，再決定剩餘 budget 內的修復；不得只因這個訊號終止整體
+  operational adjudication，再決定下一個 contract-preserving 修復；不得只因這個訊號終止整體
   goal。
 - Generation、successor、renaming、replacement、role/thread restart 或搬到新 run root
-  都不能重設計數。
-- 同一 gate/lineage 累計 fresh role threads 上限：R2 = 5，R3 = 6。Planner、auditor、
-  verifier/replacement 與 design reviewers 都計入；不得用新 thread 規避 repair cap。
+  都不能刪除或重寫歷史計數。
+- 同一 gate/lineage 累計 fresh role threads 上限：R2 = 5，R3 = 6。Implementer、
+  auditor、verifier/replacement 與 design reviewers 都計入；不得用新 thread 規避
+  independence 或 reviewer gates。
 
 ### Technical PASS
 
@@ -469,9 +504,9 @@ Repair round 是一個 verifier finding 被送修、實作回應並重新驗證�
 ### CHANGES_REQUIRED
 
 1. Main agent 依 direct evidence 判斷 findings 是否具體、是否在 scope 內。
-2. 若 finding 只有唯一、contract-preserving 的 in-scope 修復，且仍在 repair budget
-   內，直接進入原
-   implementer/verifier repair loop。
+2. 若 finding 只有唯一、contract-preserving 的 in-scope 修復，且 responsible
+   verifier／auditor 確認需要，直接進入原 implementer/verifier repair loop；不檢查
+   numeric repair cap。
 3. 若 finding 暴露 material experiment protocol/claim/lineage/stopping-rule/
    scientific-authority ambiguity，先依 `Unexpected experiment-design issue
    adjudication` 完成 dual-agent `design-discussion`，再將結論交使用者；不得先改
@@ -479,16 +514,22 @@ Repair round 是一個 verifier finding 被送修、實作回應並重新驗證�
 4. 若是多個 consequential、contract-preserving 的非設計修復方向，或同一 finding
    已兩輪無 material progress，依 `Non-design blocker operational adjudication`
    取得預授權結論後繼續。
-5. 將 blocking IDs、`verify_report.md`、required changes 與 current changed paths resume 給原 implementer。
-6. Implementer 修正後更新 `impl_report.md`，並只回傳短 status 與 paths。
-7. Main agent 再做 whitelist/baseline check。
-8. Resume 原 verifier：
+5. 若 required change 需要不同 implementation instructions，Main agent 先依
+   [planning contract](references/planning-contract.md)建立 contract-preserving
+   Plan-A revision；不得讓 implementer 自行解讀或修改 plan。
+6. 將 blocking IDs、`verify_report.md`、current changed paths 與完整 current Plan-A
+   resume 給原 implementer；不得提供 Plan-B。
+7. Implementer 修正後更新 `impl_report.md`，並只回傳短 status 與 paths。
+8. Main agent 再做 whitelist/baseline check。
+9. Resume 原 verifier：
    - 提供 addressed finding IDs、new diff、commands/artifacts 與 remaining uncertainties。
+   - 提供 frozen Plan-B 與 contract hashes；不得提供 Plan-A 或 Plan-A summary。
    - 要求重新讀 current files 並 fresh rerun relevant checks。
    - 不可只相信 repair summary。
-9. 在 repair/thread budget 內重複。不得因普通 `CHANGES_REQUIRED`、可修復 test failure
-   或非實質資源記帳問題提前結束；達第 6 輪仍無 `PASS` 時才 honest exit，不得自動開
-   generation 重算。
+10. 在 thread budget 與 reviewer governance 內重複。不得因 repair 累計數字、普通
+   `CHANGES_REQUIRED`、可修復 test failure 或非實質資源記帳問題提前結束；只有沒有
+   reviewer-supported authority-preserving path 時才 honest exit，不得自動開 generation
+   重算。
 
 修正迴圈期間 active gate 不變；只有邊界完全獨立且 label-blind 的 preparations 可平行。
 
@@ -500,19 +541,20 @@ Repair round 是一個 verifier finding 被送修、實作回應並重新驗證�
   deterministic disposable artifact recovery 依 reference 自動處理。
 - 非設計 blocker 先依 operational adjudication 使用既有 authority 自主解決。只有
   experiment-design decision、缺少 destructive/external/platform authority、hard
-  safety/scientific boundary，或第 6 repair round 後仍無有效路徑才停止 affected path。
+  safety/scientific boundary，或 reviewers 確認沒有有效 authority-preserving path
+  時才停止 affected path。
 - 若環境無法取得必要 evidence，terminal state 是 `BLOCKED`，不是 `PASS`。
 - `BLOCKED` 或 evidence request 停止該 dependency path 的 outcome-bearing work；只允許
   邊界不重疊的 independent label-blind preparation。
 
 ### Honest exits
 
-達第 6 repair round或thread cap且dual-agent operational adjudication仍找不到
-authority-preserving路徑、experiment-design decision等待使用者、material resource
+Thread cap 已達且現有獨立角色也無法完成 required review、dual-agent operational
+adjudication仍找不到 authority-preserving 路徑、experiment-design decision等待使用者、material resource
 gate暫停後無approved decision、所需工作／硬體／資料／環境超出scope、現有evidence
 無法判定，或只支持inconclusive而不足以支持原claim時，停止affected path並誠實升級，
-不假裝完成。同一finding兩輪無progress只是強制adjudication訊號，不再單獨構成
-terminal exit。
+不假裝完成。Repair 累計數字本身永遠不是 honest-exit 條件；同一finding兩輪無progress
+只是強制adjudication訊號，不單獨構成 terminal exit。
 
 ## Step 5：Closure-unit report、parent update、closeout 與 commit
 
@@ -615,11 +657,12 @@ Formal report 同時服務第一次閱讀的工程師與需要重現證據的稽
 
 以繁體中文精簡摘要 run directory、risk tiers、gate/tranche/closure mapping、
 `live_run_state`、`committed_projection_state`、parent/design 與 frozen-contract/lock hashes、
-changed files、fresh verifier commands、technical verdict、scientific outcome、formal
-report、`CLOSEOUT_ACK`、closure commit SHA、post-audit、verified edge、evidence boundary
-與 risks。只有 required closure units 經 post-commit audit `COMPLETE`，或 gates 依
-verified edge 合法 skip/not-activate，才能宣告整體完成；否則列出 technical/closeout state、blocking
-evidence、未開始的downstream與需要使用者決定的下一步。
+Plan-A revision/hash、frozen Plan-B hash、changed files、fresh verifier commands、
+technical verdict、scientific outcome、formal report、`CLOSEOUT_ACK`、closure commit
+SHA、post-audit、verified edge、evidence boundary 與 risks。只有 required closure
+units 經 post-commit audit `COMPLETE`，或 gates 依 verified edge 合法
+skip/not-activate，才能宣告整體完成；否則列出 technical/closeout state、blocking
+evidence、未開始的 downstream 與需要使用者決定的下一步。
 
 Closure unit 沒有 post-audited terminal commit 時，禁止使用「完成」或同義說法。
 Dependent scientific gate 只能在 upstream verified edge 後開始；terminal closeout

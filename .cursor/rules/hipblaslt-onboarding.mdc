@@ -77,18 +77,24 @@ prior context; explanations must build up from the basics.
 - Before outcome-bearing R1-R3 work, extract a durable machine-readable frozen contract from the
   approved parent/design, verify its human/machine parity, and seal its tracked lock before
   labels. It must define criteria, outcome/edge matrix, evidence/measurement/claim boundaries,
-  fixtures, lineage, whitelists, authority, repair and resource budgets, downgrade gate, and lock
-  identity. A transient execution plan cannot replace or amend it.
-- Use one execution planner by default. R2/R3 add one fresh adversarial oracle/authority auditor
-  before labels. A fresh implementer is not mandatory and may continue within one execution
-  tranche. Every outcome-bearing R1-R3 gate requires a fresh verifier who did not implement that
-  gate. Same-model fresh threads are process independence, not scientific replication.
+  fixtures, lineage, implementation/execution-artifact/delivery write boundaries, authority,
+  repair and resource budgets, downgrade gate, and lock
+  identity. Transient Plan-A and Plan-B cannot replace or amend it.
+- The Main agent authors both transient plans without planner subagents: freeze the concise,
+  goal-based Plan-B before writing the decision-complete Plan-A. Plan-A must specify all
+  discoverable implementation and experiment details; it may delegate only a bounded spike with
+  explicit candidate branches, deterministic decision criteria, permitted changes, and stop
+  conditions. Each scientific gate gets a fresh implementer and a fresh verifier. The verifier
+  receives the frozen contract and Plan-B but must not read Plan-A. R2/R3 also add one fresh
+  adversarial oracle/authority auditor before labels. Same-model fresh threads are process
+  independence, not scientific replication.
 - A model pin is a disclosed preference or capability requirement, not a universal R0/R1 hard
   stop. Record requested and actual models and capability differences; stop only when an
   approved non-substitutable capability is unavailable.
 - Keep three units separate:
   - A `scientific_gate` is a hard preregistered outcome/claim/authority edge.
-  - An `execution_tranche` may share planner, implementer, verifier, run root, and repair ledger.
+  - An `execution_tranche` may share Main-agent planning context, environment/setup, run root, and
+    repair ledger; each gate retains its own plans, fresh implementer, and fresh verifier.
   - A `closure_unit` may give compatible adjacent gates one terminal report/update/staged audit
     and commit without weakening any scientific edge.
 - Dependent outcome work waits for the upstream gate's verified frozen edge, not necessarily its
@@ -98,12 +104,15 @@ prior context; explanations must build up from the basics.
 - Track `live_run_state` separately from `committed_projection_state`. Partial artifacts and
   working-tree progress belong only to live state; committed projection changes only after the
   durable closeout commit and post-commit audit.
-- Repair rounds are bounded at six for every R0-R3 gate. Reaching two consecutive rounds
+- Track repair rounds as append-only provenance for every R0-R3 gate, but never use the
+  accumulated count as a stop, approval, or completion gate. Reaching two consecutive rounds
   without material progress triggers the non-design dual-agent adjudication below before another
-  repair; it does not by itself terminate the overall goal. A unified, contract-preserving repair
-  decision may continue within the six-round budget. Generations, successors, renames,
-  replacements, or fresh threads cannot reset counts, and a seventh repair requires new human
-  authority. Total fresh role-thread caps for one gate/lineage remain R2 = 5 and R3 = 6.
+  repair; it does not by itself terminate the overall goal. When the applicable verifier/auditor
+  or two operational reviewers agree that a non-destructive, contract/authority-preserving
+  repair is required, record and execute it without another user round-trip, regardless of the
+  accumulated count. Generations, successors, renames, replacements, or fresh threads cannot
+  erase repair history. Total fresh role-thread caps for one gate/lineage remain R2 = 5 and
+  R3 = 6.
 - While an explicitly requested goal remains achievable under existing authority, do not
   terminalize it merely because of `CHANGES_REQUIRED`, an ordinary test failure, missing
   nonmaterial telemetry, planning variance, a recoverable process/environment interruption, or
@@ -111,8 +120,7 @@ prior context; explanations must build up from the basics.
   rerun, and the authorized dual-agent operational adjudication within their frozen caps while
   keeping the user informed. Pause for the user only at the experiment-design gate below or when
   continuation genuinely needs missing destructive/external/platform authority, would violate a
-  hard scientific or safety boundary, or has exhausted the six-round budget with no valid
-  authority-preserving path.
+  hard scientific or safety boundary, or has no reviewer-supported authority-preserving path.
 - Treat pre-empirical share, wall-time, CPU/GPU time, storage, throughput, the first-1%
   reforecast, a 2x variance, and the default 5 GiB transient-storage ceiling as operational
   planning targets by default. Notify the user before long-running work and when a planning
@@ -135,8 +143,8 @@ prior context; explanations must build up from the basics.
   cap crossing, or cumulative total is not such evidence. Record nonmaterial gaps and improve
   telemetry prospectively; never rerun outcome-bearing work solely to perfect accounting. This
   rule does not relax scientific sample/draw/seed/arm/population/generation/repetition caps,
-  repair/thread caps, downgrade gates, or evidence requirements, and it never creates or changes
-  a scientific outcome/edge.
+  thread caps, repair-review gates, downgrade gates, or evidence requirements, and it never
+  creates or changes a scientific outcome/edge.
 - Technical verification and staged closeout may be one fresh verifier pass when implementation
   is stable and the complete staged draft is ready; record separate technical and closeout
   verdicts. Any later staged change requires the affected audit again. Post-commit audit remains
@@ -225,8 +233,9 @@ prior context; explanations must build up from the basics.
   R3 and cannot be made through reviewer consensus alone.
 - `CHANGES_REQUIRED` alone is not a contract change. A contract-preserving in-scope repair,
   rerun, correctly isolated test harness, or explicitly designed negative branch does not need
-  repeated human approval and should not terminalize an achievable goal before the six-round
-  repair budget is exhausted.
+  repeated human approval. Repair count is provenance only and never terminalizes an achievable
+  goal; continue when the responsible reviewer or operational reviewers support the required
+  repair and the action preserves the frozen experiment.
 - Reviewer agreement cannot invent the user's initial intent or grant missing commit/push,
   credential, external-system, dependency-installation, container, or destructive authority.
 
@@ -339,3 +348,19 @@ files must match in substance, allowing only frontmatter / platform-specific wor
 
 Note: `.cursor/skills/` and `.claude/` sit outside the sparse-checkout cone, so staging
 them needs `git add --sparse`.
+
+## Cursor-to-Codex skill migration
+
+- `.cursor/skills/` is the canonical workflow source. Every matching
+  `.agents/skills/` directory must be a complete, standalone Codex-native port containing
+  the full workflow and all required references, scripts, and assets.
+- Do not leave a pointer-only Codex adapter that requires reading
+  `.cursor/.../SKILL.md`.
+- Put only runtime translations in the migrated skill's `Codex runtime mappings` section,
+  delimited by `BEGIN/END CODEX RUNTIME MAPPINGS` comments. These mappings may translate
+  model names, user-input mechanisms, subagent calls, resume behavior, and Cursor/editor
+  terminology; they must not change workflow authority, sequencing, evidence, or completion
+  semantics.
+- In the same task as any Cursor skill add/remove/rename/body/resource change, update the
+  matching `.agents` port. Keep `name` and `description` exactly synchronized, compare the
+  relative resource inventory, and validate the Codex skill.
