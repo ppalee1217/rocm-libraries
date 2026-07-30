@@ -24,7 +24,9 @@
 > experiment-design議題經兩個獨立reviewers交互詰問後仍須使用者決定，非設計阻塞的
 > contract-preserving共識則已預授權直接執行。A45再以clean execution baseline及
 > 雙seal lifecycle對齊current `.agents` workflow；S10R3保持
-> `not_evaluated / edge=null`，repair `4/6`、threads `7/9`，scientific plan不變。
+> `not_evaluated / edge=null`，threads `9/9`，scientific plan不變。A46再取消numeric
+> repair stop cap：repair cycle只作append-only provenance，由reviewer支持的
+> plan-preserving修復可直接進行。
 > 只有post-audited `S10R3:S1_ENTRY_GO`可啟動S11。
 >
 > **Foundation provenance：**active `protocol/v1/`與S00 report是fresh foundation；退役M00內容仍不得作schema、hash、lock、registry、fixture、test或PASS evidence。S00只支持CPU-only evidence semantics，不是GPU／performance結果。
@@ -428,9 +430,9 @@ Positive、negative與inconclusive都要durable outcome closure。Operational
   才safe-boundary pause。Bare `UNKNOWN`、internal target crossing或cumulative total
   不能單獨構成material evidence。
 - **Unaffected hard boundaries：**scientific sample／draw／seed／arm／population／
-  generation／repetition caps、repair／thread caps、downgrade gate、evidence retention、
-  claim boundary、destructive／push／container authority全部不變。本amendment不授權
-  啟動任何checkpoint。
+  generation／repetition與thread caps、downgrade gate、evidence retention、claim
+  boundary、destructive／push／container authority全部不變；repair history依A46只作
+  append-only provenance。本amendment不授權啟動任何checkpoint。
 - **Supersession／immutability：**A37 prospectively supersedes本plan中把internal
   resource target一律當hard pause或cumulative successor debit的舊文字；future
   machine contract／validator必須採相同語意。S10R2 A36、contract、lock、ledger、
@@ -597,6 +599,27 @@ Positive、negative與inconclusive都要durable outcome closure。Operational
   全部不變。Deleted S10R3 bytes／verdicts／plans及S10R1／S10R2 empirical evidence
   全部禁止。A45不授權push、downgrade、dependency install、額外container mutation或
   scientific change。
+
+### 2026-07-30 A46 reviewer-governed uncapped-repair amendment
+
+- **User decision：**所有R0–R3 repair cycle保留append-only finding／repair／
+  verification provenance，但不再有numeric maximum；repair count不是stop、approval、
+  success或completion gate，也不得由generation、successor、replacement、restart或
+  new root抹除。
+- **Direct repair authority：**responsible verifier／auditor提出具體finding且只有一個
+  non-destructive、contract／authority-preserving修復時，可直接修復與重驗。有多個
+  consequential choices、authority classification歧義，或同一finding兩輪沒有
+  material progress時，由兩個獨立operational reviewers交互檢查；共同結論可直接執行。
+- **User gate：**只有實驗結果迫使原實驗計畫的measurement、claim、scientific
+  authority或方向改變，才中斷交使用者決定。
+- **S10R3 application：**cycles 1–6完整保留。Phase 2
+  `S10R3-P2-AUD-001`是cycle 7；兩位獨立reviewers確認唯一修復為threshold `0.0`
+  native queue的oracle／fixture parity與受影響binding，且不改scientific plan。
+  Formal evidence仍未開始，state保持`not_evaluated / edge=null`。
+- **Unaffected hard gates：**scientific sample／draw／seed／cell／repetition與thread
+  caps、downgrade、evidence integrity、safety、external／destructive／container及
+  push gates均不變。Durable workflow baseline為
+  `10b7d10ca7e197f7d93e1afd821805d4a65b1684`。
 
 ### Downgrade user gates
 
@@ -2283,7 +2306,7 @@ Report：
   engineering、repair rounds與fresh role threads；`UNKNOWN`不補造；
 - Known usage跨generation、successor、sibling checkpoint、replacement role、
   restart與new run root保留，不刪除或偽稱reset；resource cumulative total不單獨
-  debit successor entry，repair／thread hard caps仍照常累計；
+  debit successor entry；repair cycle照常累計為provenance，thread hard cap照常執行；
 - 首1% throughput後重估。20% pre-empirical share、2x projection、internal
   wall／CPU／GPU／storage／throughput target或5 GiB transient target crossing時
   record＋notify後繼續完整frozen workload；

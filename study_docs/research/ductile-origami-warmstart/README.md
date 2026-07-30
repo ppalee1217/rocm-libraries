@@ -20,7 +20,8 @@
 > `S1_ENTRY_GO`可啟動S11。A44把所有prospective R0–R3 repair cap統一為6 rounds，
 > 並把experiment-design user gate與非設計dual-agent預授權分開。A45以clean
 > execution baseline與雙seal lifecycle對齊current `.agents` workflow；S10R3保持
-> `not_evaluated / edge=null`，repair `4/6`、threads `7/9`，scientific plan不變。
+> `not_evaluated / edge=null`、threads `9/9`，scientific plan不變。A46取消numeric
+> repair stop cap；reviewer支持的plan-preserving修復可直接進行。
 >
 > **唯一 active 導航入口：**本 README。`legacy/` 內的 M00–M09 仍是 dead-protocol archive，不能提供 schema、hash、lock、registry、criterion、fixture、test或 PASS evidence；S00 positive只支持CPU-only evidence foundation。
 >
@@ -185,9 +186,10 @@ report/update/staged audit/commit，但
 2. 將 design 的 maximum boundary縮成 exact path/symbol implementation whitelist與delivery whitelist。
 3. 在任何outcome evidence前建立durable machine-readable frozen contract、驗證
    human/machine parity並seal effective lock。
-4. 依`b0561d2c92`治理floor鎖risk tier與repair/thread hard caps；resource planning
-   依A37保留known usage及measurement boundary作best-effort provenance，跨generation、
-   successor、replacement、new root不刪除／補造，但不單獨debit successor entry。
+4. 依`10b7d10ca7`治理floor鎖risk tier與thread hard cap；repair cycle依A46只作
+   append-only provenance。Resource planning依A37保留known usage及measurement
+   boundary，跨generation、successor、replacement、new root不刪除／補造，但不單獨
+   debit successor entry。
 5. Main依序建立goal/oracle Plan-B與decision-complete Plan-A；fresh implementer與
    fresh verifier依visibility boundary、risk tier與frozen contract執行。
 6. `CHANGES_REQUIRED`只修 active checkpoint並重驗；consequential design issue先走 `design-discussion`。
@@ -318,9 +320,9 @@ completion；`skipped_by_gate`／`not_activated`不建立假report。
   時，才safe-boundary pause。Bare `UNKNOWN`、internal target或cumulative total不是
   material evidence。
 - A37 prospectively supersedes internal resource planning target作blanket hard pause及
-  cumulative successor debit的舊文字；scientific sample／execution caps、repair／
-  thread caps、downgrade／evidence／claim gates不變。Future machine contract必須採
-  相同語意。
+  cumulative successor debit的舊文字；scientific sample／execution與thread caps、
+  downgrade／evidence／claim gates不變，repair count依A46只作provenance。Future
+  machine contract必須採相同語意。
 - S10R2 A36、contract、lock、ledger、artifacts、formal report及
   `inconclusive / FT-INCONCLUSIVE / edge=null`完全immutable；不做resource-only
   rerun，也不因此啟動S11。
@@ -427,6 +429,22 @@ completion；`skipped_by_gate`／`not_activated`不建立假report。
   於safe boundary成立時建立。它是可恢復的durable lifecycle state，不是scientific
   report／completion／edge；Main以append-only events保存`blocked`／`resumed`，
   blocked與resume都使用contract預鎖的exact parent projection與isolated commit policy。
+
+### 6.9 2026-07-30 A46 reviewer-governed uncapped repair
+
+- 所有R0–R3 repair cycle仍append-only記錄finding、修復、驗證與結果，但沒有numeric
+  maximum；count只作provenance，不是stop、approval、success或completion gate。
+- Responsible verifier／auditor提出唯一non-destructive、contract／authority-
+  preserving修復時可直接進行。有多個consequential choices、authority
+  classification歧義或同一finding兩輪無material progress時，由兩個獨立operational
+  reviewers交互檢查；共同結論不需再次向使用者取得核准。
+- 只有實驗結果迫使原實驗計畫的measurement、claim、scientific authority或方向改變
+  才回到user decision。Scientific sample／draw／seed／cell／repetition、thread、
+  downgrade、evidence、safety、external／destructive／container與push gates不變。
+- S10R3 cycles 1–6保留。`S10R3-P2-AUD-001`為cycle 7，唯一修復是threshold `0.0`
+  native queue oracle／fixture parity及受影響binding；formal evidence尚未開始，
+  state保持`not_evaluated / edge=null`。Durable workflow baseline為
+  `10b7d10ca7e197f7d93e1afd821805d4a65b1684`。
 
 ## 7. Downgrade review gate
 

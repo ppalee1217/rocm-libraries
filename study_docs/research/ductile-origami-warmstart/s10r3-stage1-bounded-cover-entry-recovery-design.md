@@ -8,7 +8,7 @@ checkpoint_state: DESIGN_APPROVED
 scientific_outcome: not_evaluated
 lock_state: absent
 risk_tier: R3
-governance_baseline: 3abb7ecf36e84a519a962533eb600f13b4b2b37c
+governance_baseline: 10b7d10ca7e197f7d93e1afd821805d4a65b1684
 scientific_gate: S10R3
 execution_tranche: T-S10R3
 closure_unit: CU-S10R3
@@ -25,6 +25,7 @@ dependencies:
 entry_criteria:
   - committed_A38_S10R3_authority_amendment
   - committed_A45_S10R3_dual_seal_execution_alignment
+  - committed_A46_reviewer_governed_uncapped_repair
   - exact_S10_source_and_actual_YAML_identity
   - no_S10R1_or_S10R2_empirical_reuse
   - durable_S10R3_contract_and_effective_lock_before_labels
@@ -449,6 +450,27 @@ threshold、outcome matrix、claim或edge的implementation／verification／life
 alignment，以及所有non-destructive、contract／authority-preserving blocker都已
 預授權持續處理到本輪implementation與verification結束。
 
+### 9.3 2026-07-30 A46 reviewer-governed uncapped repair
+
+使用者supersede A44 numeric repair stop cap。Repair cycle仍append-only保存finding、
+修復、驗證與結果，但count只作provenance，不是stop、approval、success或completion
+gate；generation、successor、replacement、restart或new root也不得抹除歷史。
+
+Responsible verifier／auditor提出唯一non-destructive、contract／authority-preserving
+修復時可直接修復並重驗。存在多個consequential choices、authority classification
+歧義，或同一finding連續兩輪沒有material progress時，由兩個獨立operational
+reviewers交互檢查；共同結論可直接執行。只有實驗結果迫使原實驗計畫的measurement、
+claim、scientific authority或方向改變，才交使用者決定。
+
+S10R3 cycles 1–6保留為歷史。Phase 2 finding `S10R3-P2-AUD-001`是cycle 7；兩位
+獨立reviewers確認唯一修復是threshold `0.0` native queue的oracle／fixture parity與
+受影響binding，不改hypothesis、search space、schedule、selector、mapping、
+correctness／noise、outcome matrix、claim或edge。Formal evidence仍未開始，outcome
+保持`not_evaluated / edge=null`。Scientific sample／draw／seed／cell／repetition與
+thread caps、downgrade／evidence／safety／external／destructive／container／push
+gates不變。Durable workflow baseline為
+`10b7d10ca7e197f7d93e1afd821805d4a65b1684`。
+
 ## 10. Contract、seal 與formal evidence order
 
 Future exact planning必須把maximum boundary縮成exact implementation/delivery
@@ -539,7 +561,7 @@ observed outcome挑選suffix。
 | Valid bounded-K存在，但required mapping／field provenance可重現失敗 | `negative / S1_ENTRY_BLOCKED / FT-BLOCKED-MAPPING` | S10R3 terminal report | `null` |
 | Locked generate／compile／smoke／nonzero correctness可重現失敗 | `negative / S1_ENTRY_BLOCKED / FT-BLOCKED-CORRECTNESS` | S10R3 terminal report | `null` |
 | 少於10 fresh witnesses、greedy cover不可行／超過20，或63-cell noise不穩定 | `inconclusive / FT-INCONCLUSIVE` | S10R3 terminal report | `null` |
-| Harness／schema／API／guard／queue／lineage實作缺陷 | `CHANGES_REQUIRED / not_evaluated` | R3 budget內修復並重驗 | `null` |
+| Harness／schema／API／guard／queue／lineage實作缺陷 | `CHANGES_REQUIRED / not_evaluated` | reviewer支持的contract-preserving修復並重驗；count只作provenance | `null` |
 | A37 material operational condition成立 | operational `BLOCKED / not_evaluated` | safe-boundary decision packet | `null` |
 
 只有post-audited positive可以產生

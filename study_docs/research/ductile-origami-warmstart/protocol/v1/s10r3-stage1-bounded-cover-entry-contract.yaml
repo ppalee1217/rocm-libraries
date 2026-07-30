@@ -1,8 +1,8 @@
 # Copyright Advanced Micro Devices, Inc., or its affiliates.
 # SPDX-License-Identifier: MIT
 
-schema_version: 3
-contract_id: S10R3-A45-DUAL-SEAL-V1
+schema_version: 4
+contract_id: S10R3-A46-REVIEWER-GOVERNED-RESEAL-V1
 checkpoint_id: S10R3
 payload_state: PREIMPLEMENTATION_SCIENTIFIC_SEAL_PAYLOAD
 scientific_outcome: not_evaluated
@@ -14,8 +14,8 @@ identity:
   closure_unit: CU-S10R3
   risk_tier: R3
   hypothesis_id: S10R3-H1
-  base_head: 3abb7ecf36e84a519a962533eb600f13b4b2b37c
-  authority_amendment: A45
+  base_head: 10b7d10ca7e197f7d93e1afd821805d4a65b1684
+  authority_amendment: A46
   contract_path: study_docs/research/ductile-origami-warmstart/protocol/v1/s10r3-stage1-bounded-cover-entry-contract.yaml
   effective_lock_path: study_docs/research/ductile-origami-warmstart/protocol/v1/locks/s10r3-stage1-bounded-cover-entry-lock.json
   formal_report_path: study_docs/research/ductile-origami-warmstart/reports/staged/s10r3-stage1-bounded-cover-entry-report.md
@@ -32,6 +32,7 @@ authority:
     - effective_execution_lock
     - direct_evidence_and_terminal_report
   committed_history:
+    governance_reviewer_repair_commit: 10b7d10ca7e197f7d93e1afd821805d4a65b1684
     governance_six_round_commit: 3abb7ecf36e84a519a962533eb600f13b4b2b37c
     s10r3_authority_commit: befb6f7be2af1951ffc45cafb9ce3079e38c9629
     s10r2_closeout_commit: abf3f036dd2c2b58a23bb86605d9f562bbce7033
@@ -40,23 +41,25 @@ authority:
   phase1_authority_projection:
     - id: research_charter
       path: study_docs/research/surrogate-dse-plan.md
-      sha256: 199219a994ce8e9d94e6410a51288d64b780f0fc110f24a8ed120fc1b4e6e3c9
+      sha256: dc0774ac0f92005b736f723846fb1b3950c0a443d0332685df90d9a5ca868d85
     - id: experiment_plan
       path: study_docs/research/ductile-origami-warmstart-experiment-plan.md
-      sha256: 2e88aab7e9d2e232a43515f29b90959d17c7afb3f591695537538fbe24760d3c
+      sha256: 7218d61355574c096f6f12b5a3e2a63285727212f5475d1e4ea9fc5bbcf4805d
     - id: checkpoint_index
       path: study_docs/research/ductile-origami-warmstart/README.md
-      sha256: a48367f47bb0fd487f093f1ff0e872ba39c030800891686dd1df5c1aca150c88
+      sha256: 9294749dd3758c0d489313494e9f7fced5f63fd15068831b41fbe81643ba8133
     - id: checkpoint_design
       path: study_docs/research/ductile-origami-warmstart/s10r3-stage1-bounded-cover-entry-recovery-design.md
-      sha256: f6225cfb1a742ff5feba0d25dfd78d3e6db884b168e43bae8448cc304b11eb26
+      sha256: e10fa4ad2128d3e09c4853c06fcbb522cabe9f300612b60f29e0f08d13f2c516
   user_authority:
     clean_restart_scope:
       delete_uncommitted_s10r3_implementation: true
       preserve_committed_scientific_authority: true
       deleted_bytes_reusable: false
     fresh_role_thread_cap: 9
-    verifier_repair_cap: 6
+    repair_count_semantics: append_only_provenance_only
+    repair_numeric_stop_cap: null
+    reviewer_supported_non_design_repair_auto_authorized: true
     non_design_blockers_auto_authorized: true
     non_design_boundary: non_destructive_and_contract_authority_preserving
     user_interruption_boundary: result_driven_change_to_original_experiment_plan_or_scientific_direction
@@ -68,8 +71,8 @@ authority:
     scientific_change_authorized: false
 
 workflow_authority_manifest:
-  base_head: 3abb7ecf36e84a519a962533eb600f13b4b2b37c
-  identity_semantics: content_addressed_working_tree_authority_not_committed_provenance
+  base_head: 10b7d10ca7e197f7d93e1afd821805d4a65b1684
+  identity_semantics: content_addressed_current_workflow_authority
   standalone_reconstruction_claimed: false
   drift_policy: fail_closed
   entries:
@@ -80,35 +83,35 @@ workflow_authority_manifest:
       git_state: modified
       committed: false
     - path: CLAUDE.md
-      sha256: 4d9a1ae7ceda1d1067ad8fbf0f70f2a241defc038c25876b0eb61411b094afd9
+      sha256: aa679c5bdb41a3f4f9fa4e10fe933226b7629947cb919397499af7ccc1608130
       mode: "0664"
-      size_bytes: 24822
-      git_state: modified
-      committed: false
+      size_bytes: 25136
+      git_state: committed_at_base_head
+      committed: true
     - path: .cursor/rules/hipblaslt-onboarding.mdc
-      sha256: 2df479b2d43929dd154391c6a188210ae8fb84f1924634b8455c97361e26ec39
+      sha256: 60cb586d90962a96446311f31fa5c15d4aab9aed9ffa417988712d2eab1a894b
       mode: "0664"
-      size_bytes: 24994
-      git_state: modified
-      committed: false
+      size_bytes: 25308
+      git_state: committed_at_base_head
+      committed: true
     - path: .cursor/skills/implement-verify-loop/SKILL.md
-      sha256: e8d274a0e82c65844af732c63d823b0b5b9c1d5233115ac8d9d353bde480c812
+      sha256: 5c43a40180e1c2a8f3cffd6d10819afbf159baf6b16ae06304a03dd9d5b45cf3
       mode: "0664"
-      size_bytes: 42826
-      git_state: modified
-      committed: false
+      size_bytes: 43983
+      git_state: committed_at_base_head
+      committed: true
     - path: .cursor/skills/implement-verify-loop/references/planning-contract.md
-      sha256: 85b2b4292ac48e1fb82472496e741878e43b365581f610799f5cf04207dab864
+      sha256: cf8e687fb32cf81ac97ad94eae4f064a4a0a7bd6febbe842d0522b5f55a03507
       mode: "0664"
-      size_bytes: 10394
-      git_state: untracked
-      committed: false
+      size_bytes: 10484
+      git_state: committed_at_base_head
+      committed: true
     - path: .cursor/skills/implement-verify-loop/references/authority-gates.md
-      sha256: e7d055754ffbd1d784bc684c1ad256297a7416508b6a885f8391121f8a60a455
+      sha256: 4333a6f69058321864cf8d1f1d5e9bb33ca51019265f6094baf85383fc3cc209
       mode: "0664"
-      size_bytes: 8744
-      git_state: modified
-      committed: false
+      size_bytes: 8979
+      git_state: committed_at_base_head
+      committed: true
     - path: .cursor/skills/design-discussion/SKILL.md
       sha256: e0ef8bc7fd3f14b7550fda1d4008339c3c6c3af517190a37c259ce2903dd3cd3
       mode: "0664"
@@ -116,23 +119,23 @@ workflow_authority_manifest:
       git_state: committed_at_base_head
       committed: true
     - path: .agents/skills/implement-verify-loop/SKILL.md
-      sha256: 37f265d6ee723fc1c4e481adf162535955edd1f7d2aad5153dff57183d0faee5
+      sha256: 141ef4d63054ad550f339e2ffbd38f7c3351e47aadfc1bd185d8364d6c1097e8
       mode: "0664"
-      size_bytes: 44060
-      git_state: modified
-      committed: false
+      size_bytes: 45217
+      git_state: committed_at_base_head
+      committed: true
     - path: .agents/skills/implement-verify-loop/references/planning-contract.md
-      sha256: 85b2b4292ac48e1fb82472496e741878e43b365581f610799f5cf04207dab864
+      sha256: cf8e687fb32cf81ac97ad94eae4f064a4a0a7bd6febbe842d0522b5f55a03507
       mode: "0664"
-      size_bytes: 10394
-      git_state: untracked
-      committed: false
+      size_bytes: 10484
+      git_state: committed_at_base_head
+      committed: true
     - path: .agents/skills/implement-verify-loop/references/authority-gates.md
-      sha256: e7d055754ffbd1d784bc684c1ad256297a7416508b6a885f8391121f8a60a455
+      sha256: 4333a6f69058321864cf8d1f1d5e9bb33ca51019265f6094baf85383fc3cc209
       mode: "0664"
-      size_bytes: 8744
-      git_state: untracked
-      committed: false
+      size_bytes: 8979
+      git_state: committed_at_base_head
+      committed: true
     - path: .agents/skills/design-discussion/SKILL.md
       sha256: 1d46673ef14b4c2eaf1bcbb8a074ec853ad401a8fe16bcaa461ec8fe9f196dbc
       mode: "0664"
@@ -140,23 +143,23 @@ workflow_authority_manifest:
       git_state: modified
       committed: false
     - path: .claude/skills/implement-verify-loop/SKILL.md
-      sha256: e8d274a0e82c65844af732c63d823b0b5b9c1d5233115ac8d9d353bde480c812
+      sha256: 5c43a40180e1c2a8f3cffd6d10819afbf159baf6b16ae06304a03dd9d5b45cf3
       mode: "0664"
-      size_bytes: 42826
-      git_state: modified
-      committed: false
+      size_bytes: 43983
+      git_state: committed_at_base_head
+      committed: true
     - path: .claude/skills/implement-verify-loop/references/planning-contract.md
-      sha256: 85b2b4292ac48e1fb82472496e741878e43b365581f610799f5cf04207dab864
+      sha256: cf8e687fb32cf81ac97ad94eae4f064a4a0a7bd6febbe842d0522b5f55a03507
       mode: "0664"
-      size_bytes: 10394
-      git_state: untracked
-      committed: false
+      size_bytes: 10484
+      git_state: committed_at_base_head
+      committed: true
     - path: .claude/skills/implement-verify-loop/references/authority-gates.md
-      sha256: e7d055754ffbd1d784bc684c1ad256297a7416508b6a885f8391121f8a60a455
+      sha256: 4333a6f69058321864cf8d1f1d5e9bb33ca51019265f6094baf85383fc3cc209
       mode: "0664"
-      size_bytes: 8744
-      git_state: modified
-      committed: false
+      size_bytes: 8979
+      git_state: committed_at_base_head
+      committed: true
   parity_requirements:
     planning_contract_three_way_sha256_equal: true
     authority_gates_three_way_sha256_equal: true
@@ -175,7 +178,7 @@ seal_protocol:
       - study_docs/research/ductile-origami-warmstart/README.md
       - study_docs/research/ductile-origami-warmstart/s10r3-stage1-bounded-cover-entry-recovery-design.md
       - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r3-stage1-bounded-cover-entry-contract.yaml
-    required_audit_verdict: AUDIT_PASS_PREIMPLEMENTATION
+    required_audit_verdict: AUDIT_PASS_PREIMPLEMENTATION_A46
     lock_identity_rule:
       algorithm: git_commit_oid_plus_raw_contract_sha256
       self_commit_oid_embedded_in_contract: false
@@ -229,11 +232,12 @@ role_governance:
     implementation_participation_forbidden: true
     commit_authority: false
   counters:
-    repair_rounds_completed_before_current_cycle: 5
-    repair_cycle_in_progress: 6
-    repair_rounds_used_on_phase1_audit_pass: 6
-    repair_rounds_maximum: 6
-    next_complete_finding_cycle_if_required: null
+    repair_rounds_completed_before_current_cycle: 8
+    repair_cycle_in_progress: 9
+    repair_rounds_used_on_previous_phase1_audit_pass: 6
+    repair_rounds_stop_cap: null
+    repair_count_is_stop_gate: false
+    next_complete_finding_cycle_if_required: 9
     fresh_role_threads_used_before_implementer: 7
     fresh_role_threads_maximum: 9
     reserved_fresh_implementer_threads: 1
@@ -688,6 +692,22 @@ write_boundaries:
         writer: adversarial_auditor
       - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/phase1-post-commit-audit-verdict.json
         writer: adversarial_auditor
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/phase1-a46-audit.md
+        writer: adversarial_auditor
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/phase1-a46-audit-verdict.json
+        writer: adversarial_auditor
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/phase1-a46-reaudit-cycle-08.md
+        writer: adversarial_auditor
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/phase1-a46-reaudit-cycle-08-verdict.json
+        writer: adversarial_auditor
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/phase1-a46-reaudit-cycle-09.md
+        writer: adversarial_auditor
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/phase1-a46-reaudit-cycle-09-verdict.json
+        writer: adversarial_auditor
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/phase1-a46-post-commit-audit.md
+        writer: adversarial_auditor
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/phase1-a46-post-commit-audit-verdict.json
+        writer: adversarial_auditor
       - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/plan_b.md
         writer: main
       - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/plan_b.freeze.json
@@ -711,6 +731,18 @@ write_boundaries:
       - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/repair-cycle-06.md
         writer: main
       - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/repair-cycle-06.json
+        writer: main
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/repair-cycle-07.md
+        writer: main
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/repair-cycle-07.json
+        writer: main
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/repair-cycle-08.md
+        writer: main
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/repair-cycle-08.json
+        writer: main
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/repair-cycle-09.md
+        writer: main
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/repair-cycle-09.json
         writer: main
       - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/phase2-audit.md
         writer: adversarial_auditor
@@ -950,7 +982,7 @@ implementation_binding_schema:
         const: 1
       lock_id:
         type: string
-        const: S10R3-A45-EFFECTIVE-LOCK-V1
+        const: S10R3-A46-EFFECTIVE-LOCK-V1
       checkpoint_id:
         type: string
         const: S10R3
@@ -1168,7 +1200,8 @@ implementation_binding_schema:
           - implementer_role
           - verifier_role
           - repair_rounds_used
-          - repair_rounds_maximum
+          - repair_rounds_stop_cap
+          - repair_count_is_stop_gate
           - fresh_role_threads_used
           - fresh_role_threads_maximum
         properties:
@@ -1189,11 +1222,12 @@ implementation_binding_schema:
             pattern: "^/root/s10r3_[a-z0-9_]*verifier[a-z0-9_]*$"
           repair_rounds_used:
             type: integer
-            minimum: 5
-            maximum: 6
-          repair_rounds_maximum:
-            type: integer
-            const: 6
+            minimum: 9
+          repair_rounds_stop_cap:
+            type: "null"
+          repair_count_is_stop_gate:
+            type: boolean
+            const: false
           fresh_role_threads_used:
             type: integer
             const: 9
@@ -1852,7 +1886,7 @@ operational_blocker_policy:
         const: 1
       packet_id:
         type: string
-        const: S10R3-A45-OPERATIONAL-BLOCKER
+        const: S10R3-A46-OPERATIONAL-BLOCKER
       checkpoint_id:
         type: string
         const: S10R3
@@ -2018,7 +2052,7 @@ operational_blocker_policy:
               enum: [BLOCKED, DESIGN_APPROVED, LOCKED_READY, RUNNING, VERIFIED_PENDING_CLOSEOUT]
             authority:
               type: string
-              enum: [A45_material_condition_policy, user_result_driven_scientific_direction_decision]
+              enum: [A46_material_condition_policy, user_result_driven_scientific_direction_decision]
       live_run_state:
         type: object
         additionalProperties: false

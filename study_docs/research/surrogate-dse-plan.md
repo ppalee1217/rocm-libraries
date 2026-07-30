@@ -232,8 +232,9 @@ operational safety／planning control，而不是默認scientific estimand：
   workload／claim change、evidence不可驗證，或labels前明確凍結的scientific
   resource／comparability boundary時，才在safe boundary暫停。Bare `UNKNOWN`、內部
   cap crossing或cumulative total不能單獨構成material evidence；
-- scientific sample／draw／seed／arm／population／generation／repetition caps、
-  repair／thread caps、downgrade gate及evidence／claim boundary全部不變。
+- scientific sample／draw／seed／arm／population／generation／repetition與thread
+  caps、downgrade gate及evidence／claim boundary全部不變；repair history只作
+  append-only provenance。
 
 A37 prospectively supersedes本charter及parent plan中把internal resource planning
 target一律當hard pause或cumulative successor debit的文字。Future machine contract
@@ -284,7 +285,8 @@ design reviewers共R3 `6/6` threads）、A37 planning semantics、只在existing
 `perlee`內直接使用目前free eligible gfx942且不需reservation，以及五路徑authority
 commit與後續`implement-verify-loop`。不授權push。Initial
 `12669 wall-s / 65285 CPU-s / 2901 GPU-s / 2 GiB`只作planning estimates；
-scientific draw／cell／repair／thread caps仍是hard boundaries。
+scientific draw／cell與thread caps仍是hard boundaries；repair count依A46只作
+provenance。
 
 ### 1.14 A44 universal six-round repair與goal persistence
 
@@ -350,6 +352,27 @@ threshold、outcome matrix、claim或edge的implementation／verification／life
 alignment不需重複介入。所有非設計、non-destructive、contract／authority-preserving
 blocker已預授權持續處理到本輪implementation與verification結束。A45不授權push、
 downgrade、dependency install、額外container mutation或scientific change。
+
+### 1.16 A46 reviewer-governed uncapped repair
+
+2026-07-30，使用者明確supersede A44的numeric repair stop cap。所有R0–R3 repair
+cycle仍須append-only記錄finding、修復、驗證與結果，但次數只作provenance，不再是
+停止、再次核准、成功或完成條件，也不能因generation、successor、replacement、
+restart或new root而抹除。
+
+Responsible verifier／auditor提出具體finding且只有一個non-destructive、
+contract／authority-preserving修復時，可直接修復並重驗；存在多個具實質差異的
+修復方向、authority classification有歧義，或同一finding連續兩輪沒有material
+progress時，由兩個獨立operational reviewers交互檢查。兩者同意需要修復且方案不改
+scientific design時，Main可直接執行，不需要user介入。只有實驗結果迫使原實驗計畫
+的measurement、claim、scientific authority或方向改變，才回到user decision。
+
+S10R3 cycles 1–6保留為歷史；Phase 2 finding `S10R3-P2-AUD-001`記為cycle 7，
+依兩位獨立reviewers的一致判斷，僅修正threshold `0.0` native queue的oracle／fixture
+parity與受影響binding。這不開啟formal evidence，outcome仍是
+`not_evaluated / edge=null`。Scientific sample／draw／seed／cell／repetition與thread
+caps、downgrade／evidence／safety／external／destructive／container／push gates均不變。
+Durable workflow baseline為`10b7d10ca7e197f7d93e1afd821805d4a65b1684`。
 
 ---
 
