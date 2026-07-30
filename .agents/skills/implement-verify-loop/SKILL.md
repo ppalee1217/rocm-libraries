@@ -190,6 +190,29 @@ prior roles，不得藉此重設或規避 thread cap：
   不取代 fresh verifier。Repair count 只作 append-only provenance；新 thread、
   generation 或 successor 不得刪除歷史，但累計數字不形成 stop 或 approval gate。
 
+## 實驗範圍外的 external workspace drift
+
+Pre-existing path 在 workflow 期間被外部修改、新增或移除時，不以 global worktree
+equality 當成實驗 gate。只有 direct evidence 同時證明下列條件，才分類為
+`external_unrelated_drift`：
+
+- path 不在 active implementation、execution-artifact、delivery、authority、source/input、
+  evidence、lock、report 或 run-root boundary；
+- path 未 staged、未進入 current exact commit，且 current workflow 沒有 command
+  觸碰它；
+- drift 不影響 dependency resolution、reproducibility、evidence、claim 或 closeout；
+- 繼續工作不需要 restore、delete、quarantine、overwrite 或其他 path mutation。
+
+符合時保留原 baseline 作歷史證據，append successor observation，記錄 exact path、
+known prior state、current `lstat`/Git/index state、`UNKNOWN_EXTERNAL` attribution、
+boundary check 與 exact-commit path proof；通知使用者後直接繼續，通知不是 approval
+gate。不得更動該 path，也不得把 disappearance 解讀成 owner 已授權刪除。
+
+若存在 scope overlap、current-workflow attribution、index/commit collision、
+evidence/reproducibility impact、qualification 不完整，或必須更動該 path 才能繼續，
+維持原 human/destructive authority gate。Post-commit audit 只要求 exact commit 與
+experiment-relevant protected state 一致，不要求 unrelated external paths 全域不變。
+
 ## Scientific gates, execution tranches, and closure units
 
 若 source spec 包含多個 ordered/dependent checkpoints：
@@ -317,7 +340,9 @@ closure/
     outcome-bearing command 或 label access。Seal 後只能 escalation；修改需 R3 human gate
     與新 generation/amendment，不得覆寫舊 contract。
 14. 保留所有 unrelated user changes與已通過 upstream changes；不可 reset、checkout、
-    stash、覆蓋或順手整理。
+    stash、覆蓋或順手整理。Baseline 是歷史 observation；符合
+    `external_unrelated_drift` 的後續變動用 append-only successor observation 保存，
+    不覆寫 baseline，也不把全域 equality 當 gate。
 15. 每進入新 tranche 或 baseline drift 時重做 relevant capture；共享 tranche 不代表
     可沿用 stale evidence。
 
@@ -400,6 +425,9 @@ Implementer 回覆後，Main agent：
    - 符合[workspace recovery standing authority](references/authority-gates.md)者，
      automatic 執行 deterministic exact quarantine 與 post-audit，不需 dual reviewers，
      再重做本 Step。
+   - 符合[experiment-scoped external drift](references/authority-gates.md)者，不更動該
+     path；append successor observation、通知使用者並以 experiment-scoped audit
+     繼續本 Step。
    - 其他情況立即向使用者呈現delta；不可單方面revert、delete、stash、覆蓋或擴張whitelist。
 4. 若 implementer 自己已知未完成，不啟動假驗證；先在 scope 內 resume implementer 補齊，或誠實升級。
 5. `BLOCKED_PLAN_GAP` 時由 Main agent 先查明 evidence；只有能在 unchanged frozen
@@ -516,8 +544,11 @@ Repair round 是一個 verifier finding 被送修、實作回應並重新驗證�
 
 1. 再次檢查 frozen contract/lock hash 未變。
 2. 確認 working tree 沒有 verifier 或其他角色造成的越界 source change。
-3. 確認沒有unresolved whitelist外artifact；曾使用standing recovery時，其qualification、
-   quarantine／absence hash、full status與unrelated-change post-audit必須完整。
+3. 確認沒有 unresolved experiment-relevant whitelist 外 artifact；曾使用 standing
+   recovery 時，其 qualification、quarantine／absence hash、full status 與
+   unrelated-change post-audit 必須完整。符合 `external_unrelated_drift` 的 path 必須有
+   successor observation 與 experiment-boundary proof，但全域 workspace equality 不是
+   PASS 條件。
 4. 確認active checkpoint沒有downstream speculative change。
 5. 記錄technical `CONSISTENT`、scientific outcome與verified outgoing edges。
 6. 將 gate state 設為 `VERIFIED_PENDING_CLOSEOUT`。符合 frozen hard edge 的 adjacent
@@ -560,7 +591,8 @@ Repair round 是一個 verifier finding 被送修、實作回應並重新驗證�
 - Main agent 可執行短、可逆且在授權範圍內的 evidence command，並記錄 exact command、cwd、exit code 與 artifacts，再 resume verifier。
 - 遇到 material experiment protocol/claim/lineage/stopping-rule/scientific-authority
   ambiguity，走 bounded dual-agent `design-discussion` 並一律將結論交使用者；
-  deterministic disposable artifact recovery 依 reference 自動處理。
+  deterministic disposable artifact recovery 與 qualified `external_unrelated_drift`
+  依 reference 自動處理。
 - 非設計 blocker 先依 operational adjudication 使用既有 authority 自主解決。只有
   experiment-design decision、缺少 destructive/external/platform authority、hard
   safety/scientific boundary，或 reviewers 確認沒有有效 authority-preserving path
@@ -634,9 +666,10 @@ Outcome/document matrix：
 ## Human review and authority gates
 
 在判斷是否需要human review或處理任何whitelist外mutation前，完整讀取並套用
-[authority gates and `/data1/perlee` workspace recovery](references/authority-gates.md)。
-該reference保存原有human gates，並記錄repository owner已授權的窄範圍
-current-run artifact recovery；不得只讀本節摘要後擴張其scope。
+[authority gates, experiment-scoped drift, and `/data1/perlee` workspace recovery](references/authority-gates.md)。
+該reference保存原有human gates，並記錄repository owner已授權的
+experiment-scoped external drift 與窄範圍 current-run artifact recovery；不得只讀
+本節摘要後擴張其scope。
 
 ## 文件與 evidence 規範
 

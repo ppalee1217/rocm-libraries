@@ -151,7 +151,9 @@ prior context; explanations must build up from the basics.
   predeclared `BLOCKED` state may create only its specified blocker memo; it does not unlock a
   dependent edge. `skipped_by_gate` and `not_activated` get no fabricated report of their own.
 - Keep transient `agent_run/` evidence out of commits. Preserve unrelated user changes and
-  pre-existing index entries.
+  pre-existing index entries. Preservation means the active workflow does not modify, restore,
+  delete, stage, or commit them; it does not require unrelated external workspace state to remain
+  globally byte-for-byte equal throughout the experiment.
 
 ### Make every closure report a durable decision record
 
@@ -234,6 +236,28 @@ prior context; explanations must build up from the basics.
 - Reviewer agreement cannot invent the user's initial intent or grant missing commit/push,
   credential, external-system, dependency-installation, container, or destructive authority.
 
+### Scope workspace drift to the active experiment
+
+- Treat a pre-existing path's externally observed modification, appearance, or disappearance as
+  `external_unrelated_drift` only when direct evidence proves every condition: the path is outside
+  all active implementation, execution-artifact, delivery, authority, source/input, evidence,
+  lock, report, and run-root boundaries; it is neither staged nor part of the current exact
+  commit; no current-workflow command touched it; it cannot affect reproducibility, dependency
+  resolution, evidence, claim, or closeout; and continuing requires no mutation of that path.
+- For qualifying `external_unrelated_drift`, preserve the original baseline as historical
+  evidence, append a successor observation with exact path, prior state when known, current
+  `lstat`/Git/index state, attribution as `UNKNOWN_EXTERNAL`, boundary checks, and exact-commit
+  path proof, notify the user, and continue. Notification is not an approval gate. Do not restore,
+  delete, quarantine, stage, commit, or otherwise act on the unrelated path, and never interpret
+  its disappearance as the owner's permission to remove data.
+- Workspace and post-commit audits are experiment-scoped: verify exact staged/committed paths,
+  current-workflow writes, and experiment-relevant protected state. Global equality of unrelated
+  workspace paths is not a PASS condition.
+- Keep the existing human/destructive gate when any path overlaps an active or scientific
+  boundary, current-workflow attribution is possible, the index or exact commit is affected,
+  evidence or reproducibility may change, qualification is incomplete, or resolution would
+  require modifying, restoring, deleting, quarantining, or overwriting the path.
+
 ### Recover only deterministic disposable artifacts automatically
 
 - Automatic recovery is limited to one exact ordinary regular file that is baseline-absent,
@@ -247,9 +271,11 @@ prior context; explanations must build up from the basics.
   status/diff/index, whitelist, and unrelated user changes. No dual reviewers are required.
 - Never use globs, recursion, broad variables, `git clean`, reset, checkout, stash, unlink, or
   directory removal in this automatic path.
-- Tracked, staged, pre-existing, attribution-ambiguous, concurrently modified, sensitive,
-  evidence-bearing, plan-listed, or independently valuable artifacts remain at a human/dual
-  review gate. Dual review can resolve classification; it cannot invent destructive authority.
+- Tracked, staged, sensitive, evidence-bearing, plan-listed, or independently valuable artifacts,
+  plus any artifact whose recovery would overlap user/concurrent work, remain at a human/dual
+  review gate. A pre-existing or attribution-ambiguous path that the workflow need not mutate is
+  evaluated first under `external_unrelated_drift`; dual review can resolve classification, but
+  it cannot invent destructive authority.
 
 ### Downgrades require the user's decision
 

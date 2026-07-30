@@ -3,6 +3,7 @@
 ## Contents
 
 - [General human-review boundary](#general-human-review-boundary)
+- [Experiment-scoped external workspace drift](#experiment-scoped-external-workspace-drift)
 - [`/data1/perlee` current-run artifact recovery](#data1perlee-current-run-artifact-recovery-standing-authority)
 
 ## General human-review boundary
@@ -45,9 +46,11 @@ Keep these gates unchanged:
   scientific gates may share one terminal closeout. Push, PR, credentials,
   external-system writes, dependency installation, and container mutation
   remain separately gated.
-- Require human review for destructive non-run-artifact operations, overlap
-  with unrelated user changes, forbidden host/container use, ambiguous
-  source/spec/target/scope/user preference.
+- Require human review for destructive non-run-artifact operations, an action
+  that would modify or overwrite unrelated user changes, active-boundary
+  overlap, forbidden host/container use, or ambiguous
+  source/spec/target/scope/user preference. Mere qualifying external unrelated
+  drift is governed by the next section and is not a user approval gate.
 - Notify the user before starting long-running work and when first-1%,
   pre-empirical-share, 2x, wall/CPU/GPU/storage/throughput, or default 5 GiB
   planning targets are crossed. Notification is not an approval gate; record
@@ -73,6 +76,56 @@ Keep these gates unchanged:
 - Apply the experiment's separate user gate for every downgrade.
 - Any destructive or post-label contract/lock/protocol/fixture/threshold/
   selection/lineage/claim change is R3 and requires its authority gate.
+
+## Experiment-scoped external workspace drift
+
+Treat the repository owner's 2026-07-30 instruction as standing authority to
+record, notify, and continue when pre-existing workspace state changes outside
+the active experiment. This rule scopes the audit; it does not authorize any
+operation on the unrelated path.
+
+### Qualify every observed path
+
+Require direct evidence for all of the following:
+
+- The path is outside every active implementation, execution-artifact,
+  delivery, authority, source/input, evidence, lock, report, and run-root
+  whitelist or boundary.
+- The path is not staged, is absent from the current exact commit's changed
+  paths, and has no index collision with the workflow.
+- The current workflow's command and role records show no operation that
+  touched the path. Record attribution as `UNKNOWN_EXTERNAL`; do not claim a
+  particular external actor without evidence.
+- The path cannot affect dependency resolution, build inputs,
+  reproducibility, raw or derived evidence, scientific claims, gate edges, or
+  closeout.
+- Continued experiment work requires no restore, delete, quarantine,
+  overwrite, rename, stage, commit, or other mutation of the path.
+
+Any overlap, current-workflow attribution, index/commit collision,
+evidence/reproducibility effect, incomplete qualification, or required path
+mutation keeps the existing human/destructive authority gate.
+
+### Record without rewriting history
+
+- Keep the original baseline observation immutable as historical evidence.
+- Append a successor observation with the exact lexical path; prior state and
+  hash when known; current `lstat`, Git, index, and ignore state; observation
+  time; `UNKNOWN_EXTERNAL` attribution; all boundary checks; and exact-commit
+  path proof.
+- Record the classification and non-action in `adjudication.md` and any
+  relevant gate/tranche state. Notify the user, but do not wait for approval.
+- Do not restore, delete, quarantine, stage, commit, or otherwise touch the
+  path. Its disappearance never implies owner approval to delete data.
+
+### Audit the experiment boundary
+
+Re-run full status and index capture for context, then evaluate exact
+current-workflow writes, staged/committed paths, and experiment-relevant
+protected state. A qualifying unrelated external path may differ from the
+historical baseline without blocking technical verification, seal,
+post-commit audit, or closeout. Global byte-for-byte equality of unrelated
+workspace state is not a PASS condition.
 
 ## `/data1/perlee` current-run artifact recovery standing authority
 
@@ -109,11 +162,13 @@ Require all of the following:
   implementation, execution-artifact, or delivery whitelist, commit
   authority, or another authority gate.
 
-Exclude tracked, staged/index, committed, pre-existing untracked/ignored,
-attribution-ambiguous, concurrently/user-modified, other-workspace/repository/
-mount, sensitive, evidence-bearing, plan-listed, or independently valuable
-targets. Send every excluded or insufficiently proved case to human review or
-bounded dual review when classification—not destructive authority—is the only
+Exclude tracked, staged/index, committed, sensitive, evidence-bearing,
+plan-listed, independently valuable, other-workspace/repository/mount, or
+user/concurrently modified recovery targets. A pre-existing or
+attribution-ambiguous path that the workflow need not mutate is evaluated
+first under `Experiment-scoped external workspace drift`. Send every other
+excluded or insufficiently proved recovery case to human review, or bounded
+dual review when classification—not destructive authority—is the only
 material ambiguity.
 
 ### Preserve one incident manifest

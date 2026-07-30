@@ -92,7 +92,9 @@ For every field below, provide the exact value or write `N/A` with a reason.
 - Gate ID, tranche/closure mapping, risk tier, plan revision, frozen-contract/lock hashes,
   verified upstream edges, and prohibited downstream edges.
 - Exact implementation whitelist, execution artifact whitelist, delivery whitelist, and
-  protected user changes.
+  protected user changes. Classify protected state as experiment-relevant or external unrelated;
+  for the latter, state that the workflow must not mutate it and that later qualifying drift is
+  handled by an append-only successor observation rather than global equality.
 - Files to create or modify.
 - For every file: symbols, anchors, current behavior, intended behavior, exact edit
   direction, interfaces, data flow, and existing utilities or patterns to reuse.
@@ -129,6 +131,9 @@ For every field below, provide the exact value or write `N/A` with a reason.
 
 - Exact implementer self-check commands, expected exit codes, key observable output, and
   artifact paths.
+- Experiment-scoped workspace checks for exact workflow writes, index/commit paths, and
+  experiment-relevant protected state. Do not make byte-for-byte equality of unrelated external
+  workspace paths an acceptance condition.
 - Checks that only the verifier can perform independently and evidence that the Main agent
   or user must supply.
 - `impl_report.md` requirements: changed files, selected bounded-spike branch, commands,
