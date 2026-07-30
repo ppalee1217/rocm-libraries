@@ -374,6 +374,19 @@ parity與受影響binding。這不開啟formal evidence，outcome仍是
 caps、downgrade／evidence／safety／external／destructive／container／push gates均不變。
 Durable workflow baseline為`10b7d10ca7e197f7d93e1afd821805d4a65b1684`。
 
+### 1.17 A46.1 uncapped plan-revision lifecycle repair
+
+2026-07-30，Phase-1後的Plan-A repair到達Revision 6時，fresh auditor確認effective-lock
+schema仍把Plan-A revision限制為`maximum: 6`。這會把plan revision count變相當成A46
+已取消的repair stop cap，且阻止修正stale Plan-A identity。
+
+A46.1只移除Plan-A revision的numeric maximum，保留`integer >= 1`、current-revision
+hash／freeze binding、append-only prefix／successor provenance與fresh parity audit。
+Future effective lock的`repair_rounds_used`必須等於lock建立當下完整append-only repair
+history；contract floor `>=9`只作最低歷史保護，不是live count。這不改任何scientific
+hypothesis、search space、schedule、criterion、outcome／edge、claim或evidence
+boundary，也不授權formal evidence、push或其他原本禁止的動作。
+
 ---
 
 ## 2. 研究問題與假設

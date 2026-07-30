@@ -26,6 +26,7 @@ entry_criteria:
   - committed_A38_S10R3_authority_amendment
   - committed_A45_S10R3_dual_seal_execution_alignment
   - committed_A46_reviewer_governed_uncapped_repair
+  - committed_A46_1_uncapped_plan_revision_lifecycle
   - exact_S10_source_and_actual_YAML_identity
   - no_S10R1_or_S10R2_empirical_reuse
   - durable_S10R3_contract_and_effective_lock_before_labels
@@ -470,6 +471,22 @@ correctness／noise、outcome matrix、claim或edge。Formal evidence仍未開�
 thread caps、downgrade／evidence／safety／external／destructive／container／push
 gates不變。Durable workflow baseline為
 `10b7d10ca7e197f7d93e1afd821805d4a65b1684`。
+
+### 9.4 2026-07-30 A46.1 uncapped plan-revision lifecycle
+
+Plan-A repair到達Revision 6時，fresh auditor確認effective-lock schema仍將revision
+限制為`maximum: 6`；這會把plan revision count變相當成A46已取消的repair stop cap，
+也會阻止修正current-plan identity。
+
+A46.1移除Plan-A revision numeric maximum，保留`integer >= 1`、current revision
+exact path/hash/size/freeze binding、append-only predecessor identity與fresh parity
+audit。Future effective lock的`repair_rounds_used`必須等於lock建立當下完整
+append-only repair history；schema floor `>=9`只防止抹除既有Phase-1歷史，不是live
+count或maximum。
+
+本修復不改hypothesis、source/YAML/search space、draw／seed／cell schedule、selector、
+mapping、correctness／noise、outcome matrix、claim、report或edge。Formal evidence仍
+必須等A46.1 reseal、current plans、fresh A46 lock及post-commit audit全部通過。
 
 ## 10. Contract、seal 與formal evidence order
 

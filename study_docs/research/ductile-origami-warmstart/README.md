@@ -446,6 +446,17 @@ completion；`skipped_by_gate`／`not_activated`不建立假report。
   state保持`not_evaluated / edge=null`。Durable workflow baseline為
   `10b7d10ca7e197f7d93e1afd821805d4a65b1684`。
 
+### 6.10 2026-07-30 A46.1 uncapped plan-revision lifecycle
+
+- Fresh auditor在Plan-A Revision 6確認effective-lock schema的`maximum: 6`會把plan
+  revision變相當成repair stop cap。
+- A46.1移除該numeric maximum，但保留`revision >= 1`、current plan exact
+  path/hash/size/freeze、append-only predecessor與fresh parity checks。
+- Future lock的`repair_rounds_used`必須等於建立當下完整repair provenance；schema
+  floor `>=9`不是live count或maximum。
+- Scientific/oracle projection保持不變；formal evidence仍未啟動，outcome維持
+  `not_evaluated / edge=null`。
+
 ## 7. Downgrade review gate
 
 以下狀況一律先產生decision packet並停在`blocked-awaiting-user-decision`：

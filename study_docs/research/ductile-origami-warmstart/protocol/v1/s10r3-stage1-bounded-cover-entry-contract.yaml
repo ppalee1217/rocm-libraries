@@ -1,8 +1,8 @@
 # Copyright Advanced Micro Devices, Inc., or its affiliates.
 # SPDX-License-Identifier: MIT
 
-schema_version: 4
-contract_id: S10R3-A46-REVIEWER-GOVERNED-RESEAL-V1
+schema_version: 5
+contract_id: S10R3-A46-UNCAPPED-PLAN-RESEAL-V2
 checkpoint_id: S10R3
 payload_state: PREIMPLEMENTATION_SCIENTIFIC_SEAL_PAYLOAD
 scientific_outcome: not_evaluated
@@ -14,8 +14,8 @@ identity:
   closure_unit: CU-S10R3
   risk_tier: R3
   hypothesis_id: S10R3-H1
-  base_head: 10b7d10ca7e197f7d93e1afd821805d4a65b1684
-  authority_amendment: A46
+  base_head: e7e894eb96b2abf477d7a847da6e06d5a1e23f4c
+  authority_amendment: A46.1
   contract_path: study_docs/research/ductile-origami-warmstart/protocol/v1/s10r3-stage1-bounded-cover-entry-contract.yaml
   effective_lock_path: study_docs/research/ductile-origami-warmstart/protocol/v1/locks/s10r3-stage1-bounded-cover-entry-lock.json
   formal_report_path: study_docs/research/ductile-origami-warmstart/reports/staged/s10r3-stage1-bounded-cover-entry-report.md
@@ -32,6 +32,7 @@ authority:
     - effective_execution_lock
     - direct_evidence_and_terminal_report
   committed_history:
+    a46_phase1_reseal_commit: e7e894eb96b2abf477d7a847da6e06d5a1e23f4c
     governance_reviewer_repair_commit: 10b7d10ca7e197f7d93e1afd821805d4a65b1684
     governance_six_round_commit: 3abb7ecf36e84a519a962533eb600f13b4b2b37c
     s10r3_authority_commit: befb6f7be2af1951ffc45cafb9ce3079e38c9629
@@ -41,16 +42,16 @@ authority:
   phase1_authority_projection:
     - id: research_charter
       path: study_docs/research/surrogate-dse-plan.md
-      sha256: dc0774ac0f92005b736f723846fb1b3950c0a443d0332685df90d9a5ca868d85
+      sha256: 8d166ff10021f87c4cb63cf2725d25dd1a409d724e37aa42ffe820e89e9c61d4
     - id: experiment_plan
       path: study_docs/research/ductile-origami-warmstart-experiment-plan.md
-      sha256: 7218d61355574c096f6f12b5a3e2a63285727212f5475d1e4ea9fc5bbcf4805d
+      sha256: fbe5552700860b56d3031dbd706deb9e9a58c1b463ea540ca7d83bdfd0ff8140
     - id: checkpoint_index
       path: study_docs/research/ductile-origami-warmstart/README.md
-      sha256: 9294749dd3758c0d489313494e9f7fced5f63fd15068831b41fbe81643ba8133
+      sha256: 64039b9c901eb3142aa7e42a4f18574a9bb22111654d87bb78a76c36a55c80c1
     - id: checkpoint_design
       path: study_docs/research/ductile-origami-warmstart/s10r3-stage1-bounded-cover-entry-recovery-design.md
-      sha256: e10fa4ad2128d3e09c4853c06fcbb522cabe9f300612b60f29e0f08d13f2c516
+      sha256: cbc3cee00605f6bf8c4f1cfb9e475fd570bdf254d00be1e93ef7cbe87db120fa
   user_authority:
     clean_restart_scope:
       delete_uncommitted_s10r3_implementation: true
@@ -71,7 +72,7 @@ authority:
     scientific_change_authorized: false
 
 workflow_authority_manifest:
-  base_head: 10b7d10ca7e197f7d93e1afd821805d4a65b1684
+  base_head: e7e894eb96b2abf477d7a847da6e06d5a1e23f4c
   identity_semantics: content_addressed_current_workflow_authority
   standalone_reconstruction_claimed: false
   drift_policy: fail_closed
@@ -178,7 +179,7 @@ seal_protocol:
       - study_docs/research/ductile-origami-warmstart/README.md
       - study_docs/research/ductile-origami-warmstart/s10r3-stage1-bounded-cover-entry-recovery-design.md
       - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r3-stage1-bounded-cover-entry-contract.yaml
-    required_audit_verdict: AUDIT_PASS_PREIMPLEMENTATION_A46
+    required_audit_verdict: AUDIT_PASS_PREIMPLEMENTATION_A46_1
     lock_identity_rule:
       algorithm: git_commit_oid_plus_raw_contract_sha256
       self_commit_oid_embedded_in_contract: false
@@ -232,12 +233,13 @@ role_governance:
     implementation_participation_forbidden: true
     commit_authority: false
   counters:
-    repair_rounds_completed_before_current_cycle: 8
-    repair_cycle_in_progress: 9
+    repair_rounds_completed_before_current_cycle: 11
+    repair_cycle_in_progress: 12
     repair_rounds_used_on_previous_phase1_audit_pass: 6
     repair_rounds_stop_cap: null
     repair_count_is_stop_gate: false
-    next_complete_finding_cycle_if_required: 9
+    next_complete_finding_cycle_if_required: 12
+    lock_repair_count_rule: equals_complete_append_only_provenance_at_lock_build_time
     fresh_role_threads_used_before_implementer: 7
     fresh_role_threads_maximum: 9
     reserved_fresh_implementer_threads: 1
@@ -708,6 +710,14 @@ write_boundaries:
         writer: adversarial_auditor
       - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/phase1-a46-post-commit-audit-verdict.json
         writer: adversarial_auditor
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/phase1-a46-1-audit.md
+        writer: adversarial_auditor
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/phase1-a46-1-audit-verdict.json
+        writer: adversarial_auditor
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/phase1-a46-1-post-commit-audit.md
+        writer: adversarial_auditor
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/phase1-a46-1-post-commit-audit-verdict.json
+        writer: adversarial_auditor
       - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/plan_b.md
         writer: main
       - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/plan_b.freeze.json
@@ -1067,7 +1077,6 @@ implementation_binding_schema:
               revision:
                 type: integer
                 minimum: 1
-                maximum: 6
       implementation_binding:
         type: object
         additionalProperties: false
@@ -1582,6 +1591,7 @@ implementation_binding_schema:
     - resumed_operational_lineage_packet_file_path_equals_identity_operational_blocker_path
     - every_file_record_matches_current_bytes_mode_size_hash_and_git_state
     - plan_b_hash_matches_frozen_plan_b_and_plan_a_revision_is_current
+    - repair_rounds_used_equals_complete_append_only_provenance_count_at_lock_build_time
     - boundary_hashes_use_canonical_json_of_corresponding_phase1_boundary
     - scientific_oracle_projection_sha256_is_recomputed_exactly_from_scientific_oracle_projection_definition
     - outcome_absence_projection_sha256_covers_checked_paths_checked_scopes_and_operational_lineage

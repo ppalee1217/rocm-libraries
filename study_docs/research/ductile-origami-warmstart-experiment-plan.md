@@ -621,6 +621,21 @@ Positive、negative與inconclusive都要durable outcome closure。Operational
   push gates均不變。Durable workflow baseline為
   `10b7d10ca7e197f7d93e1afd821805d4a65b1684`。
 
+### 2026-07-30 A46.1 uncapped plan-revision lifecycle repair
+
+- **Trigger：**Plan-A reached Revision 6，fresh auditor發現effective-lock schema仍有
+  `revision.maximum: 6`，使plan revision count成為A46已取消的repair stop cap，並阻止
+  修正current-plan identity。
+- **Repair：**移除Plan-A revision numeric maximum；仍要求`integer >= 1`、current
+  revision exact path/hash/size/freeze binding、append-only predecessor identity與fresh
+  parity audit。
+- **Live provenance：**effective lock的`repair_rounds_used`必須等於lock建立當下完整
+  append-only repair history。Sealed schema floor `>=9`只防止抹除既有Phase-1歷史，
+  不是live count或maximum。
+- **Boundary：**本修復不改hypothesis、search space、draw／seed／cell schedule、
+  selector、mapping、correctness／noise、outcome matrix、claim、report或edge；formal
+  evidence仍必須等fresh A46.1 reseal、current plans、A46 lock與post-commit audit全過。
+
 ### Downgrade user gates
 
 `DEGRADED_PROXY`、two-size／reduced-regime、S2 H5 resource-bounded pilot、single-cluster Stage 3 pilot，以及任何減少workloads、runs、seeds、metrics、validation、acceptance或scope的方案，都必須先產生完整decision packet並停在`blocked-awaiting-user-decision`。Diagnostic partial run不能滿足checkpoint或解鎖下游。
