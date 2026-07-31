@@ -514,6 +514,103 @@ verification與formal evidence都不依賴其bytes。它們以`UNKNOWN_EXTERNAL`
 successor observation保存後不再阻止Phase-1 post-commit audit。本節不改任何
 scientific oracle、workload、criterion、outcome／edge、claim或evidence boundary。
 
+### 9.6 2026-07-31 A46.3 predecessor-capsule lineage recovery
+
+Predecessor effective lock `1cd089d3…0301`下的CPU support discovery完成512 chunks／
+262,144 draws、classification與bounded selection；Mapping A則在0 result markers、0
+mapping-pass documents時因pinned bound `state()` serializer defect fail closed。
+因此current state只能是`CHANGES_REQUIRED / not_evaluated / edge=null`；舊`K=19`不是
+successor input，亦不得解讀為scientific outcome。
+
+Reviewer A與independent adversarial auditor完成一輪cross-examination與唯一final round，
+兩方均`AGREE`以下A46.3 A+。使用者已明確委任：S10R3 execution blocker只要兩位
+reviewers沒有material dissent，由Main直接核准並續行，不再要求逐案user approval。
+
+#### 9.6.1 Exact capsule與control paths
+
+- final capsule：
+  `agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/retired-predecessors/lock-1cd089d3abe79d4918d965a2afa868421ec8d810644b8c7ede00f0ef05960301/`
+- staging：同一`retired-predecessors/`下唯一
+  `.staging-S10R3-A46.3-G1/`；
+- stable admission lock：
+  `agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/execution-transition.lock`；
+- journal與唯一temp：同一gate目錄的
+  `execution-transition-journal.json`與
+  `execution-transition-journal.json.tmp`；
+- durable lineage seal：
+  `protocol/v1/evidence/lineage/s10r3-predecessor-lock-1cd089d3.json`。
+
+不得從run root推論其他write authority，也不得建立第二個archive。Final capsule只在
+retirement transaction期間有Main writer；SEALED後authorized writer set為空。
+
+#### 9.6.2 Forward-only retirement
+
+Admission lock必須exclusive-create一次並永久保持同一inode；不得move、delete、replace
+或把journal內容寫入其中。所有S10R3 entrypoints先取admission lock再依固定全序取scope
+locks；formal producers取shared，retirement／recovery取exclusive，反序release。
+
+唯一允許的cross-scope transition是四項：`formal-cpu/`、`formal-mapping/`、canonical
+support-classification與canonical predecessor effective lock。Action time全量重驗
+regular type、mode、size、SHA-256、`nlink==1`、no symlink／path escape、same `st_dev`
+及destination absence。每項必須使用`renameat2(RENAME_NOREPLACE)`或經測試的真等價；
+不支援即`BLOCKED_TRANSITION`，不得copy-delete或以`lstat+rename`模擬。
+
+Journal使用previous-digest chain、same-directory fixed temp、file／parent `fsync`與
+atomic replace；只准forward recovery。`PREPARED/MOVING`要求每項恰為
+`source XOR staging_item`；`FINALIZED`要求source與staging root皆不存在、final item
+存在且digest一致。任何多重存在、全不存在、hash/type/link drift都fail closed。
+全部四項移入staging並驗證post-manifest後，staging root以單次no-replace rename成final
+capsule。Partial transition永遠不能滿足absence、successor lock或formal admission。
+
+#### 9.6.3 Manifest、seal與successor
+
+Contract凍結manifest／journal／seal schemas與canonicalization。Manifest逐檔記logical
+repo-relative source／destination、type、mode、size、SHA-256、counts、total bytes與UTF-8
+byte-order；禁止symlink、hardlink與path escape，並綁predecessor lock commit／raw／self、
+CPU terminal、classification、selection、mapping stdout／stderr、
+`CHANGES_REQUIRED / not_evaluated / edge=null`及later-evidence absence。
+
+Durable seal不得自嵌其commit SHA。Git commit／trailers與post-commit audit關聯seal，後建
+successor lock再綁seal blob／commit identity。Outcome producers禁止讀archive；lineage
+auditor、successor validator／binder與final verifier只可唯讀重算。Raw capsule提供local
+byte preservation與tamper evidence，不宣稱WORM或異地備援。
+
+Future successor generation固定`S10R3-A46.3-G2`。`_absence_projection()`維持七個
+outcomes與五個formal scopes；獨立`successor_entry_preconditions`要求transition
+FINALIZED、capsule／seal audit PASS、canonical old lock absent及new-lock destination
+absent。Successor lock綁完整dynamic repair count與cumulative resource lineage。
+
+#### 9.6.4 Execution consequence
+
+先完成A46.3 exact-five authority seal／post-audit、Plan-B R5、Plan-A R12、label-blind
+serializer／transition implementation與audit，再執行retirement及lineage seal commit／
+audit，最後建立successor lock並取得post-audited `LOCKED_READY`。不建立source
+intermediate commit。之後必須從global draw 0完整重跑support、classification、fresh K、
+mapping及原frozen downstream order；任何predecessor empirical bytes都不可滿足
+successor criterion。
+
+本節只改artifact-lineage／execution authority。Scientific/oracle projection必須仍為
+`185c6ae6c7b255c1330b4723b8a241ba111c0d23715bdb28149b024f78729e1e`；
+hypothesis、source／YAML、search space、seeds、schedule、selector、mapping fields、
+sizes、correctness／noise、outcome matrix、claim、report與edge全部不變。
+
+#### 9.6.5 Pre-seal review hardening與completion authority
+
+兩位independent reviewers對A46.3 pre-seal bytes找到六項material governance defects：
+implementer role矛盾、fresh-thread provenance不一致、Phase-2 9／7-check schema mismatch、
+manifest／journal／seal接受偽lineage、stable admission inode未被terminal seal綁定，以及
+successor沒有實際cumulative resource record。使用者其後明確授權本輪S10R3所需authority
+默認成立並要求不中斷至完整結束。
+
+因此fresh-role lineage按實際使用固定為`11/11`；不得再建立fresh role，後續一律resume
+既有independent auditor、`/root/s10r3_fresh_implementer`與fresh verifier。Main不得實作
+source。Manifest凍結root-excluded完整inventory algorithm與四個component的exact
+counts／bytes／digests；journal只接受合法transition prefix並逐event重驗同一empty
+admission-lock的`st_dev/st_ino` identity；seal綁committed contract、final manifest、
+FINALIZED journal及inode identity。Successor lock另綁append-only cumulative resource
+record，數值須明列`KNOWN`或`UNKNOWN` boundary，禁止reset、omit或以zero代替unknown。
+這些欄位是non-scientific provenance；不改任何scientific oracle或stop criterion。
+
 ## 10. Contract、seal 與formal evidence order
 
 Future exact planning必須把maximum boundary縮成exact implementation/delivery

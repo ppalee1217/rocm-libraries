@@ -657,6 +657,40 @@ Positive、negative與inconclusive都要durable outcome closure。Operational
   `not_evaluated / edge=null`，formal evidence仍須等待current reseal、plans、
   effective lock與post-commit audits。
 
+### 2026-07-31 A46.3 S10R3 predecessor-capsule lineage recovery
+
+- **Trigger：**predecessor run完成全部512個CPU chunks與fresh support／selection後，
+  Mapping A在任何result marker或corpus前因bound state-method serializer defect失敗。
+  這是`CHANGES_REQUIRED / not_evaluated / edge=null`，不是mapping negative或
+  inconclusive。
+- **Approved decision：**Reviewer A與independent adversarial auditor對A46.3 A+
+  最終都`AGREE`。依使用者standing authorization，Main直接核准；同一S10R3 blocker
+  後續亦由兩位reviewers無重大異議後直接處理，不再逐案回user。
+- **Exact lineage scheme：**保留canonical active paths；以predecessor完整lock digest
+  建立唯一retired capsule、精確staging、forward-only journal與stable-inode shared／
+  exclusive admission lock。只允許formal CPU、formal mapping、canonical support
+  classification與canonical predecessor lock四項same-device no-replace relocation。
+  Partial transition固定為`BLOCKED_TRANSITION`，不得形成absence、lock或outcome。
+- **Durability：**sealed raw capsule無authorized writer；逐檔manifest與Git-tracked
+  non-self-referential lineage seal提供tamper evidence。這不宣稱raw evidence具有WORM
+  或異地disaster recovery。
+- **Successor：**future fixed generation ID為`S10R3-A46.3-G2`；effective lock必須綁
+  predecessor lock／capsule／seal、fresh-rerun與reuse matrix、完整dynamic repair及
+  cumulative resource provenance。舊empirical evidence與`K=19`全部禁止重用。
+- **Fresh evidence：**只有authority、plans、implementation、capsule lineage與successor
+  lock全部post-audited後，才可從global draw 0重跑CPU discovery，再fresh推導
+  classification、selection、K、mapping及原frozen downstream order。
+- **Scientific boundary：**17-property projection精確保持
+  `185c6ae6c7b255c1330b4723b8a241ba111c0d23715bdb28149b024f78729e1e`；
+  workload、seeds、schedule、selector、mapping fields、sizes、correctness／noise、
+  outcome matrix、claim、report與edge均不變。
+- **Pre-seal hardening：**雙reviewer確認六項seal finding。使用者追認S10R3 completion
+  authority後，fresh-role provenance固定`11/11`且不再建立新thread；只resume既有
+  auditor／implementer／verifier。Contract須以exact component inventory、stable-inode
+  identity、合法journal prefix、manifest／seal recomputation、9-check Phase-2 audit及
+  canonical cumulative resource lineage fail closed。Resource `UNKNOWN`保留為unknown，
+  不填零且本身不是scientific stop gate。
+
 ### Downgrade user gates
 
 `DEGRADED_PROXY`、two-size／reduced-regime、S2 H5 resource-bounded pilot、single-cluster Stage 3 pilot，以及任何減少workloads、runs、seeds、metrics、validation、acceptance或scope的方案，都必須先產生完整decision packet並停在`blocked-awaiting-user-decision`。Diagnostic partial run不能滿足checkpoint或解鎖下游。
@@ -1838,16 +1872,20 @@ frozen gate合法未啟動，不是可補跑的缺漏；S11沒有eligibility。
 S10R3 current state：
 
 - [x] A38 scientific/design authority approved
-- [ ] Exact-path A38 authority commit and post-commit audit
-- [ ] Two execution plans and pre-label adversarial contract audit
-- [ ] Durable S10R3 contract／effective lock seal
-- [ ] Fresh support discovery and bounded exact-K decision
+- [x] A46.2 predecessor contract／plans／effective lock sealed and post-audited
+- [x] Predecessor support discovery、classification and bounded `K=19` completed
+- [x] Mapping A failed closed before corpus；`CHANGES_REQUIRED / not_evaluated`
+- [ ] A46.3 exact-five authority seal and post-commit audit
+- [ ] Plan-B R5／Plan-A R12 and pre-label adversarial audits
+- [ ] Predecessor capsule／durable lineage seal and successor effective lock
+- [ ] Fresh draw-0 support discovery and bounded exact-K decision
 - [ ] Mapping A/B and native helper conformance
 - [ ] GPU correctness and noise, if activated by prior gates
 - [ ] Fresh verification, terminal report, closeout commit and post-audit
 
-未完成項目不表示已產生partial scientific evidence。任何formal draw、Formocast或GPU
-label都必須等待effective lock。
+Predecessor empirical bytes是immutable diagnostic lineage，不能滿足任何successor
+criterion。新的formal draw、Formocast或GPU label必須等待A46.3 successor lock取得
+post-audited `LOCKED_READY`。
 
 ---
 

@@ -409,6 +409,40 @@ touch，且S10R3不需其bytes；因此保存unknown-attribution successor obser
 該external drift不再阻止Phase-1 post-commit audit。Scientific projection、
 `not_evaluated / edge=null`與formal-evidence prohibition均不變。
 
+### 1.19 A46.3 S10R3 predecessor-capsule lineage recovery
+
+2026-07-31，S10R3在predecessor effective lock下完成固定512個CPU chunks後，
+Mapping Pass A因bound worker將pinned `DataType.state`／`ActivationType.state` method
+當作data而fail closed。沒有mapping corpus、Pass B、native、GPU、decision或scientific
+outcome；狀態固定為`CHANGES_REQUIRED / not_evaluated / edge=null`。
+
+兩位獨立reviewers以一輪cross-examination與一輪evidence-backed final一致`AGREE`：
+採用A46.3 predecessor capsule。使用者明確授權S10R3 execution期間的blocker由兩位
+reviewers無重大異議後由Main直接核准，不再要求逐案user approval；這不授權改變
+scientific projection、criteria、formal order、claim、edge、cumulative resource／
+repair lineage、push或刪除predecessor evidence。
+
+A46.3只新增精確artifact-lineage authority：一個以predecessor lock完整SHA-256命名的
+local tamper-evident capsule、staging／journal、stable-inode admission lock、四項
+no-replace same-filesystem relocation、Git-tracked durable lineage seal，以及future
+`S10R3-A46.3-G2` successor-lock binding。舊CPU ledger、classification、witnesses、
+`K=19`與mapping attempt只作diagnostic provenance，禁止滿足successor gate。
+Successor取得post-audited `LOCKED_READY`後必須從global draw 0完整重跑。
+
+Scientific/oracle 17-property projection必須逐位元保持
+`185c6ae6c7b255c1330b4723b8a241ba111c0d23715bdb28149b024f78729e1e`；
+任何不相等都fail closed。A46.3不建立新checkpoint／run root，不terminalize
+`CHANGES_REQUIRED`，也不改S11唯一dependency。
+
+同日A46.3 pre-seal review發現role、thread provenance、Phase-2 audit parity、capsule
+inventory／journal／seal、stable admission inode與resource lineage六項缺口。使用者隨後
+明確追認本輪S10R3所有必要authority並要求不中斷至完整結束；fresh-role lineage因此
+固定為實際`11/11`，後續禁止再建立新role，只resume既有independent roles。Main仍不得
+實作source；原fresh implementer與fresh verifier保持角色隔離。Successor lock必須綁定
+完整predecessor inventory、同一admission-lock inode、合法forward journal、tracked seal及
+保留`KNOWN/UNKNOWN` boundary的cumulative resource record。這些修正都是execution／
+provenance hardening，不改上述scientific projection或任何outcome criterion。
+
 ---
 
 ## 2. 研究問題與假設
@@ -914,7 +948,8 @@ exact-ten cover需要18 configs，故terminalize為
 `inconclusive / FT-INCONCLUSIVE / edge=null`。A36只把non-material resource
 accounting缺口降為technical caveat，不改scientific result。Closure commit與
 post-audit完成後，S10R2 projection為`CHECKPOINT_COMPLETE`；因沒有positive edge，
-S11維持`not_activated`。A38已核准S10R3 bounded-cover sibling；current next
-dependency-ready checkpoint是`S10R3`，但formal evidence必須等待future contract、
-adversarial audit與effective lock seal。只有其post-audited positive才啟動S11。
+S11維持`not_activated`。A38已核准S10R3 bounded-cover sibling；A46.2 predecessor
+execution在Mapping A harness repair gate停為`CHANGES_REQUIRED / not_evaluated`。
+A46.3保留該evidence為diagnostic capsule並要求successor從draw 0重跑；只有successor
+post-audited positive才啟動S11。
 本authority不授權push。

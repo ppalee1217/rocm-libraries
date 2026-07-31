@@ -63,7 +63,7 @@ hypothesis、criterion、edge或timebox。
 | S10 | Stage 1 access／artifact／mapping／noise gate | `approved` | `completed` | `CHECKPOINT_COMPLETE` | `negative` | `effective (successor-003)` | [report](reports/staged/s10-stage1-entry-gate-report.md) |
 | S10R1 | Cancelled nominal-boundary recovery diagnostics | `approved` | `cancelled` | `BLOCKED` | `not_evaluated` | `superseded` | none (A32 operational record only) |
 | S10R2 | Stage 1 support-aware entry recovery | `approved` | `completed` | `CHECKPOINT_COMPLETE` | `inconclusive` | `effective` | [report](reports/staged/s10r2-stage1-support-aware-entry-report.md) |
-| S10R3 | Stage 1 bounded-cover entry recovery | `approved` | `not_started` | `DESIGN_APPROVED` | `not_evaluated` | `absent` | `reports/staged/s10r3-stage1-bounded-cover-entry-report.md` |
+| S10R3 | Stage 1 bounded-cover entry recovery | `approved` | `repairing` | `CHANGES_REQUIRED` | `not_evaluated` | `superseded; A46.3 successor pending` | `reports/staged/s10r3-stage1-bounded-cover-entry-report.md` |
 | S11 | Stage 1 model-only factorization／guidance lock | `approved` | `gated` | `DESIGN_APPROVED` | `not_activated` | `absent` | `reports/staged/s11-stage1-model-only-factorization-report.md` |
 | S12 | Stage 1 real-score／ranking／oracle audit | `approved` | `gated` | `DESIGN_APPROVED` | `not_evaluated` | `absent` | `reports/staged/s12-stage1-real-score-audit-report.md` |
 | S13 | Stage 1 actual Gen0 mechanism | `approved` | `gated` | `DESIGN_APPROVED` | `not_evaluated` | `absent` | `reports/gen0-factorization-mvp-report.md` |
@@ -473,6 +473,25 @@ completion；`skipped_by_gate`／`not_activated`不建立假report。
   不需要其bytes。保存successor observation後，fresh Phase-1 audit可繼續。
 - 本治理修正不改science；S10R3保持`not_evaluated / edge=null`，只有post-audited
   `S10R3:S1_ENTRY_GO`可啟動S11。
+
+### 6.12 2026-07-31 A46.3 predecessor-capsule recovery
+
+- Predecessor execution完成固定512個CPU chunks；Mapping A在產生任何corpus前因
+  bound state-method serializer defect fail closed。Current lifecycle是
+  `CHANGES_REQUIRED / not_evaluated / edge=null`，沒有formal scientific report。
+- Reviewer A與independent adversarial auditor完成一輪cross-examination及一輪final，
+  對A46.3 A+皆`AGREE`。使用者授權S10R3 blocker在兩位reviewers無重大異議後由Main
+  直接核准，不再逐案回user；scientific change、push與scope外不可逆操作不在其中。
+- A46.3新增唯一full-lock-digest predecessor capsule、staging／journal、stable admission
+  lock、四項no-replace relocation與Git-tracked lineage seal。Canonical active paths保持
+  不變；舊raw evidence與`K=19`只作diagnostic，successor不得讀取或重用。
+- Future successor generation固定為`S10R3-A46.3-G2`。完成fresh authority／plan／
+  implementation／lineage／lock audits並重新取得`LOCKED_READY`後，從draw 0完整重跑。
+  Scientific projection仍精確為`185c6ae6…e1e`。
+- Pre-seal雙reviewer發現並一致要求role isolation、9-check audit parity、exact capsule
+  inventory、合法journal／seal、stable admission inode及cumulative resource lineage。
+  使用者已追認本輪所有必要authority；實際fresh-role lineage固定`11/11`，不再建立新
+  role，只resume既有roles。以上只強化execution provenance，不改scientific gate。
 
 ## 7. Downgrade review gate
 
