@@ -493,6 +493,20 @@ completion；`skipped_by_gate`／`not_activated`不建立假report。
   使用者已追認本輪所有必要authority；實際fresh-role lineage固定`11/11`，不再建立新
   role，只resume既有roles。以上只強化execution provenance，不改scientific gate。
 
+### 6.13 2026-07-31 A46.4 one-time staging-manifest repair
+
+- A46.3的四項relocation已完成，但journal仍停在合法五事件`MOVING`；既有staging
+  manifest尚未`staging_verified`，其core／entries正確但漏寫frozen auxiliary digests。
+- 兩位既有independent reviewers最終一致：unchanged A46.3不允許直接replace或
+  quarantine；唯一合法路徑是先seal A46.4 exact one-time lifecycle amendment。使用者
+  已預先核准本輪S10R3 reviewer-agreed blocker authority。
+- A46.4只允許在exact old manifest、journal、stable admission inode與四份fresh
+  inventory全部相符時，於同parent以exclusive temp／fsync執行一次atomic replacement；
+  corrected identity驗證後才可沿原journal追加`staging_verified`。任何drift都fail
+  closed，禁止rollback、重做relocation、quarantine或第二次replacement。
+- Lineage seal與successor lock必須綁old/new manifest repair identities。Scientific
+  projection、`S10R3-A46.3-G2`、fresh draw 0、outcome matrix與唯一S11 edge均不變。
+
 ## 7. Downgrade review gate
 
 以下狀況一律先產生decision packet並停在`blocked-awaiting-user-decision`：

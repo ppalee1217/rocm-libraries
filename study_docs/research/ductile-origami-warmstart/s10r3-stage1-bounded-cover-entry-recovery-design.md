@@ -611,6 +611,60 @@ FINALIZED journal及inode identity。Successor lock另綁append-only cumulative 
 record，數值須明列`KNOWN`或`UNKNOWN` boundary，禁止reset、omit或以zero代替unknown。
 這些欄位是non-scientific provenance；不改任何scientific oracle或stop criterion。
 
+#### 9.6.6 A46.4 one-time staging-manifest repair authority
+
+A46.3 transition在四個ordered relocation events後，journal保持exact五事件`MOVING`
+prefix。Main在Cycle24 implementation audit通過後的production presence check發現
+`predecessor-manifest.json`已由Cycle23 builder建立。該檔案是regular mode`0600`、
+`nlink=1`、size`2430657`、raw SHA-256
+`2efb10baab8eb61b08c1df4f8facb1f9df2aadbe07ad70965bdd8fe05432fea3`、document digest
+`bfd8edad9f00a94d5f23e427657f2f7adcbe5538636910232827249693d5ea46`。
+它有4,129筆exact entries並通過generic／fresh-core validation，但四個component spec
+都只有core fields；support classification缺`raw_sha256`／`document_digest`，effective
+lock缺`raw_sha256`／`canonical_self_sha256`，所以frozen schema正確fail closed。
+
+Unchanged A46.3只授權journal atomic replace；也只列舉四個cross-scope component
+relocations。因此不得把通用`os.replace`能力當作authority，不得移除、quarantine、
+覆寫或把invalid manifest帶入final capsule。Existing adversarial auditor與Plan-A-blind
+fresh verifier完成同證據的bounded design discussion並在final round均`AGREE`以下
+A46.4。使用者最新blanket completion instruction是此exact方案的human approval；
+它不核准scientific change或push。
+
+A46.4保留normal `atomic_replace_applies_to_journal_only`，只新增一個不可泛化的例外：
+
+1. target只能是既有staging root下的`predecessor-manifest.json`；
+2. journal必須仍是raw SHA-256
+   `8ec2821b80956eaff7eabc9a54a8fe7ff0e5cf7c0f7df4fc82e47be7b700b8f3`、document digest
+   `f671a1202fa5e8e0217cc05c5924075f22d816a8f902be67bdd7ea1932aaa03e`的五事件`MOVING`
+   prefix，且stable admission identity digest仍為
+   `92a595ea3fb9b8179fc793ad226b5c4f0184dbfea514bcfc2ce9b6bb64070065`；
+3. 四個source皆absent、四個staging component皆present、final／seal／fixed temp皆
+   absent，fresh inventories逐欄等於frozen values；
+4. old manifest的path/type/mode/device/inode/link/size/raw/document、generic validity、
+   entries、core/order與known-only auxiliary omission必須全部相符；
+5. corrected builder必須連續兩次產生byte-identical size`2430993`、raw SHA-256
+   `ea75138b72a25e565e7096ba7f7502d65f71ad1423b9396394bc34c6655d9102`、document digest
+   `90a6668e0375c834dbe0d3f8571b749089c0173d66cef548311cd6d40bddae96`，並對fresh roots
+   通過generic與frozen validation；
+6. Main依原順序取得exclusive admission lock再取得兩個scope locks，每個check point
+   重驗同一inode。Corrected bytes只可寫到同parent、exclusive/no-follow建立的fixed
+   A46.4 temp；file fsync與完整temp validation後，緊鄰replacement前再重驗old target、
+   journal、locks與components；
+7. 只允許一次`os.replace(temp, target)`與parent fsync。Replacement後target必須精確
+   等於corrected identity、temp absent、四components及locks未變；不得repeat、rollback、
+   quarantine或新增journal event；
+8. 在上述postconditions全過前journal保持五事件。全過後才依原A46.3 writer追加
+   `staging_verified`並繼續single no-replace finalization；crash recovery只接受exact
+   old identity=`replace_once`、exact corrected identity=`verify_staging`，其他狀態皆
+   `BLOCKED_TRANSITION`。
+
+Durable lineage seal新增required `manifest_repair`，直接保存A46.4 authority、old/new
+manifest identity、pre-repair journal identity、`replacement_count=1`與
+`quarantine=false`；successor lock直接綁同一record及committed seal。Invalid old
+manifest只作unsealed staging metadata provenance，並非predecessor scientific evidence。
+Successor generation仍是`S10R3-A46.3-G2`；scientific/oracle projection、fresh draw 0、
+hypothesis、workload、mapping、GPU、correctness、noise、outcome、claim與edge全部不變。
+
 ## 10. Contract、seal 與formal evidence order
 
 Future exact planning必須把maximum boundary縮成exact implementation/delivery

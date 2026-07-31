@@ -443,6 +443,30 @@ inventory／journal／seal、stable admission inode與resource lineage六項缺�
 保留`KNOWN/UNKNOWN` boundary的cumulative resource record。這些修正都是execution／
 provenance hardening，不改上述scientific projection或任何outcome criterion。
 
+### 1.20 A46.4 S10R3 one-time staging-manifest repair
+
+2026-07-31，A46.3四項relocation完成且journal仍是合法五事件`MOVING` prefix時，
+Main發現staging內已存在由舊builder建立、尚未`staging_verified`的manifest。它的
+4,129筆entries、component core inventory與predecessor payload均通過generic validation，
+但缺少contract已凍結的support-classification與effective-lock auxiliary digests，因而
+無法通過frozen schema。這份檔案不是sealed predecessor evidence，也未產生scientific
+label；直接覆寫或quarantine都不在A46.3 authority內。
+
+既有adversarial auditor與Plan-A-blind fresh verifier依`design-discussion`完成bounded
+review，最終皆`AGREE` A46.4：先保持journal、四個staging components與manifest bytes
+不動，提交exact-five tracked authority amendment；audit通過後，才允許在exclusive
+admission／scope locks下對該一個exact manifest identity執行一次same-parent、fsynced
+atomic replacement。舊raw/document identity與新expected identity都必須進入durable
+lineage seal與successor binding；任何identity、inventory、journal或lock drift都fail
+closed。不得rollback、重做relocation、建立quarantine或把例外擴張到其他artifact。
+
+使用者最新明確指示本輪S10R3在完整結束前所需authority預設核准，且所有blocker由
+既有reviewers形成方案後直接續行；這構成此exact reviewer-agreed A46.4的human
+approval。A46.4只補artifact-lineage／lifecycle authority，scientific/oracle projection
+仍逐位元等於`185c6ae6c7b255c1330b4723b8a241ba111c0d23715bdb28149b024f78729e1e`，
+successor generation仍是`S10R3-A46.3-G2`，不改hypothesis、workload、threshold、
+outcome、claim、edge或S11 dependency，也不授權push。
+
 ---
 
 ## 2. 研究問題與假設

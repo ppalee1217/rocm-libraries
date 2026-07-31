@@ -1,8 +1,8 @@
 # Copyright Advanced Micro Devices, Inc., or its affiliates.
 # SPDX-License-Identifier: MIT
 
-schema_version: 8
-contract_id: S10R3-A46-3-PREDECESSOR-CAPSULE-LINEAGE-RESEAL-V5
+schema_version: 9
+contract_id: S10R3-A46-4-ONE-TIME-STAGING-MANIFEST-REPAIR-V6
 checkpoint_id: S10R3
 payload_state: PREIMPLEMENTATION_SCIENTIFIC_SEAL_PAYLOAD
 scientific_outcome: not_evaluated
@@ -14,8 +14,8 @@ identity:
   closure_unit: CU-S10R3
   risk_tier: R3
   hypothesis_id: S10R3-H1
-  base_head: 9c7c024e56529a2f4cc7431eecb6730aea4a14cb
-  authority_amendment: A46.3
+  base_head: 777892dd8af1029ad4c6cd99f15bb9350a4d1068
+  authority_amendment: A46.4
   contract_path: study_docs/research/ductile-origami-warmstart/protocol/v1/s10r3-stage1-bounded-cover-entry-contract.yaml
   effective_lock_path: study_docs/research/ductile-origami-warmstart/protocol/v1/locks/s10r3-stage1-bounded-cover-entry-lock.json
   formal_report_path: study_docs/research/ductile-origami-warmstart/reports/staged/s10r3-stage1-bounded-cover-entry-report.md
@@ -32,6 +32,7 @@ authority:
     - effective_execution_lock
     - direct_evidence_and_terminal_report
   committed_history:
+    a46_3_phase1_reseal_commit: 777892dd8af1029ad4c6cd99f15bb9350a4d1068
     a46_2_phase1_reseal_commit: 4fe1b47a2d7092305f38704834cec4d276223df8
     predecessor_effective_lock_commit: 9c7c024e56529a2f4cc7431eecb6730aea4a14cb
     governance_experiment_scoped_drift_commit: bb5440a1e97cb2f47a67ed2b0c4ec3c3a849ce0a
@@ -46,16 +47,16 @@ authority:
   phase1_authority_projection:
     - id: research_charter
       path: study_docs/research/surrogate-dse-plan.md
-      sha256: ab769f9ba2c21e6f5d122531fe6de67de7f1a0e43864e45fe29ebc7063278053
+      sha256: 778b35c6489ed412bbdcbcbcb7a6eed9ce3d740cb7d4d53fe8d16607e2734735
     - id: experiment_plan
       path: study_docs/research/ductile-origami-warmstart-experiment-plan.md
-      sha256: 1bb57c867bf2ce10da1ed5570988b7b3188ed9831594b617c9537cb97044f8e0
+      sha256: 7430d9c87904660f2ae8835a220f2bf5f45a312a60c503a2cf90c6de06353abb
     - id: checkpoint_index
       path: study_docs/research/ductile-origami-warmstart/README.md
-      sha256: 0d55f3e2c4e64a92f9078554d55db156d475b730f9d44b7dfa0f40c760844f37
+      sha256: 6185585ad7d4f4d2ac29dd89c3efb71a5829806e46912e32dfb9155c0898dd1a
     - id: checkpoint_design
       path: study_docs/research/ductile-origami-warmstart/s10r3-stage1-bounded-cover-entry-recovery-design.md
-      sha256: a3b74ed3e261ba3576421173d26ff97403deb4e2064c93291efb65476ce0d387
+      sha256: 6da6a29ada0445e0eb6ff415305c5164348fa0d3ab4a3c20bdce9619af85003f
   user_authority:
     clean_restart_scope:
       delete_uncommitted_s10r3_implementation: true
@@ -200,7 +201,7 @@ seal_protocol:
       - study_docs/research/ductile-origami-warmstart/README.md
       - study_docs/research/ductile-origami-warmstart/s10r3-stage1-bounded-cover-entry-recovery-design.md
       - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r3-stage1-bounded-cover-entry-contract.yaml
-    required_audit_verdict: AUDIT_PASS_PREIMPLEMENTATION_A46_3
+    required_audit_verdict: AUDIT_PASS_PREIMPLEMENTATION_A46_4
     lock_identity_rule:
       algorithm: git_commit_oid_plus_raw_contract_sha256
       self_commit_oid_embedded_in_contract: false
@@ -911,6 +912,15 @@ write_boundaries:
           - source: study_docs/research/ductile-origami-warmstart/protocol/v1/locks/s10r3-stage1-bounded-cover-entry-lock.json
             staging_destination: agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/retired-predecessors/.staging-S10R3-A46.3-G1/effective-lock.json
             final_destination: agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/retired-predecessors/lock-1cd089d3abe79d4918d965a2afa868421ec8d810644b8c7ede00f0ef05960301/effective-lock.json
+      a46_4_one_time_manifest_repair_exception:
+        writer: main
+        target: agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/retired-predecessors/.staging-S10R3-A46.3-G1/predecessor-manifest.json
+        fixed_temp: agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/retired-predecessors/.staging-S10R3-A46.3-G1/.predecessor-manifest.a46-4.tmp
+        artifact_class: one_time_unsealed_staging_manifest_repair
+        maximum_replacements: 1
+        authority_source: predecessor_capsule_lineage.one_time_manifest_repair
+        normal_control_plane_and_cross_scope_policies_unchanged: true
+        delivery: false
       delivery: false
     durable_exact_paths:
       - study_docs/research/ductile-origami-warmstart/protocol/v1/locks/s10r3-stage1-bounded-cover-entry-lock.json
@@ -1487,6 +1497,7 @@ implementation_binding_schema:
           - capsule_manifest
           - terminal_journal
           - admission_lock_identity_digest
+          - manifest_repair
           - durable_lineage_seal
           - diagnostic_only
           - admissible_for_current_execution
@@ -1521,6 +1532,15 @@ implementation_binding_schema:
                     const: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/execution-transition-journal.json
           admission_lock_identity_digest:
             $ref: "#/definitions/sha256"
+          manifest_repair:
+            const:
+              authority_amendment: A46.4
+              old_manifest_raw_sha256: 2efb10baab8eb61b08c1df4f8facb1f9df2aadbe07ad70965bdd8fe05432fea3
+              old_manifest_document_digest: bfd8edad9f00a94d5f23e427657f2f7adcbe5538636910232827249693d5ea46
+              corrected_manifest_raw_sha256: ea75138b72a25e565e7096ba7f7502d65f71ad1423b9396394bc34c6655d9102
+              corrected_manifest_document_digest: 90a6668e0375c834dbe0d3f8571b749089c0173d66cef548311cd6d40bddae96
+              replacement_count: 1
+              lineage_seal_bound: true
           durable_lineage_seal:
             type: object
             additionalProperties: false
@@ -2146,6 +2166,100 @@ predecessor_capsule_lineage:
       fsync_staging_and_parent: true
       staging_to_final_single_no_replace_rename: true
       final_capsule_authorized_writer_roles: []
+  one_time_manifest_repair:
+    authority_amendment: A46.4
+    decision_status: APPROVED_BY_USER_BLANKET_AUTHORITY_AFTER_REVIEWER_CONSENSUS
+    reviewers:
+      - /root/s10r3_a46_3_reviewer_a
+      - /root/s10r3_fresh_verifier
+    final_positions: [AGREE, AGREE]
+    material_dissent: false
+    scientific_oracle_projection_expected_sha256: 185c6ae6c7b255c1330b4723b8a241ba111c0d23715bdb28149b024f78729e1e
+    normal_atomic_replace_rule_unchanged: journal_only
+    exception_scope: one_exact_unsealed_staging_manifest_before_staging_verified
+    target_path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/retired-predecessors/.staging-S10R3-A46.3-G1/predecessor-manifest.json
+    fixed_temp_path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/retired-predecessors/.staging-S10R3-A46.3-G1/.predecessor-manifest.a46-4.tmp
+    old_manifest_identity:
+      entry_type: regular_file
+      mode: "0600"
+      nlink: 1
+      st_dev: 66308
+      st_ino: 40004101
+      size_bytes: 2430657
+      raw_sha256: 2efb10baab8eb61b08c1df4f8facb1f9df2aadbe07ad70965bdd8fe05432fea3
+      document_digest: bfd8edad9f00a94d5f23e427657f2f7adcbe5538636910232827249693d5ea46
+      mtime_utc: "2026-07-31T16:35:48.337133738Z"
+      ctime_utc: "2026-07-31T16:35:48.341133792Z"
+      generic_validation: PASS
+      frozen_validation: FAIL_KNOWN_AUXILIARY_OMISSION_ONLY
+      entry_count: 4129
+      component_core_and_order_equal_frozen: true
+    pre_repair_journal_identity:
+      raw_sha256: 8ec2821b80956eaff7eabc9a54a8fe7ff0e5cf7c0f7df4fc82e47be7b700b8f3
+      document_digest: f671a1202fa5e8e0217cc05c5924075f22d816a8f902be67bdd7ea1932aaa03e
+      state: MOVING
+      event_count: 5
+      last_action: component_relocated
+      relocated_components: [formal_cpu, formal_mapping, support_classification, effective_lock]
+      admission_lock_identity_digest: 92a595ea3fb9b8179fc793ad226b5c4f0184dbfea514bcfc2ce9b6bb64070065
+    corrected_manifest_identity:
+      entry_type: regular_file
+      mode: "0600"
+      nlink: 1
+      st_dev: 66308
+      size_bytes: 2430993
+      raw_sha256: ea75138b72a25e565e7096ba7f7502d65f71ad1423b9396394bc34c6655d9102
+      document_digest: 90a6668e0375c834dbe0d3f8571b749089c0173d66cef548311cd6d40bddae96
+      generic_validation: PASS
+      frozen_validation: PASS
+      entry_count: 4129
+      component_core_auxiliary_and_order_equal_frozen: true
+    recovery_actions:
+      exact_old_identity: replace_once
+      exact_corrected_identity: verify_staging
+      every_other_identity: BLOCKED_TRANSITION
+    preconditions:
+      - no_live_s10r3_writer
+      - exclusive_admission_lock_then_ordered_scope_locks
+      - stable_admission_inode_reverified_at_every_checkpoint
+      - journal_exactly_equals_pre_repair_journal_identity
+      - four_sources_absent_and_four_staging_components_present
+      - final_capsule_and_lineage_seal_absent
+      - fixed_temp_absent
+      - old_manifest_exact_identity_and_validation_profile
+      - all_four_fresh_inventories_equal_frozen
+      - corrected_builder_twice_byte_identical_and_frozen_valid
+    operation:
+      temp_create: O_WRONLY_O_CREAT_O_EXCL_O_NOFOLLOW_mode_0600
+      temp_parent: same_as_target_parent
+      temp_write: canonical_json_plus_newline
+      temp_file_fsync: true
+      temp_full_validation_before_replace: true
+      immediate_pre_replace_revalidation: [locks, journal, old_manifest, components]
+      primitive: os_replace_exact_temp_to_exact_target
+      replacement_count: 1
+      parent_directory_fsync: true
+    forbidden:
+      - quarantine
+      - rollback
+      - component_relocation_repeat
+      - manifest_replacement_repeat
+      - new_journal_action
+      - scientific_evidence_or_label_use
+    postconditions:
+      - target_exactly_equals_corrected_manifest_identity
+      - fixed_temp_absent
+      - four_component_identities_unchanged
+      - admission_and_scope_lock_identities_unchanged
+      - journal_remains_exact_five_event_prefix_until_all_checks_pass
+      - append_original_staging_verified_event_only_after_all_checks_pass
+    durable_binding:
+      lineage_seal_manifest_repair_required: true
+      successor_lock_manifest_repair_required: true
+      old_identity_preserved_as_provenance: true
+      invalid_old_manifest_is_unsealed_staging_metadata: true
+      diagnostic_only: true
+      admissible_for_successor: false
   canonicalization:
     encoding: UTF-8
     sort_keys: true
@@ -2215,6 +2329,9 @@ predecessor_capsule_lineage:
     - manifest_entry_logical_source_and_final_paths_follow_the_exact_component_root_mapping_without_escape
     - manifest_component_and_aggregate_counts_bytes_and_inventory_digests_equal_frozen_predecessor_inventory
     - manifest_document_digest_recomputes_with_only_its_document_digest_field_zeroed
+    - a46_4_manifest_repair_accepts_only_exact_old_or_exact_corrected_identity_before_staging_verified
+    - a46_4_manifest_repair_is_single_use_same_parent_fsynced_and_preserves_the_five_event_journal_until_postvalidation
+    - a46_4_manifest_repair_forbids_quarantine_rollback_component_relocation_repeat_and_new_journal_actions
     - journal_events_are_a_legal_prefix_of_prepared_then_four_ordered_relocations_then_staging_verified_then_finalized
     - journal_event_index_is_zero_based_contiguous_and_previous_event_digest_equals_prior_recomputed_event_digest
     - every_journal_event_and_recovery_observation_rechecks_the_same_admission_lock_identity
@@ -2225,6 +2342,7 @@ predecessor_capsule_lineage:
     - seal_capsule_manifest_path_raw_sha256_and_document_digest_equal_recomputed_final_capsule_manifest
     - seal_terminal_journal_path_raw_sha256_and_document_digest_equal_recomputed_finalized_journal
     - seal_admission_lock_identity_digest_equals_the_prepared_and_every_event_identity_digest
+    - seal_and_successor_lock_directly_bind_the_a46_4_old_and_corrected_manifest_identities
     - seal_document_digest_recomputes_with_only_its_document_digest_field_zeroed
     - successor_lock_exactly_binds_capsule_manifest_journal_admission_lock_and_tracked_lineage_seal_path_hash_commit_blob
   manifest_json_schema:
@@ -2409,7 +2527,7 @@ predecessor_capsule_lineage:
     "$schema": "http://json-schema.org/draft-07/schema#"
     type: object
     additionalProperties: false
-    required: [schema_version, document_kind, checkpoint_id, authority_contract, transition_id, final_capsule_root, predecessor_lock, capsule_manifest, terminal_journal, admission_lock_identity, lifecycle, diagnostic_only, admissible_for_successor, document_digest]
+    required: [schema_version, document_kind, checkpoint_id, authority_contract, transition_id, final_capsule_root, predecessor_lock, capsule_manifest, terminal_journal, admission_lock_identity, manifest_repair, lifecycle, diagnostic_only, admissible_for_successor, document_digest]
     properties:
       schema_version: {const: 1}
       document_kind: {const: s10r3_predecessor_lineage_seal}
@@ -2452,6 +2570,27 @@ predecessor_capsule_lineage:
           state: {const: FINALIZED}
       admission_lock_identity:
         $ref: "#/definitions/admission_lock_identity"
+      manifest_repair:
+        const:
+          authority_amendment: A46.4
+          target_path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/retired-predecessors/.staging-S10R3-A46.3-G1/predecessor-manifest.json
+          old_manifest:
+            size_bytes: 2430657
+            raw_sha256: 2efb10baab8eb61b08c1df4f8facb1f9df2aadbe07ad70965bdd8fe05432fea3
+            document_digest: bfd8edad9f00a94d5f23e427657f2f7adcbe5538636910232827249693d5ea46
+          corrected_manifest:
+            size_bytes: 2430993
+            raw_sha256: ea75138b72a25e565e7096ba7f7502d65f71ad1423b9396394bc34c6655d9102
+            document_digest: 90a6668e0375c834dbe0d3f8571b749089c0173d66cef548311cd6d40bddae96
+          pre_repair_journal:
+            raw_sha256: 8ec2821b80956eaff7eabc9a54a8fe7ff0e5cf7c0f7df4fc82e47be7b700b8f3
+            document_digest: f671a1202fa5e8e0217cc05c5924075f22d816a8f902be67bdd7ea1932aaa03e
+            state: MOVING
+            event_count: 5
+          replacement_count: 1
+          quarantine: false
+          diagnostic_only: true
+          admissible_for_successor: false
       lifecycle:
         type: object
         additionalProperties: false

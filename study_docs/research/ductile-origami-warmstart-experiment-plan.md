@@ -691,6 +691,30 @@ Positive、negative與inconclusive都要durable outcome closure。Operational
   canonical cumulative resource lineage fail closed。Resource `UNKNOWN`保留為unknown，
   不填零且本身不是scientific stop gate。
 
+### 2026-07-31 A46.4 one-time staging-manifest repair
+
+- **Trigger：**A46.3 journal在四項component relocation後保持合法五事件`MOVING`；
+  staging manifest已存在且generic-valid，但舊builder漏寫兩個component的四個frozen
+  auxiliary digest fields，所以尚未且不得取得`staging_verified`。
+- **Design review：**既有independent auditor與Plan-A-blind fresh verifier都拒絕在
+  unchanged A46.3下直接replace或quarantine，並在bounded final round一致`AGREE`
+  A46.4 exact one-time amendment。使用者的blanket S10R3 completion authority直接
+  核准該共識，不需再次中斷。
+- **Exact action：**authority seal前不改live bytes。Seal後只在同一stable admission
+  inode、ordered exclusive scope locks、exact old manifest／journal／inventory identities
+  全部重驗通過時，建立同parent exclusive temp、寫入並fsync已凍結corrected bytes，
+  驗證後執行一次atomic replacement與parent fsync。只有new identity與fresh-root frozen
+  validation全過才追加原journal的`staging_verified`。
+- **Fail closed：**old identity、corrected identity、五事件journal、四項staging
+  inventories、temp/final/seal absence或lock identity任一不符即停止；禁止quarantine、
+  rollback、重做relocation、第二次replacement或新增journal action。
+- **Binding：**durable lineage seal與successor effective lock直接綁A46.4 authority及
+  old/new manifest repair identities。舊manifest只作unsealed staging metadata
+  provenance，不是scientific evidence。
+- **Scientific boundary：**projection仍為
+  `185c6ae6c7b255c1330b4723b8a241ba111c0d23715bdb28149b024f78729e1e`；
+  `S10R3-A46.3-G2`、fresh draw 0、全部criteria／outcomes／claim／edge保持不變。
+
 ### Downgrade user gates
 
 `DEGRADED_PROXY`、two-size／reduced-regime、S2 H5 resource-bounded pilot、single-cluster Stage 3 pilot，以及任何減少workloads、runs、seeds、metrics、validation、acceptance或scope的方案，都必須先產生完整decision packet並停在`blocked-awaiting-user-decision`。Diagnostic partial run不能滿足checkpoint或解鎖下游。
