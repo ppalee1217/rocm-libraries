@@ -467,6 +467,45 @@ approval。A46.4只補artifact-lineage／lifecycle authority，scientific/oracle
 successor generation仍是`S10R3-A46.3-G2`，不改hypothesis、workload、threshold、
 outcome、claim、edge或S11 dependency，也不授權push。
 
+### 1.21 A46.5 S10R3 reproducible mapping-failure recovery
+
+2026-07-31，`S10R3-A46.3-G2`在固定512 chunks／262,144 draws、fresh support
+classification與`K=C_greedy=19`selection後，Mapping A的第六個required config
+`4ffcecf6…`在pinned KernelWriter code generation穩定觸發resource error 5。第一個
+attempt是G2 lock下的formal fail-closed evidence；之後誤建立且立即中止的一個fresh
+diagnostic thread使實際role provenance由`11/11`成為`12/11`，所以其後的第二個
+byte-identical attempt只作diagnostic，不得形成G2 scientific outcome。G2固定為
+`CHANGES_REQUIRED / not_evaluated / edge=null`，不得建立formal report或重用其
+empirical bytes作successor gate evidence。
+
+使用者明確指定的新建independent Reviewer A
+`/root/s10r3_a46_5_reviewer_a`與既有independent adversarial auditor
+`/root/s10r3_a46_3_reviewer_a`完成A46.5 pre-seal cross-examination與evidence-backed
+final；兩者一致`AGREE`且沒有material dissent。參與實作的
+implementer不計入兩位reviewers。這個使用者指定的exact reviewer thread使實際fresh
+role provenance由`12/12`成為`13/13`，除此之外不得再新建role。修復只補齊已預鎖的
+`reproducibly_fails` lifecycle：每個mapping attempt使用
+獨立append-only working directory；worker輸出allowlisted categorical failure
+signature；同一required config在同一full-K request/order下兩次一致hard failure後，
+runner建立完整mapping-failure corpus與
+`negative / S1_ENTRY_BLOCKED / FT-BLOCKED-MAPPING / edge=null` decision。禁止第三次
+attempt、replacement、掃描剩餘configs、Pass B或後段GPU。這不新增或放寬negative
+criterion，也不把G2 diagnostic attempt冒充formal evidence。
+Allowlist只接受`KernelWriterAssembly_overflowedResources`、error code `5`、worker
+return code `23`與`processKernelSource` result `-2`的完整structured signature；
+failure→success、success→failure、signature不同、missing／partial／timeout、其他code或
+unknown field一律`CHANGES_REQUIRED / not_evaluated / edge=null`，不得判negative。
+
+因修復會改bound implementation，A46.5依既有invalidation matrix建立forward-only
+`S10R3-A46.5-G2-RETIREMENT`與successor `S10R3-A46.5-G3`。G2 formal CPU、formal
+mapping、support classification及effective lock移入以G2 raw lock digest命名的新
+immutable capsule；舊G1 capsule、journal與lineage seal保持逐位元不變。G3 effective
+lock須綁定新capsule／seal、實際累積`13/13`role provenance、完整resource lineage與
+outcome absence，並從global draw 0完整重跑。Scientific/oracle projection仍逐位元等於
+`185c6ae6c7b255c1330b4723b8a241ba111c0d23715bdb28149b024f78729e1e`；hypothesis、
+source/YAML、search space、schedule、selector、mapping fields、correctness/noise、
+outcome matrix、claim、唯一S11 edge與不授權push全部不變。
+
 ---
 
 ## 2. 研究問題與假設

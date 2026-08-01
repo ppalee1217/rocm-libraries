@@ -75,7 +75,7 @@ orchestration／resource floor；它不能靜默修改上列scientific authority
 | S10 | Stage 1 access／artifact／mapping／noise gate | approved | completed | CHECKPOINT_COMPLETE | negative | effective (`successor-003`) | [design](ductile-origami-warmstart/s10-stage1-entry-access-mapping-gate-design.md) | [report](ductile-origami-warmstart/reports/staged/s10-stage1-entry-gate-report.md) |
 | S10R1 | Cancelled nominal-boundary recovery diagnostics | approved | cancelled | BLOCKED | not_evaluated | superseded | [design](ductile-origami-warmstart/s10r1-stage1-valid-support-entry-recovery-design.md) | none (A32 operational record only) |
 | S10R2 | Stage 1 support-aware entry recovery | approved | completed | CHECKPOINT_COMPLETE | inconclusive | effective | [design](ductile-origami-warmstart/s10r2-stage1-support-aware-entry-recovery-design.md) | [report](ductile-origami-warmstart/reports/staged/s10r2-stage1-support-aware-entry-report.md) |
-| S10R3 | Stage 1 bounded-cover entry recovery | approved | not_started | DESIGN_APPROVED | not_evaluated | absent | [design](ductile-origami-warmstart/s10r3-stage1-bounded-cover-entry-recovery-design.md) | `reports/staged/s10r3-stage1-bounded-cover-entry-report.md` |
+| S10R3 | Stage 1 bounded-cover entry recovery | approved | repairing | CHANGES_REQUIRED | not_evaluated | G2 superseded; A46.5 G3 successor pending | [design](ductile-origami-warmstart/s10r3-stage1-bounded-cover-entry-recovery-design.md) | `reports/staged/s10r3-stage1-bounded-cover-entry-report.md` |
 | S11 | Stage 1 model-only factorization／guidance lock | approved | gated | DESIGN_APPROVED | not_activated | absent | [design](ductile-origami-warmstart/s11-stage1-model-only-factorization-design.md) | `reports/staged/s11-stage1-model-only-factorization-report.md` |
 | S12 | Stage 1 D5 real-score／oracle audit | approved | gated | DESIGN_APPROVED | not_evaluated | absent | [design](ductile-origami-warmstart/s12-stage1-real-score-ranking-oracle-audit-design.md) | `reports/staged/s12-stage1-real-score-audit-report.md` |
 | S13 | Stage 1 actual Gen0 mechanism | approved | gated | DESIGN_APPROVED | not_evaluated | absent | [design](ductile-origami-warmstart/s13-stage1-actual-gen0-mechanism-design.md) | `reports/gen0-factorization-mvp-report.md` |
@@ -714,6 +714,40 @@ Positive、negative與inconclusive都要durable outcome closure。Operational
 - **Scientific boundary：**projection仍為
   `185c6ae6c7b255c1330b4723b8a241ba111c0d23715bdb28149b024f78729e1e`；
   `S10R3-A46.3-G2`、fresh draw 0、全部criteria／outcomes／claim／edge保持不變。
+
+### 2026-07-31 A46.5 reproducible mapping-failure recovery
+
+- **G2 trigger：**G2完成固定512 chunks／262,144 draws、fresh support classification及
+  `K=C_greedy=19`selection；Mapping A第六個required config `4ffcecf6…`在pinned
+  KernelWriter code generation觸發resource error 5。Attempt 1是formal fail-closed；
+  意外建立且立即中止的fresh diagnostic thread使role usage在attempt 2前成為`12/11`，
+  因此attempt 2雖與attempt 1逐byte一致，仍只作diagnostic。
+- **G2 lifecycle：**固定為`CHANGES_REQUIRED / not_evaluated / edge=null`；沒有mapping
+  corpus、decision、scientific report或outgoing edge。G2的CPU、classification、K與
+  mapping bytes都不得滿足successor criterion。
+- **Reviewer decision：**使用者明確指定的新建independent Reviewer A
+  `/root/s10r3_a46_5_reviewer_a`與既有independent adversarial auditor
+  `/root/s10r3_a46_3_reviewer_a`完成pre-seal cross-examination與evidence-backed final；
+  兩者一致`AGREE`且沒有material dissent。參與實作的
+  implementer不計入reviewers。這個exact新role使累積provenance成為`13/13`，不得再
+  新建role。Runner固定最多兩個append-only、獨立cwd的full-K mapping
+  attempts；兩次同一required config／signature hard failure才建立完整failure corpus並
+  terminalize `negative / S1_ENTRY_BLOCKED / FT-BLOCKED-MAPPING / edge=null`。禁止
+  attempt 3、replacement、掃描剩餘K、Pass B與後段GPU。
+  Allowlist固定為`KernelWriterAssembly_overflowedResources`、error code `5`、worker
+  return code `23`與`processKernelSource` result `-2`；failure→success、success→failure、
+  signature不同、missing／partial／timeout、其他code或unknown field一律
+  `CHANGES_REQUIRED / not_evaluated / edge=null`。
+- **Forward-only successor：**新增`S10R3-A46.5-G2-RETIREMENT`，把G2 formal CPU、
+  formal mapping、support classification及effective lock封存到以G2 raw lock digest
+  命名的新capsule；舊G1 capsule／journal／seal不可變。新generation固定為
+  `S10R3-A46.5-G3`，lock ID為`S10R3-A46-5-EFFECTIVE-LOCK-G3`，並綁定實際累積
+  `13/13`role provenance、new lineage seal、resources與outcome absence。
+- **Fresh evidence：**G3必須從global draw 0完整重跑；G2 attempt 2不得補升formal。
+  Scientific/oracle projection維持
+  `185c6ae6c7b255c1330b4723b8a241ba111c0d23715bdb28149b024f78729e1e`，不改任何
+  hypothesis、workload、seed schedule、selector、mapping/correctness/noise criterion、
+  outcome matrix、claim、唯一S11 edge或no-push boundary。
 
 ### Downgrade user gates
 

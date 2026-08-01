@@ -1,8 +1,8 @@
 # Copyright Advanced Micro Devices, Inc., or its affiliates.
 # SPDX-License-Identifier: MIT
 
-schema_version: 9
-contract_id: S10R3-A46-4-ONE-TIME-STAGING-MANIFEST-REPAIR-V6
+schema_version: 10
+contract_id: S10R3-A46-5-REPRODUCIBLE-MAPPING-FAILURE-RECOVERY-V1
 checkpoint_id: S10R3
 payload_state: PREIMPLEMENTATION_SCIENTIFIC_SEAL_PAYLOAD
 scientific_outcome: not_evaluated
@@ -14,8 +14,8 @@ identity:
   closure_unit: CU-S10R3
   risk_tier: R3
   hypothesis_id: S10R3-H1
-  base_head: 777892dd8af1029ad4c6cd99f15bb9350a4d1068
-  authority_amendment: A46.4
+  base_head: d9e52829d39268b52a30dea9ad1ad985731fdbb3
+  authority_amendment: A46.5
   contract_path: study_docs/research/ductile-origami-warmstart/protocol/v1/s10r3-stage1-bounded-cover-entry-contract.yaml
   effective_lock_path: study_docs/research/ductile-origami-warmstart/protocol/v1/locks/s10r3-stage1-bounded-cover-entry-lock.json
   formal_report_path: study_docs/research/ductile-origami-warmstart/reports/staged/s10r3-stage1-bounded-cover-entry-report.md
@@ -32,6 +32,9 @@ authority:
     - effective_execution_lock
     - direct_evidence_and_terminal_report
   committed_history:
+    g2_effective_lock_commit: d9e52829d39268b52a30dea9ad1ad985731fdbb3
+    g1_lineage_seal_commit: f0c17fd1853e739e2a534233c5c238851635b8a6
+    a46_4_phase1_reseal_commit: 0e5b40ca8ebde31913e76a82e71ff3324d66a9fd
     a46_3_phase1_reseal_commit: 777892dd8af1029ad4c6cd99f15bb9350a4d1068
     a46_2_phase1_reseal_commit: 4fe1b47a2d7092305f38704834cec4d276223df8
     predecessor_effective_lock_commit: 9c7c024e56529a2f4cc7431eecb6730aea4a14cb
@@ -47,24 +50,29 @@ authority:
   phase1_authority_projection:
     - id: research_charter
       path: study_docs/research/surrogate-dse-plan.md
-      sha256: 778b35c6489ed412bbdcbcbcb7a6eed9ce3d740cb7d4d53fe8d16607e2734735
+      sha256: 0fb7946452f8f963af523a1b26bfa8f721767dd537eaaee9d5962cd2756bc5e6
     - id: experiment_plan
       path: study_docs/research/ductile-origami-warmstart-experiment-plan.md
-      sha256: 7430d9c87904660f2ae8835a220f2bf5f45a312a60c503a2cf90c6de06353abb
+      sha256: ecedaae86ca74529a635f8acfc5d6f3c6f10d48476e7ece995e24495893088a1
     - id: checkpoint_index
       path: study_docs/research/ductile-origami-warmstart/README.md
-      sha256: 6185585ad7d4f4d2ac29dd89c3efb71a5829806e46912e32dfb9155c0898dd1a
+      sha256: 3d8f8f8fdf6cd1f134b3840b5b2d26dcfb4d3094c7de429f7a6c370963e0f525
     - id: checkpoint_design
       path: study_docs/research/ductile-origami-warmstart/s10r3-stage1-bounded-cover-entry-recovery-design.md
-      sha256: 6da6a29ada0445e0eb6ff415305c5164348fa0d3ab4a3c20bdce9619af85003f
+      sha256: 4a00bcbf6e9402a8ae75ff1d9c9cfac33f5111c9ee068ae06cde3666f879bc51
   user_authority:
     clean_restart_scope:
       delete_uncommitted_s10r3_implementation: true
       preserve_committed_scientific_authority: true
       deleted_bytes_reusable: false
-    fresh_role_thread_cap: 11
+    fresh_role_thread_cap: 13
     fresh_role_thread_cap_ratified_at_actual_usage: true
     no_additional_fresh_role_threads_authorized: true
+    exact_additional_role_authority:
+      task_id: /root/s10r3_a46_5_reviewer_a
+      purpose: user_required_independent_reviewer_a_for_a46_5
+      implementer_independence_required: true
+      roles_created_after_this_thread: forbidden
     existing_role_resume_required_for_remaining_s10r3_work: true
     repair_count_semantics: append_only_provenance_only
     repair_numeric_stop_cap: null
@@ -201,7 +209,7 @@ seal_protocol:
       - study_docs/research/ductile-origami-warmstart/README.md
       - study_docs/research/ductile-origami-warmstart/s10r3-stage1-bounded-cover-entry-recovery-design.md
       - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r3-stage1-bounded-cover-entry-contract.yaml
-    required_audit_verdict: AUDIT_PASS_PREIMPLEMENTATION_A46_4
+    required_audit_verdict: AUDIT_PASS_PREIMPLEMENTATION_A46_5
     lock_identity_rule:
       algorithm: git_commit_oid_plus_raw_contract_sha256
       self_commit_oid_embedded_in_contract: false
@@ -242,6 +250,15 @@ role_governance:
     may_read_plan_b: true
     may_read_plan_a_for_parity_only: true
     may_implement: false
+  a46_5_independent_reviewer_a:
+    task_id: /root/s10r3_a46_5_reviewer_a
+    lineage: user_required_new_independent_reviewer_for_a46_5
+    may_read_contract: true
+    may_read_plan_b: true
+    may_read_plan_a_for_parity_only: true
+    implementation_participation_forbidden: true
+    may_implement: false
+    commit_authority: false
   implementer:
     task_id: /root/s10r3_fresh_implementer
     lineage: resumed_existing_gate_fresh_role
@@ -272,8 +289,8 @@ role_governance:
     repair_count_is_stop_gate: false
     next_complete_finding_cycle_if_required: 20
     lock_repair_count_rule: equals_complete_append_only_provenance_at_lock_build_time
-    fresh_role_threads_used_current: 11
-    fresh_role_threads_maximum: 11
+    fresh_role_threads_used_current: 13
+    fresh_role_threads_maximum: 13
     fresh_thread_count_is_stop_gate: true
     fresh_role_thread_headroom: 0
     new_fresh_role_creation_forbidden: true
@@ -823,6 +840,18 @@ write_boundaries:
         writer: adversarial_auditor
       - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/phase2-post-commit-audit-verdict.json
         writer: adversarial_auditor
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/phase1-a46-5-reviewer-a.md
+        writer: a46_5_independent_reviewer_a
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/phase1-a46-5-reviewer-a-verdict.json
+        writer: a46_5_independent_reviewer_a
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/phase1-a46-5-audit.md
+        writer: adversarial_auditor
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/phase1-a46-5-audit-verdict.json
+        writer: adversarial_auditor
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/phase1-a46-5-post-commit-audit.md
+        writer: adversarial_auditor
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/phase1-a46-5-post-commit-audit-verdict.json
+        writer: adversarial_auditor
       - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/execution-notifications.md
         writer: main
       - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/execution-transition.lock
@@ -830,6 +859,10 @@ write_boundaries:
       - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/execution-transition-journal.json
         writer: main_forward_only_transition
       - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/execution-transition-journal.json.tmp
+        writer: main_atomic_journal_temp
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/execution-transition-g2-g3-journal.json
+        writer: main_forward_only_transition
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/execution-transition-g2-g3-journal.json.tmp
         writer: main_atomic_journal_temp
       - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/verifier-report.md
         writer: fresh_verifier
@@ -889,6 +922,12 @@ write_boundaries:
       - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/retired-predecessors/lock-1cd089d3abe79d4918d965a2afa868421ec8d810644b8c7ede00f0ef05960301/
         writer_roles: [main_during_finalization_only]
         artifact_classes: [retired_predecessor_evidence]
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/retired-predecessors/.staging-S10R3-A46.5-G2/
+        writer_roles: [main]
+        artifact_classes: [retired_predecessor_evidence_staging]
+      - path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/retired-predecessors/lock-ddf438e5c71fb4f1328511bff508d3cde347d8c6200c7f3bc72892c4acaaf8c3/
+        writer_roles: [main_during_finalization_only]
+        artifact_classes: [retired_predecessor_evidence]
     scoped_artifact_policy:
       descendant_semantics: every_file_and_directory_strictly_below_the_named_prefix_is_authorized_only_for_the_declared_roles_and_classes
       control_plane_bytes_below_scoped_directories: forbidden
@@ -921,6 +960,25 @@ write_boundaries:
         authority_source: predecessor_capsule_lineage.one_time_manifest_repair
         normal_control_plane_and_cross_scope_policies_unchanged: true
         delivery: false
+      a46_5_closed_transition_exception:
+        transition_id: S10R3-A46.5-G2-RETIREMENT
+        writer: main
+        final_state_writer_roles: []
+        no_unlisted_source_or_destination: true
+        components:
+          - source: agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/formal-cpu/
+            staging_destination: agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/retired-predecessors/.staging-S10R3-A46.5-G2/formal-cpu/
+            final_destination: agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/retired-predecessors/lock-ddf438e5c71fb4f1328511bff508d3cde347d8c6200c7f3bc72892c4acaaf8c3/formal-cpu/
+          - source: agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/formal-mapping/
+            staging_destination: agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/retired-predecessors/.staging-S10R3-A46.5-G2/formal-mapping/
+            final_destination: agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/retired-predecessors/lock-ddf438e5c71fb4f1328511bff508d3cde347d8c6200c7f3bc72892c4acaaf8c3/formal-mapping/
+          - source: study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r3-support-classification.json
+            staging_destination: agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/retired-predecessors/.staging-S10R3-A46.5-G2/s10r3-support-classification.json
+            final_destination: agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/retired-predecessors/lock-ddf438e5c71fb4f1328511bff508d3cde347d8c6200c7f3bc72892c4acaaf8c3/s10r3-support-classification.json
+          - source: study_docs/research/ductile-origami-warmstart/protocol/v1/locks/s10r3-stage1-bounded-cover-entry-lock.json
+            staging_destination: agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/retired-predecessors/.staging-S10R3-A46.5-G2/effective-lock.json
+            final_destination: agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/retired-predecessors/lock-ddf438e5c71fb4f1328511bff508d3cde347d8c6200c7f3bc72892c4acaaf8c3/effective-lock.json
+        delivery: false
       delivery: false
     durable_exact_paths:
       - study_docs/research/ductile-origami-warmstart/protocol/v1/locks/s10r3-stage1-bounded-cover-entry-lock.json
@@ -935,6 +993,7 @@ write_boundaries:
       - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s10r3-operational-blocker.json
       - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/gate-records/s10r3-s1-entry-go.json
       - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/lineage/s10r3-predecessor-lock-1cd089d3.json
+      - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/lineage/s10r3-predecessor-lock-ddf438e5.json
   delivery:
     - study_docs/research/ductile-origami-warmstart/protocol/v1/run_s10r3_entry.py
     - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r3-stage1-bounded-cover-entry-contract.yaml
@@ -963,6 +1022,7 @@ write_boundaries:
     - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s10r3-operational-blocker.json
     - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/gate-records/s10r3-s1-entry-go.json
     - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/lineage/s10r3-predecessor-lock-1cd089d3.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/lineage/s10r3-predecessor-lock-ddf438e5.json
     - study_docs/research/ductile-origami-warmstart/reports/staged/s10r3-stage1-bounded-cover-entry-report.md
     - study_docs/research/ductile-origami-warmstart-experiment-plan.md
     - study_docs/research/surrogate-dse-plan.md
@@ -1098,10 +1158,10 @@ implementation_binding_schema:
         const: 2
       lock_id:
         type: string
-        const: S10R3-A46-3-EFFECTIVE-LOCK-G2
+        const: S10R3-A46-5-EFFECTIVE-LOCK-G3
       generation_id:
         type: string
-        const: S10R3-A46.3-G2
+        const: S10R3-A46.5-G3
       checkpoint_id:
         type: string
         const: S10R3
@@ -1315,6 +1375,7 @@ implementation_binding_schema:
           - risk_tier
           - main_role
           - auditor_role
+          - a46_5_reviewer_a_role
           - implementer_role
           - verifier_role
           - repair_rounds_used
@@ -1332,6 +1393,9 @@ implementation_binding_schema:
           auditor_role:
             type: string
             const: /root/s10r3_a46_3_reviewer_a
+          a46_5_reviewer_a_role:
+            type: string
+            const: /root/s10r3_a46_5_reviewer_a
           implementer_role:
             type: string
             const: /root/s10r3_fresh_implementer
@@ -1348,10 +1412,10 @@ implementation_binding_schema:
             const: false
           fresh_role_threads_used:
             type: integer
-            const: 11
+            const: 13
           fresh_role_threads_maximum:
             type: integer
-            const: 11
+            const: 13
       boundary_binding:
         type: object
         additionalProperties: false
@@ -1389,11 +1453,12 @@ implementation_binding_schema:
         properties:
           schema_version: {const: 1}
           checkpoint_id: {const: S10R3}
-          generation_id: {const: S10R3-A46.3-G2}
-          predecessor_generation_id: {const: S10R3-A46.2-G1}
+          generation_id: {const: S10R3-A46.5-G3}
+          predecessor_generation_id: {const: S10R3-A46.3-G2}
           records:
             type: array
-            minItems: 2
+            minItems: 4
+            maxItems: 4
             uniqueItems: true
             items:
               $ref: "#/definitions/resource_lineage_record"
@@ -1497,7 +1562,7 @@ implementation_binding_schema:
           - capsule_manifest
           - terminal_journal
           - admission_lock_identity_digest
-          - manifest_repair
+          - role_provenance
           - durable_lineage_seal
           - diagnostic_only
           - admissible_for_current_execution
@@ -1505,42 +1570,40 @@ implementation_binding_schema:
           - cumulative_resource_lineage_reset
         properties:
           predecessor_generation_id:
-            const: S10R3-A46.2-G1
+            const: S10R3-A46.3-G2
           predecessor_lock:
             type: object
             additionalProperties: false
             required: [commit, raw_sha256, canonical_self_sha256]
             properties:
-              commit: {const: 9c7c024e56529a2f4cc7431eecb6730aea4a14cb}
-              raw_sha256: {const: 1cd089d3abe79d4918d965a2afa868421ec8d810644b8c7ede00f0ef05960301}
-              canonical_self_sha256: {const: ecd0b375b13c206ddf14ded566fdabbedd0aa071bd4181d5f9b24353c0a6e232}
+              commit: {const: d9e52829d39268b52a30dea9ad1ad985731fdbb3}
+              raw_sha256: {const: ddf438e5c71fb4f1328511bff508d3cde347d8c6200c7f3bc72892c4acaaf8c3}
+              canonical_self_sha256: {const: 61ec1e282f4da63e47072c7d99ef955c371d7ae251603c24074eadb4acaa0c21}
           transition_id:
-            const: S10R3-A46.3-G1-RETIREMENT
+            const: S10R3-A46.5-G2-RETIREMENT
           final_capsule_root:
-            const: agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/retired-predecessors/lock-1cd089d3abe79d4918d965a2afa868421ec8d810644b8c7ede00f0ef05960301
+            const: agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/retired-predecessors/lock-ddf438e5c71fb4f1328511bff508d3cde347d8c6200c7f3bc72892c4acaaf8c3
           capsule_manifest:
             allOf:
               - $ref: "#/definitions/file_record"
               - properties:
                   path:
-                    const: agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/retired-predecessors/lock-1cd089d3abe79d4918d965a2afa868421ec8d810644b8c7ede00f0ef05960301/predecessor-manifest.json
+                    const: agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/retired-predecessors/lock-ddf438e5c71fb4f1328511bff508d3cde347d8c6200c7f3bc72892c4acaaf8c3/predecessor-manifest.json
           terminal_journal:
             allOf:
               - $ref: "#/definitions/file_record"
               - properties:
                   path:
-                    const: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/execution-transition-journal.json
+                    const: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/execution-transition-g2-g3-journal.json
           admission_lock_identity_digest:
-            $ref: "#/definitions/sha256"
-          manifest_repair:
+            const: 92a595ea3fb9b8179fc793ad226b5c4f0184dbfea514bcfc2ce9b6bb64070065
+          role_provenance:
             const:
-              authority_amendment: A46.4
-              old_manifest_raw_sha256: 2efb10baab8eb61b08c1df4f8facb1f9df2aadbe07ad70965bdd8fe05432fea3
-              old_manifest_document_digest: bfd8edad9f00a94d5f23e427657f2f7adcbe5538636910232827249693d5ea46
-              corrected_manifest_raw_sha256: ea75138b72a25e565e7096ba7f7502d65f71ad1423b9396394bc34c6655d9102
-              corrected_manifest_document_digest: 90a6668e0375c834dbe0d3f8571b749089c0173d66cef548311cd6d40bddae96
-              replacement_count: 1
-              lineage_seal_bound: true
+              fresh_role_threads_used: 13
+              fresh_role_threads_maximum: 13
+              new_fresh_role_creation: forbidden
+              a46_5_reviewers: [/root/s10r3_a46_5_reviewer_a, /root/s10r3_a46_3_reviewer_a]
+              implementer_as_reviewer: forbidden
           durable_lineage_seal:
             type: object
             additionalProperties: false
@@ -1551,7 +1614,7 @@ implementation_binding_schema:
                   - $ref: "#/definitions/file_record"
                   - properties:
                       path:
-                        const: study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/lineage/s10r3-predecessor-lock-1cd089d3.json
+                        const: study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/lineage/s10r3-predecessor-lock-ddf438e5.json
               commit: {$ref: "#/definitions/git_oid"}
               blob: {$ref: "#/definitions/git_oid"}
           diagnostic_only: {const: true}
@@ -1842,7 +1905,7 @@ implementation_binding_schema:
           - transient_storage
         properties:
           lineage_id: {type: string, minLength: 1}
-          generation_id: {enum: [S10R3-A46.2-G1, S10R3-A46.3-G2]}
+          generation_id: {enum: [S10R3-A46.2-G1, S10R3-A46.3-G2, S10R3-A46.5-G3]}
           wall_time: {$ref: "#/definitions/resource_quantity"}
           cpu_time: {$ref: "#/definitions/resource_quantity"}
           gpu_time: {$ref: "#/definitions/resource_quantity"}
@@ -1864,7 +1927,7 @@ implementation_binding_schema:
     - every_file_record_matches_current_bytes_mode_size_hash_and_git_state
     - plan_b_hash_matches_frozen_plan_b_and_plan_a_revision_is_current
     - repair_rounds_used_equals_complete_append_only_provenance_count_at_lock_build_time
-    - fresh_role_threads_used_and_maximum_both_equal_user_ratified_11_and_no_new_thread_is_created
+    - fresh_role_threads_used_and_maximum_both_equal_user_ratified_13_and_no_new_thread_is_created
     - resource_lineage_records_are_append_only_predecessor_then_successor_with_known_unknown_boundaries_preserved
     - resource_lineage_unknown_is_never_coerced_to_zero_and_canonical_sha256_is_recomputed
     - boundary_hashes_use_canonical_json_of_corresponding_phase1_boundary
@@ -2073,6 +2136,525 @@ implementation_binding_schema:
     schema_and_canonicalization_unchanged: true
     whitelist_expansion_forbidden: true
     only_predeclared_binding_fields_may_be_filled: true
+
+mapping_failure_recovery:
+  authority_amendment: A46.5
+  decision_status: APPROVED_BY_USER_DELEGATED_REVIEWER_CONSENSUS
+  reviewers: [/root/s10r3_a46_5_reviewer_a, /root/s10r3_a46_3_reviewer_a]
+  implementer_as_reviewer: forbidden
+  final_positions: [AGREE, AGREE]
+  material_dissent: false
+  scientific_oracle_projection_expected_sha256: 185c6ae6c7b255c1330b4723b8a241ba111c0d23715bdb28149b024f78729e1e
+  predecessor_observation:
+    generation_id: S10R3-A46.3-G2
+    effective_lock_commit: d9e52829d39268b52a30dea9ad1ad985731fdbb3
+    effective_lock_raw_sha256: ddf438e5c71fb4f1328511bff508d3cde347d8c6200c7f3bc72892c4acaaf8c3
+    effective_lock_canonical_self_sha256: 61ec1e282f4da63e47072c7d99ef955c371d7ae251603c24074eadb4acaa0c21
+    terminal_ledger_digest: c31ec6a5d91e5d52af1e1f143126182e3511a391068c540f5831b00be0d4ca68
+    support_classification_document_digest: 3850b3794cbb77090275e71950dc74be3924babea96facb7bd281917bf5f484b
+    bounded_cover_selection_document_digest: 0064db13aa3a9b101f2821a27d62b22cee19d536f12c0c3e02f9639b806bb525
+    k: 19
+    c_greedy: 19
+    failing_slot_zero_based: 5
+    failing_config_hash: 4ffcecf6c21213303a3a040cbae66c228beeab9e6aec9a0096579444fc9a89e1
+    failure_semantics: kernel_writer_overflowed_resources_5_local_read_write_lds_schedule_conflict
+    request:
+      path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/formal-mapping/pass-a/request.json
+      raw_sha256: 19feffa5d021bc88f1b316c2edba576d603d6437c3f9b57335e927534605dbc5
+      size_bytes: 14876
+    attempt_01:
+      evidence_class: formal_fail_closed
+      completion_raw_sha256: f12afe2fe2e87c0e273309cf7c473f20909e107657a27c677773df6b5d77947a
+      completion_document_digest: 6ceffbc0e2ca5f86f673c10f521976a0402db3509b93bf5f4760bc2725e88941
+      stdout_sha256: dad9f72e91ad6e40fc830e7abd9c7286e9a836e57ca4b8348797b63be3ba06f8
+      stderr_sha256: d08339f167bb32a38ca53802b386179b6e72e8ff9ca63537ee8149d3749f41d3
+      returncode: 1
+    accidental_thread:
+      canonical_role_count_before: 11
+      actual_role_count_after_creation: 12
+      created_before_attempt_02: true
+      exact_wall_clock_time: UNKNOWN
+      interrupted_without_output_or_file_mutation: true
+      authoritative_use: forbidden
+    attempt_02:
+      evidence_class: diagnostic_only_due_to_stale_11_of_11_role_binding
+      completion_raw_sha256: f40eb720b4b36e83ad32fd0edd040755dd40fdccdcaa6f67dd4f8b7d8ff3b8bf
+      completion_document_digest: 695d3b0fd3612c3f422107da6780dd9892b5cda2d2bd90851cf414b77fccd117
+      stdout_sha256: dad9f72e91ad6e40fc830e7abd9c7286e9a836e57ca4b8348797b63be3ba06f8
+      stderr_sha256: d08339f167bb32a38ca53802b386179b6e72e8ff9ca63537ee8149d3749f41d3
+      returncode: 1
+      promotion_to_formal: forbidden
+    overwritten_shared_a_out:
+      path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/formal-mapping/pass-a/a.out
+      raw_sha256: ade2bf1583b5e75a276cae8d63c9a128ffae678d788f66fc53287bbf28d7a58c
+      size_bytes: 1752
+      evidence_class: diagnostic_append_only_defect_provenance
+    lifecycle:
+      execution_status: CHANGES_REQUIRED
+      scientific_outcome: not_evaluated
+      edge: null
+      formal_report: forbidden
+      empirical_reuse_by_successor: forbidden
+  successor_failure_oracle:
+    exact_attempt_count: 2
+    per_attempt_isolated_working_directory: true
+    append_only_artifacts: true
+    full_k_request_and_order_binding: true
+    required_equal_signature_fields: [pass_id, k, request_sha256, failing_slot_zero_based, failing_config_hash, error_class, error_code, returncode, pinned_source_identity, toolchain_identity]
+    equal_allowlisted_hard_failures_outcome: negative_S1_ENTRY_BLOCKED_FT_BLOCKED_MAPPING_edge_null
+    unequal_or_unknown_failure_outcome: CHANGES_REQUIRED_not_evaluated_edge_null
+    third_attempt: forbidden
+    remaining_config_scan_after_first_hard_failure: forbidden
+    replacement_proxy_or_k_plus_1: forbidden
+    pass_b_native_gpu_correctness_noise_after_complete_failure: forbidden
+    reproduction_requires_raw_request_attempts_completions_logs_and_failure_document: true
+    allowlisted_hard_failure:
+      failure_kind: required_mapping_code_generation
+      category: code_generation_nonzero
+      error_class: KernelWriterAssembly_overflowedResources
+      error_code: 5
+      worker_returncode: 23
+      process_kernel_source_result_error_code: -2
+      required_overflowed_resources: 5
+      every_kernel_failure_must_match_allowlist: true
+      any_other_exception_timeout_signal_returncode_error_class_or_error_code: CHANGES_REQUIRED_not_evaluated_edge_null
+    strict_decision_table:
+      attempt_01_success: mapping_success_no_attempt_02
+      attempt_01_allowlisted_failure_attempt_02_same_complete_signature: negative_S1_ENTRY_BLOCKED_FT_BLOCKED_MAPPING_edge_null
+      attempt_01_allowlisted_failure_attempt_02_success: CHANGES_REQUIRED_not_evaluated_edge_null
+      attempt_01_allowlisted_failure_attempt_02_different_signature: CHANGES_REQUIRED_not_evaluated_edge_null
+      attempt_01_success_attempt_02_present: CHANGES_REQUIRED_not_evaluated_edge_null
+      success_then_failure: CHANGES_REQUIRED_not_evaluated_edge_null
+      one_missing_partial_or_timeout: CHANGES_REQUIRED_not_evaluated_edge_null
+      nonallowlisted_failure_or_unknown_field: CHANGES_REQUIRED_not_evaluated_edge_null
+      request_order_source_toolchain_or_raw_artifact_mismatch: CHANGES_REQUIRED_not_evaluated_edge_null
+      third_attempt_or_extra_attempt_artifact: CHANGES_REQUIRED_evidence_invalid_edge_null
+    canonicalization:
+      serialization: canonical_json_utf8_sorted_keys_compact_no_nan_exact_types
+      document_digest: sha256_of_complete_document_with_document_digest_field_absent
+      failure_signature: sha256_of_complete_failure_object_with_failure_signature_field_absent
+      unknown_fields: forbidden
+    external_entry_schema_dispatch_required:
+      - mapping_worker_completion
+      - mapping_failure_batch
+    semantic_validation_invariants:
+      - attempt_directories_are_exactly_attempt_01_and_attempt_02_for_a_complete_failure_unit
+      - attempt_number_and_all_attempt_relative_paths_match_their_directory_and_pass_id
+      - completion_raw_files_and_worker_artifact_records_recompute_to_the_recorded_hashes_modes_and_sizes
+      - both_completions_have_returncode_23_and_each_stdout_has_one_canonical_allowlisted_failure_marker
+      - both_failure_objects_are_exactly_equal_including_slot_config_hash_kernel_names_and_all_allowlisted_codes
+      - request_is_full_k_and_config_hash_order_equals_the_prelocked_bounded_cover_selection_order
+      - failure_slot_is_in_range_and_failure_config_hash_equals_request_config_hash_at_that_slot
+      - request_worker_yaml_provenance_compiler_and_toolchain_bindings_equal_the_effective_lock
+      - mapping_failure_batch_attempts_equal_the_two_recomputed_completion_documents_and_raw_artifacts
+      - mapping_failure_batch_document_digest_and_nested_failure_signature_recompute_exactly
+      - any_success_failure_mixture_missing_attempt_timeout_nonallowlisted_code_or_identity_drift_is_changes_required_not_negative
+      - reproduction_reloads_the_raw_request_completions_stdout_stderr_worker_artifacts_and_failure_batch_without_using_the_decision_label
+    failure_signature_json_schema:
+      $schema: http://json-schema.org/draft-07/schema#
+      type: object
+      additionalProperties: false
+      required: [failure_kind, category, error_class, error_code, slot, config_hash, kernel_failures, failure_signature]
+      properties:
+        failure_kind: {const: required_mapping_code_generation}
+        category: {const: code_generation_nonzero}
+        error_class: {const: KernelWriterAssembly_overflowedResources}
+        error_code: {const: 5}
+        slot: {type: integer, minimum: 0, maximum: 19}
+        config_hash: {$ref: "#/definitions/sha256"}
+        kernel_failures:
+          type: array
+          minItems: 1
+          uniqueItems: true
+          items:
+            type: object
+            additionalProperties: false
+            required: [kernel_index, kernel_name, result_error_code, overflowed_resources]
+            properties:
+              kernel_index: {type: integer, minimum: 0}
+              kernel_name: {type: string, minLength: 1}
+              result_error_code: {const: -2}
+              overflowed_resources: {const: 5}
+        failure_signature: {$ref: "#/definitions/sha256"}
+      definitions:
+        sha256: {type: string, pattern: "^[0-9a-f]{64}$"}
+    attempt_completion_json_schema:
+      $schema: http://json-schema.org/draft-07/schema#
+      type: object
+      additionalProperties: false
+      required: [document_kind, schema_version, checkpoint_id, payload, document_digest]
+      properties:
+        document_kind: {const: mapping_worker_completion}
+        schema_version: {const: 1}
+        checkpoint_id: {const: S10R3}
+        payload:
+          type: object
+          additionalProperties: false
+          required: [attempt, returncode, cwd_path, stdout_path, stdout_sha256, stderr_path, stderr_sha256, worker_artifacts, wall_s, cpu_s, maximum_child_rss_kib]
+          properties:
+            attempt: {enum: [1, 2]}
+            returncode: {const: 23}
+            cwd_path: {type: string, pattern: "^agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/formal-mapping/pass-[ab]/attempt-0[12]$"}
+            stdout_path: {type: string, pattern: "^agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/formal-mapping/pass-[ab]/attempt-0[12]/worker\\.stdout$"}
+            stdout_sha256: {$ref: "#/definitions/sha256"}
+            stderr_path: {type: string, pattern: "^agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/formal-mapping/pass-[ab]/attempt-0[12]/worker\\.stderr$"}
+            stderr_sha256: {$ref: "#/definitions/sha256"}
+            worker_artifacts:
+              type: array
+              uniqueItems: true
+              items: {$ref: "#/definitions/file_record"}
+            wall_s: {type: number, minimum: 0}
+            cpu_s: {type: number, minimum: 0}
+            maximum_child_rss_kib: {type: number, minimum: 0}
+        document_digest: {$ref: "#/definitions/sha256"}
+      definitions:
+        sha256: {type: string, pattern: "^[0-9a-f]{64}$"}
+        file_record:
+          type: object
+          additionalProperties: false
+          required: [path, mode, size_bytes, sha256]
+          properties:
+            path: {type: string, minLength: 1}
+            mode: {type: string, pattern: "^[0-7]{4}$"}
+            size_bytes: {type: integer, minimum: 0}
+            sha256: {$ref: "#/definitions/sha256"}
+    failure_batch_json_schema:
+      $schema: http://json-schema.org/draft-07/schema#
+      type: object
+      additionalProperties: false
+      required: [document_kind, schema_version, checkpoint_id, payload, document_digest]
+      properties:
+        document_kind: {const: mapping_failure_batch}
+        schema_version: {const: 1}
+        checkpoint_id: {const: S10R3}
+        payload:
+          type: object
+          additionalProperties: false
+          required: [status, pass_id, k, complete, reproducible, attempt_count, request_path, request_sha256, config_hashes, failure, attempts, worker_binding]
+          properties:
+            status: {const: FT-BLOCKED-MAPPING}
+            pass_id: {enum: [A, B]}
+            k: {type: integer, minimum: 10, maximum: 20}
+            complete: {const: true}
+            reproducible: {const: true}
+            attempt_count: {const: 2}
+            request_path: {type: string, pattern: "^agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/formal-mapping/pass-[ab]/request\\.json$"}
+            request_sha256: {$ref: "#/definitions/sha256"}
+            config_hashes:
+              type: array
+              minItems: 10
+              maxItems: 20
+              uniqueItems: true
+              items: {$ref: "#/definitions/sha256"}
+            failure: {$ref: "#/definitions/failure_signature"}
+            attempts:
+              type: array
+              minItems: 2
+              maxItems: 2
+              uniqueItems: true
+              items: {$ref: "#/definitions/attempt_record"}
+            worker_binding:
+              type: object
+              additionalProperties: false
+              required: [worker_source_sha256, yaml_path, yaml_sha256, provenance_source_path, provenance_source_sha256, compiler]
+              properties:
+                worker_source_sha256: {$ref: "#/definitions/sha256"}
+                yaml_path: {type: string, minLength: 1}
+                yaml_sha256: {$ref: "#/definitions/sha256"}
+                provenance_source_path: {type: string, minLength: 1}
+                provenance_source_sha256: {$ref: "#/definitions/sha256"}
+                compiler: {const: /opt/rocm/bin/amdclang++}
+        document_digest: {$ref: "#/definitions/sha256"}
+      definitions:
+        sha256: {type: string, pattern: "^[0-9a-f]{64}$"}
+        file_record:
+          type: object
+          additionalProperties: false
+          required: [path, mode, size_bytes, sha256]
+          properties:
+            path: {type: string, minLength: 1}
+            mode: {type: string, pattern: "^[0-7]{4}$"}
+            size_bytes: {type: integer, minimum: 0}
+            sha256: {$ref: "#/definitions/sha256"}
+        kernel_failure:
+          type: object
+          additionalProperties: false
+          required: [kernel_index, kernel_name, result_error_code, overflowed_resources]
+          properties:
+            kernel_index: {type: integer, minimum: 0}
+            kernel_name: {type: string, minLength: 1}
+            result_error_code: {const: -2}
+            overflowed_resources: {const: 5}
+        failure_signature:
+          type: object
+          additionalProperties: false
+          required: [failure_kind, category, error_class, error_code, slot, config_hash, kernel_failures, failure_signature]
+          properties:
+            failure_kind: {const: required_mapping_code_generation}
+            category: {const: code_generation_nonzero}
+            error_class: {const: KernelWriterAssembly_overflowedResources}
+            error_code: {const: 5}
+            slot: {type: integer, minimum: 0, maximum: 19}
+            config_hash: {$ref: "#/definitions/sha256"}
+            kernel_failures: {type: array, minItems: 1, uniqueItems: true, items: {$ref: "#/definitions/kernel_failure"}}
+            failure_signature: {$ref: "#/definitions/sha256"}
+        attempt_record:
+          type: object
+          additionalProperties: false
+          required: [completion_digest, attempt, returncode, cwd_path, stdout_path, stdout_sha256, stderr_path, stderr_sha256, worker_artifacts]
+          properties:
+            completion_digest: {$ref: "#/definitions/sha256"}
+            attempt: {enum: [1, 2]}
+            returncode: {const: 23}
+            cwd_path: {type: string, minLength: 1}
+            stdout_path: {type: string, minLength: 1}
+            stdout_sha256: {$ref: "#/definitions/sha256"}
+            stderr_path: {type: string, minLength: 1}
+            stderr_sha256: {$ref: "#/definitions/sha256"}
+            worker_artifacts: {type: array, uniqueItems: true, items: {$ref: "#/definitions/file_record"}}
+
+g2_predecessor_capsule_lineage:
+  authority_amendment: A46.5
+  transition_id: S10R3-A46.5-G2-RETIREMENT
+  predecessor_generation_id: S10R3-A46.3-G2
+  successor_generation_id: S10R3-A46.5-G3
+  successor_lock_id: S10R3-A46-5-EFFECTIVE-LOCK-G3
+  scientific_oracle_projection_expected_sha256: 185c6ae6c7b255c1330b4723b8a241ba111c0d23715bdb28149b024f78729e1e
+  paths:
+    admission_lock: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/execution-transition.lock
+    journal: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/execution-transition-g2-g3-journal.json
+    journal_temp: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/execution-transition-g2-g3-journal.json.tmp
+    staging_capsule: agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/retired-predecessors/.staging-S10R3-A46.5-G2
+    final_capsule: agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/retired-predecessors/lock-ddf438e5c71fb4f1328511bff508d3cde347d8c6200c7f3bc72892c4acaaf8c3
+    capsule_manifest_name: predecessor-manifest.json
+    durable_lineage_seal: study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/lineage/s10r3-predecessor-lock-ddf438e5.json
+  admission_lock:
+    identity_digest: 92a595ea3fb9b8179fc793ad226b5c4f0184dbfea514bcfc2ce9b6bb64070065
+    st_dev: 66308
+    st_ino: 40004097
+    mode: "0600"
+    nlink: 1
+    size_bytes: 0
+    raw_sha256: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+    replacement_move_delete_or_content_change: forbidden
+  algorithms:
+    component_inventory: root_excluded_utf8_byte_sorted_v1
+    journal: previous_digest_chain_same_parent_fixed_temp_file_and_parent_fsync_atomic_replace_v1
+    relocation: same_device_renameat2_RENAME_NOREPLACE_only
+    manifest: full_entry_inventory_canonical_json_document_digest_v1
+    finalization: single_no_replace_staging_root_to_final_capsule
+    recovery: forward_only
+    rollback_copy_delete_quarantine: forbidden
+  ordered_components:
+    - {component_id: formal_cpu, source_root: agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/formal-cpu, staging_root: agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/retired-predecessors/.staging-S10R3-A46.5-G2/formal-cpu, final_root: agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/retired-predecessors/lock-ddf438e5c71fb4f1328511bff508d3cde347d8c6200c7f3bc72892c4acaaf8c3/formal-cpu, entry_count: 4119, regular_file_count: 3588, directory_count: 531, total_bytes: 792517820, inventory_sha256: 63662b2e04c854e214b594ae2bcfeb20b7653b44e40dcb3b43e4141d149ad448}
+    - {component_id: formal_mapping, source_root: agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/formal-mapping, staging_root: agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/retired-predecessors/.staging-S10R3-A46.5-G2/formal-mapping, final_root: agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/retired-predecessors/lock-ddf438e5c71fb4f1328511bff508d3cde347d8c6200c7f3bc72892c4acaaf8c3/formal-mapping, entry_count: 11, regular_file_count: 10, directory_count: 1, total_bytes: 30544, inventory_sha256: 8715bd1467aca8d66b75bbe0a2f00dfaeec41fdedb8929481f8cd6b84105e246}
+    - {component_id: support_classification, source_root: study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r3-support-classification.json, staging_root: agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/retired-predecessors/.staging-S10R3-A46.5-G2/s10r3-support-classification.json, final_root: agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/retired-predecessors/lock-ddf438e5c71fb4f1328511bff508d3cde347d8c6200c7f3bc72892c4acaaf8c3/s10r3-support-classification.json, entry_count: 1, regular_file_count: 1, directory_count: 0, total_bytes: 1517816, inventory_sha256: b5dcaf66af20e686de7bb216f7c0285f84cd56c0c4d8f7e93b92f6cf830713f2, raw_sha256: 5e5ca8a2fac2b2da89a225ff37b33c9d8e02109e04a3d0f7db999e47ec186a69, document_digest: 3850b3794cbb77090275e71950dc74be3924babea96facb7bd281917bf5f484b}
+    - {component_id: effective_lock, source_root: study_docs/research/ductile-origami-warmstart/protocol/v1/locks/s10r3-stage1-bounded-cover-entry-lock.json, staging_root: agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/retired-predecessors/.staging-S10R3-A46.5-G2/effective-lock.json, final_root: agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/retired-predecessors/lock-ddf438e5c71fb4f1328511bff508d3cde347d8c6200c7f3bc72892c4acaaf8c3/effective-lock.json, entry_count: 1, regular_file_count: 1, directory_count: 0, total_bytes: 28999, inventory_sha256: b401f31b212098f2e1c8a7e2e3214fc3104a65e5a2cc36362d2b6152c69d1b29, raw_sha256: ddf438e5c71fb4f1328511bff508d3cde347d8c6200c7f3bc72892c4acaaf8c3, canonical_self_sha256: 61ec1e282f4da63e47072c7d99ef955c371d7ae251603c24074eadb4acaa0c21}
+  aggregate_inventory: {entry_count: 4132, regular_file_count: 3600, directory_count: 532, total_bytes: 794095179}
+  required_lifecycle:
+    before_transition: quiescent_G2_CHANGES_REQUIRED_not_evaluated_edge_null
+    after_finalization: immutable_diagnostic_capsule_no_authorized_writer
+    successor_empirical_reuse: forbidden
+    canonical_sources_absent_before_G3_lock: true
+    new_journal_and_seal_required: true
+    historical_G1_capsule_journal_seal_immutable: true
+    full_G3_rerun_from_global_draw_0: true
+  role_provenance:
+    fresh_role_threads_used: 13
+    fresh_role_threads_maximum: 13
+    new_fresh_role_creation: forbidden
+    existing_roles_only: [/root, /root/s10r3_fresh_implementer, /root/s10r3_a46_3_reviewer_a, /root/s10r3_a46_5_reviewer_a, /root/s10r3_fresh_verifier]
+  canonicalization:
+    encoding: UTF-8
+    sort_keys: true
+    separators: compact
+    allow_nan: false
+    entry_order: component_order_then_logical_path_utf8_byte_order
+    path_form: repository_relative_forward_slash
+    exact_json_type_identity_required: true
+    self_digest_rule: document_digest_field_replaced_by_64_ascii_zeroes
+  semantic_validation_invariants:
+    - manifest_component_inventory_equals_the_exact_four_record_const_in_declared_order
+    - manifest_entries_are_unique_and_exactly_equal_fresh_recomputation_of_all_four_frozen_component_inventories
+    - manifest_entries_are_grouped_in_declared_component_order_then_sorted_by_logical_path_utf8_bytes
+    - every_manifest_logical_source_and_final_path_follows_its_exact_component_root_mapping_without_escape
+    - every_regular_file_has_nonnegative_size_and_exact_raw_sha256_and_every_directory_has_zero_size_and_null_sha256
+    - manifest_component_and_aggregate_counts_bytes_and_inventory_digests_equal_the_frozen_g2_inventory
+    - manifest_document_digest_recomputes_with_only_its_document_digest_field_zeroed
+    - journal_events_are_a_legal_prefix_of_prepared_then_four_ordered_relocations_then_staging_verified_then_finalized_or_that_prefix_plus_one_terminal_blocked_event
+    - journal_event_index_is_zero_based_contiguous_and_previous_event_digest_equals_prior_recomputed_event_digest
+    - prepared_previous_event_digest_is_null_and_all_later_previous_event_digests_are_nonnull
+    - every_journal_event_rechecks_the_exact_same_admission_lock_identity_digest
+    - finalized_journal_has_exactly_seven_events_with_four_components_once_in_frozen_order
+    - blocked_journal_ends_in_exactly_one_blocked_event_and_never_satisfies_finalized_or_successor_entry
+    - journal_document_digest_recomputes_with_only_its_document_digest_field_zeroed
+    - seal_authority_contract_path_commit_and_raw_sha256_equal_the_committed_a46_5_contract
+    - seal_capsule_manifest_exact_path_mode_size_raw_sha256_and_document_digest_equal_recomputed_final_capsule_manifest
+    - seal_terminal_journal_exact_path_mode_size_raw_sha256_document_digest_and_finalized_state_equal_recomputed_terminal_journal
+    - seal_admission_lock_identity_equals_the_frozen_inode_identity_and_every_journal_event_identity_digest
+    - seal_aggregate_inventory_equals_manifest_summary_and_exact_component_sum
+    - seal_document_digest_recomputes_with_only_its_document_digest_field_zeroed
+    - successor_lock_exactly_binds_capsule_manifest_journal_admission_lock_and_tracked_lineage_seal_path_hash_commit_blob
+  manifest_json_schema:
+    $schema: http://json-schema.org/draft-07/schema#
+    type: object
+    additionalProperties: false
+    required: [schema_version, document_kind, transition_id, inventory_algorithm, component_inventory, predecessor, entries, summary, later_evidence_absence, diagnostic_only, admissible_for_successor, document_digest]
+    properties:
+      schema_version: {const: 1}
+      document_kind: {const: predecessor_capsule_manifest}
+      transition_id: {const: S10R3-A46.5-G2-RETIREMENT}
+      inventory_algorithm: {const: root_excluded_utf8_byte_sorted_v1}
+      component_inventory:
+        const:
+          - {component_id: formal_cpu, source_root: agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/formal-cpu, final_root: agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/retired-predecessors/lock-ddf438e5c71fb4f1328511bff508d3cde347d8c6200c7f3bc72892c4acaaf8c3/formal-cpu, entry_count: 4119, regular_file_count: 3588, directory_count: 531, total_bytes: 792517820, inventory_sha256: 63662b2e04c854e214b594ae2bcfeb20b7653b44e40dcb3b43e4141d149ad448}
+          - {component_id: formal_mapping, source_root: agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/formal-mapping, final_root: agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/retired-predecessors/lock-ddf438e5c71fb4f1328511bff508d3cde347d8c6200c7f3bc72892c4acaaf8c3/formal-mapping, entry_count: 11, regular_file_count: 10, directory_count: 1, total_bytes: 30544, inventory_sha256: 8715bd1467aca8d66b75bbe0a2f00dfaeec41fdedb8929481f8cd6b84105e246}
+          - {component_id: support_classification, source_root: study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r3-support-classification.json, final_root: agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/retired-predecessors/lock-ddf438e5c71fb4f1328511bff508d3cde347d8c6200c7f3bc72892c4acaaf8c3/s10r3-support-classification.json, entry_count: 1, regular_file_count: 1, directory_count: 0, total_bytes: 1517816, inventory_sha256: b5dcaf66af20e686de7bb216f7c0285f84cd56c0c4d8f7e93b92f6cf830713f2, raw_sha256: 5e5ca8a2fac2b2da89a225ff37b33c9d8e02109e04a3d0f7db999e47ec186a69, document_digest: 3850b3794cbb77090275e71950dc74be3924babea96facb7bd281917bf5f484b}
+          - {component_id: effective_lock, source_root: study_docs/research/ductile-origami-warmstart/protocol/v1/locks/s10r3-stage1-bounded-cover-entry-lock.json, final_root: agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/retired-predecessors/lock-ddf438e5c71fb4f1328511bff508d3cde347d8c6200c7f3bc72892c4acaaf8c3/effective-lock.json, entry_count: 1, regular_file_count: 1, directory_count: 0, total_bytes: 28999, inventory_sha256: b401f31b212098f2e1c8a7e2e3214fc3104a65e5a2cc36362d2b6152c69d1b29, raw_sha256: ddf438e5c71fb4f1328511bff508d3cde347d8c6200c7f3bc72892c4acaaf8c3, canonical_self_sha256: 61ec1e282f4da63e47072c7d99ef955c371d7ae251603c24074eadb4acaa0c21}
+      predecessor:
+        const:
+          generation_id: S10R3-A46.3-G2
+          effective_lock_commit: d9e52829d39268b52a30dea9ad1ad985731fdbb3
+          effective_lock_raw_sha256: ddf438e5c71fb4f1328511bff508d3cde347d8c6200c7f3bc72892c4acaaf8c3
+          effective_lock_canonical_self_sha256: 61ec1e282f4da63e47072c7d99ef955c371d7ae251603c24074eadb4acaa0c21
+          execution_status: CHANGES_REQUIRED
+          scientific_outcome: not_evaluated
+          edge: null
+          attempt_01: formal_fail_closed
+          attempt_02: diagnostic_only
+      entries:
+        type: array
+        minItems: 4132
+        maxItems: 4132
+        uniqueItems: true
+        items:
+          type: object
+          additionalProperties: false
+          required: [component_id, logical_path, source_path, final_path, entry_type, mode, size_bytes, sha256]
+          properties:
+            component_id: {enum: [formal_cpu, formal_mapping, support_classification, effective_lock]}
+            logical_path: {type: string, minLength: 1}
+            source_path: {type: string, minLength: 1}
+            final_path: {type: string, minLength: 1}
+            entry_type: {enum: [directory, regular_file]}
+            mode: {type: string, pattern: "^[0-7]{4}$"}
+            size_bytes: {type: integer, minimum: 0}
+            sha256: {oneOf: [{$ref: "#/definitions/sha256"}, {type: "null"}]}
+          oneOf:
+            - properties:
+                entry_type: {const: regular_file}
+                sha256: {$ref: "#/definitions/sha256"}
+            - properties:
+                entry_type: {const: directory}
+                size_bytes: {const: 0}
+                sha256: {type: "null"}
+      summary:
+        const: {entry_count: 4132, regular_file_count: 3600, directory_count: 532, total_bytes: 794095179, symlink_count: 0, hardlink_count: 0}
+      later_evidence_absence:
+        const: {mapping_corpus: true, mapping_pass_a: true, mapping_pass_b: true, formal_native: true, formal_gpu: true, decision: true, reproduction: true, report: true, gate_record: true}
+      diagnostic_only: {const: true}
+      admissible_for_successor: {const: false}
+      document_digest: {$ref: "#/definitions/sha256"}
+    definitions:
+      sha256: {type: string, pattern: "^[0-9a-f]{64}$"}
+  journal_json_schema:
+    $schema: http://json-schema.org/draft-07/schema#
+    type: object
+    additionalProperties: false
+    required: [schema_version, document_kind, transition_id, admission_lock_identity_digest, state, events, document_digest]
+    properties:
+      schema_version: {const: 1}
+      document_kind: {const: execution_transition_journal}
+      transition_id: {const: S10R3-A46.5-G2-RETIREMENT}
+      admission_lock_identity_digest: {const: 92a595ea3fb9b8179fc793ad226b5c4f0184dbfea514bcfc2ce9b6bb64070065}
+      state: {enum: [PREPARED, MOVING, FINALIZED, BLOCKED_TRANSITION]}
+      events:
+        type: array
+        minItems: 1
+        maxItems: 7
+        uniqueItems: true
+        items:
+          type: object
+          additionalProperties: false
+          required: [event_index, event_type, state, component_id, admission_lock_identity_digest, previous_event_digest, event_digest]
+          properties:
+            event_index: {type: integer, minimum: 0, maximum: 6}
+            event_type: {enum: [prepared, component_relocated, staging_verified, finalized, blocked]}
+            state: {enum: [PREPARED, MOVING, FINALIZED, BLOCKED_TRANSITION]}
+            component_id: {oneOf: [{enum: [formal_cpu, formal_mapping, support_classification, effective_lock]}, {type: "null"}]}
+            admission_lock_identity_digest: {const: 92a595ea3fb9b8179fc793ad226b5c4f0184dbfea514bcfc2ce9b6bb64070065}
+            previous_event_digest: {oneOf: [{$ref: "#/definitions/sha256"}, {type: "null"}]}
+            event_digest: {$ref: "#/definitions/sha256"}
+      document_digest: {$ref: "#/definitions/sha256"}
+    oneOf:
+      - properties:
+          state: {const: PREPARED}
+          events: {minItems: 1, maxItems: 1}
+      - properties:
+          state: {const: MOVING}
+          events: {minItems: 2, maxItems: 6}
+      - properties:
+          state: {const: FINALIZED}
+          events: {minItems: 7, maxItems: 7}
+      - properties:
+          state: {const: BLOCKED_TRANSITION}
+          events: {minItems: 2, maxItems: 7}
+    definitions:
+      sha256: {type: string, pattern: "^[0-9a-f]{64}$"}
+  seal_json_schema:
+    $schema: http://json-schema.org/draft-07/schema#
+    type: object
+    additionalProperties: false
+    required: [schema_version, document_kind, checkpoint_id, authority_contract, transition_id, final_capsule_root, predecessor_lock, capsule_manifest, terminal_journal, admission_lock_identity, aggregate_inventory, lifecycle, scientific_oracle_projection_sha256, document_digest]
+    properties:
+      schema_version: {const: 1}
+      document_kind: {const: predecessor_lineage_seal}
+      checkpoint_id: {const: S10R3}
+      authority_contract:
+        type: object
+        additionalProperties: false
+        required: [path, commit, raw_sha256, scientific_oracle_projection_sha256]
+        properties:
+          path: {const: study_docs/research/ductile-origami-warmstart/protocol/v1/s10r3-stage1-bounded-cover-entry-contract.yaml}
+          commit: {$ref: "#/definitions/git_oid"}
+          raw_sha256: {$ref: "#/definitions/sha256"}
+          scientific_oracle_projection_sha256: {const: 185c6ae6c7b255c1330b4723b8a241ba111c0d23715bdb28149b024f78729e1e}
+      transition_id: {const: S10R3-A46.5-G2-RETIREMENT}
+      final_capsule_root: {const: agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/retired-predecessors/lock-ddf438e5c71fb4f1328511bff508d3cde347d8c6200c7f3bc72892c4acaaf8c3}
+      predecessor_lock:
+        const: {generation_id: S10R3-A46.3-G2, commit: d9e52829d39268b52a30dea9ad1ad985731fdbb3, raw_sha256: ddf438e5c71fb4f1328511bff508d3cde347d8c6200c7f3bc72892c4acaaf8c3, canonical_self_sha256: 61ec1e282f4da63e47072c7d99ef955c371d7ae251603c24074eadb4acaa0c21}
+      capsule_manifest:
+        type: object
+        additionalProperties: false
+        required: [path, mode, size_bytes, raw_sha256, document_digest]
+        properties:
+          path: {const: agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/retired-predecessors/lock-ddf438e5c71fb4f1328511bff508d3cde347d8c6200c7f3bc72892c4acaaf8c3/predecessor-manifest.json}
+          mode: {const: "0600"}
+          size_bytes: {type: integer, minimum: 1}
+          raw_sha256: {$ref: "#/definitions/sha256"}
+          document_digest: {$ref: "#/definitions/sha256"}
+      terminal_journal:
+        type: object
+        additionalProperties: false
+        required: [path, mode, size_bytes, raw_sha256, document_digest, state]
+        properties:
+          path: {const: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/execution-transition-g2-g3-journal.json}
+          mode: {const: "0600"}
+          size_bytes: {type: integer, minimum: 1}
+          raw_sha256: {$ref: "#/definitions/sha256"}
+          document_digest: {$ref: "#/definitions/sha256"}
+          state: {const: FINALIZED}
+      admission_lock_identity:
+        const: {lexical_path: agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/execution-transition.lock, resolved_path: /data1/perlee/rocm-libraries/agent_run/260730-ductile-factorized-guidance-s10r3-restart/gates/s10r3/execution-transition.lock, identity_digest: 92a595ea3fb9b8179fc793ad226b5c4f0184dbfea514bcfc2ce9b6bb64070065, st_dev: 66308, st_ino: 40004097, entry_type: regular_file, mode: "0600", nlink: 1, size_bytes: 0, raw_sha256: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855}
+      aggregate_inventory:
+        const: {entry_count: 4132, regular_file_count: 3600, directory_count: 532, total_bytes: 794095179}
+      lifecycle:
+        const: {execution_status: CHANGES_REQUIRED, scientific_outcome: not_evaluated, edge: null, diagnostic_only: true, admissible_for_successor: false, empirical_reuse: forbidden, attempt_02: diagnostic_only}
+      scientific_oracle_projection_sha256: {const: 185c6ae6c7b255c1330b4723b8a241ba111c0d23715bdb28149b024f78729e1e}
+      document_digest: {$ref: "#/definitions/sha256"}
+    definitions:
+      sha256: {type: string, pattern: "^[0-9a-f]{64}$"}
+      git_oid: {type: string, pattern: "^[0-9a-f]{40}$"}
 
 predecessor_capsule_lineage:
   authority_amendment: A46.3
@@ -2622,7 +3204,7 @@ predecessor_capsule_lineage:
           raw_sha256: {const: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855}
           identity_digest: {$ref: "#/definitions/sha256"}
   successor:
-    generation_id: S10R3-A46.3-G2
+    generation_id: S10R3-A46.5-G3
     canonical_active_paths_unchanged: true
     predecessor_empirical_reuse: forbidden
     first_phase: cpu_support_discovery_from_global_draw_zero

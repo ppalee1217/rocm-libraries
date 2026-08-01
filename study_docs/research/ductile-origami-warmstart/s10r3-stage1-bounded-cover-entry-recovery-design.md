@@ -3,10 +3,10 @@ checkpoint_id: S10R3
 title: Stage 1 bounded-cover entry recovery
 stage: 1
 design_status: approved
-execution_status: not_started
-checkpoint_state: DESIGN_APPROVED
+execution_status: repairing
+checkpoint_state: CHANGES_REQUIRED
 scientific_outcome: not_evaluated
-lock_state: absent
+lock_state: superseded_pending_A46_5_G3
 risk_tier: R3
 governance_baseline: 10b7d10ca7e197f7d93e1afd821805d4a65b1684
 scientific_gate: S10R3
@@ -27,6 +27,7 @@ entry_criteria:
   - committed_A45_S10R3_dual_seal_execution_alignment
   - committed_A46_reviewer_governed_uncapped_repair
   - committed_A46_1_uncapped_plan_revision_lifecycle
+  - committed_A46_5_reproducible_mapping_failure_recovery
   - exact_S10_source_and_actual_YAML_identity
   - no_S10R1_or_S10R2_empirical_reuse
   - durable_S10R3_contract_and_effective_lock_before_labels
@@ -664,6 +665,67 @@ manifest identity、pre-repair journal identity、`replacement_count=1`與
 manifest只作unsealed staging metadata provenance，並非predecessor scientific evidence。
 Successor generation仍是`S10R3-A46.3-G2`；scientific/oracle projection、fresh draw 0、
 hypothesis、workload、mapping、GPU、correctness、noise、outcome、claim與edge全部不變。
+
+### 9.7 2026-07-31 A46.5 reproducible mapping-failure recovery
+
+`S10R3-A46.3-G2`完成固定512 chunks／262,144 draws、fresh support classification及
+`K=C_greedy=19`selection。Mapping A在第六個required config、canonical hash
+`4ffcecf6…`進入pinned `processKernelSource`後，KernelWriter穩定回傳resource error 5：
+single-LDS-buffer條件下無法合法排程local read／write。Attempt 1是G2 lock下的formal
+fail-closed evidence。Implementer之後誤建立並立即中止一個fresh diagnostic child；
+它沒有輸出、修改或formal command，但使實際fresh role累計在attempt 2前由`11`成為
+`12`。因此byte-identical attempt 2只作diagnostic，不能補成G2的第二個formal attempt。
+
+G2固定為`CHANGES_REQUIRED / not_evaluated / edge=null`。它沒有mapping-pass、mapping
+corpus、decision、report或gate record；不得把attempt 2提升為formal，不得把G2 CPU、
+classification、selection、`K=19`或mapping bytes重用於successor。使用者明確指定的
+新建independent Reviewer A `/root/s10r3_a46_5_reviewer_a`與既有independent adversarial
+auditor `/root/s10r3_a46_3_reviewer_a`完成pre-seal cross-examination與evidence-backed
+final；兩者一致`AGREE`且沒有material dissent。下列contract-preserving修復因此生效。
+參與實作的implementer
+不計入reviewers。這個exact新role使
+實際fresh-role provenance由`12/12`成為`13/13`，除此之外不得再建立新role，且不需
+再次回user：
+
+1. worker failure必須輸出allowlisted structured signature，綁full-K request、固定
+   config order、failing slot／config hash、error class／code、return code、stdout／
+   stderr、pinned source/toolchain及cwd；
+2. attempt 1與attempt 2各用自己的append-only working directory，任何既有artifact
+   mismatch都fail closed；
+3. 只有同一required config在兩次full-K attempts產生完全一致categorical hard-failure
+   signature，才形成complete failed mapping unit、formal mapping-failure corpus及
+   `negative / S1_ENTRY_BLOCKED / FT-BLOCKED-MAPPING / edge=null` decision；
+4. 禁止attempt 3、replacement、proxy、K+1、掃描failing slot後的configs、Pass B、native
+   conformance、GPU correctness或noise；不同signature仍是`CHANGES_REQUIRED`；
+5. independent reproduction必須從raw request、兩個attempt directories、completion、
+   logs及failure document重建相同判定，不得只信decision label。
+
+Allowlist固定只接受`KernelWriterAssembly_overflowedResources`、error code `5`、worker
+return code `23`與`processKernelSource` result `-2`的完整structured signature。
+Failure→success、success→failure、signature不同、missing／partial／timeout、其他code、
+unknown field或raw identity drift一律是`CHANGES_REQUIRED / not_evaluated / edge=null`；
+不屬於formal negative。
+
+因上述修復改動bound implementation，既有invalidation matrix要求append-only successor
+lock與full rerun from first draw。A46.5新增平行而不覆寫A46.3/A46.4的lineage：
+
+- transition ID：`S10R3-A46.5-G2-RETIREMENT`；
+- G2 capsule root：以G2 effective-lock raw SHA-256
+  `ddf438e5c71fb4f1328511bff508d3cde347d8c6200c7f3bc72892c4acaaf8c3`命名；
+- ordered components仍是G2 `formal-cpu/`、`formal-mapping/`、canonical support
+  classification與canonical effective lock；
+- 使用新的journal與lineage seal path，舊G1 capsule、journal、seal保持逐位元不變；
+- successor generation：`S10R3-A46.5-G3`；lock ID：
+  `S10R3-A46-5-EFFECTIVE-LOCK-G3`；
+- G3 lock綁定新capsule／seal、完整resource carryover、實際`13/13`role provenance、
+  implementation／Plan-A／Plan-B identities及所有formal outcome absence；不得新建角色；
+- G3從global draw 0依原固定order完整重跑，G2 bytes只作immutable diagnostic provenance。
+
+本amendment只修復execution classification與lineage。Canonical scientific/oracle
+projection必須仍為
+`185c6ae6c7b255c1330b4723b8a241ba111c0d23715bdb28149b024f78729e1e`；source/YAML、
+search space、schedule、seeds語意、selector、mapping fields、correctness/noise、outcome
+matrix、claim、report、唯一S11 edge與no-push boundary全部不變。
 
 ## 10. Contract、seal 與formal evidence order
 

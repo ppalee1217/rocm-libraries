@@ -63,7 +63,7 @@ hypothesis、criterion、edge或timebox。
 | S10 | Stage 1 access／artifact／mapping／noise gate | `approved` | `completed` | `CHECKPOINT_COMPLETE` | `negative` | `effective (successor-003)` | [report](reports/staged/s10-stage1-entry-gate-report.md) |
 | S10R1 | Cancelled nominal-boundary recovery diagnostics | `approved` | `cancelled` | `BLOCKED` | `not_evaluated` | `superseded` | none (A32 operational record only) |
 | S10R2 | Stage 1 support-aware entry recovery | `approved` | `completed` | `CHECKPOINT_COMPLETE` | `inconclusive` | `effective` | [report](reports/staged/s10r2-stage1-support-aware-entry-report.md) |
-| S10R3 | Stage 1 bounded-cover entry recovery | `approved` | `repairing` | `CHANGES_REQUIRED` | `not_evaluated` | `superseded; A46.3 successor pending` | `reports/staged/s10r3-stage1-bounded-cover-entry-report.md` |
+| S10R3 | Stage 1 bounded-cover entry recovery | `approved` | `repairing` | `CHANGES_REQUIRED` | `not_evaluated` | `G2 superseded; A46.5 G3 successor pending` | `reports/staged/s10r3-stage1-bounded-cover-entry-report.md` |
 | S11 | Stage 1 model-only factorization／guidance lock | `approved` | `gated` | `DESIGN_APPROVED` | `not_activated` | `absent` | `reports/staged/s11-stage1-model-only-factorization-report.md` |
 | S12 | Stage 1 real-score／ranking／oracle audit | `approved` | `gated` | `DESIGN_APPROVED` | `not_evaluated` | `absent` | `reports/staged/s12-stage1-real-score-audit-report.md` |
 | S13 | Stage 1 actual Gen0 mechanism | `approved` | `gated` | `DESIGN_APPROVED` | `not_evaluated` | `absent` | `reports/gen0-factorization-mvp-report.md` |
@@ -506,6 +506,33 @@ completion；`skipped_by_gate`／`not_activated`不建立假report。
   closed，禁止rollback、重做relocation、quarantine或第二次replacement。
 - Lineage seal與successor lock必須綁old/new manifest repair identities。Scientific
   projection、`S10R3-A46.3-G2`、fresh draw 0、outcome matrix與唯一S11 edge均不變。
+
+### 6.14 2026-07-31 A46.5 reproducible mapping-failure recovery
+
+- G2完成固定512 chunks、fresh classification及`K=C_greedy=19`selection後，Mapping A
+  第六個required config `4ffcecf6…`在pinned KernelWriter重現resource error 5。
+  Attempt 1是formal fail-closed；誤建立並立即中止的fresh diagnostic thread在attempt 2
+  前把實際role usage變成`12/11`，所以attempt 2只保留為diagnostic。
+- G2固定為`CHANGES_REQUIRED / not_evaluated / edge=null`，沒有scientific report或
+  reusable outcome。使用者明確指定的新建independent Reviewer A
+  `/root/s10r3_a46_5_reviewer_a`與既有independent adversarial auditor
+  `/root/s10r3_a46_3_reviewer_a`完成pre-seal cross-examination與evidence-backed final；
+  兩者一致`AGREE`且沒有material dissent。Implementer不計入reviewers。這個exact新role
+  使累積provenance成為`13/13`，不得再新建role。Successor runner
+  只允許兩個獨立cwd、append-only的full-K attempts；同一required config與signature
+  連續兩次hard failure才建立正式mapping-failure corpus及
+  `negative / S1_ENTRY_BLOCKED / FT-BLOCKED-MAPPING / edge=null`。禁止第三次retry、
+  replacement、後續K掃描、Pass B及GPU。
+  Allowlist固定為`KernelWriterAssembly_overflowedResources`、error code `5`、worker
+  return code `23`與`processKernelSource` result `-2`；failure→success、success→failure、
+  signature不同、missing／partial／timeout、其他code或unknown field一律
+  `CHANGES_REQUIRED / not_evaluated / edge=null`。
+- A46.5以新的journal/capsule/seal forward-only退役G2四項component；舊G1 lineage逐
+  位元不變。Future generation固定`S10R3-A46.5-G3`，effective lock須綁G2 capsule、
+  實際`13/13`role provenance、resource lineage與outcome absence，並從draw 0完整重跑。
+- Scientific/oracle projection保持`185c6ae6…e1e`；search space、schedule、selector、
+  mapping/correctness/noise criteria、outcome matrix、claim、唯一S11 edge與no-push
+  boundary全部不變。
 
 ## 7. Downgrade review gate
 
