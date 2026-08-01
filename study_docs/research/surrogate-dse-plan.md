@@ -506,6 +506,24 @@ outcome absence，並從global draw 0完整重跑。Scientific/oracle projection
 source/YAML、search space、schedule、selector、mapping fields、correctness/noise、
 outcome matrix、claim、唯一S11 edge與不授權push全部不變。
 
+### 1.22 S10R3 G3 terminal result與closure
+
+2026-08-01，`S10R3-A46.5-G3`在post-audited effective lock下完成固定
+512 chunks／262,144 draws，得到114個distinct valid configs。Fresh tri-state
+classification保留205個`supported_witnessed`、9,819個`support_unobserved`與0個
+`support_proven_absent`；stochastic zero沒有被改寫成absence，`DepthU=1024`維持
+unobserved。Deterministic cover重建90個mandatory atoms、`C_greedy=K=19<=20`與
+non-gating `L_axis=18`。
+
+Mapping Pass A在slot 5、同一required config `4ffcecf6…`兩次完整重現A46.5 allowlist
+內的`KernelWriterAssembly_overflowedResources / error 5 / worker 23 /
+processKernelSource -2`signature。依outcome matrix，唯一合法結果是
+`negative / S1_ENTRY_BLOCKED / FT-BLOCKED-MAPPING / edge=null`；第三次retry、
+replacement、Pass B、native、GPU、correctness與noise均被frozen gate禁止。
+Independent reproduction與Plan-A-blind fresh verifier通過；exact-path closure commit及
+post-commit audit完成後，S10R3為`CHECKPOINT_COMPLETE`。本結果不改寫S10／S10R2，
+不建立positive gate record，也不啟動S11或授權push。
+
 ---
 
 ## 2. 研究問題與假設
@@ -927,9 +945,12 @@ S00 -> S10 [terminal negative; edge=null]
                                                      |
                                                      +-- terminal inconclusive; edge=null --> S10R3
                                                                                               |
-                                                                                              +-- S1_ENTRY_GO --> S11 -> S12 -> S13 -> S20 -> S30 -> S31
-                                                                                                                  \                         \
-                                                                                                                   +---- conditional ------> S40 -> S41
+                                                                                              +-- terminal negative; edge=null
+
+S11 -> S12 -> S13 -> S20 -> S30 -> S31
+  [not activated: no S10R3:S1_ENTRY_GO]
+                                  \
+                                   +---- conditional ------> S40 -> S41
 
 S10R1 [A32 cancelled; A33 identity-only tombstone; edge=null; reuse forbidden]
 ```
@@ -938,8 +959,9 @@ S00／S10到S10R2的關係不是scientific outgoing edge。S10R1是sibling diagn
 record，不是S10R2 parent或evidence source；A32固定它為
 `cancelled / not_evaluated / edge=null`，A33只退休physical artifacts。
 S10R2已terminalize為inconclusive/null；它對S10R3只提供immutable terminal
-provenance，不提供formal evidence或scientific edge。S10R3 negative、inconclusive、
-`CHANGES_REQUIRED`或未完成都不會啟動S11。
+provenance，不提供formal evidence或scientific edge。S10R3現已terminalize為
+`CHECKPOINT_COMPLETE / negative / S1_ENTRY_BLOCKED / FT-BLOCKED-MAPPING /
+edge=null`，因此沒有啟動S11。
 
 M00–M09移入`ductile-origami-warmstart/legacy/`，只保留歷史正文：
 
@@ -981,9 +1003,9 @@ M00–M09移入`ductile-origami-warmstart/legacy/`，只保留歷史正文：
   S10R2 technical verification為`PASS`，scientific outcome為
   `inconclusive / FT-INCONCLUSIVE / edge=null`；不覆寫S10 report，也不啟動S11。
 - S10R3唯一formal report是
-  `ductile-origami-warmstart/reports/staged/s10r3-stage1-bounded-cover-entry-report.md`；
-  現在不存在且不得建立placeholder。只有sealed formal execution後才依outcome
-  matrix建立。
+  [S10R3 Stage 1 bounded-cover entry report](ductile-origami-warmstart/reports/staged/s10r3-stage1-bounded-cover-entry-report.md)。
+  它記錄sealed G3 execution的
+  `negative / S1_ENTRY_BLOCKED / FT-BLOCKED-MAPPING / edge=null`，不啟動S11。
 - S40 data insufficiency是formal scientific negative，寫入`reports/staged/s40-stage4-activation-report.md`；不建立data-insufficiency blocker memo。
 - `skipped_by_gate`／`not_activated`由上游report與closeout記錄，不建立自己的report或commit。
 - Internal positive scientific gate使用compact durable record並在同tranche繼續；
@@ -1014,5 +1036,8 @@ post-audit完成後，S10R2 projection為`CHECKPOINT_COMPLETE`；因沒有positi
 S11維持`not_activated`。A38已核准S10R3 bounded-cover sibling；A46.2 predecessor
 execution在Mapping A harness repair gate停為`CHANGES_REQUIRED / not_evaluated`。
 A46.3保留該evidence為diagnostic capsule並要求successor從draw 0重跑；只有successor
-post-audited positive才啟動S11。
+post-audited positive才啟動S11。A46.5 G3 successor已完成fresh固定512-chunk schedule、
+`C_greedy=K=19`與兩次可重現required mapping failure，最終closeout為
+`negative / S1_ENTRY_BLOCKED / FT-BLOCKED-MAPPING / edge=null`。因此S11仍是
+`not_activated`，後續不得把G2 diagnostics或G3合法未到達的後段工作補升為edge。
 本authority不授權push。

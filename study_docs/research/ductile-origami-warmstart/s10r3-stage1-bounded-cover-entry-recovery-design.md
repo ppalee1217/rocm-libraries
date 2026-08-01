@@ -3,10 +3,10 @@ checkpoint_id: S10R3
 title: Stage 1 bounded-cover entry recovery
 stage: 1
 design_status: approved
-execution_status: repairing
-checkpoint_state: CHANGES_REQUIRED
-scientific_outcome: not_evaluated
-lock_state: superseded_pending_A46_5_G3
+execution_status: completed
+checkpoint_state: CHECKPOINT_COMPLETE
+scientific_outcome: negative
+lock_state: effective
 risk_tier: R3
 governance_baseline: 10b7d10ca7e197f7d93e1afd821805d4a65b1684
 scientific_gate: S10R3
@@ -726,6 +726,29 @@ projection必須仍為
 `185c6ae6c7b255c1330b4723b8a241ba111c0d23715bdb28149b024f78729e1e`；source/YAML、
 search space、schedule、seeds語意、selector、mapping fields、correctness/noise、outcome
 matrix、claim、report、唯一S11 edge與no-push boundary全部不變。
+
+### 9.8 2026-08-01 G3 terminal evidence與closeout projection
+
+`S10R3-A46.5-G3`在post-audited effective lock下從global draw 0完成固定
+512 chunks／262,144 draws：114個accepted occurrences皆為distinct configs，support
+classification為205個`supported_witnessed`、9,819個`support_unobserved`、0個
+`support_proven_absent`。Stochastic zero沒有被改寫成absence；`DepthU=1024`維持
+`support_unobserved`，actual YAML與baseline sampling semantics不變。
+
+Deterministic selector重建90個mandatory witnessed atoms、`C_greedy=19`、`K=19`、
+`L_axis=18`，合法通過`K<=20`。Mapping Pass A在slot 5、config
+`4ffcecf6c21213303a3a040cbae66c228beeab9e6aec9a0096579444fc9a89e1`
+連續兩次得到A46.5 allowlist內完全相同的
+`KernelWriterAssembly_overflowedResources / error 5 / worker 23 /
+processKernelSource -2`完整signature。Runner因此依預鎖matrix terminalize為
+`negative / S1_ENTRY_BLOCKED / FT-BLOCKED-MAPPING / edge=null`；Pass B、native、GPU、
+correctness與noise為`NOT_REACHED_BY_FROZEN_GATE`，禁止補跑。
+
+Independent reproduction與Plan-A-blind fresh verifier皆重建相同結果；B01–B21、
+S10R3-C01–C09通過，C10在staged closeout前為`PASS_PENDING_CLOSEOUT`。本exact-path
+closure commit與post-commit audit完成後，committed projection為
+`CHECKPOINT_COMPLETE / negative / S1_ENTRY_BLOCKED / FT-BLOCKED-MAPPING /
+edge=null`。S11維持`not_activated`；沒有positive gate record，也不授權push。
 
 ## 10. Contract、seal 與formal evidence order
 

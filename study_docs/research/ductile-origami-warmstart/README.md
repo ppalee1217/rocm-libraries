@@ -1,7 +1,7 @@
 # Ductile Factorized Guidance — Active Checkpoint Index
 
 > **Active-state authority banner：**本研究目前是
-> `pre_empirical / s10r3_design_approved`。S00是durable positive，
+> `post_empirical / s10r3_terminal_negative`。S00是durable positive，
 > S10是durable `negative / S1_ENTRY_BLOCKED / edge=null`，兩者不變。User-authorized
 > A32已在safe boundary取消S10R1：operational
 > `cancelled / BLOCKED`、scientific `not_evaluated`、`edge=null`，沒有scientific
@@ -21,7 +21,11 @@
 > 並把experiment-design user gate與非設計dual-agent預授權分開。A45以clean
 > execution baseline與雙seal lifecycle對齊current `.agents` workflow；S10R3保持
 > `not_evaluated / edge=null`、threads `9/9`，scientific plan不變。A46取消numeric
-> repair stop cap；reviewer支持的plan-preserving修復可直接進行。
+> repair stop cap；reviewer支持的plan-preserving修復可直接進行。A46.5 G3現已完成
+> fresh 512-chunk schedule、`C_greedy=K=19`與兩次可重現required mapping failure；
+> independent reproduction及fresh verification PASS，terminal closeout為
+> `CHECKPOINT_COMPLETE / negative / S1_ENTRY_BLOCKED / FT-BLOCKED-MAPPING /
+> edge=null`。S11沒有被啟動。
 >
 > **唯一 active 導航入口：**本 README。`legacy/` 內的 M00–M09 仍是 dead-protocol archive，不能提供 schema、hash、lock、registry、criterion、fixture、test或 PASS evidence；S00 positive只支持CPU-only evidence foundation。
 >
@@ -63,7 +67,7 @@ hypothesis、criterion、edge或timebox。
 | S10 | Stage 1 access／artifact／mapping／noise gate | `approved` | `completed` | `CHECKPOINT_COMPLETE` | `negative` | `effective (successor-003)` | [report](reports/staged/s10-stage1-entry-gate-report.md) |
 | S10R1 | Cancelled nominal-boundary recovery diagnostics | `approved` | `cancelled` | `BLOCKED` | `not_evaluated` | `superseded` | none (A32 operational record only) |
 | S10R2 | Stage 1 support-aware entry recovery | `approved` | `completed` | `CHECKPOINT_COMPLETE` | `inconclusive` | `effective` | [report](reports/staged/s10r2-stage1-support-aware-entry-report.md) |
-| S10R3 | Stage 1 bounded-cover entry recovery | `approved` | `repairing` | `CHANGES_REQUIRED` | `not_evaluated` | `G2 superseded; A46.5 G3 successor pending` | `reports/staged/s10r3-stage1-bounded-cover-entry-report.md` |
+| S10R3 | Stage 1 bounded-cover entry recovery | `approved` | `completed` | `CHECKPOINT_COMPLETE` | `negative` | `effective (S10R3-A46.5-G3)` | [report](reports/staged/s10r3-stage1-bounded-cover-entry-report.md) |
 | S11 | Stage 1 model-only factorization／guidance lock | `approved` | `gated` | `DESIGN_APPROVED` | `not_activated` | `absent` | `reports/staged/s11-stage1-model-only-factorization-report.md` |
 | S12 | Stage 1 real-score／ranking／oracle audit | `approved` | `gated` | `DESIGN_APPROVED` | `not_evaluated` | `absent` | `reports/staged/s12-stage1-real-score-audit-report.md` |
 | S13 | Stage 1 actual Gen0 mechanism | `approved` | `gated` | `DESIGN_APPROVED` | `not_evaluated` | `absent` | `reports/gen0-factorization-mvp-report.md` |
@@ -219,7 +223,9 @@ completion；`skipped_by_gate`／`not_activated`不建立假report。
 - S10R2唯一formal report是
   `reports/staged/s10r2-stage1-support-aware-entry-report.md`，且不覆寫S10 report。
 - S10R3唯一formal report是
-  `reports/staged/s10r3-stage1-bounded-cover-entry-report.md`；現在不得建立placeholder。
+  [S10R3 Stage 1 bounded-cover entry report](reports/staged/s10r3-stage1-bounded-cover-entry-report.md)。
+  它記錄sealed G3 formal execution的
+  `negative / S1_ENTRY_BLOCKED / FT-BLOCKED-MAPPING / edge=null`，不建立positive edge。
 - S40 data insufficiency是科學 negative，寫入 S40 formal report；不使用 data-insufficiency blocker memo。
 - Outcome evidence已開始後，即使中途失敗，也不得退回 blocker memo來避開 formal negative／inconclusive report。
 - S11／S12／S30／S40 internal positive使用各design指定compact gate record；若
@@ -533,6 +539,25 @@ completion；`skipped_by_gate`／`not_activated`不建立假report。
 - Scientific/oracle projection保持`185c6ae6…e1e`；search space、schedule、selector、
   mapping/correctness/noise criteria、outcome matrix、claim、唯一S11 edge與no-push
   boundary全部不變。
+
+### 6.15 2026-08-01 S10R3 G3 terminal closeout
+
+- G3 effective lock commit
+  `6ac2f8541d1eb819caae634d087b664d15bf098d`通過post-commit audit後，formal discovery
+  從draw 0完成global 32 chunks與15條conditional streams各32 chunks；總數固定為
+  512 chunks／262,144 draws，114個accepted occurrences皆為distinct configs。
+- Support classification為205個`supported_witnessed`、9,819個
+  `support_unobserved`、0個`support_proven_absent`。`DepthU=1024`仍是unobserved，
+  不是absence proof；actual YAML與baseline semantics未改。
+- Deterministic selector得到90個mandatory atoms、`C_greedy=K=19<=20`與
+  `L_axis=18`。Mapping Pass A在slot 5／config `4ffcecf6…`兩次完整重現A46.5
+  allowlisted resource-overflow signature，故依法terminalize為
+  `negative / S1_ENTRY_BLOCKED / FT-BLOCKED-MAPPING / edge=null`。Pass B、native、GPU、
+  correctness與noise為`NOT_REACHED_BY_FROZEN_GATE`。
+- Independent reproduction與Plan-A-blind fresh verifier皆PASS；B01–B21、C01–C09通過，
+  C10由exact staged audit、`CLOSEOUT_ACK`、local commit及post-commit audit完成。
+  S10R3 committed projection為`CHECKPOINT_COMPLETE`，S11維持`not_activated`，沒有
+  positive gate record或push。
 
 ## 7. Downgrade review gate
 

@@ -1,0 +1,1077 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "s10r3-entry.schema.json",
+  "title": "S10R3 strict document dispatch",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "document_kind",
+    "document"
+  ],
+  "properties": {
+    "document_kind": {
+      "type": "string",
+      "enum": [
+        "candidate_registry",
+        "size_registry",
+        "support_classification",
+        "mapping_corpus",
+        "sentinel_fixture",
+        "sentinel_conformance",
+        "correctness",
+        "noise",
+        "decision",
+        "positive_gate_record",
+        "operational_blocker",
+        "ledger_event",
+        "ledger_index",
+        "effective_lock",
+        "external_phase2_audit",
+        "s10r3_predecessor_capsule_manifest",
+        "s10r3_predecessor_transition_journal",
+        "s10r3_predecessor_lineage_seal",
+        "mapping_worker_completion",
+        "mapping_failure_batch",
+        "reproduction"
+      ]
+    },
+    "document": {
+      "type": "object"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "document_kind": {
+            "const": "candidate_registry"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "document": {
+            "$ref": "#/definitions/candidate_registry"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "document_kind": {
+            "const": "size_registry"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "document": {
+            "$ref": "#/definitions/size_registry"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "document_kind": {
+            "const": "sentinel_fixture"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "document": {
+            "$ref": "#/definitions/sentinel_fixture"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "document_kind": {
+            "enum": [
+              "support_classification",
+              "mapping_corpus",
+              "sentinel_conformance",
+              "correctness",
+              "noise",
+              "decision",
+              "positive_gate_record",
+              "ledger_event",
+              "ledger_index",
+              "reproduction"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "document": {
+            "$ref": "#/definitions/strict_identity_document"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "document_kind": {
+            "const": "mapping_worker_completion"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "document": {
+            "$ref": "#/definitions/mapping_worker_completion"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "document_kind": {
+            "const": "mapping_failure_batch"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "document": {
+            "$ref": "#/definitions/mapping_failure_batch"
+          }
+        }
+      }
+    }
+  ],
+  "definitions": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "mapping_file_record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "mode", "size_bytes", "sha256"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "mode": {"type": "string", "pattern": "^[0-7]{4}$"},
+        "size_bytes": {"type": "integer", "minimum": 0},
+        "sha256": {"$ref": "#/definitions/sha256"}
+      }
+    },
+    "mapping_kernel_failure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kernel_index",
+        "kernel_name",
+        "result_error_code",
+        "overflowed_resources"
+      ],
+      "properties": {
+        "kernel_index": {"type": "integer", "minimum": 0},
+        "kernel_name": {"type": "string", "minLength": 1},
+        "result_error_code": {"const": -2},
+        "overflowed_resources": {"const": 5}
+      }
+    },
+    "mapping_failure_signature": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "failure_kind",
+        "category",
+        "error_class",
+        "error_code",
+        "slot",
+        "config_hash",
+        "kernel_failures",
+        "failure_signature"
+      ],
+      "properties": {
+        "failure_kind": {"const": "required_mapping_code_generation"},
+        "category": {"const": "code_generation_nonzero"},
+        "error_class": {"const": "KernelWriterAssembly_overflowedResources"},
+        "error_code": {"const": 5},
+        "slot": {"type": "integer", "minimum": 0, "maximum": 19},
+        "config_hash": {"$ref": "#/definitions/sha256"},
+        "kernel_failures": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/definitions/mapping_kernel_failure"}
+        },
+        "failure_signature": {"$ref": "#/definitions/sha256"}
+      }
+    },
+    "mapping_attempt_record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "completion_digest",
+        "attempt",
+        "returncode",
+        "cwd_path",
+        "stdout_path",
+        "stdout_sha256",
+        "stderr_path",
+        "stderr_sha256",
+        "worker_artifacts"
+      ],
+      "properties": {
+        "completion_digest": {"$ref": "#/definitions/sha256"},
+        "attempt": {"enum": [1, 2]},
+        "returncode": {"const": 23},
+        "cwd_path": {"type": "string", "minLength": 1},
+        "stdout_path": {"type": "string", "minLength": 1},
+        "stdout_sha256": {"$ref": "#/definitions/sha256"},
+        "stderr_path": {"type": "string", "minLength": 1},
+        "stderr_sha256": {"$ref": "#/definitions/sha256"},
+        "worker_artifacts": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/definitions/mapping_file_record"}
+        }
+      }
+    },
+    "mapping_worker_completion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "document_kind",
+        "schema_version",
+        "checkpoint_id",
+        "payload",
+        "document_digest"
+      ],
+      "properties": {
+        "document_kind": {"const": "mapping_worker_completion"},
+        "schema_version": {"const": 1},
+        "checkpoint_id": {"const": "S10R3"},
+        "payload": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "attempt",
+            "returncode",
+            "cwd_path",
+            "stdout_path",
+            "stdout_sha256",
+            "stderr_path",
+            "stderr_sha256",
+            "worker_artifacts",
+            "wall_s",
+            "cpu_s",
+            "maximum_child_rss_kib"
+          ],
+          "properties": {
+            "attempt": {"enum": [1, 2]},
+            "returncode": {"const": 23},
+            "cwd_path": {"type": "string", "pattern": "^agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/formal-mapping/pass-[ab]/attempt-0[12]$"},
+            "stdout_path": {"type": "string", "pattern": "^agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/formal-mapping/pass-[ab]/attempt-0[12]/worker\\.stdout$"},
+            "stdout_sha256": {"$ref": "#/definitions/sha256"},
+            "stderr_path": {"type": "string", "pattern": "^agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/formal-mapping/pass-[ab]/attempt-0[12]/worker\\.stderr$"},
+            "stderr_sha256": {"$ref": "#/definitions/sha256"},
+            "worker_artifacts": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": {"$ref": "#/definitions/mapping_file_record"}
+            },
+            "wall_s": {"type": "number", "minimum": 0},
+            "cpu_s": {"type": "number", "minimum": 0},
+            "maximum_child_rss_kib": {"type": "number", "minimum": 0}
+          }
+        },
+        "document_digest": {"$ref": "#/definitions/sha256"}
+      }
+    },
+    "mapping_failure_batch": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "document_kind",
+        "schema_version",
+        "checkpoint_id",
+        "payload",
+        "document_digest"
+      ],
+      "properties": {
+        "document_kind": {"const": "mapping_failure_batch"},
+        "schema_version": {"const": 1},
+        "checkpoint_id": {"const": "S10R3"},
+        "payload": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "status",
+            "pass_id",
+            "k",
+            "complete",
+            "reproducible",
+            "attempt_count",
+            "request_path",
+            "request_sha256",
+            "config_hashes",
+            "failure",
+            "attempts",
+            "worker_binding"
+          ],
+          "properties": {
+            "status": {"const": "FT-BLOCKED-MAPPING"},
+            "pass_id": {"enum": ["A", "B"]},
+            "k": {"type": "integer", "minimum": 10, "maximum": 20},
+            "complete": {"const": true},
+            "reproducible": {"const": true},
+            "attempt_count": {"const": 2},
+            "request_path": {"type": "string", "pattern": "^agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/formal-mapping/pass-[ab]/request\\.json$"},
+            "request_sha256": {"$ref": "#/definitions/sha256"},
+            "config_hashes": {
+              "type": "array",
+              "minItems": 10,
+              "maxItems": 20,
+              "uniqueItems": true,
+              "items": {"$ref": "#/definitions/sha256"}
+            },
+            "failure": {"$ref": "#/definitions/mapping_failure_signature"},
+            "attempts": {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 2,
+              "uniqueItems": true,
+              "items": {"$ref": "#/definitions/mapping_attempt_record"}
+            },
+            "worker_binding": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "worker_source_sha256",
+                "yaml_path",
+                "yaml_sha256",
+                "provenance_source_path",
+                "provenance_source_sha256",
+                "compiler"
+              ],
+              "properties": {
+                "worker_source_sha256": {"$ref": "#/definitions/sha256"},
+                "yaml_path": {"type": "string", "minLength": 1},
+                "yaml_sha256": {"$ref": "#/definitions/sha256"},
+                "provenance_source_path": {"type": "string", "minLength": 1},
+                "provenance_source_sha256": {"$ref": "#/definitions/sha256"},
+                "compiler": {"const": "/opt/rocm/bin/amdclang++"}
+              }
+            }
+          }
+        },
+        "document_digest": {"$ref": "#/definitions/sha256"}
+      }
+    },
+    "strict_identity_document": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "document_kind",
+        "schema_version",
+        "checkpoint_id",
+        "contract_raw_sha256",
+        "effective_lock_raw_sha256",
+        "effective_lock_self_sha256",
+        "source_registry_fixture_digests",
+        "raw_children",
+        "upstream_identities",
+        "payload",
+        "document_digest"
+      ],
+      "properties": {
+        "document_kind": {
+          "type": "string"
+        },
+        "schema_version": {
+          "type": "integer",
+          "const": 1
+        },
+        "checkpoint_id": {
+          "type": "string",
+          "const": "S10R3"
+        },
+        "contract_raw_sha256": {
+          "$ref": "#/definitions/sha256"
+        },
+        "effective_lock_raw_sha256": {
+          "$ref": "#/definitions/sha256"
+        },
+        "effective_lock_self_sha256": {
+          "$ref": "#/definitions/sha256"
+        },
+        "source_registry_fixture_digests": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "candidate_registry",
+            "size_registry",
+            "sentinel_fixture"
+          ],
+          "properties": {
+            "candidate_registry": {
+              "$ref": "#/definitions/sha256"
+            },
+            "size_registry": {
+              "$ref": "#/definitions/sha256"
+            },
+            "sentinel_fixture": {
+              "$ref": "#/definitions/sha256"
+            }
+          }
+        },
+        "raw_children": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/file_record"
+          }
+        },
+        "upstream_identities": {
+          "type": "object",
+          "additionalProperties": false,
+          "patternProperties": {
+            "^[a-z0-9_]+$": {
+              "$ref": "#/definitions/sha256"
+            }
+          }
+        },
+        "payload": {
+          "$ref": "#/definitions/json_object"
+        },
+        "document_digest": {
+          "$ref": "#/definitions/sha256"
+        }
+      }
+    },
+    "file_record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "mode",
+        "size_bytes",
+        "sha256",
+        "git_state"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "mode": {
+          "type": "string",
+          "pattern": "^0[0-7]{3}$"
+        },
+        "size_bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "sha256": {
+          "$ref": "#/definitions/sha256"
+        },
+        "git_state": {
+          "type": "string"
+        }
+      }
+    },
+    "json_object": {
+      "type": "object",
+      "additionalProperties": false,
+      "patternProperties": {
+        "^.*$": {
+          "$ref": "#/definitions/json_value"
+        }
+      }
+    },
+    "json_value": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "integer"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/json_value"
+          }
+        },
+        {
+          "$ref": "#/definitions/json_object"
+        }
+      ]
+    },
+    "candidate_registry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "document_kind",
+        "schema_version",
+        "checkpoint_id",
+        "axis_count",
+        "axis_order",
+        "axes",
+        "row_count",
+        "always_required_structural_atoms",
+        "rows",
+        "pinned_identity_digests",
+        "registry_digest"
+      ],
+      "properties": {
+        "document_kind": {
+          "type": "string",
+          "const": "candidate_registry"
+        },
+        "schema_version": {
+          "type": "integer",
+          "const": 1
+        },
+        "checkpoint_id": {
+          "type": "string",
+          "const": "S10R3"
+        },
+        "axis_count": {
+          "type": "integer",
+          "const": 30
+        },
+        "axis_order": {
+          "type": "array",
+          "minItems": 30,
+          "maxItems": 30,
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          }
+        },
+        "axes": {
+          "type": "array",
+          "minItems": 30,
+          "maxItems": 30,
+          "items": {
+            "$ref": "#/definitions/axis"
+          }
+        },
+        "row_count": {
+          "type": "integer",
+          "minimum": 30
+        },
+        "always_required_structural_atoms": {
+          "type": "array",
+          "maxItems": 0
+        },
+        "rows": {
+          "type": "array",
+          "minItems": 30,
+          "items": {
+            "$ref": "#/definitions/atom"
+          }
+        },
+        "pinned_identity_digests": {
+          "$ref": "#/definitions/pinned_identity_digests"
+        },
+        "registry_digest": {
+          "$ref": "#/definitions/sha256"
+        }
+      }
+    },
+    "axis": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "axis_id",
+        "axis_index",
+        "axis_name",
+        "candidate_count",
+        "grouped",
+        "frozen_free",
+        "currently_weighted",
+        "yaml_pointer",
+        "candidate_atom_ids",
+        "candidates_sha256",
+        "probability"
+      ],
+      "properties": {
+        "axis_id": {
+          "type": "string"
+        },
+        "axis_index": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 29
+        },
+        "axis_name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "candidate_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "grouped": {
+          "type": "boolean"
+        },
+        "frozen_free": {
+          "type": "boolean"
+        },
+        "currently_weighted": {
+          "type": "boolean"
+        },
+        "yaml_pointer": {
+          "type": "string"
+        },
+        "candidate_atom_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          }
+        },
+        "candidates_sha256": {
+          "$ref": "#/definitions/sha256"
+        },
+        "probability": {
+          "$ref": "#/definitions/probability"
+        }
+      }
+    },
+    "probability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "values",
+        "raw_sha256"
+      ],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "uniform",
+            "actual_float32_weighted"
+          ]
+        },
+        "values": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "number"
+          }
+        },
+        "raw_sha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "atom": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "axis_id",
+        "atom_id",
+        "axis_index",
+        "axis_name",
+        "value_index",
+        "candidate_count",
+        "grouped",
+        "frozen_free",
+        "currently_weighted",
+        "typed_value",
+        "canonical_value_bytes",
+        "value_sha256",
+        "yaml_pointer",
+        "source_symbol_and_blob",
+        "actual_yaml",
+        "derivation_indices",
+        "nominal_role_flags",
+        "operational_semantic_category",
+        "deterministic_priority",
+        "conditional_eligibility"
+      ],
+      "properties": {
+        "axis_id": {
+          "type": "string"
+        },
+        "atom_id": {
+          "type": "string"
+        },
+        "axis_index": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 29
+        },
+        "axis_name": {
+          "type": "string"
+        },
+        "value_index": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "candidate_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "grouped": {
+          "type": "boolean"
+        },
+        "frozen_free": {
+          "type": "boolean"
+        },
+        "currently_weighted": {
+          "type": "boolean"
+        },
+        "typed_value": true,
+        "canonical_value_bytes": {
+          "type": "string",
+          "pattern": "^[0-9a-f]*$"
+        },
+        "value_sha256": {
+          "$ref": "#/definitions/sha256"
+        },
+        "yaml_pointer": {
+          "type": "string"
+        },
+        "source_symbol_and_blob": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "symbols",
+            "git_blob"
+          ],
+          "properties": {
+            "symbols": {
+              "type": "array",
+              "minItems": 2,
+              "uniqueItems": true,
+              "items": {
+                "type": "string"
+              }
+            },
+            "git_blob": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{40}$"
+            }
+          }
+        },
+        "actual_yaml": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "path",
+            "git_blob",
+            "sha256"
+          ],
+          "properties": {
+            "path": {
+              "type": "string"
+            },
+            "git_blob": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{40}$"
+            },
+            "sha256": {
+              "$ref": "#/definitions/sha256"
+            }
+          }
+        },
+        "derivation_indices": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "nominal_role_flags": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "prelocked_candidate",
+            "conditional_diagnostic",
+            "first",
+            "last",
+            "sentinel_minus_two",
+            "sentinel_minus_one"
+          ],
+          "properties": {
+            "prelocked_candidate": {
+              "type": "boolean"
+            },
+            "conditional_diagnostic": {
+              "type": "boolean"
+            },
+            "first": {
+              "type": "boolean"
+            },
+            "last": {
+              "type": "boolean"
+            },
+            "sentinel_minus_two": {
+              "type": "boolean"
+            },
+            "sentinel_minus_one": {
+              "type": "boolean"
+            }
+          }
+        },
+        "operational_semantic_category": {
+          "type": "string",
+          "enum": [
+            "grouped",
+            "weighted",
+            "residual"
+          ]
+        },
+        "deterministic_priority": {
+          "type": "array",
+          "minItems": 6,
+          "maxItems": 6
+        },
+        "conditional_eligibility": {
+          "type": "boolean"
+        }
+      }
+    },
+    "pinned_identity_digests": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ordered_axes_and_candidate_order",
+        "expanded_groups",
+        "search_space_map",
+        "baseline_weights"
+      ],
+      "properties": {
+        "ordered_axes_and_candidate_order": {
+          "$ref": "#/definitions/sha256"
+        },
+        "expanded_groups": {
+          "$ref": "#/definitions/sha256"
+        },
+        "search_space_map": {
+          "$ref": "#/definitions/sha256"
+        },
+        "baseline_weights": {
+          "$ref": "#/definitions/sha256"
+        }
+      }
+    },
+    "size_registry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "document_kind",
+        "schema_version",
+        "checkpoint_id",
+        "coordinate_order",
+        "dtype",
+        "layout",
+        "batched",
+        "soo",
+        "reduce_fn",
+        "n_elements_to_validate",
+        "sizes",
+        "registry_digest"
+      ],
+      "properties": {
+        "document_kind": {
+          "type": "string",
+          "const": "size_registry"
+        },
+        "schema_version": {
+          "type": "integer",
+          "const": 1
+        },
+        "checkpoint_id": {
+          "type": "string",
+          "const": "S10R3"
+        },
+        "coordinate_order": {
+          "type": "array",
+          "const": [
+            "M",
+            "N",
+            "batch",
+            "K"
+          ]
+        },
+        "dtype": {
+          "type": "string",
+          "const": "B/B/S"
+        },
+        "layout": {
+          "type": "string",
+          "const": "NN"
+        },
+        "batched": {
+          "type": "boolean",
+          "const": true
+        },
+        "soo": {
+          "type": "boolean",
+          "const": false
+        },
+        "reduce_fn": {
+          "type": "string",
+          "const": "max"
+        },
+        "n_elements_to_validate": {
+          "type": "integer",
+          "const": 128
+        },
+        "sizes": {
+          "type": "array",
+          "const": [
+            {
+              "size_id": "small",
+              "value": [
+                8,
+                8,
+                1,
+                128
+              ]
+            },
+            {
+              "size_id": "medium",
+              "value": [
+                256,
+                256,
+                1,
+                1024
+              ]
+            },
+            {
+              "size_id": "large",
+              "value": [
+                2304,
+                1024,
+                1,
+                214336
+              ]
+            }
+          ]
+        },
+        "registry_digest": {
+          "$ref": "#/definitions/sha256"
+        }
+      }
+    },
+    "sentinel_fixture": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "document_kind",
+        "schema_version",
+        "fixture_id",
+        "checkpoint_id",
+        "outcome_blind",
+        "derivation",
+        "input_header",
+        "problem",
+        "base_size_mapping",
+        "rows",
+        "validity_mask",
+        "expected_tie_sets",
+        "thresholds",
+        "guard_order",
+        "early_terminate",
+        "expected_guard_trace",
+        "expected_queues",
+        "fixture_digest"
+      ],
+      "properties": {
+        "document_kind": {
+          "type": "string",
+          "const": "sentinel_fixture"
+        },
+        "schema_version": {
+          "type": "integer",
+          "const": 1
+        },
+        "fixture_id": {
+          "type": "string",
+          "const": "s10r3-native-whole-cohort-v1"
+        },
+        "checkpoint_id": {
+          "type": "string",
+          "const": "S10R3"
+        },
+        "outcome_blind": {
+          "type": "boolean",
+          "const": true
+        },
+        "derivation": {
+          "type": "string"
+        },
+        "input_header": true,
+        "problem": true,
+        "base_size_mapping": true,
+        "rows": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4
+        },
+        "validity_mask": {
+          "type": "array",
+          "const": [
+            true,
+            false,
+            true,
+            true
+          ]
+        },
+        "expected_tie_sets": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1
+        },
+        "thresholds": {
+          "type": "array",
+          "const": [
+            0.0,
+            0.5,
+            1.0,
+            2.0
+          ]
+        },
+        "guard_order": {
+          "type": "array",
+          "minItems": 7,
+          "maxItems": 7,
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          }
+        },
+        "early_terminate": true,
+        "expected_guard_trace": true,
+        "expected_queues": true,
+        "fixture_digest": {
+          "$ref": "#/definitions/sha256"
+        }
+      }
+    }
+  }
+}

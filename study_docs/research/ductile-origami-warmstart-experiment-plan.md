@@ -4,7 +4,7 @@
 >
 > **研究 scope／claim authority：**[Formocast Factorized Gen0 Guidance Feasibility Study — Research Charter](surrogate-dse-plan.md)。
 >
-> **狀態：**`pre_empirical / s10r3_design_approved`。S00是durable
+> **狀態：**`post_empirical / s10r3_terminal_negative`。S00是durable
 > positive；S10是durable `negative / S1_ENTRY_BLOCKED / edge=null`，兩者不變。
 > User-authorized A32已在safe boundary取消S10R1：operational
 > `cancelled / BLOCKED`、scientific `not_evaluated`、`edge=null`，沒有scientific
@@ -27,7 +27,10 @@
 > `not_evaluated / edge=null`，threads `9/9`，scientific plan不變。A46再取消numeric
 > repair stop cap：repair cycle只作append-only provenance，由reviewer支持的
 > plan-preserving修復可直接進行。
-> 只有post-audited `S10R3:S1_ENTRY_GO`可啟動S11。
+> A46.5 G3已完成fresh固定schedule、bounded `K=19`與兩次可重現required mapping
+> failure，closeout為
+> `CHECKPOINT_COMPLETE / negative / S1_ENTRY_BLOCKED / FT-BLOCKED-MAPPING /
+> edge=null`。因沒有post-audited `S10R3:S1_ENTRY_GO`，S11維持未啟動。
 >
 > **Foundation provenance：**active `protocol/v1/`與S00 report是fresh foundation；退役M00內容仍不得作schema、hash、lock、registry、fixture、test或PASS evidence。S00只支持CPU-only evidence semantics，不是GPU／performance結果。
 >
@@ -75,7 +78,7 @@ orchestration／resource floor；它不能靜默修改上列scientific authority
 | S10 | Stage 1 access／artifact／mapping／noise gate | approved | completed | CHECKPOINT_COMPLETE | negative | effective (`successor-003`) | [design](ductile-origami-warmstart/s10-stage1-entry-access-mapping-gate-design.md) | [report](ductile-origami-warmstart/reports/staged/s10-stage1-entry-gate-report.md) |
 | S10R1 | Cancelled nominal-boundary recovery diagnostics | approved | cancelled | BLOCKED | not_evaluated | superseded | [design](ductile-origami-warmstart/s10r1-stage1-valid-support-entry-recovery-design.md) | none (A32 operational record only) |
 | S10R2 | Stage 1 support-aware entry recovery | approved | completed | CHECKPOINT_COMPLETE | inconclusive | effective | [design](ductile-origami-warmstart/s10r2-stage1-support-aware-entry-recovery-design.md) | [report](ductile-origami-warmstart/reports/staged/s10r2-stage1-support-aware-entry-report.md) |
-| S10R3 | Stage 1 bounded-cover entry recovery | approved | repairing | CHANGES_REQUIRED | not_evaluated | G2 superseded; A46.5 G3 successor pending | [design](ductile-origami-warmstart/s10r3-stage1-bounded-cover-entry-recovery-design.md) | `reports/staged/s10r3-stage1-bounded-cover-entry-report.md` |
+| S10R3 | Stage 1 bounded-cover entry recovery | approved | completed | CHECKPOINT_COMPLETE | negative | effective (`S10R3-A46.5-G3`) | [design](ductile-origami-warmstart/s10r3-stage1-bounded-cover-entry-recovery-design.md) | [report](ductile-origami-warmstart/reports/staged/s10r3-stage1-bounded-cover-entry-report.md) |
 | S11 | Stage 1 model-only factorization／guidance lock | approved | gated | DESIGN_APPROVED | not_activated | absent | [design](ductile-origami-warmstart/s11-stage1-model-only-factorization-design.md) | `reports/staged/s11-stage1-model-only-factorization-report.md` |
 | S12 | Stage 1 D5 real-score／oracle audit | approved | gated | DESIGN_APPROVED | not_evaluated | absent | [design](ductile-origami-warmstart/s12-stage1-real-score-ranking-oracle-audit-design.md) | `reports/staged/s12-stage1-real-score-audit-report.md` |
 | S13 | Stage 1 actual Gen0 mechanism | approved | gated | DESIGN_APPROVED | not_evaluated | absent | [design](ductile-origami-warmstart/s13-stage1-actual-gen0-mechanism-design.md) | `reports/gen0-factorization-mvp-report.md` |
@@ -748,6 +751,27 @@ Positive、negative與inconclusive都要durable outcome closure。Operational
   `185c6ae6c7b255c1330b4723b8a241ba111c0d23715bdb28149b024f78729e1e`，不改任何
   hypothesis、workload、seed schedule、selector、mapping/correctness/noise criterion、
   outcome matrix、claim、唯一S11 edge或no-push boundary。
+
+### 2026-08-01 S10R3 G3 terminal closeout projection
+
+- **Complete schedule：**G3在commit
+  `6ac2f8541d1eb819caae634d087b664d15bf098d`的post-audited effective lock下完成
+  global 32 chunks與15條conditional streams各32 chunks，共512 chunks／262,144 draws，
+  沒有early stop、extension、target replacement或old-row reuse。
+- **Support／selection：**114個distinct valid configs；205個witnessed atoms、9,819個
+  unobserved atoms、0個proven-absent atoms；90個mandatory witnessed atoms；
+  `C_greedy=19`、`K=19<=20`、`L_axis=18`。`DepthU=1024`仍是
+  `support_unobserved`，不是absence proof。
+- **Terminal mapping evidence：**Mapping Pass A在同一slot 5／config `4ffcecf6…`
+  兩次完整重現A46.5 allowlisted
+  `KernelWriterAssembly_overflowedResources / error 5 / worker 23 /
+  processKernelSource -2`signature，故依frozen matrix得到
+  `negative / S1_ENTRY_BLOCKED / FT-BLOCKED-MAPPING / edge=null`。Pass B、native、GPU、
+  correctness與noise依法未啟動，禁止第三次retry或replacement。
+- **Verification／closeout：**independent reproduction為PASS；fresh verifier的B01–B21與
+  S10R3-C01–C09均PASS，C10由exact staged audit、`CLOSEOUT_ACK`、local commit與
+  post-commit audit完成。本commit投影S10R3為`CHECKPOINT_COMPLETE`；因edge為null，
+  S11維持`not_activated`。沒有positive gate record或push。
 
 ### Downgrade user gates
 
@@ -1930,20 +1954,19 @@ frozen gate合法未啟動，不是可補跑的缺漏；S11沒有eligibility。
 S10R3 current state：
 
 - [x] A38 scientific/design authority approved
-- [x] A46.2 predecessor contract／plans／effective lock sealed and post-audited
-- [x] Predecessor support discovery、classification and bounded `K=19` completed
-- [x] Mapping A failed closed before corpus；`CHANGES_REQUIRED / not_evaluated`
-- [ ] A46.3 exact-five authority seal and post-commit audit
-- [ ] Plan-B R5／Plan-A R12 and pre-label adversarial audits
-- [ ] Predecessor capsule／durable lineage seal and successor effective lock
-- [ ] Fresh draw-0 support discovery and bounded exact-K decision
-- [ ] Mapping A/B and native helper conformance
-- [ ] GPU correctness and noise, if activated by prior gates
-- [ ] Fresh verification, terminal report, closeout commit and post-audit
+- [x] A46.5 G2 retirement、durable lineage seal與G3 effective lock post-audited
+- [x] Fresh draw-0 fixed support discovery：512 chunks／262,144 draws
+- [x] Fresh support classification：114 distinct valid configs
+- [x] Deterministic bounded cover：`C_greedy=K=19<=20`
+- [x] Mapping Pass A兩次完整重現allowlisted resource-overflow signature
+- [x] Terminal decision：`negative / S1_ENTRY_BLOCKED / FT-BLOCKED-MAPPING / edge=null`
+- [x] Pass B／native／GPU／correctness／noise：`NOT_REACHED_BY_FROZEN_GATE`
+- [x] Independent reproduction與fresh technical verification PASS
+- [x] Terminal report、exact-path closeout commit與post-commit audit
 
-Predecessor empirical bytes是immutable diagnostic lineage，不能滿足任何successor
-criterion。新的formal draw、Formocast或GPU label必須等待A46.3 successor lock取得
-post-audited `LOCKED_READY`。
+S10R3已依frozen matrix誠實closeout為negative/null。Predecessor G2 bytes仍是immutable
+diagnostic lineage，不是G3 evidence；G3也沒有對S11產生outgoing edge。S11、S12與S13
+維持未啟動，不能把合法未到達的後段工作當成可補跑缺漏。
 
 ---
 
