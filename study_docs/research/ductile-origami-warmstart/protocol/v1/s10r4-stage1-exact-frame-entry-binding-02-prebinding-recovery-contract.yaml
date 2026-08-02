@@ -1,0 +1,234 @@
+schema_version: 1
+document_kind: s10r4_binding_02_prebinding_operational_recovery_amendment
+checkpoint_id: S10R4
+amendment_id: S10R4-A49-B02-PREBINDING-RECOVERY-V1
+binding_id: binding-02
+execution_tranche: T-S10R4-B02
+payload_state: PREIMPLEMENTATION_OPERATIONAL_AMENDMENT
+scientific_outcome: not_evaluated
+edge: null
+
+authority:
+  recovery_authority:
+    path: study_docs/research/ductile-origami-warmstart/s10r4-binding-02-execution-recovery-authority.md
+    raw_sha256: 43102f3db93d3b8044738b1c25413ab3d01dda1da0b360baeeb549bc7f3fed0c
+    commit_oid: 37c846e5b0edc182fd84432da3596090dbf3ee15
+  binding_02_supplement:
+    path: study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4-stage1-exact-frame-entry-binding-02-contract.yaml
+    raw_sha256: 5954c1df2684efa19682ec361b978239843218ab9e21d410be13ef9801708e65
+    commit_oid: 0a814e476efffebfacaedb904afddbef38ddee15
+  effective_order:
+    - original_scientific_contract
+    - binding_02_recovery_authority
+    - binding_02_supplement
+    - this_prebinding_operational_recovery_amendment
+    - binding_02_effective_lock
+    - direct_evidence_and_terminal_report
+  conflict_rule: this_amendment_replaces_only_the_named_prebinding_ledger_and_resource_projection_operations
+  unknown_replacement: forbidden
+  scientific_field_replacement: forbidden
+
+trigger:
+  stage: prebinding_lock_constructor_dry_run
+  production_lock_created: false
+  formal_evidence_started: false
+  gpu_evidence_started: false
+  outcome_accessed: false
+  exact_error:
+    validator: jsonschema.Draft7Validator
+    document_location: governance_and_boundary.base.resources.implementation_reported
+    message: "Additional properties are not allowed ('historical_carried', 'peak_and_transient' were unexpected)"
+  cause:
+    implementation_behavior: implementer_report_resources_copied_verbatim_into_lock_projection
+    report_shape: strict_eight_top_level_keys
+    lock_schema_shape: strict_six_current_run_keys
+    classification: latent_governance_projection_defect
+    scientific_effect: none
+
+retired_prebinding_attempt:
+  path: agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame-binding-02/gates/s10r4/audit-verdict.json
+  state: retired_prebinding_diagnostic
+  seal_authority: false
+  ordinary_file: true
+  mode: 436
+  size_bytes: 105973
+  raw_sha256: f339de193d1b00550c8f2f81e23dcf221d1c6859426e10bf4ed0a72768fd6db7
+  canonical_sha256: df024ad9566c1986b36928f465f9f559c4251cf017c6bc4f7753e9dda211edae
+  ledger_digest: 3048df605626cf8e436417fac3e972e0e6a2efcf1f7b505c0616ef5bc444ebf1
+  event_digests:
+    - 508b3c2b31ca35e86bfa000defe1a5324d118231f0ee2b917304985d86db8042
+    - a00629c409ba7008e7b8631b13a245f38082c6682f76c06ed0a6229325e1282e
+    - a64e53cc28eb494e11f5be9f795a3b5aaaf4b2c154c70070da2fa110f5304b39
+    - 2907acfc982b7481f14caf20dff0d170ccd1ae7e14ab6543570619fff683b151
+  constructor_result: rejected_before_lock_write
+  preserve_in_place: true
+  move_delete_overwrite_append: forbidden
+  use_as_lock_input_or_pass_verdict: forbidden
+  event_or_digest_reuse: forbidden
+  read_allowed_only_for_retirement_identity_audit: true
+
+successor_prebinding_ledger:
+  path: agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame-binding-02/gates/s10r4/audit-verdict-r2.json
+  role: sole_active_binding_02_prebinding_seal_ledger_after_this_amendment
+  old_path_alias_fallback_or_mirror: forbidden
+  required_event_count: 4
+  phases:
+    - PHASE1_POST_COMMIT
+    - PLAN_A_PARITY
+    - IMPLEMENTATION_PARITY
+    - FINAL_PREBINDING
+  fresh_events_and_digests: required
+  retired_event_or_digest_reuse: forbidden
+  current_byte_remeasurement: required
+  required_diagnostic_bindings:
+    - retired_prebinding_attempt
+    - this_amendment
+    - amendment_precommit_reviews
+    - amendment_postcommit_audit
+    - append_only_adjudication
+  write_rule: atomic_no_overwrite_after_in_memory_constructor_preflight
+  constructor_rule: real_post_write_constructor_dry_run_must_pass_without_creating_production_lock
+
+resource_projection_repair:
+  selected_option: strict_projection_normalization
+  schema_extension: forbidden
+  permissive_filter_or_get: forbidden
+  report_resources_exact_keys:
+    - historical_carried
+    - observed_activity_end_utc
+    - observed_activity_lower_bound_seconds
+    - observed_activity_start_utc
+    - peak_and_transient
+    - storage_bytes_before_reports
+    - whole_role_cpu_seconds
+    - whole_role_wall_seconds
+  authoritative_historical_carry_source: committed_binding_02_supplement
+  report_historical_carry_must_equal_authoritative_source: true
+  report_historical_carry_exact_keys:
+    - observed_activity_lower_bound_seconds
+    - storage_bytes_before_final_reports
+    - whole_role_cpu_seconds
+    - whole_role_wall_seconds
+  peak_and_transient_exact_keys:
+    - current_prelabel_build_bytes
+    - peak_storage_bytes
+    - preliminary_rejected_attempt_artifacts_created
+    - repair_archive_bytes
+    - repair_archive_present
+    - transient_s10r4_pycache_bytes_removed
+    - transient_s10r4_pycache_file_count_removed
+  lock_projection_exact_keys:
+    - observed_activity_end_utc
+    - observed_activity_lower_bound_seconds
+    - observed_activity_start_utc
+    - storage_bytes_before_reports
+    - whole_role_cpu_seconds
+    - whole_role_wall_seconds
+  full_report_preservation: immutable_raw_bound_in_implementation_parity
+  constructor_and_remeasurement_must_share_one_helper: true
+  malformed_missing_extra_or_divergent_value: fail_closed
+
+implementation_authority:
+  plan_a_required_revision: 16
+  exact_paths_permitted_to_change:
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/run_s10r4_entry.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/schemas/s10r4-entry.schema.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/contract.py
+    - projects/hipblaslt/tensilelite/Tensile/Tests/unit/test_ductile_s10r4_entry.py
+  prelabel_durable_bytes_must_remain_unchanged: true
+  production_lock_must_remain_absent_until_successor_audit_pass: true
+  formal_gpu_outcome_work_before_lock_activation: forbidden
+  exact_phase2_path_count_unchanged: 19
+  scientific_implementation_paths_or_semantics_changed: false
+
+required_regressions:
+  - exact_eight_key_report_resource_validation_and_six_key_projection
+  - missing_extra_malformed_or_divergent_report_resource_rejected
+  - report_historical_carry_must_equal_committed_supplement
+  - peak_and_transient_exact_shape_and_types
+  - actual_binding_02_report_shape_reaches_schema_valid_prospective_lock
+  - extra_property_in_lock_implementation_reported_still_schema_rejected
+  - retired_ledger_rejected_as_active_lock_input
+  - successor_ledger_exact_path_and_fresh_event_identity
+  - validate_contract_verify_prelabel_h1_targeted_and_full_suite_pass
+
+scientific_invariants:
+  base_contract_raw_sha256: be79e72f0eb7d54a6457eb5fabcdcd64b67523966300597efb0877e0fb82eeba
+  source_pins_changed: false
+  predecessor_frame_changed: false
+  exact_114_row_population_changed: false
+  workloads_or_repeats_changed: false
+  thresholds_changed: false
+  outcome_matrix_changed: false
+  claim_boundary_changed: false
+  outgoing_edge_changed: false
+  s10r4_scientific_outcome_remains: not_evaluated
+  s10r4_edge_remains: null
+
+review_and_seal:
+  operational_reviewer_a_task_id: /root/s10r4_failure_reviewer_a
+  adversarial_auditor_task_id: /root/s10r4_adversarial_auditor
+  exact_paths:
+    operational_amendment: study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4-stage1-exact-frame-entry-binding-02-prebinding-recovery-contract.yaml
+    reviewer_a_precommit_verdict: agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame-binding-02/authority/prebinding-recovery-amendment-reviewer-a.json
+    adversarial_precommit_verdict: agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame-binding-02/authority/prebinding-recovery-amendment-adversarial.json
+    postcommit_audit: agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame-binding-02/authority/prebinding-recovery-amendment-postcommit-audit.json
+  precommit_verdict_required_from_each: PASS
+  exact_path_commit_only_this_amendment: true
+  postcommit_audit_required: true
+  push_authorized: false
+
+effective_lock_required_amendment_bindings:
+  amendment_record:
+    exact_path: study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4-stage1-exact-frame-entry-binding-02-prebinding-recovery-contract.yaml
+    required_fields:
+      - path
+      - git_mode
+      - blob_oid
+      - size_bytes
+      - raw_sha256
+      - canonical_sha256
+      - commit_oid
+    git_mode: "100644"
+    current_bytes_must_equal_committed_blob: true
+  precommit_verdict_records:
+    exact_paths:
+      - agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame-binding-02/authority/prebinding-recovery-amendment-reviewer-a.json
+      - agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame-binding-02/authority/prebinding-recovery-amendment-adversarial.json
+    required_count: 2
+    required_candidate_fields:
+      - path
+      - size_bytes
+      - raw_sha256
+      - canonical_sha256
+    candidate_identity_must_equal_amendment_record: true
+    verdict: PASS
+    findings: []
+  postcommit_audit_record:
+    exact_path: agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame-binding-02/authority/prebinding-recovery-amendment-postcommit-audit.json
+    required_fields:
+      - path
+      - size_bytes
+      - raw_sha256
+      - canonical_sha256
+      - audited_commit_oid
+      - verdict
+    verdict: AUDIT_PASS_PREBINDING_RECOVERY_AMENDMENT_POSTCOMMIT
+    audited_commit_must_equal_amendment_record_commit: true
+    exact_commit_diff_must_be_only_amendment_path: true
+  retired_ledger_record:
+    exact_path: agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame-binding-02/gates/s10r4/audit-verdict.json
+    required_state: retired_prebinding_diagnostic
+    seal_authority: false
+    identity_must_equal_retired_prebinding_attempt: true
+  successor_ledger_record:
+    exact_path: agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame-binding-02/gates/s10r4/audit-verdict-r2.json
+    required_event_count: 4
+    retired_event_or_digest_reuse: forbidden
+    fresh_current_byte_inputs: required
+  attachment_points:
+    composed_contract: required
+    final_prebinding_event: required
+    effective_lock: required
+    remeasurement: required
+  missing_alias_fallback_mirror_or_unbound_record: fail_closed
