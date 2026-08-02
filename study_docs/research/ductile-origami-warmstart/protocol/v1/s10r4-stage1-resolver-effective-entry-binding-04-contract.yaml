@@ -1,0 +1,2586 @@
+# Copyright Advanced Micro Devices, Inc., or its affiliates.
+# SPDX-License-Identifier: MIT
+
+schema_version: 1
+document_kind: s10r4_binding_04_standalone_frozen_contract
+contract_id: S10R4-A51-RESOLVER-EFFECTIVE-BINDING-04-V1
+checkpoint_id: S10R4
+binding_id: binding-04
+payload_state: PREIMPLEMENTATION_SCIENTIFIC_SEAL_PAYLOAD
+scientific_outcome: not_evaluated
+edge: null
+
+identity:
+  scientific_gate: S10R4
+  execution_tranche: T-S10R4-B04
+  closure_unit: CU-S10R4
+  risk_tier: R3
+  hypothesis_id: S10R4-H1E
+  authority_amendment: A51
+  authority_commit_oid: 119a1bfc4deffda59959ff51e43a1a6ae99f648e
+  authority_commit_parent_oid: 572f6b07be9cd5042bc90bc411c350c89c2fd684
+  contract_path: study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4-stage1-resolver-effective-entry-binding-04-contract.yaml
+  effective_lock_path: study_docs/research/ductile-origami-warmstart/protocol/v1/locks/s10r4-stage1-resolver-effective-entry-binding-04-lock.json
+  run_root: agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04
+  formal_report_path: study_docs/research/ductile-origami-warmstart/reports/staged/s10r4-stage1-exact-frame-entry-report.md
+  positive_gate_record_path: study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/gate-records/s10r4-s1-entry-go-exact-frame.json
+  operational_blocker_path: study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s10r4-operational-blocker.json
+
+authority:
+  order:
+    - research_charter
+    - experiment_plan
+    - checkpoint_index
+    - binding_04_recovery_authority_A51
+    - binding_04_scientific_design
+    - downstream_consumer_design
+    - this_machine_contract
+    - binding_04_effective_lock
+    - direct_evidence_and_terminal_report
+  committed_projection:
+    - id: research_charter
+      path: study_docs/research/surrogate-dse-plan.md
+      raw_sha256: 238bde99358999dc99adba262ccc1e42e335813dfca9cb6b18a91423e8703fbf
+    - id: experiment_plan
+      path: study_docs/research/ductile-origami-warmstart-experiment-plan.md
+      raw_sha256: 968968ffe5a6a2ae95e305ff1f10f2e63a367a275bb06f4d7d87e2be46694b03
+    - id: checkpoint_index
+      path: study_docs/research/ductile-origami-warmstart/README.md
+      raw_sha256: c5d9727e8df78a10acb2c63e7f843ec77eeadbc637d579f42e86eeb46b370842
+    - id: binding_04_recovery_authority_A51
+      path: study_docs/research/ductile-origami-warmstart/s10r4-binding-04-resolver-effective-recovery-authority.md
+      raw_sha256: 3a45406fc937f5d99c34695ff4c3e5fb9b8407860b284a70dfb41abe824d2ca6
+    - id: binding_04_scientific_design
+      path: study_docs/research/ductile-origami-warmstart/s10r4-stage1-resolver-effective-operational-entry-design.md
+      raw_sha256: 09feac977ea5d7cd002c6c3b30daf9f99f43a87fc9b861ba5c8d5ef22fe4a8ae
+    - id: downstream_consumer_design
+      path: study_docs/research/ductile-origami-warmstart/s11-stage1-model-only-factorization-design.md
+      raw_sha256: 817891f7e2fe8a1595134e68e195acfe82ed38df2e7f3223db65405ea9899ded
+  postcommit_audits:
+    - role: independent_reviewer_a
+      path: agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/authority/reviewer-a-authority-postcommit.json
+      raw_sha256: d32148d41730cc624a67f1b4c372bdbf79ce82ddce06a22a3add21b6433a80e4
+      verdict: AUDIT_PASS_AUTHORITY_POSTCOMMIT
+    - role: adversarial_reviewer_b
+      path: agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/authority/adversarial-authority-postcommit.json
+      raw_sha256: 02f96141770236a122b8d3c86f6c84783c0decf8ac0fda345141e6ad431c7c0e
+      verdict: AUDIT_PASS_AUTHORITY_POSTCOMMIT
+  user_authority:
+    implement_approved_plan: true
+    binding_04_design_auto_approved_at_2026_08_02T17_13_10Z: true
+    reviewer_supported_in_scope_work_auto_approved_until_experiment_complete: true
+    repair_numeric_stop_cap: null
+    design_change_still_requires_user_decision: true
+    push_authorized: false
+    dependency_install_authorized: false
+    container_lifecycle_mutation_authorized: false
+    unrelated_path_mutation_authorized: false
+  immutable_historical_bindings:
+    binding_02:
+      execution_status: cancelled
+      checkpoint_state: BLOCKED
+      scientific_outcome: not_evaluated
+      edge: null
+      lock_state: superseded
+      evidence_reuse: forbidden
+    binding_03:
+      execution_status: cancelled
+      checkpoint_state: BLOCKED
+      criterion_status: CHANGES_REQUIRED
+      scientific_outcome: not_evaluated
+      edge: null
+      lock_state: absent
+      lock_never_created: true
+      exact_seven_worktree_bytes: diagnostic_only_unstaged_do_not_reuse_as_evidence
+      evidence_reuse: forbidden
+
+workflow_authority:
+  entries:
+    - path: AGENTS.md
+      raw_sha256: d6f163de760751465c6615efd2b33bb549470f8f8d73ce70c62e6c01ee7f9d21
+    - path: CLAUDE.md
+      raw_sha256: c6e05fd3accc76182635bd9ee8ced07d44919f2b47a3ba75191d8f4bdb2f9abe
+    - path: .cursor/rules/hipblaslt-onboarding.mdc
+      raw_sha256: 8013f531a9667fefd2465d9b812981be582d8568cec90cafea46f42fd355171d
+    - path: .agents/skills/implement-verify-loop/SKILL.md
+      raw_sha256: 73d802bd7126077c37438e8c4fcb7179fb16f35bcab8fd414c83f4ba5217d783
+    - path: .agents/skills/implement-verify-loop/references/authority-gates.md
+      raw_sha256: b56a1cd42dea0b6308726b89eafbeb4a9534b8811313703b8e24f4249d6dd3f6
+    - path: .agents/skills/implement-verify-loop/references/planning-contract.md
+      raw_sha256: 4cb35eda1cb9b162b28d40474af6d0d602942d0e4ee31655bbccb4246ac689f6
+    - path: .agents/skills/design-discussion/SKILL.md
+      raw_sha256: 1d46673ef14b4c2eaf1bcbb8a074ec853ad401a8fe16bcaa461ec8fe9f196dbc
+  drift_policy: fail_closed_on_S10R4_overlap_otherwise_record_notify_continue
+  current_bytes_may_be_uncommitted: true
+
+scientific_oracle:
+  objective: fixed_114_raw_occurrences_yield_bounded_reproducible_distinct_effective_state_stage1_entry_fixture
+  population_denominator:
+    unit: accepted_raw_occurrence
+    count: 114
+    raw_config_hash_count: 114
+    multiplicity_preserved_after_collision: true
+    resolver_or_codegen_attrition_removes_denominator_mass: false
+  selection_unit: unique_stable_operational_identity
+  positive_criterion: S1_ENTRY_GO_EXACT_FRAME
+  only_allowed_positive_edge: S10R4:S1_ENTRY_GO_EXACT_FRAME->S11
+  positive_claim: fixed_114_occurrence_raw_frame_through_pinned_resolver_and_normal_kernelwriter_yields_reproducible_bounded_distinct_effective_state_stage1_entry_fixture
+  does_not_claim:
+    - literal_raw_realization
+    - raw_to_effective_injectivity
+    - value_level_causal_effect
+    - general_valid_or_operational_support
+    - codegen_survival_probability
+    - Formocast_ranking_accuracy
+    - factorization_efficacy
+    - prior_mass_or_Gen0_improvement
+    - production_readiness
+  no_outcome_dependent_optional_stopping: true
+  no_prefix_credit_from_earlier_bindings: true
+  no_remaining_row_access_before_locked_ready: true
+
+canonical_outcomes:
+  priority_order:
+    - CHANGES_REQUIRED_not_evaluated
+    - BLOCKED_not_evaluated
+    - negative_mapping
+    - negative_correctness
+    - inconclusive_noise
+    - positive
+  matrix:
+    CHANGES_REQUIRED_not_evaluated:
+      live_run_state: CHANGES_REQUIRED
+      committed_projection_state: CONTRACT_OR_LOCK_STATE_UNCHANGED
+      criterion_status: CHANGES_REQUIRED
+      scientific_outcome: not_evaluated
+      failure_id: null
+      edge: null
+      triggers:
+        - identity_schema_source_lineage_unknown_or_drift
+        - projection_or_consumer_mismatch
+        - partial_missing_exception_timeout_signal_or_pass_discordance
+        - same_resolver_group_mixed_terminal_or_codegen_semantics
+        - mapping_guess_drift_partial_unknown_or_nonunique_attempt_branch
+    BLOCKED_not_evaluated:
+      live_run_state: BLOCKED
+      committed_projection_state: BLOCKED_ONLY_AFTER_APPROVED_TERMINAL_BLOCKER_COMMIT
+      criterion_status: not_evaluated
+      scientific_outcome: not_evaluated
+      failure_id: null
+      edge: null
+      triggers:
+        - material_external_safety_capacity_preservation_or_authority_boundary
+    negative_mapping:
+      decision_projection_state: DECISION_SEALED_PENDING_VERIFICATION
+      verifier_projection_state: VERIFIED_PENDING_CLOSEOUT
+      postcommit_projection_state: CHECKPOINT_COMPLETE
+      criterion_status: S1_ENTRY_BLOCKED
+      scientific_outcome: negative
+      failure_id: FT-BLOCKED-MAPPING
+      edge: null
+      triggers:
+        - complete_census_unique_stable_operational_survivors_less_than_10
+        - complete_census_realized_mandatory_atom_cover_impossible
+        - complete_census_C_greedy_greater_than_20
+        - exact_same_prelocked_allowlisted_native_mapping_failure_in_exactly_two_complete_attempts
+    negative_correctness:
+      decision_projection_state: DECISION_SEALED_PENDING_VERIFICATION
+      verifier_projection_state: VERIFIED_PENDING_CLOSEOUT
+      postcommit_projection_state: CHECKPOINT_COMPLETE
+      criterion_status: S1_ENTRY_BLOCKED
+      scientific_outcome: negative
+      failure_id: FT-BLOCKED-CORRECTNESS
+      edge: null
+      triggers:
+        - frozen_reproducible_correctness_failure
+    inconclusive_noise:
+      decision_projection_state: DECISION_SEALED_PENDING_VERIFICATION
+      verifier_projection_state: VERIFIED_PENDING_CLOSEOUT
+      postcommit_projection_state: CHECKPOINT_COMPLETE
+      criterion_status: null
+      scientific_outcome: inconclusive
+      failure_id: FT-INCONCLUSIVE
+      edge: null
+      triggers:
+        - complete_63_cell_noise_panel_fails_frozen_noise_criterion
+    positive:
+      decision_projection_state: DECISION_SEALED_PENDING_VERIFICATION
+      verifier_projection_state: VERIFIED_PENDING_CLOSEOUT
+      postcommit_projection_state: CHECKPOINT_COMPLETE
+      criterion_status: S1_ENTRY_GO_EXACT_FRAME
+      scientific_outcome: positive
+      failure_id: null
+      decision_edge: null
+      verifier_qualified_edge: null
+      verifier_qualified_edge_token: S10R4:S1_ENTRY_GO_EXACT_FRAME
+      postcommit_edge: S10R4:S1_ENTRY_GO_EXACT_FRAME->S11
+      triggers:
+        - criteria_C01_through_C13_all_PASS
+        - complete_census_A_114_and_B_114
+        - complete_mapping_A_and_B_exact_3K_each
+        - native_conformance_PASS
+        - all_9_correctness_cells_PASS
+        - all_63_noise_cells_complete_and_noise_aggregate_PASS
+        - independent_reproduction_PASS
+        - fresh_verifier_PASS
+  lifecycle_state_machine:
+    allowed_live_run_states:
+      - MACHINE_CONTRACT_DRAFTING
+      - MACHINE_CONTRACT_COMMITTED
+      - PRELABEL_IMPLEMENTATION
+      - PRELABEL_AUDIT
+      - LOCK_COMMITTED_PENDING_ACTIVATION
+      - LOCKED_READY
+      - FORMAL_EVIDENCE
+      - DECISION_SEALED_PENDING_VERIFICATION
+      - VERIFIED_PENDING_CLOSEOUT
+      - COMPLETE
+      - CHANGES_REQUIRED
+      - BLOCKED
+    allowed_committed_projection_states:
+      - BINDING_04_DESIGN_AUTHORITY_COMMITTED_POSTAUDITED
+      - BINDING_04_CONTRACT_COMMITTED_POSTAUDITED
+      - BINDING_04_LOCKED_READY
+      - BINDING_04_VERIFIED_PENDING_CLOSEOUT
+      - BINDING_04_CHECKPOINT_COMPLETE
+      - BINDING_04_BLOCKED
+    transitions:
+      - from: BINDING_04_DESIGN_AUTHORITY_COMMITTED_POSTAUDITED
+        to: BINDING_04_CONTRACT_COMMITTED_POSTAUDITED
+        requires: contract_exact_commit_and_postcommit_audit_PASS
+      - from: BINDING_04_CONTRACT_COMMITTED_POSTAUDITED
+        to: BINDING_04_LOCKED_READY
+        requires: phase2_exact_commit_postcommit_audit_ordinal_0_activation_and_LOCKED_READY_audit_PASS
+      - from: BINDING_04_LOCKED_READY
+        to: BINDING_04_VERIFIED_PENDING_CLOSEOUT
+        requires: canonical_decision_reproduction_and_fresh_verifier_PASS
+      - from: BINDING_04_VERIFIED_PENDING_CLOSEOUT
+        to: BINDING_04_CHECKPOINT_COMPLETE
+        requires: truthful_terminal_closeout_exact_commit_and_postcommit_audit_PASS
+    scientific_decision_never_sets_CHECKPOINT_COMPLETE: true
+    fresh_verifier_never_sets_CHECKPOINT_COMPLETE: true
+    nonnull_edge_before_terminal_postcommit_audit: forbidden
+    missing_or_skipped_required_positive_gate: CHANGES_REQUIRED_not_evaluated_edge_null
+
+acceptance_criteria:
+  - id: S10R4-B04-C01
+    description: committed_A51_contract_effective_lock_activation_and_prelabel_firewall
+    direct_evidence: [authority_commit_and_audits, contract_commit_and_audit, effective_lock_and_LOCKED_READY_audit]
+  - id: S10R4-B04-C02
+    description: source_derived_closed_resolver_schema_and_fault_closed_synthetic_regressions
+    direct_evidence: [s10r4_resolver_schema, prelabel_source_and_synthetic_records]
+  - id: S10R4-B04-C03
+    description: exact_raw_frame_replay_and_114_occurrence_denominator_integrity
+    direct_evidence: [s10r4_exact_frame_registry, predecessor_raw_inventory_digest]
+  - id: S10R4-B04-C04
+    description: complete_ordered_114x2_resolver_and_codegen_census_with_atomic_children
+    direct_evidence: [228_terminal_children, s10r4_codegen_classification]
+  - id: S10R4-B04-C05
+    description: complete_114_resolver_partition_collision_multiplicity_and_stable_classification
+    direct_evidence: [s10r4_codegen_classification]
+  - id: S10R4-B04-C06
+    description: deterministic_realized_atom_cover_and_exact_K_selection_with_10_le_K_le_20
+    direct_evidence: [s10r4_operational_selection]
+  - id: S10R4-B04-C07
+    description: exact_3K_mapping_A_B_lineage_parity_or_unique_frozen_terminal_mapping_branch
+    direct_evidence: [s10r4_mapping_corpus]
+  - id: S10R4-B04-C08
+    description: pinned_native_formocast_runtime_queue_conformance_and_fault_substitution
+    direct_evidence: [s10r4_sentinel_conformance]
+  - id: S10R4-B04-C09
+    description: selected_free_gfx942_environment_identity_and_phase_continuity
+    direct_evidence: [s10r4_environment]
+  - id: S10R4-B04-C10
+    description: nine_anchor_size_generate_compile_smoke_nonzero_correctness_cells_or_frozen_negative
+    direct_evidence: [s10r4_smoke_correctness]
+  - id: S10R4-B04-C11
+    description: complete_9_group_by_7_repeat_noise_panel_and_frozen_aggregate_threshold
+    direct_evidence: [s10r4_noise_pilot]
+  - id: S10R4-B04-C12
+    description: unique_machine_decision_and_deterministic_independent_reproduction
+    direct_evidence: [s10r4_decision, independent_reproduction_record]
+  - id: S10R4-B04-C13
+    description: still_fresh_verifier_recomputes_headline_result_from_direct_evidence
+    direct_evidence: [fresh_verifier_verdict]
+  - id: S10R4-B04-C14
+    description: truthful_terminal_report_parent_projection_closeout_commit_and_postcommit_audit
+    direct_evidence: [formal_report, closeout_ack, terminal_commit, postcommit_audit]
+
+source_and_input_identity:
+  ductile:
+    ref: refs/remotes/origin/ductile_integration
+    commit_oid: 5d6bdc8a6438b5fc73a96e46a907f9a5b1cd4e39
+    subtree_path: projects/hipblaslt/tensilelite/Tensile
+    subtree_tree_oid: a60ed94f10563aa133782bb0ccc801aba279b843
+  geko:
+    ref: refs/remotes/origin/users/pkamd/geko_pr
+    commit_oid: d32abacfd13579d1f523f035b7a10b0734c4ac47
+  actual_yaml:
+    path: study_docs/research/ductile-origami-warmstart/protocol/v1/inputs/s10-generated.yaml
+    mode: "100644"
+    size_bytes: 3214702
+    raw_sha256: faaa8d65014d30646b89b84a8e97395539e52684bef7b430804a63ef2d64cf36
+    git_blob_oid: 1fd6fb401d5baebd4665a87e9002687fb725b2dc
+  exact_frame_registry:
+    path: study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r4-exact-frame-registry.json
+    mode: "100644"
+    size_bytes: 900981
+    raw_sha256: 29c52bffec04bb93ae608f8ddbc36d07928f26e8cd2286b9f62882b0f5d3d97d
+    git_blob_oid: 3a149b93ff21bc2db5efacdfbd9cebe46d6f9742
+  candidate_atom_registry:
+    path: study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r3-candidate-atom-registry.json
+    mode: "100644"
+    size_bytes: 14841135
+    raw_sha256: 24ae3c4eb0a358f3e9ed6f3f5d2cdeae54bdf151bdb347d68d2ede879613d010
+    git_blob_oid: ec6bc2f5cdda15d4ddec9310d3956af3dbdd93ea
+    full_document_canonical_sha256: 94eac53847d314b5f5fd487712d64f7c94cbfd07f091c128d7650f939801c500
+    internal_registry_digest: ab366af55ed1b0666bda8535f91c60b1712692e5e2ed3b83b11b69f3590cad9c
+    source_checkpoint: S10R3
+    permitted_reuse: immutable_candidate_universe_identity_only
+    top_level_required_exact_keys: [schema_version, checkpoint_id, document_kind, pinned_identity_digests, axis_order, axis_count, row_count, axes, rows, always_required_structural_atoms, registry_digest]
+    top_level_exact_values: {schema_version: 1, checkpoint_id: S10R3, document_kind: candidate_registry, axis_count: 30, row_count: 10024, registry_digest: ab366af55ed1b0666bda8535f91c60b1712692e5e2ed3b83b11b69f3590cad9c}
+    exact_counts: {axis_count: 30, row_count: 10024}
+    canonicalization:
+      encoding: UTF-8
+      recursive_key_sort: true
+      separators: comma_colon
+      ensure_ascii: false
+      finite_numbers_only: true
+      type_preserving: true
+      internal_digest_input: exact_document_with_top_level_registry_digest_property_removed
+      full_document_canonical_input: exact_document_with_recorded_registry_digest_present
+      raw_sha256_input: exact_14841135_file_bytes_including_terminal_LF
+      relationships:
+        SHA256_internal_digest_input: ab366af55ed1b0666bda8535f91c60b1712692e5e2ed3b83b11b69f3590cad9c
+        recorded_registry_digest_equals_SHA256_internal_digest_input: true
+        SHA256_full_document_canonical_input: 94eac53847d314b5f5fd487712d64f7c94cbfd07f091c128d7650f939801c500
+        SHA256_exact_raw_file_bytes: 24ae3c4eb0a358f3e9ed6f3f5d2cdeae54bdf151bdb347d68d2ede879613d010
+    top_level_property_schemas:
+      pinned_identity_digests: candidate_registry_pinned_identity_digests_record
+      axis_order: candidate_registry_axis_order_array
+      axes: candidate_registry_axis_array
+      rows: candidate_registry_row_array
+      always_required_structural_atoms: candidate_registry_structural_atom_array
+    candidate_registry_pinned_identity_digests_record:
+      required_exact_keys: [baseline_weights, expanded_groups, ordered_axes_and_candidate_order, search_space_map]
+      every_value_type: lowercase_sha256_hex
+      additional_properties: false
+    candidate_registry_axis_order_array:
+      type: array_length_30_of_unique_nonempty_strings
+      equality: exact_axis_name_sequence_from_axes
+    candidate_registry_axis_array:
+      type: array_length_30
+      items: candidate_registry_axis_record
+      order: axis_index_ascending_exact_0_through_29
+    candidate_registry_row_array:
+      type: array_length_10024
+      items: candidate_registry_row_record
+      order: [axis_index_ascending, value_index_ascending]
+    candidate_registry_structural_atom_array:
+      type: unique_array_of_nonempty_strings
+      exact_value: []
+    row_required_exact_keys: [actual_yaml, atom_id, axis_id, axis_index, axis_name, candidate_count, canonical_value_bytes, conditional_eligibility, currently_weighted, derivation_indices, deterministic_priority, frozen_free, grouped, nominal_role_flags, operational_semantic_category, source_symbol_and_blob, typed_value, value_index, value_sha256, yaml_pointer]
+    candidate_registry_row_record:
+      required_exact_keys: [actual_yaml, atom_id, axis_id, axis_index, axis_name, candidate_count, canonical_value_bytes, conditional_eligibility, currently_weighted, derivation_indices, deterministic_priority, frozen_free, grouped, nominal_role_flags, operational_semantic_category, source_symbol_and_blob, typed_value, value_index, value_sha256, yaml_pointer]
+      property_types:
+        actual_yaml: candidate_registry_actual_yaml_record
+        atom_id: nonempty_string
+        axis_id: nonempty_string
+        axis_index: integer_0_through_29
+        axis_name: nonempty_string
+        candidate_count: positive_integer
+        canonical_value_bytes: lowercase_even_length_hex_string
+        conditional_eligibility: boolean
+        currently_weighted: boolean
+        derivation_indices: integer_array_length_0_3_4_or_5
+        deterministic_priority: candidate_registry_priority_tuple
+        frozen_free: boolean
+        grouped: boolean
+        nominal_role_flags: candidate_registry_nominal_role_record
+        operational_semantic_category: enum_grouped_or_residual
+        source_symbol_and_blob: candidate_registry_source_record
+        typed_value: boolean_or_integer_or_finite_typed_object
+        value_index: nonnegative_integer
+        value_sha256: lowercase_sha256_hex
+        yaml_pointer: absolute_JSON_pointer_string
+      relational_rules:
+        - axis_id_axis_name_axis_index_candidate_count_currently_weighted_frozen_free_grouped_equal_parent_axis_record
+        - atom_id_equals_parent_axis_candidate_atom_ids_at_value_index
+        - value_sha256_equals_SHA256_of_UTF8_bytes_decoded_from_canonical_value_bytes
+        - canonical_value_bytes_equals_hex_of_candidate_registry_canonical_JSON_typed_value
+      additional_properties: false
+    row_nested_records:
+      actual_yaml_required_exact_keys: [git_blob, path, sha256]
+      source_symbol_and_blob_required_exact_keys: [git_blob, symbols]
+      nominal_role_flags_required_exact_keys: [conditional_diagnostic, first, last, prelocked_candidate, sentinel_minus_one, sentinel_minus_two]
+      deterministic_priority_type: fixed_length_6_typed_array
+    candidate_registry_actual_yaml_record:
+      required_exact_keys: [git_blob, path, sha256]
+      exact_values: {git_blob: 1fd6fb401d5baebd4665a87e9002687fb725b2dc, path: study_docs/research/ductile-origami-warmstart/protocol/v1/inputs/s10-generated.yaml, sha256: faaa8d65014d30646b89b84a8e97395539e52684bef7b430804a63ef2d64cf36}
+      additional_properties: false
+    candidate_registry_source_record:
+      required_exact_keys: [git_blob, symbols]
+      git_blob_type: lowercase_git_oid_hex
+      symbols_type: nonempty_unique_array_of_nonempty_strings_preserve_exact_stored_order
+      additional_properties: false
+    candidate_registry_nominal_role_record:
+      required_exact_keys: [conditional_diagnostic, first, last, prelocked_candidate, sentinel_minus_one, sentinel_minus_two]
+      every_value_type: boolean
+      additional_properties: false
+    candidate_registry_priority_tuple:
+      type: fixed_length_6_array
+      item_types_in_order: [integer, integer, integer, integer, integer, string]
+    axis_required_exact_keys: [axis_id, axis_index, axis_name, candidate_atom_ids, candidate_count, candidates_sha256, currently_weighted, frozen_free, grouped, probability, yaml_pointer]
+    candidate_registry_axis_record:
+      required_exact_keys: [axis_id, axis_index, axis_name, candidate_atom_ids, candidate_count, candidates_sha256, currently_weighted, frozen_free, grouped, probability, yaml_pointer]
+      property_types:
+        axis_id: nonempty_string
+        axis_index: integer_0_through_29
+        axis_name: nonempty_string
+        candidate_atom_ids: nonempty_unique_array_of_nonempty_strings
+        candidate_count: positive_integer
+        candidates_sha256: lowercase_sha256_hex
+        currently_weighted: boolean
+        frozen_free: boolean
+        grouped: boolean
+        probability: candidate_registry_probability_record
+        yaml_pointer: absolute_JSON_pointer_string
+      relational_rules:
+        - candidate_count_equals_candidate_atom_ids_length
+        - candidate_atom_ids_order_equals_child_row_value_index_order
+        - candidates_sha256_equals_SHA256_of_candidate_registry_canonical_JSON_of_exact_ordered_typed_value_array_for_child_rows
+      additional_properties: false
+    axis_probability_required_exact_keys: [kind, raw_sha256, values]
+    candidate_registry_probability_record:
+      required_exact_keys: [kind, raw_sha256, values]
+      allowed_variants:
+        - {kind: uniform, raw_sha256: null, values: null}
+        - {kind: actual_float32_weighted, raw_sha256_type: lowercase_sha256_hex, values_type: nonempty_array_of_nonnegative_finite_numbers_with_at_least_one_positive}
+      weighted_values_length_equals_axis_candidate_count: true
+      additional_properties: false
+    pinned_identity_digests_required_exact_keys: [baseline_weights, expanded_groups, ordered_axes_and_candidate_order, search_space_map]
+    canonical_atom_projection:
+      required_exact_keys: [atom_id, axis_name, typed_value, value_sha256]
+      exact_source_fields: [atom_id, axis_name, typed_value, value_sha256]
+      renaming_or_fallback: forbidden
+      order: row_order_as_stored_after_registry_digest_validation
+    atom_identity_candidate_registry_sha256: exact_internal_registry_digest_ab366af55ed1b0666bda8535f91c60b1712692e5e2ed3b83b11b69f3590cad9c
+    registry_digest_validation: exact_canonicalization_and_relationships_above_no_delegated_projection
+    additional_properties_at_any_level: false
+    row_or_outcome_fields_forbidden: true
+  size_registry:
+    path: study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r4-size-registry.json
+    mode: "100644"
+    size_bytes: 479
+    raw_sha256: 0b39c06756357bfed95958ea9c5cc59b2d1b064f887dacf4568766f4ae8778fd
+    git_blob_oid: 47341279eaeb3efc1c6355913c681d373c7b0d45
+  native_fixture:
+    path: study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r4-native-fixture.json
+    mode: "100644"
+    size_bytes: 3330
+    raw_sha256: 9078a5fbca27aa91f3854ab49be2d76d774b72cb21fc83e64361c9fe98fd7b0b
+    git_blob_oid: 3eeb22d65998583c06145ab6836bcc09a1d8308c
+  sizes_m_n_batch_k:
+    - [8, 8, 1, 128]
+    - [256, 256, 1, 1024]
+    - [2304, 1024, 1, 214336]
+  problem_identity:
+    dtype_layout: batched_B_B_S_NN
+    soo: false
+    reduce_fn: max
+    n_elements_to_validate: 128
+  semantic_source_chain:
+    - {path: projects/hipblaslt/tensilelite/Tensile/Tensile.py, blob_oid: b89d54d2941521c2d0dbaadf82ac0c404c21c27e}
+    - {path: projects/hipblaslt/tensilelite/Tensile/backends/__init__.py, blob_oid: 58b077a85bc87549e2c8562ca8d225555123591d}
+    - {path: projects/hipblaslt/tensilelite/Tensile/backends/base.py, blob_oid: 7b77c253e043e13e417130288fb4eb74b45617fb}
+    - {path: projects/hipblaslt/tensilelite/Tensile/backends/tensile_backend.py, blob_oid: 34e1444e2c5373857481f2e4198bce649a8e460a}
+    - {path: projects/hipblaslt/tensilelite/Tensile/BenchmarkStructs.py, blob_oid: 4968b29b5eacddc56b20c42cb4b2c1e3d8d6f406}
+    - {path: projects/hipblaslt/tensilelite/Tensile/SolutionStructs/Solution.py, blob_oid: 769d2f69c87ec0cad4569a9c2873ec5ec9da3d4f}
+    - {path: projects/hipblaslt/tensilelite/Tensile/SolutionStructs/Validators/MatrixInstruction.py, blob_oid: d3dc005ae32fe6c840360bc9a50e23a527ed7316}
+    - {path: projects/hipblaslt/tensilelite/Tensile/BenchmarkProblems.py, blob_oid: c9e4144ca0b2d7396c57249eaf3770b12ebd87f8}
+    - {path: projects/hipblaslt/tensilelite/Tensile/TensileCreateLibrary/Run.py, blob_oid: 87b6bfd931701801e1e626884068390360083e5c}
+    - {path: projects/hipblaslt/tensilelite/Tensile/KernelWriterAssembly.py, blob_oid: 99ff3ec21c68facde233ba60073588bdfbefb281}
+  native_formocast:
+    source_path: shared/origami/src/simulator/tensilelite/formocast_simulator.cpp
+    source_blob_oid: cac2b324984a9fe2e1fadb018702486545e86e80
+    header_path: shared/origami/include/origami/simulator/tensilelite/formocast_simulator.hpp
+    header_blob_oid: 96741965d34f2da1b0a08eaecab15e72082a78bc
+    symbol: origami::Formocast::predictedPerformance() const
+    guard_first_true_order:
+      - global-split-u-zero
+      - small-mn-macro-tile-gap
+      - large-mn-macro-tile-gap
+      - bf16-half-depthu-k-batch-mi
+      - direct-to-lds-a-small-m
+      - direct-to-lds-b-small-n
+      - derived-plr-zero
+  runtime_queue:
+    source_path: projects/hipblaslt/tensilelite/client/src/SolutionIterator.cpp
+    source_blob_oid: 33e86cfc4bf3d4ce8fa8da194b94c024bbb5639f
+    header_path: projects/hipblaslt/tensilelite/client/include/SolutionIterator.hpp
+    header_blob_oid: bad091c0f299f30c4235bc8313c9e8f134fa66a5
+    symbols:
+      - SolutionIterator::checkSolution(ContractionSolution&,ContractionProblemGemm&,bool)
+      - AllSolutionsIterator::preProblem
+    threshold_semantics: stable_sort_then_floor_N_times_threshold_clamped_to_last_and_prefix_less_equal
+  predecessor_raw_frame:
+    checkpoint: S10R3
+    generation: S10R3-A46.5-G3
+    terminal_state: CHECKPOINT_COMPLETE_negative_S1_ENTRY_BLOCKED_FT_BLOCKED_MAPPING_edge_null
+    allowed_reuse: sealed_114_occurrence_raw_discovery_frame_only
+    host_root: agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/formal-cpu
+    expected_ledger_events: 512
+    expected_raw_child_records: 3586
+    expected_accepted_occurrences: 114
+    expected_distinct_config_hashes: 114
+    registry_order: [stream_rank, conditional_priority_rank, chunk_index, draw_index, config_hash]
+    direct_raw_replay_required: true
+    S10R3_implementation_import_forbidden: true
+    forbidden_reuse:
+      - S10R3_C_greedy_or_K19_selection
+      - S10R3_mapping_attempts_or_terminal_decision
+      - S10R3_verifier_or_report_as_S10R4_gate_credit
+
+resolver_schema:
+  durable_path: study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r4-resolver-schema.json
+  construction_phase: prelabel_source_only_before_effective_lock
+  derivation_algorithm_id: s10r4_source_closed_consumer_projection_v1
+  may_read:
+    - pinned_complete_Tensile_subtree
+    - actual_yaml_candidate_axis_names_types_and_universe
+    - synthetic_fixtures
+    - known_binding_03_row_0_regression_only
+  may_not_read:
+    - remaining_113_frame_rows_resolved_states
+    - collision_count_or_groups
+    - realized_atom_union
+    - survivor_count_or_K_feasibility
+    - mapping_Formocast_GPU_GFLOPS_or_outcome_evidence
+  derivation_algorithm:
+    candidate_axis_seed: exact_sorted_typed_axis_records_from_bound_candidate_atom_registry
+    source_entry_symbols:
+      - Tensile.SolutionStructs.Validators.MatrixInstruction.matrixInstructionToMIParameters
+      - Tensile.SolutionStructs.Solution.Solution.__init__
+      - Tensile.SolutionStructs.Naming.getKeyNoInternalArgs
+      - Tensile.BenchmarkProblems.writeBenchmarkFiles
+      - Tensile.TensileCreateLibrary.Run.writeSolutionsAndKernels
+      - Tensile.KernelWriterAssembly.KernelWriterAssembly
+    consumer_access_enumeration:
+      include: literal_string_subscript_and_get_accesses_reachable_from_entry_symbols
+      finite_dynamic_key_rule: expand_only_when_all_values_are_source_literal_finite_domains
+      unresolved_dynamic_key: fail_closed
+      nested_path_rule: preserve_complete_key_path_and_exact_container_type
+      transitive_import_rule: every_materialized_import_in_pinned_Tensile_subtree_must_be_blob_bound
+    result_order: canonical_field_path_UTF8_byte_order_then_rule_id
+    human_field_selection_or_observation_driven_pruning: forbidden
+  closed_meta_schema:
+    top_level_required_exact_keys:
+      - schema_version
+      - document_kind
+      - checkpoint_id
+      - binding_id
+      - derivation_algorithm_id
+      - candidate_atom_registry
+      - source_closure
+      - field_records
+      - transformation_rules
+      - canonicalization
+      - document_digest
+    additional_properties: false
+    constants:
+      schema_version: 1
+      document_kind: s10r4_resolver_schema
+      checkpoint_id: S10R4
+      binding_id: binding-04
+      derivation_algorithm_id: s10r4_source_closed_consumer_projection_v1
+    top_level_property_schemas:
+      candidate_atom_registry: candidate_atom_registry_record
+      source_closure: resolver_source_closure_array
+      field_records: resolver_field_record_array
+      transformation_rules: resolver_transformation_rule_array
+      canonicalization: canonicalization_record
+      document_digest: document_digest_record
+    candidate_atom_registry_record:
+      required_exact_keys: [path, raw_sha256, canonical_sha256, atom_count]
+      exact_values:
+        path: study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r3-candidate-atom-registry.json
+        raw_sha256: 24ae3c4eb0a358f3e9ed6f3f5d2cdeae54bdf151bdb347d68d2ede879613d010
+        canonical_sha256: 94eac53847d314b5f5fd487712d64f7c94cbfd07f091c128d7650f939801c500
+        atom_count: 10024
+      additional_properties: false
+    resolver_source_closure_array:
+      type: nonempty_array
+      items: source_closure_record
+      order: path_UTF8_byte_order
+    source_closure_record:
+      required_exact_keys: [path, mode, blob_oid, raw_sha256, symbols, rule_ids]
+      property_types:
+        path: safe_repo_relative_POSIX
+        mode: git_mode_100644_or_100755
+        blob_oid: lowercase_git_oid_hex
+        raw_sha256: lowercase_sha256_hex
+        symbols: nonempty_unique_string_array_sorted_UTF8
+        rule_ids: nonempty_unique_string_array_sorted_UTF8
+      additional_properties: false
+      order: path_UTF8_byte_order
+    resolver_field_record_array:
+      type: nonempty_array
+      items: field_record
+      order: field_path_UTF8_byte_order
+    field_record:
+      required_exact_keys: [field_path, canonical_type, source_class, consumers, access_records, required]
+      property_types:
+        field_path: canonical_nonempty_field_path
+        canonical_type: canonical_type_enum
+        source_class: source_class_enum
+        consumers: nonempty_unique_array_of_consumer_enum_sorted_UTF8
+        access_records: nonempty_array_of_access_record
+        required: boolean
+      canonical_type_enum: [boolean, integer, finite_number, string, integer_array, boolean_array, string_array, typed_object]
+      source_class_enum: [prelocked_candidate_axis, resolver_derived_consumer]
+      consumer_enum: [resolver, getKeyNoInternalArgs, KernelWriter, mapping, Formocast_runtime]
+      access_record_required_exact_keys: [source_path, blob_oid, symbol, rule_id]
+      access_record_types: [safe_repo_path, git_blob_oid, string, string]
+      access_record_order: [source_path_UTF8, symbol_UTF8, rule_id_UTF8]
+      access_record_additional_properties: false
+      required_constant: true
+      additional_properties: false
+      order: field_path_UTF8_byte_order
+    access_record:
+      required_exact_keys: [source_path, blob_oid, symbol, rule_id]
+      property_types: {source_path: safe_repo_relative_POSIX, blob_oid: lowercase_git_oid_hex, symbol: nonempty_string, rule_id: nonempty_string}
+      additional_properties: false
+    resolver_transformation_rule_array:
+      type: nonempty_array
+      items: transformation_rule_record
+      order: rule_id_UTF8_byte_order
+    transformation_rule_record:
+      required_exact_keys: [rule_id, raw_field_paths, effective_field_paths, transform_class, predicate_source_records, inverse_id]
+      property_types:
+        rule_id: nonempty_unique_string
+        raw_field_paths: nonempty_unique_array_of_canonical_field_paths_sorted_UTF8
+        effective_field_paths: nonempty_unique_array_of_canonical_field_paths_sorted_UTF8
+        transform_class: transform_class_enum
+        predicate_source_records: nonempty_array_of_predicate_source_record
+        inverse_id: inverse_id_enum
+      transform_class_enum: [identity, reversible_representation, behavior_changing_resolution]
+      inverse_id_enum: [null, MI9_from_complete_derived_MI_state_v1]
+      inverse_constraint: inverse_id_nonnull_if_and_only_if_transform_class_reversible_representation
+      predicate_source_record_required_exact_keys: [source_path, blob_oid, symbol, rule_id, source_span_sha256]
+      predicate_source_record_types: [safe_repo_path, git_blob_oid, string, string, sha256_hex]
+      predicate_source_record_order: [source_path_UTF8, symbol_UTF8, rule_id_UTF8]
+      predicate_source_record_additional_properties: false
+      additional_properties: false
+      order: rule_id_UTF8_byte_order
+    predicate_source_record:
+      required_exact_keys: [source_path, blob_oid, symbol, rule_id, source_span_sha256]
+      property_types: {source_path: safe_repo_relative_POSIX, blob_oid: lowercase_git_oid_hex, symbol: nonempty_string, rule_id: nonempty_string, source_span_sha256: lowercase_sha256_hex}
+      additional_properties: false
+    canonicalization_record:
+      required_exact_keys: [encoding, recursive_key_sort, separators, finite_numbers_only, type_preserving, self_hash_convention]
+      exact_values:
+        encoding: UTF-8
+        recursive_key_sort: true
+        separators: comma_colon
+        finite_numbers_only: true
+        type_preserving: true
+        self_hash_convention: document_digest_null_during_SHA256_then_store_hex
+      additional_properties: false
+    document_digest_record:
+      type: sha256_hex
+      self_hash_input: exact_canonical_document_with_document_digest_null
+    unknown_field_or_property: reject
+    empty_source_closure_field_records_or_transformation_rules: reject
+  permitted_transform_classes:
+    - identity
+    - reversible_representation
+    - behavior_changing_resolution
+  initial_only_approved_inverse: MI9_from_complete_derived_MI_state_v1
+  default_non_equal_class: behavior_changing_resolution
+  fail_closed_on:
+    - unknown_or_missing_field
+    - exact_type_drift
+    - ambiguous_or_noncanonical_serialization
+    - source_or_consumer_closure_drift
+    - size_dependent_resolver_projection
+    - nonfinite_number
+  synthetic_faults_required:
+    - MI_inverse_missing_derived_field
+    - behavior_changing_overwrite_misclassified_as_identity
+    - unknown_field
+    - source_blob_or_rule_drift
+    - canonical_type_or_key_order_drift
+  phase2_admission:
+    exact_meta_schema_validation: required
+    fresh_independent_source_closure_recomputation: required
+    raw_and_canonical_hash_bound_in_lock: required
+    remaining_rows_access_before_lock: forbidden
+
+identity_stack:
+  canonical_json:
+    encoding: UTF-8
+    recursive_key_sort: true
+    compact_no_insignificant_whitespace: true
+    type_preserving: true
+    finite_numbers_only: true
+    digest: SHA-256_of_exact_canonical_bytes
+    equality: exact_canonical_bytes_first_digest_only_as_index
+  declaration_identity:
+    required_exact_keys: [registry_index, occurrence_id, raw_config_hash, raw_config, raw_config_canonical_bytes_sha256, ForkParameters_canonical_bytes_sha256, draw_provenance, candidate_atom_ids]
+    property_types:
+      registry_index: integer_0_to_113
+      occurrence_id: nonempty_string
+      raw_config_hash: lowercase_sha256_hex
+      raw_config: finite_typed_object
+      raw_config_canonical_bytes_sha256: lowercase_sha256_hex
+      ForkParameters_canonical_bytes_sha256: lowercase_sha256_hex
+      draw_provenance: declaration_draw_provenance_record
+      candidate_atom_ids: unique_string_array_sorted_UTF8
+    raw_config_rule: exact_canonical_raw_config_bytes_from_bound_exact_frame_registry_row
+    draw_provenance_required_exact_keys: [stream_id, stream_rank, conditional_atom_id_or_null, conditional_priority_rank, chunk_index, draw_index, source_child_relative_path, source_child_sha256, source_ledger_event_index]
+    draw_provenance_additional_properties: false
+    additional_properties: false
+    occurrence_identity_never_collapses: true
+  declaration_draw_provenance_record:
+    required_exact_keys: [stream_id, stream_rank, conditional_atom_id_or_null, conditional_priority_rank, chunk_index, draw_index, source_child_relative_path, source_child_sha256, source_ledger_event_index]
+    property_types:
+      stream_id: nonempty_string
+      stream_rank: nonnegative_integer
+      conditional_atom_id_or_null: nonempty_string_or_null
+      conditional_priority_rank: nonnegative_integer
+      chunk_index: nonnegative_integer
+      draw_index: nonnegative_integer
+      source_child_relative_path: safe_repo_relative_POSIX
+      source_child_sha256: lowercase_sha256_hex
+      source_ledger_event_index: nonnegative_integer
+    additional_properties: false
+  resolver_identity:
+    semantic:
+      required_exact_keys: [schema_version, resolver_schema_sha256, effective_fields]
+      constants: {schema_version: 1}
+      property_types:
+        resolver_schema_sha256: lowercase_sha256_hex_equal_resolver_schema_document_digest
+        effective_fields: exact_resolver_effective_fields_object
+      effective_fields_rule: exact_typed_object_with_every_resolver_schema_field_record_once
+      additional_properties: false
+      excludes: [raw_hash, occurrence, pass_id, cwd, path, timestamp, evidence_digest]
+    evidence:
+      required_exact_keys: [declaration_identity_sha256, registry_index, pass_id, transformation_records, source_rule_records]
+      property_types:
+        declaration_identity_sha256: lowercase_sha256_hex
+        registry_index: integer_0_to_113
+        pass_id: enum_A_or_B
+        transformation_records: resolver_transformation_evidence_array
+        source_rule_records: resolver_source_rule_evidence_array
+      pass_id_enum: [A, B]
+      transformation_record_required_exact_keys: [rule_id, raw_field_path, raw_typed_value, effective_field_path, effective_typed_value, transform_class, guard_operands]
+      transform_class_enum: [identity, reversible_representation, behavior_changing_resolution]
+      guard_operand_record_required_exact_keys: [operand_path, canonical_type, canonical_value]
+      guard_operand_order: operand_path_UTF8_byte_order
+      guard_operand_additional_properties: false
+      source_rule_record_required_exact_keys: [source_path, blob_oid, symbol, rule_id, source_span_sha256]
+      source_rule_record_order: [source_path_UTF8, symbol_UTF8, rule_id_UTF8]
+      source_rule_record_additional_properties: false
+      transformation_records_order: [rule_id_UTF8, raw_field_path_UTF8, effective_field_path_UTF8]
+      additional_properties: false
+  resolver_transformation_evidence_array:
+    type: nonempty_array
+    items: resolver_transformation_evidence_record
+    order: [rule_id_UTF8, raw_field_path_UTF8, effective_field_path_UTF8]
+  resolver_transformation_evidence_record:
+    required_exact_keys: [rule_id, raw_field_path, raw_typed_value, effective_field_path, effective_typed_value, transform_class, guard_operands]
+    property_types:
+      rule_id: nonempty_string
+      raw_field_path: canonical_field_path
+      raw_typed_value: finite_typed_value
+      effective_field_path: canonical_field_path
+      effective_typed_value: finite_typed_value
+      transform_class: enum_identity_reversible_representation_or_behavior_changing_resolution
+      guard_operands: resolver_guard_operand_array
+    additional_properties: false
+  resolver_guard_operand_array:
+    type: array
+    items: resolver_guard_operand_record
+    order: operand_path_UTF8_byte_order
+  resolver_guard_operand_record:
+    required_exact_keys: [operand_path, canonical_type, canonical_value]
+    property_types: {operand_path: canonical_field_path, canonical_type: resolver_schema_canonical_type_enum, canonical_value: matching_finite_typed_value}
+    additional_properties: false
+  resolver_source_rule_evidence_array:
+    type: nonempty_array
+    items: resolver_source_rule_evidence_record
+    order: [source_path_UTF8, symbol_UTF8, rule_id_UTF8]
+  resolver_source_rule_evidence_record:
+    required_exact_keys: [source_path, blob_oid, symbol, rule_id, source_span_sha256]
+    property_types: {source_path: safe_repo_relative_POSIX, blob_oid: lowercase_git_oid_hex, symbol: nonempty_string, rule_id: nonempty_string, source_span_sha256: lowercase_sha256_hex}
+    additional_properties: false
+  atom_identity:
+    required_exact_keys: [candidate_registry_sha256, realized_atoms, raw_intervention_atoms]
+    property_schemas:
+      candidate_registry_sha256: exact_internal_registry_digest_ab366af55ed1b0666bda8535f91c60b1712692e5e2ed3b83b11b69f3590cad9c
+      realized_atoms: realized_atom_array
+      raw_intervention_atoms: raw_intervention_atom_array
+    atom_record_required_exact_keys: [atom_id, axis_name, canonical_type, canonical_value, value_sha256, correspondence]
+    atom_record_types: [string, string, canonical_type_enum, typed_value, sha256_hex, correspondence_enum]
+    atom_record_additional_properties: false
+    correspondence_enum: [identity, approved_reversible_representation]
+    order: atom_id_UTF8_byte_order
+    additional_properties: false
+    membership_rule: prelocked_candidate_atoms_intersection_exact_effective_realizations
+    normalized_away_raw_value_is_witness: false
+    resolver_derived_value_outside_prelocked_universe_is_mandatory: false
+    compound_atom_requires_complete_tuple_correspondence: true
+    raw_intervention_evidence_separate_from_effective_realization: true
+  realized_atom_array:
+    type: unique_array
+    items: realized_atom_record
+    order: atom_id_UTF8_byte_order
+  realized_atom_record:
+    required_exact_keys: [atom_id, axis_name, canonical_type, canonical_value, value_sha256, correspondence]
+    property_types: {atom_id: nonempty_string, axis_name: nonempty_string, canonical_type: resolver_schema_canonical_type_enum, canonical_value: matching_finite_typed_value, value_sha256: lowercase_sha256_hex, correspondence: enum_identity_or_approved_reversible_representation}
+    additional_properties: false
+  raw_intervention_atom_array:
+    type: unique_array
+    items: raw_intervention_atom_record
+    order: atom_id_UTF8_byte_order
+  raw_intervention_atom_record:
+    required_exact_keys: [atom_id, axis_name, raw_canonical_type, raw_canonical_value, raw_value_sha256, effective_correspondence]
+    property_types: {atom_id: nonempty_string, axis_name: nonempty_string, raw_canonical_type: resolver_schema_canonical_type_enum, raw_canonical_value: matching_finite_typed_value, raw_value_sha256: lowercase_sha256_hex, effective_correspondence: enum_identity_approved_reversible_representation_or_normalized_away}
+    additional_properties: false
+  codegen_identity:
+    required_membership_derivation:
+      input: exact_one_resolved_Solution_before_original_write
+      splitGSU_exact: false
+      semantic_getKeyNoInternalArgs: pinned_getKeyNoInternalArgs_of_exact_resolved_Solution_with_splitGSU_false
+      kernel_sequence: pinned_generateKernelObjectsFromSolutions_singleton_solution_return_order
+      assembly_filter: KernelLanguage_exact_Assembly
+      duplicate_rule: retain_first_kernel_per_getKernelFileBase_in_return_order_and_require_later_duplicate_full_canonical_kernel_state_equal
+      required_assembly_members: every_retained_assembly_kernel_before_error_tolerant_filtering
+      assembly_logical_name: pinned_getKeyNoInternalArgs_kernel_splitGSU_false
+      assembly_semantic_bytes: canonical_JSON_of_exact_full_kernel_state_reachable_by_pinned_processKernelSource_and_KernelWriter_getSourceFileString
+      helper_sequence: pinned_generateKernelHelperObjects_singleton_solution_return_order
+      required_helper_members: every_returned_helper_object
+      helper_logical_name: fully_qualified_helper_class_plus_getKernelName
+      helper_semantic_bytes: canonical_JSON_of_fully_qualified_class_getKernelName_normalized_getSourceFileString_source_and_getHeaderFileString_header
+      semantic_set_uniqueness: duplicate_logical_name_requires_exact_semantic_bytes_else_CHANGES_REQUIRED
+      assembly_set_order: logical_name_UTF8_then_semantic_sha256
+      helper_set_order: logical_name_UTF8_then_semantic_sha256
+      normalized_artifact_members:
+        - every_nonempty_processKernelSource_assembly_src_payload_returned_for_required_assembly_members
+        - every_helper_source_and_header_for_required_helper_members
+        - exact_aggregate_Kernels_cpp_and_Kernels_h_written_by_pinned_writeHelpers
+      outcome_specific_artifact_membership:
+        success:
+          - every_required_assembly_has_terminal_native_success_result
+          - every_required_assembly_has_nonempty_normalized_assembly_source_artifact
+          - every_required_helper_and_exact_aggregate_helper_artifact_present
+        ordinary_attrition:
+          - every_required_assembly_has_terminal_native_result
+          - at_least_one_required_assembly_has_native_error
+          - successful_required_assembly_members_have_nonempty_normalized_source_artifacts
+          - failed_required_assembly_source_artifact_present_if_and_only_if_processKernelSource_returned_nonempty_source_payload
+          - absence_of_failed_assembly_source_is_permitted_only_with_complete_terminal_native_error_record_and_explicit_absent_inventory_projection
+          - every_required_helper_and_exact_aggregate_helper_artifact_present
+      no_human_or_filesystem_glob_membership: true
+      missing_required_success_or_helper_artifact_extra_duplicate_or_unclassifiable_member: CHANGES_REQUIRED
+      failed_assembly_artifact_absence_without_complete_native_error_record: CHANGES_REQUIRED
+    semantic:
+      required_exact_keys: [getKeyNoInternalArgs, required_assembly_semantic_set, required_helper_semantic_set, normalized_artifact_semantics, post_filter_membership_class]
+      property_schemas:
+        getKeyNoInternalArgs: nonempty_string
+        required_assembly_semantic_set: codegen_semantic_set_array
+        required_helper_semantic_set: codegen_semantic_set_array
+        normalized_artifact_semantics: codegen_normalized_artifact_array
+        post_filter_membership_class: enum_present_or_removed_ordinary_attrition
+      cardinality: {required_assembly_semantic_set_minimum: 1, required_helper_semantic_set_minimum: 0}
+      semantic_set_record_required_exact_keys: [logical_name, semantic_sha256]
+      semantic_set_order: logical_name_UTF8_byte_order
+      artifact_record_required_exact_keys: [kind, logical_name, normalized_sha256, normalized_size_bytes]
+      artifact_kind_enum: [assembly_source, helper_source, helper_header, declared_artifact]
+      artifact_order: [kind_UTF8, logical_name_UTF8]
+      post_filter_membership_class_enum: [present, removed_ordinary_attrition]
+      artifact_normalization:
+        line_endings: LF
+        exact_child_root_replacement: "<S10R4_CHILD_ROOT>"
+        absolute_path_outside_exact_child_root: reject
+        timestamp_or_nondeterministic_token: reject
+        other_byte_rewrite: forbidden
+      additional_properties: false
+      excludes: [raw_hash, occurrence, pass_id, cwd, path, timestamp, evidence_digest]
+    evidence:
+      required_exact_keys: [registry_index, raw_config_hash, pass_id, cwd, child_root, assembly_source_observations, artifact_inventory, failed_artifact_absences, terminal_record, process_completion_sha256]
+      property_schemas:
+        registry_index: integer_0_to_113
+        raw_config_hash: lowercase_sha256_hex
+        pass_id: enum_A_or_B
+        cwd: absolute_POSIX
+        child_root: safe_repo_relative_POSIX
+        assembly_source_observations: codegen_assembly_source_observation_array
+        artifact_inventory: codegen_artifact_inventory_array
+        failed_artifact_absences: codegen_failed_artifact_absence_array
+        terminal_record: codegen_terminal_record
+        process_completion_sha256: lowercase_sha256_hex
+      artifact_inventory_record_required_exact_keys: [relative_path, mode, size_bytes, sha256, kind, logical_name]
+      artifact_inventory_record_types: [safe_relative_path, git_mode, nonnegative_integer, sha256_hex, artifact_kind_enum, string]
+      artifact_inventory_order: relative_path_UTF8_byte_order
+      artifact_inventory_additional_properties: false
+      terminal_record_required_exact_keys: [process_returncode, ordered_failed_kernel_names, ordered_native_error_codes, ordered_processKernelSource_result_codes, post_filter_solution_present]
+      terminal_record_types: [integer, string_array, integer_array, integer_array, boolean]
+      terminal_record_additional_properties: false
+      additional_properties: false
+  codegen_semantic_set_array:
+    type: unique_array
+    items: codegen_semantic_set_record
+    order: [logical_name_UTF8, semantic_sha256_ASCII]
+  codegen_semantic_set_record:
+    required_exact_keys: [logical_name, semantic_sha256]
+    property_types: {logical_name: nonempty_string, semantic_sha256: lowercase_sha256_hex}
+    additional_properties: false
+  codegen_normalized_artifact_array:
+    type: nonempty_unique_array
+    items: codegen_normalized_artifact_record
+    order: [kind_UTF8, logical_name_UTF8]
+  codegen_normalized_artifact_record:
+    required_exact_keys: [kind, logical_name, normalized_sha256, normalized_size_bytes]
+    property_types: {kind: enum_assembly_source_helper_source_helper_header_or_declared_artifact, logical_name: nonempty_string, normalized_sha256: lowercase_sha256_hex, normalized_size_bytes: nonnegative_integer}
+    additional_properties: false
+  codegen_artifact_inventory_array:
+    type: unique_array
+    items: codegen_artifact_inventory_record
+    order: relative_path_UTF8_byte_order
+  codegen_artifact_inventory_record:
+    required_exact_keys: [relative_path, mode, size_bytes, sha256, kind, logical_name]
+    property_types: {relative_path: safe_relative_POSIX, mode: git_mode_100644_or_100755, size_bytes: nonnegative_integer, sha256: lowercase_sha256_hex, kind: enum_assembly_source_helper_source_helper_header_or_declared_artifact, logical_name: nonempty_string}
+    additional_properties: false
+  codegen_assembly_source_observation_array:
+    type: nonempty_unique_array
+    items: codegen_assembly_source_observation_record
+    exact_set_rule: exactly_one_record_for_each_required_assembly_semantic_set_logical_name
+    order: logical_name_UTF8_byte_order
+  codegen_assembly_source_observation_record:
+    required_exact_keys: [logical_name, returned_source_size_bytes, returned_source_sha256_or_null, artifact_relative_path_or_null, artifact_sha256_or_null]
+    property_types:
+      logical_name: nonempty_string
+      returned_source_size_bytes: nonnegative_integer
+      returned_source_sha256_or_null: lowercase_sha256_hex_or_null
+      artifact_relative_path_or_null: safe_relative_POSIX_or_null
+      artifact_sha256_or_null: lowercase_sha256_hex_or_null
+    variants:
+      nonempty_return:
+        condition: returned_source_size_bytes_greater_than_0
+        requirements:
+          - returned_source_sha256_or_null_is_nonnull_and_equals_SHA256_of_exact_returned_source_bytes
+          - artifact_relative_path_or_null_is_nonnull
+          - artifact_sha256_or_null_equals_returned_source_sha256_or_null
+          - exact_artifact_inventory_contains_one_matching_assembly_source_record
+      empty_return:
+        condition: returned_source_size_bytes_equals_0
+        requirements:
+          - returned_source_sha256_or_null_is_null
+          - artifact_relative_path_or_null_is_null
+          - artifact_sha256_or_null_is_null
+          - matching_terminal_native_result_is_failure
+          - exact_artifact_inventory_contains_no_assembly_source_record_for_logical_name
+    additional_properties: false
+  codegen_failed_artifact_absence_array:
+    type: unique_array
+    items: codegen_failed_artifact_absence_record
+    order: [kind_UTF8, logical_name_UTF8, expected_relative_path_UTF8]
+    exact_set_rule: exactly_one_record_for_each_and_only_each_assembly_source_observation_with_returned_source_size_bytes_0
+    success_exact_value: []
+    ordinary_attrition_relations:
+      - logical_name_occurs_exactly_once_in_ordered_failed_kernel_names
+      - native_error_code_and_processKernelSource_result_code_equal_same_logical_name_terminal_result
+      - expected_relative_path_is_contract_deterministic_path_for_missing_assembly_source
+      - no_matching_artifact_inventory_record
+      - duplicate_missing_or_spurious_absence_record_is_CHANGES_REQUIRED
+  codegen_failed_artifact_absence_record:
+    required_exact_keys: [kind, logical_name, expected_relative_path, absence_reason, native_error_code, processKernelSource_result_code]
+    exact_values: {kind: assembly_source, absence_reason: failed_required_assembly_returned_no_nonempty_source_payload}
+    property_types: {logical_name: nonempty_string, expected_relative_path: safe_relative_POSIX, native_error_code: integer_nonzero, processKernelSource_result_code: integer_nonzero}
+    additional_properties: false
+  codegen_terminal_record:
+    required_exact_keys: [process_returncode, ordered_failed_kernel_names, ordered_native_error_codes, ordered_processKernelSource_result_codes, post_filter_solution_present]
+    property_types: {process_returncode: integer, ordered_failed_kernel_names: string_array, ordered_native_error_codes: integer_array, ordered_processKernelSource_result_codes: integer_array, post_filter_solution_present: boolean}
+    array_relations:
+      - ordered_native_error_codes_and_ordered_processKernelSource_result_codes_each_have_required_assembly_set_length_in_required_assembly_order
+      - ordered_failed_kernel_names_exactly_names_required_assembly_members_with_nonzero_native_or_process_result
+      - assembly_source_observations_have_same_required_assembly_order_and_cardinality
+    additional_properties: false
+  operational_identity:
+    exact_sorted_members:
+      - resolver_semantic_identity
+      - atom_identity
+      - codegen_semantic_identity
+    extra_members_forbidden: true
+    operational_hash: SHA-256_of_exact_canonical_operational_identity_bytes
+  mapping_identity:
+    key: [operational_hash, size_id]
+    binds: [representative_raw_occurrence, all_aliases_and_multiplicity, resolver_semantic_and_evidence, codegen_semantic_and_evidence, SizeMapping, Formocast_runtime_inputs, required_field_provenance]
+    required_exact_keys: [operational_hash, size_id, representative, aliases, multiplicity, resolver_semantic_identity, resolver_evidence_identities, codegen_semantic_identity, codegen_evidence_identities, SizeMapping, Formocast_runtime_inputs, required_field_provenance]
+    representative_and_alias_record_required_exact_keys: [registry_index, occurrence_id, raw_config_hash]
+    representative_and_alias_record_types: [integer_0_to_113, string, sha256_hex]
+    alias_order: [registry_index_ascending, raw_config_hash_ascending, occurrence_id_UTF8]
+    multiplicity_rule: exact_alias_array_length
+    resolver_evidence_identities_type: ordered_sha256_hex_array_by_pass_then_registry_index
+    codegen_evidence_identities_type: ordered_sha256_hex_array_by_pass_then_registry_index
+    size_id_enum: [size-00, size-01, size-02]
+    property_schemas:
+      operational_hash: lowercase_sha256_hex_of_exact_operational_identity_bytes
+      size_id: enum_size_00_size_01_or_size_02
+      representative: mapping_occurrence_record
+      aliases: mapping_alias_array
+      multiplicity: positive_integer_equal_aliases_length
+      resolver_semantic_identity: exact_resolver_semantic_identity_object
+      resolver_evidence_identities: ordered_sha256_hex_array_by_pass_then_registry_index
+      codegen_semantic_identity: exact_codegen_semantic_identity_object
+      codegen_evidence_identities: ordered_sha256_hex_array_by_pass_then_registry_index
+      SizeMapping: exact_28_field_object_defined_by_formal_workload_mapping_SizeMapping_projection
+      Formocast_runtime_inputs: mapping_Formocast_runtime_input_record
+      required_field_provenance: mapping_required_field_provenance_record
+    additional_properties: false
+  mapping_occurrence_record:
+    required_exact_keys: [registry_index, occurrence_id, raw_config_hash]
+    property_types: {registry_index: integer_0_to_113, occurrence_id: nonempty_string, raw_config_hash: lowercase_sha256_hex}
+    additional_properties: false
+  mapping_alias_array:
+    type: nonempty_unique_array
+    items: mapping_occurrence_record
+    order: [registry_index_ascending, raw_config_hash_ascending, occurrence_id_UTF8]
+  mapping_Formocast_runtime_input_record:
+    required_exact_keys: [problem, size_mapping]
+    property_schemas: {problem: mapping_Formocast_problem_record, size_mapping: exact_byte_equal_SizeMapping_object}
+    additional_properties: false
+  mapping_Formocast_problem_record:
+    required_exact_keys: [M, N, NumBatches, K]
+    every_value_type: positive_integer
+    additional_properties: false
+  mapping_required_field_provenance_record:
+    required_exact_keys: exact_same_28_keys_as_SizeMapping_projection
+    every_value_schema: mapping_field_provenance_record
+    additional_properties: false
+  mapping_field_provenance_record:
+    required_exact_keys: [source_path, source_value_sha256, guessed]
+    property_types: {source_path: canonical_resolver_field_path, source_value_sha256: lowercase_sha256_hex, guessed: boolean_exact_false}
+    additional_properties: false
+  unknown_property_at_any_identity_layer: CHANGES_REQUIRED
+
+formal_workload:
+  allowed_only_after: independently_audited_LOCKED_READY
+  census:
+    pass_order: [A, B]
+    registry_order_each_pass: ascending_0_through_113
+    rows_each_pass: 114
+    total_children: 228
+    child_atomic_terminal_required: true
+    pass_B_starts_only_after_pass_A_114_of_114_terminal: true
+    early_stop_reorder_deduplicate_replace_retry_third_pass: forbidden
+    earlier_binding_prefix_credit: forbidden
+    each_child_order:
+      - verify_raw_and_ForkParameters_identity
+      - shared_resolver_exactly_one_solution
+      - seal_resolver_and_atom_projection_at_pre_KernelWriter_boundary
+      - continue_same_child_through_original_write_and_KernelWriter
+      - seal_codegen_identity_and_terminal_result
+    terminal_oracle:
+      success:
+        process_returncode: 0
+        post_filter_solution_present: true
+        every_required_assembly_native_err: false
+        every_required_assembly_artifact_present: true
+        every_required_helper_source_header_and_declared_artifact_present: true
+      ordinary_attrition:
+        process_returncode: 23
+        post_filter_solution_present: false
+        at_least_one_required_assembly_native_err: true
+        every_required_assembly_has_terminal_native_result: true
+        successful_required_assembly_artifacts_present: true
+        failed_required_assembly_artifact_may_be_absent_only_under_codegen_identity_outcome_specific_rule: true
+        every_required_helper_source_header_and_declared_artifact_present: true
+      stdout_or_stderr_text_defines_class: false
+      exception_signal_timeout_partial_unknown_or_association_drift: CHANGES_REQUIRED
+      pass_neutral_signature_fields: [classification_kind, ordered_failed_kernel_names, ordered_native_error_codes, ordered_processKernelSource_result_codes, post_filter_solution_present, process_returncode, required_assembly_semantic_set_sha256, required_helper_semantic_set_sha256]
+  resolver_partition:
+    covers_all_raw_occurrences: 114
+    aliases_and_multiplicity_preserved: true
+    group_multiplicity_sum: 114
+    stable_group_classes: [stable_survivor, stable_attrition]
+    mixed_terminal_or_codegen_semantics_within_resolver_group: CHANGES_REQUIRED
+    resolver_or_pass_projection_drift: CHANGES_REQUIRED
+    stable_survivor_raw_mass_may_be_less_than_114: true
+  selection:
+    selector_id: deterministic_greedy_set_cover_v2_bounded_k20_effective_identity
+    eligible_units: unique_stable_operational_identities
+    mandatory_atoms: prelocked_candidate_atoms_intersection_realized_atoms_of_stable_operational_groups
+    representative_rule:
+      choose_alias_minimum_tuple: [registry_index, raw_config_hash]
+      exact_tie_final: occurrence_id_UTF8
+      representative_is_evidence_link_not_selection_unit: true
+    algorithm:
+      initialize_uncovered: sorted_complete_mandatory_atom_ID_set
+      initialize_selected: empty_ordered_list
+      iteration_candidate_set: all_unselected_unique_stable_operational_identities
+      gain: cardinality_of_candidate_realized_atoms_intersection_uncovered
+      zero_maximum_gain_with_uncovered_nonempty: cover_impossible
+      choose_maximum_gain_tie_break: [representative_registry_index_ascending, representative_raw_hash_ascending, operational_hash_ascending]
+      update_selected: append_chosen_operational_identity
+      update_uncovered: set_difference_uncovered_minus_chosen_realized_atoms
+      stop: uncovered_empty
+      C_greedy: selected_length_at_stop
+      C_greedy_above_20: negative_FT_BLOCKED_MAPPING
+      padding_when_C_greedy_below_10:
+        candidates: remaining_unique_stable_operational_identities
+        order: [representative_registry_index_ascending, representative_raw_hash_ascending, operational_hash_ascending]
+        append_until_selected_length: 10
+        exhausted_below_10: negative_FT_BLOCKED_MAPPING
+      final_selected_order: [operational_hash_ascending, representative_raw_hash_ascending]
+      human_choice_exact_solver_redraw_replacement_or_K_plus_1: forbidden
+    formula: K=max(10,C_greedy)
+    lower_bound_K: 10
+    upper_bound_K: 20
+    complete_evidence_negative_conditions: [unique_survivors_less_than_10, cover_impossible, C_greedy_greater_than_20]
+  mapping:
+    pass_order: [A, B]
+    rows_each_pass: exactly_3K
+    sizes_per_operational_identity: 3
+    size_ids_in_order: [size-00, size-01, size-02]
+    replacement_or_K_plus_1: forbidden
+    parity_scope: every_mapping_identity_layer_and_required_field
+    SizeMapping_projection:
+      exact_fields_in_order: [waveNum, macroTile, matrixInstruction, grvwA, grvwB, gwvwC, gwvwD, depthU, globalSplitU, workGroupMapping, globalAccumulation, workGroupMappingXCC, workGroupMappingXCCGroup, globalSplitUCoalesced, globalSplitUWorkGroupMappingRoundRobin, CUOccupancy, PrefetchGlobalRead, MathClocksUnrolledLoop, DirectToVgprA, DirectToVgprB, NumLoadsCoalescedA, NumLoadsCoalescedB, VectorWidthA, VectorWidthB, LocalSplitU, DirectToLdsA, DirectToLdsB, waveGroup]
+      exact_field_count: 28
+      field_types:
+        waveNum: integer
+        macroTile: integer_array_length_3
+        matrixInstruction: integer_array_length_4
+        grvwA: integer
+        grvwB: integer
+        gwvwC: integer
+        gwvwD: integer
+        depthU: integer
+        globalSplitU: integer
+        workGroupMapping: integer
+        globalAccumulation: integer_enum_0_to_4
+        workGroupMappingXCC: integer
+        workGroupMappingXCCGroup: integer
+        globalSplitUCoalesced: boolean
+        globalSplitUWorkGroupMappingRoundRobin: boolean
+        CUOccupancy: integer
+        PrefetchGlobalRead: integer
+        MathClocksUnrolledLoop: integer
+        DirectToVgprA: boolean
+        DirectToVgprB: boolean
+        NumLoadsCoalescedA: integer
+        NumLoadsCoalescedB: integer
+        VectorWidthA: integer
+        VectorWidthB: integer
+        LocalSplitU: integer
+        DirectToLdsA: boolean
+        DirectToLdsB: boolean
+        waveGroup: integer_array_length_2
+      field_source_projection:
+        waveNum: NumThreads_integer_divided_by_WavefrontSize
+        macroTile: [MacroTile0, MacroTile1, constant_integer_1]
+        matrixInstruction: MatrixInstruction_first_4_in_order
+        grvwA: GlobalReadVectorWidthA
+        grvwB: GlobalReadVectorWidthB
+        gwvwC: StoreVectorWidth
+        gwvwD: StoreVectorWidth
+        depthU: DepthU
+        globalSplitU: GlobalSplitU
+        workGroupMapping: WorkGroupMapping
+        globalAccumulation: _GlobalAccumulation_exact_enum_SingleBuffer_1_MultipleBuffer_2_MultipleBufferSingleKernel_3_PartialsBuffer_4_other_0
+        workGroupMappingXCC: WorkGroupMappingXCC
+        workGroupMappingXCCGroup: WorkGroupMappingXCCGroup
+        globalSplitUCoalesced: bool_of_GlobalSplitUCoalesced
+        globalSplitUWorkGroupMappingRoundRobin: bool_of_GlobalSplitUWorkGroupMappingRoundRobin
+        CUOccupancy: CUOccupancy
+        PrefetchGlobalRead: int_of_PrefetchGlobalRead
+        MathClocksUnrolledLoop: MathClocksUnrolledLoop
+        DirectToVgprA: bool_of_DirectToVgprA
+        DirectToVgprB: bool_of_DirectToVgprB
+        NumLoadsCoalescedA: NumLoadsCoalescedA
+        NumLoadsCoalescedB: NumLoadsCoalescedB
+        VectorWidthA: VectorWidthA
+        VectorWidthB: VectorWidthB
+        LocalSplitU: LocalSplitU
+        DirectToLdsA: bool_of_DirectToLdsA
+        DirectToLdsB: bool_of_DirectToLdsB
+        waveGroup: MIWaveGroup_exact_integer_array
+      required_field_provenance_exact_same_keys: true
+      provenance_record_required_exact_keys: [source_path, source_value_sha256, guessed]
+      provenance_record_types: [string, sha256_hex, boolean]
+      provenance_record_additional_properties: false
+      guessed_exact_value: false
+      macroTile_type_and_length: integer_array_length_3
+      matrixInstruction_type_and_length: integer_array_length_4
+      waveGroup_type_and_length: integer_array_length_2
+      Formocast_input_required_exact_keys: [problem, size_mapping]
+      Formocast_problem_required_exact_keys: [M, N, NumBatches, K]
+      SizeMapping_and_Formocast_size_mapping_exact_bytes_equal: true
+    attempt_scope:
+      unit: one_complete_mapping_pass_attempt
+      pass_attempt_order: [A1, A2_if_and_only_if_A1_allowlisted_failure, B1_after_A_PASS]
+      maximum_complete_attempts_per_pass: 2
+      maximum_retries_after_first_allowlisted_failure: 1
+      maximum_attempts_across_both_passes: 2
+      complete_success_attempt: all_3K_rows_terminal_success
+      complete_failure_attempt: deterministic_prefix_from_row_0_plus_first_terminal_failure_with_complete_structured_evidence_and_all_later_rows_NOT_REACHED
+      row_level_retry: forbidden
+      retry_after_any_success_on_same_pass: forbidden
+      retry_after_drift_partial_unknown_timeout_exception_or_nonallowlisted_failure: forbidden
+    allowlisted_native_failure_signatures:
+      signatures:
+        - id: codegen_resource_overflow
+          exact_fields:
+            failure_stage: kernel_source_generation
+            native_error_class: KernelWriterAssembly_overflowedResources
+            native_error_code: 5
+            processKernelSource_result_code: -2
+            worker_returncode: 23
+            post_filter_solution_present: false
+      signature_required_exact_keys: [signature_id, failing_pass_id, first_failing_operational_hash, first_failing_sorted_slot, first_failing_size_id, exact_signature_fields, complete_request_digest, source_toolchain_harness_identity]
+      equality_fields: [signature_id, failing_pass_id, first_failing_operational_hash, first_failing_sorted_slot, first_failing_size_id, exact_signature_fields, complete_request_digest, source_toolchain_harness_identity]
+      stdout_or_stderr_text_defines_or_matches_signature: false
+      B02_B03_or_S10R3_signature_credit: forbidden
+      unlisted_nonmatching_incomplete_or_ambiguous: CHANGES_REQUIRED
+    decision_table:
+      guessed_required_field: CHANGES_REQUIRED
+      consumer_projection_mismatch: CHANGES_REQUIRED
+      A_B_identity_drift: CHANGES_REQUIRED
+      partial_or_unknown: CHANGES_REQUIRED
+      A1_success: seal_A_PASS_start_B1_no_A2
+      A1_allowlisted_failure: run_A2_from_row_0_B_NOT_REACHED
+      A1_A2_same_allowlisted_complete_failure: negative_FT_BLOCKED_MAPPING_B_NOT_REACHED
+      A1_failure_A2_success: CHANGES_REQUIRED_B_NOT_REACHED
+      A1_A2_different_failure_signatures: CHANGES_REQUIRED_B_NOT_REACHED
+      B1_success_after_A_PASS: seal_mapping_PASS_no_B2
+      B1_any_failure_after_A_PASS: CHANGES_REQUIRED_A_B_discordance_no_B2
+      any_unpermitted_attempt: CHANGES_REQUIRED
+  native_conformance:
+    uses_actual_pinned_Formocast_path: true
+    binds_guard_order_shared_helper_and_runtime_queue_adapter: true
+    independent_oracle_may_compare_not_replace: true
+    fault_substitutions_required: [native_helper, runtime_adapter, source_blob_or_hash, guard_order, queue_semantics]
+    numeric_comparison:
+      parse: strict_JSON_number_to_IEEE754_binary64
+      equality: exact_IEEE754_binary64_value
+      absolute_tolerance: 0.0
+      relative_tolerance: 0.0
+      NaN_or_infinity: reject
+      negative_zero: reject
+      integer_ordinal_index_boolean_and_queue_fields: exact_type_and_value
+    command_timeout_s: 7200
+  GPU_environment:
+    container: perlee
+    snapshot_commands:
+      - /opt/rocm/bin/rocm-smi --showproductname --showuniqueid --showserial --showuse --showmemuse --showcomputepartition --showmemorypartition --json
+      - /opt/rocm/bin/rocm-smi --showpidgpus
+    eligible_predicate:
+      gfx_version: gfx942
+      compute_partition: SPX
+      memory_partition: NPS1
+      gpu_use_percent_exact_string: "0"
+      vram_allocated_percent_exact_string: "0"
+      foreign_PID_list: []
+    deterministic_choice: lowest_physical_card_index_among_currently_eligible
+    reservation_required: false
+    phase_continuity: same_selected_physical_identity_for_every_reached_GPU_cell
+    card_switch_after_first_GPU_label: forbidden_without_design_authority
+  correctness:
+    anchors_from_sorted_selected_K: [0, floor((K-1)/2), K-1]
+    sizes_per_anchor: 3
+    cells: 9
+    replacement_anchor: forbidden
+    complete_all_pass_required_before_noise: true
+    command_and_validator_identity:
+      generator: pinned_Tensile_writeSolutionsAndKernels_errorTolerant_false_for_selected_anchor
+      compiler: pinned_ROCm_amdclangpp_and_assembler_closure_bound_in_effective_lock
+      client: pinned_tensilelite_client_binary_and_config_bound_in_effective_lock
+      validation: n_elements_to_validate_exact_128_and_nonzero_correctness_status_PASS
+      numeric_tolerance: exact_client_validator_policy_from_pinned_binary_no_harness_override
+      GFLOPS_value_used_for_correctness_decision: false
+    attempt_protocol:
+      first_complete_PASS: seal_cell_PASS_retry_forbidden
+      first_complete_allowlisted_failure: run_one_fresh_isolated_same_anchor_size_reproduction
+      maximum_attempts_for_failed_cell: 2
+      third_attempt: forbidden
+      allowlisted_failure_stages: [generate, compile, smoke, nonzero_correctness]
+      complete_failure_requires: [status_FAIL, one_exact_allowlisted_failure_stage, complete_config_anchor_size_source_toolchain_GPU_command_identity, terminal_process_and_validation_record, no_exception_signal_timeout_partial_unknown_or_association_drift]
+      reproducible_signature_equality_fields: [operational_hash, anchor_index, size_id, failure_stage, process_returncode, validation_status_and_error_code, source_toolchain_GPU_command_identity]
+      first_PASS_only: correctness_cell_PASS
+      same_complete_failure_twice: negative_FT_BLOCKED_CORRECTNESS
+      failure_then_PASS_or_different_failure: CHANGES_REQUIRED
+      partial_timeout_unknown_or_unpermitted_retry: CHANGES_REQUIRED
+  noise:
+    groups: 9
+    repeats_per_group: 7
+    cells: 63
+    starts_only_after_all_9_correctness_cells_PASS: true
+    reduce_fn: max
+    measured_quality_unit: positive_finite_GFLOPS_after_reduce_fn_max
+    timed_iteration_schedule:
+      NumWarmups: 321
+      EnqueuesPerSync: 321
+      escalation_levels: [321]
+      maximum: 321
+      outcome_dependent_escalation_or_extension: forbidden
+    group_definition: each_anchor_size_pair_has_exactly_7_repeat_qualities
+    cv:
+      mean: arithmetic_mean_of_7_positive_finite_Q_values
+      standard_deviation: sample_standard_deviation_denominator_6
+      percent: 100_times_standard_deviation_divided_by_mean
+      group_values: 9
+      P95_quantile: nearest_rank
+      P95_one_based_rank: 9
+      P95_equivalent: maximum_of_9_group_CV_percent_values
+      maximum_percent_inclusive: 0.5
+    delta_noise:
+      per_repeat_deviation: abs_natural_log_Q_minus_within_group_median_of_7_natural_log_Q
+      pooled_inputs: all_63_per_repeat_deviations
+      quantile: nearest_rank
+      one_based_rank: 60
+      formula: exp_60th_sorted_deviation_minus_1
+      required_output: finite_number_greater_than_or_equal_to_zero
+      use: frozen_output_for_S11_D6_guardrail_only_not_S10R4_pass_threshold
+    aggregate_PASS: all_63_cells_complete_and_CV_P95_at_most_0_5_percent_and_delta_noise_computed
+    incomplete_panel: CHANGES_REQUIRED
+    complete_panel_criterion_failure: inconclusive_FT_INCONCLUSIVE
+  exact_order:
+    - census_A_114
+    - census_B_114
+    - classification_collision_and_selection
+    - mapping_A_B_exact_3K_each
+    - native_sentinel_runtime_conformance
+    - GPU_environment
+    - correctness_9_cells
+    - noise_63_cells
+    - decision
+    - independent_reproduction
+
+downstream_handoff:
+  qualified_edge_token: S10R4:S1_ENTRY_GO_EXACT_FRAME
+  target_checkpoint: S11
+  edge_visible_only_after_S10R4_terminal_postcommit_audit_PASS: true
+  S11_fresh_lineage: F_valid(raw_occurrence_mass)->F_effective->F_codegen
+  raw_occurrence_denominator:
+    preserve_all_validator_accepted_occurrences: true
+    retain_codegen_rejects: true
+    apply_raw_alias_multiplicity_before_collision_aggregation: true
+  feature_consumption:
+    mapping_and_model_features_use_effective_semantics: true
+    codegen_membership_uses_F_codegen: true
+    raw_value_guidance_requires_value_realized_without_behavior_changing_overwrite: true
+    normalized_away_context_dependent_or_collision_confounded_raw_value_credit: forbidden
+    whole_gene_fail_closed_eligibility: unchanged
+    value_level_guidance: deferred_not_authorized
+  forbidden_reuse_as_S11_population_or_model_evidence:
+    - S10R4_114_occurrence_frame
+    - S10R4_selected_K_membership
+    - S10R4_collision_multiplicity_or_codegen_survival_rate
+    - S10R4_mapping_native_correctness_or_noise_scores
+  forbidden_claim_expansion: [general_support, survival_probability, ranking_accuracy, factorization_efficacy, production_readiness]
+
+independent_reproduction:
+  mode: deterministic_raw_to_decision_recomputation_without_new_outcome_workload
+  result_path: agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/artifacts/reproduction/result.json
+  process_completion_path: agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/artifacts/reproduction/process-completion.json
+  may_read:
+    - committed_authority_contract_and_effective_lock
+    - predecessor_raw_frame_and_exact_frame_registry
+    - all_reached_binding_04_raw_formal_children
+    - all_reached_binding_04_durable_manifests_and_evidence
+  must_recompute:
+    - raw_114_denominator_and_every_occurrence_association
+    - every_raw_to_resolver_transform_and_A_B_parity
+    - complete_resolver_partition_aliases_and_multiplicity
+    - codegen_identity_and_stable_group_classification
+    - realized_atom_universe_greedy_trace_C_greedy_K_and_final_order
+    - reached_mapping_parity_and_unique_attempt_branch
+    - reached_native_correctness_and_noise_results
+    - canonical_outcome_criterion_failure_id_edge_and_document_policy
+  new_codegen_mapping_native_GPU_noise_or_resampling: forbidden
+  pass_condition: all_reached_recomputations_complete_exact_match_zero_unknowns
+  otherwise: CHANGES_REQUIRED_not_evaluated_edge_null
+
+fresh_verification:
+  verifier_markdown_path: agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/gates/s10r4/verifier-verdict.md
+  verifier_json_path: agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/gates/s10r4/verifier-verdict.json
+  verifier_role: still_fresh_nonimplementer
+  Plan_A_access: forbidden
+  headline_recomputation: exact_same_requirements_as_independent_reproduction_from_direct_evidence
+  PASS_requires: [goal_alignment_FULL, criteria_C01_through_C13_PASS, zero_blocking_findings, zero_evidence_requests, zero_required_unverified, no_unacceptable_fallback]
+  PASS_projection: VERIFIED_PENDING_CLOSEOUT
+  terminal_CHECKPOINT_COMPLETE_or_edge: forbidden
+
+write_boundaries:
+  implementation_whitelist:
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/run_s10r4_entry.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/schemas/s10r4-entry.schema.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/contract.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/census.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/selector.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/mapping.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/state_machine.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/correctness.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/native_adapter.py
+    - projects/hipblaslt/tensilelite/Tensile/Tests/unit/test_ductile_s10r4_entry.py
+  phase2_prelabel_durable_paths:
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r4-resolver-schema.json
+  phase2_lock_paths:
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/locks/s10r4-stage1-resolver-effective-entry-binding-04-lock.json
+  exact_phase2_commit_paths:
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/run_s10r4_entry.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/schemas/s10r4-entry.schema.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/contract.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/census.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/selector.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/mapping.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/state_machine.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/correctness.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/native_adapter.py
+    - projects/hipblaslt/tensilelite/Tensile/Tests/unit/test_ductile_s10r4_entry.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r4-resolver-schema.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/locks/s10r4-stage1-resolver-effective-entry-binding-04-lock.json
+  runtime_read_execute_dependencies:
+    modified_paths_bound_by_phase2_lock: implementation_whitelist
+    unchanged_exact_records:
+      - {path: study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/__init__.py, mode: "100644", blob_oid: b34fef45fbbd0cae4512a9e9a557b8819e151a02, raw_sha256: e16454c0d1bbb46802bc3bce5ed390d374e09417c15fd856b67bc6ad8b91918f}
+      - {path: study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/conformance.py, mode: "100644", blob_oid: 8bbda847f73513c5a40ad5efb6fb491cea07547d, raw_sha256: 5f9114a676f513fcef07e4255a907fd1ffa8affeba151aea3534fbd3980eb9a5}
+      - {path: study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/frame.py, mode: "100644", blob_oid: 11ca4f557c752649d8c9671043709e00991bb93a, raw_sha256: 45ca8fd67e3af5cd8dda9bc3c8e9ee44db35076c4e29fac2c0c2775043f2a490}
+      - {path: study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/ledger.py, mode: "100644", blob_oid: f9a92648a62a3b00a00bfc49ac653389e3e1062c, raw_sha256: 5abc842ab49f5176a147f4cb6b5a461265cc09afb07438e81332943d8b2c0aaa}
+      - {path: study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/native_formocast_runtime_adapter.cpp, mode: "100644", blob_oid: 4fe85b1e44dec6d17543511e4e875b43bbd1922a, raw_sha256: e75e60cc1afaef9f494cef2c9dd0630a7ab1163f1a8109354905114f3b84f682}
+    import_and_link_closure:
+      complete_python_import_closure_and_native_link_products_bound_in_effective_lock: true
+      unknown_dependency_or_hash_drift: CHANGES_REQUIRED
+      fresh_B04_tests_for_every_reused_helper: required
+      read_B02_or_B03_run_state: forbidden
+  binding_03_diagnostic_byte_baseline:
+    must_change_for_B04_semantics:
+      - {path: study_docs/research/ductile-origami-warmstart/protocol/v1/run_s10r4_entry.py, raw_sha256: 18fae71dedd329067324b63b139c3ca13bbe0939e6a0c90a3993b227ad08415e}
+      - {path: study_docs/research/ductile-origami-warmstart/protocol/v1/schemas/s10r4-entry.schema.json, raw_sha256: 2ee98781912c340a4ceba88ddec81b8c83353679fcda5dc0b4da231e5531e627}
+      - {path: study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/contract.py, raw_sha256: efc2ed2d559f5ce083bfc0826d81bf93aa6e6a86008ccee7b7611aab2c7dbb58}
+      - {path: study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/census.py, raw_sha256: 9d3561d503691364eb2801cd609d368ed8a1eb16e7461a090a13501eef0788dd}
+      - {path: projects/hipblaslt/tensilelite/Tensile/Tests/unit/test_ductile_s10r4_entry.py, raw_sha256: 9ed084c7c2a4a4383ffd9cc3f21faed8f688f1f204c99db756a9cc1233b1b4af}
+    pure_reuse_permitted_only_after_fresh_B04_no_state_read_tests:
+      - {path: study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/correctness.py, raw_sha256: 87f72e2c27f4c2bad94f0855626932982e9436df18619536090e7abba5c6c4df}
+      - {path: study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/native_adapter.py, raw_sha256: ee6f04c73dd59b9d9d61a7c497d578405c83b64a407fc6de178c325957761054}
+    diagnostic_byte_match_never_grants_gate_credit: true
+    denied_read_prefixes:
+      - agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame-binding-02
+      - agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame-binding-03
+    only_permitted_reads_from_denied_prefixes: none_during_B04_implementation_lock_or_formal_execution
+  execution_artifact_whitelist:
+    path_record_schema:
+      required_exact_keys: [record_type, path, descendant_grammar, value_sources, maximum_cardinality]
+      record_type_enum: [exact_file, exact_directory, descendant_prefix]
+      normalization: repo_relative_POSIX_no_dot_dot_no_absolute_no_symlink_no_special_file
+      exact_file_descendant_grammar: null
+      exact_directory_descendants: forbidden_unless_separately_listed
+      descendant_prefix_containment: lexical_and_resolved_path_strictly_below_prefix
+      unmatched_path: forbidden
+      additional_properties: false
+    exact_control_files:
+      - agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/baseline.md
+      - agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/gate-map.md
+      - agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/adjudication.md
+      - agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/subagents.md
+      - agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/tranche-state.json
+      - agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/authority/reviewer-a-authority-precommit-r1.json
+      - agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/authority/adversarial-authority-precommit-r1.json
+      - agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/authority/reviewer-a-authority-precommit-final.json
+      - agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/authority/adversarial-authority-precommit-final.json
+      - agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/authority/reviewer-a-authority-postcommit.json
+      - agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/authority/adversarial-authority-postcommit.json
+      - agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/authority/reviewer-a-contract-precommit-r1.json
+      - agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/authority/adversarial-contract-precommit-r1.json
+      - agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/authority/reviewer-a-contract-precommit-r2.json
+      - agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/authority/adversarial-contract-precommit-r2.json
+      - agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/authority/reviewer-a-contract-precommit-r3.json
+      - agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/authority/adversarial-contract-precommit-r3.json
+      - agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/authority/reviewer-a-contract-precommit-r4.json
+      - agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/authority/adversarial-contract-precommit-r4.json
+      - agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/authority/reviewer-a-contract-precommit-final.json
+      - agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/authority/adversarial-contract-precommit-final.json
+      - agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/authority/reviewer-a-contract-postcommit.json
+      - agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/authority/adversarial-contract-postcommit.json
+      - agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/gates/s10r4/plan_b.md
+      - agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/gates/s10r4/plan_b.freeze.json
+      - agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/gates/s10r4/plan_a.md
+      - agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/gates/s10r4/plan_a-revisions.jsonl
+      - agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/gates/s10r4/audit-request.json
+      - agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/gates/s10r4/audit-verdict.json
+      - agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/gates/s10r4/audit-verdict.jsonl
+      - agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/gates/s10r4/resolver-schema-audits.json
+      - agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/gates/s10r4/prebinding-audit.json
+      - agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/gates/s10r4/lock-postcommit-reviewer-a.json
+      - agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/gates/s10r4/lock-postcommit-adversarial.json
+      - agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/gates/s10r4/lock-activation.json
+      - agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/gates/s10r4/locked-ready-reviewer-a.json
+      - agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/gates/s10r4/locked-ready-adversarial.json
+      - agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/gates/s10r4/lock-activation-audit.json
+      - agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/gates/s10r4/implementer-report.md
+      - agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/gates/s10r4/implementer-report.json
+      - agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/gates/s10r4/verifier-verdict.md
+      - agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/gates/s10r4/verifier-verdict.json
+      - agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/closure/closeout.md
+      - agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/closure/closeout-ack.json
+      - agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/closure/delivery-manifest.txt
+      - agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/closure/post-commit-audit.json
+    descendant_prefix_records:
+      - record_type: descendant_prefix
+        path: agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/authority/contract-review-events
+        descendant_grammar: "^r[0-9]+-(reviewer-a|adversarial)\\.json$"
+        value_sources: [monotone_contract_review_round_and_fixed_reviewer_role]
+        maximum_cardinality: 1000
+      - record_type: descendant_prefix
+        path: agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/artifacts/prelabel-build
+        descendant_grammar: "^[A-Za-z0-9._+/-]+$"
+        value_sources: [pinned_source_materialization_and_native_build]
+        maximum_cardinality: 200000
+      - record_type: descendant_prefix
+        path: agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/artifacts/prelabel-fixtures
+        descendant_grammar: "^[A-Za-z0-9._+/-]+$"
+        value_sources: [contract_defined_synthetic_fixtures]
+        maximum_cardinality: 10000
+      - record_type: descendant_prefix
+        path: agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/artifacts/prelabel-tests
+        descendant_grammar: "^[A-Za-z0-9._+/-]+$"
+        value_sources: [contract_defined_source_and_fault_tests]
+        maximum_cardinality: 10000
+      - record_type: descendant_prefix
+        path: agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/artifacts/formal-codegen
+        descendant_grammar: "^pass-(A|B)/(00[0-9]|0[1-9][0-9]|1[01][0-9])-([0-9a-f]{64})/(request.json|singleton.yaml|stdout.txt|stderr.txt|resolver.json|atom.json|result.json|process-completion.json|artifacts/[A-Za-z0-9._+/-]+)$"
+        value_sources: [pass_ID_enum, exact_frame_registry_index_and_raw_hash]
+        maximum_cardinality: 250000
+      - record_type: descendant_prefix
+        path: agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/artifacts/formal-mapping
+        descendant_grammar: "^(pass-A/attempt-(1|2)|pass-B/attempt-1)/([0-9a-f]{64})/(size-00|size-01|size-02)/(request.json|stdout.txt|stderr.txt|result.json|process-completion.json|artifacts/[A-Za-z0-9._+/-]+)$"
+        value_sources: [pass_attempt_state_machine, sealed_operational_selection, committed_size_registry]
+        maximum_cardinality: 100000
+      - record_type: descendant_prefix
+        path: agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/artifacts/formal-native
+        descendant_grammar: "^[A-Za-z0-9._+/-]+$"
+        value_sources: [sealed_native_fixture_and_fault_registry]
+        maximum_cardinality: 10000
+      - record_type: descendant_prefix
+        path: agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/artifacts/formal-gpu
+        descendant_grammar: "^(environment|correctness/(0|mid|last)/(size-00|size-01|size-02)/attempt-(1|2)|noise/(0|mid|last)/(size-00|size-01|size-02)/repeat-[0-6])/[A-Za-z0-9._+/-]+$"
+        value_sources: [sealed_anchor_indices, committed_size_registry, correctness_attempt_state_machine, noise_repeat_registry]
+        maximum_cardinality: 100000
+      - record_type: descendant_prefix
+        path: agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/artifacts/reproduction
+        descendant_grammar: "^[A-Za-z0-9._+/-]+$"
+        value_sources: [independent_reproduction]
+        maximum_cardinality: 10000
+    all_dynamic_values_derived_only_from_bound_sources: true
+    directory_symlink_hardlink_special_file_or_escape: reject
+  durable_evidence_paths:
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r4-codegen-classification.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r4-operational-selection.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r4-mapping-corpus.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r4-sentinel-conformance.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r4-environment.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s10r4-smoke-correctness.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s10r4-noise-pilot.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s10r4-decision.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s10r4-operational-blocker.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/gate-records/s10r4-s1-entry-go-exact-frame.json
+  terminal_parent_and_report_paths:
+    - study_docs/research/surrogate-dse-plan.md
+    - study_docs/research/ductile-origami-warmstart-experiment-plan.md
+    - study_docs/research/ductile-origami-warmstart/README.md
+    - study_docs/research/ductile-origami-warmstart/s10r4-stage1-resolver-effective-operational-entry-design.md
+    - study_docs/research/ductile-origami-warmstart/s11-stage1-model-only-factorization-design.md
+    - study_docs/research/ductile-origami-warmstart/reports/staged/s10r4-stage1-exact-frame-entry-report.md
+  delivery_whitelist_exact_paths:
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/run_s10r4_entry.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/schemas/s10r4-entry.schema.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/contract.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/census.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/selector.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/mapping.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/state_machine.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/correctness.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/native_adapter.py
+    - projects/hipblaslt/tensilelite/Tensile/Tests/unit/test_ductile_s10r4_entry.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r4-resolver-schema.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/locks/s10r4-stage1-resolver-effective-entry-binding-04-lock.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r4-codegen-classification.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r4-operational-selection.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r4-mapping-corpus.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r4-sentinel-conformance.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r4-environment.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s10r4-smoke-correctness.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s10r4-noise-pilot.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s10r4-decision.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s10r4-operational-blocker.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/gate-records/s10r4-s1-entry-go-exact-frame.json
+    - study_docs/research/surrogate-dse-plan.md
+    - study_docs/research/ductile-origami-warmstart-experiment-plan.md
+    - study_docs/research/ductile-origami-warmstart/README.md
+    - study_docs/research/ductile-origami-warmstart/s10r4-stage1-resolver-effective-operational-entry-design.md
+    - study_docs/research/ductile-origami-warmstart/s11-stage1-model-only-factorization-design.md
+    - study_docs/research/ductile-origami-warmstart/reports/staged/s10r4-stage1-exact-frame-entry-report.md
+  outcome_delivery_matrix:
+    path_ids:
+      research_charter: study_docs/research/surrogate-dse-plan.md
+      experiment_plan: study_docs/research/ductile-origami-warmstart-experiment-plan.md
+      checkpoint_index: study_docs/research/ductile-origami-warmstart/README.md
+      active_B04_design: study_docs/research/ductile-origami-warmstart/s10r4-stage1-resolver-effective-operational-entry-design.md
+      S11_consumer_projection: study_docs/research/ductile-origami-warmstart/s11-stage1-model-only-factorization-design.md
+      S10R4_formal_report: study_docs/research/ductile-origami-warmstart/reports/staged/s10r4-stage1-exact-frame-entry-report.md
+      s10r4_codegen_classification: study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r4-codegen-classification.json
+      s10r4_operational_selection: study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r4-operational-selection.json
+      s10r4_mapping_corpus: study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r4-mapping-corpus.json
+      s10r4_sentinel_conformance: study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r4-sentinel-conformance.json
+      s10r4_environment: study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r4-environment.json
+      s10r4_smoke_correctness: study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s10r4-smoke-correctness.json
+      s10r4_noise_pilot: study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s10r4-noise-pilot.json
+      s10r4_decision: study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s10r4-decision.json
+      s10r4_operational_blocker: study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s10r4-operational-blocker.json
+      positive_gate_record: study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/gate-records/s10r4-s1-entry-go-exact-frame.json
+    common_terminal_parent_and_report_required: [research_charter, experiment_plan, checkpoint_index, active_B04_design, S11_consumer_projection, S10R4_formal_report]
+    expansion_rule: replace_common_terminal_parent_and_report_required_with_its_exact_six_path_ids_then_resolve_every_ID_by_exact_path_ids_lookup
+    negative_selection:
+      required: [s10r4_codegen_classification, s10r4_operational_selection, s10r4_decision, common_terminal_parent_and_report_required]
+      forbidden: [s10r4_mapping_corpus, s10r4_sentinel_conformance, s10r4_environment, s10r4_smoke_correctness, s10r4_noise_pilot, positive_gate_record]
+    negative_mapping_failure:
+      required: [s10r4_codegen_classification, s10r4_operational_selection, s10r4_mapping_corpus, s10r4_decision, common_terminal_parent_and_report_required]
+      forbidden: [s10r4_sentinel_conformance, s10r4_environment, s10r4_smoke_correctness, s10r4_noise_pilot, positive_gate_record]
+    negative_correctness:
+      required: [s10r4_codegen_classification, s10r4_operational_selection, s10r4_mapping_corpus, s10r4_sentinel_conformance, s10r4_environment, s10r4_smoke_correctness, s10r4_decision, common_terminal_parent_and_report_required]
+      forbidden: [s10r4_noise_pilot, positive_gate_record]
+    inconclusive_noise:
+      required: [s10r4_codegen_classification, s10r4_operational_selection, s10r4_mapping_corpus, s10r4_sentinel_conformance, s10r4_environment, s10r4_smoke_correctness, s10r4_noise_pilot, s10r4_decision, common_terminal_parent_and_report_required]
+      forbidden: [positive_gate_record]
+    positive:
+      required: [s10r4_codegen_classification, s10r4_operational_selection, s10r4_mapping_corpus, s10r4_sentinel_conformance, s10r4_environment, s10r4_smoke_correctness, s10r4_noise_pilot, s10r4_decision, positive_gate_record, common_terminal_parent_and_report_required]
+      forbidden: [s10r4_operational_blocker]
+    CHANGES_REQUIRED:
+      required: []
+      forbidden: [s10r4_decision, positive_gate_record, S10R4_formal_report]
+      lifecycle_projection_forbidden: CHECKPOINT_COMPLETE
+    terminal_operational_BLOCKED:
+      required: [s10r4_operational_blocker]
+      forbidden: [positive_gate_record, S10R4_formal_report]
+      lifecycle_projection_forbidden: CHECKPOINT_COMPLETE
+    reached_evidence_rule: exact_required_paths_plus_only_those_prior_stage_paths_explicitly_required_by_selected_branch
+    identifier_to_path_resolution: exact_lookup_in_path_ids_only_no_fallback
+  boundary_disjointness:
+    implementation_and_execution_artifacts_overlap: forbidden
+    execution_artifacts_and_delivery_overlap: forbidden
+    implementation_paths_may_be_delivery_paths: true
+    tracked_prelabel_lock_evidence_and_reports_are_delivery_only_not_execution_artifacts: true
+  forbidden_paths:
+    - study_docs/research/ductile-origami-warmstart/reports/staged/s11-stage1-model-only-factorization-report.md
+    - study_docs/research/ductile-origami-warmstart/reports/staged/s12-stage1-real-score-audit-report.md
+    - study_docs/research/ductile-origami-warmstart/reports/gen0-factorization-mvp-report.md
+    - study_docs/research/ductile-origami-warmstart/reports/short-horizon-persistence-report.md
+    - study_docs/research/ductile-origami-warmstart/reports/bounded-regime-replication-report.md
+    - study_docs/research/ductile-origami-warmstart/reports/staged/s40-stage4-activation-report.md
+    - study_docs/research/ductile-origami-warmstart/reports/learned-residual-surrogate-report.md
+  broad_staging_reset_restore_stash_clean: forbidden
+
+lock_and_seal:
+  phase1_contract_commit:
+    exact_paths: [study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4-stage1-resolver-effective-entry-binding-04-contract.yaml]
+    independent_precommit_review_required: true
+    postcommit_audit_required: true
+    outcome_access: false
+  phase2_effective_lock_must_bind:
+    - contract_commit_oid_raw_and_canonical_hash
+    - authority_commit_and_two_postcommit_audits
+    - frozen_Plan_B_hash_and_audit
+    - Plan_A_revision_hash_without_disclosing_it_to_verifier
+    - exact_implementation_hashes
+    - resolver_schema_manifest_hash_and_source_closure
+    - source_subtree_and_semantic_blob_verification
+    - exact_frame_size_and_native_fixture_fresh_replay
+    - exact_environment_argv_cwd_and_whitelists
+    - prelabel_synthetic_and_fault_test_results
+    - prebinding_adversarial_audit_exact_identity_and_hash
+    - role_and_resource_accounts
+    - formal_and_outcome_path_absence
+  effective_lock_closed_schema:
+    top_level_required_exact_keys:
+      - schema_version
+      - document_kind
+      - checkpoint_id
+      - binding_id
+      - lock_state
+      - authority
+      - contract
+      - plans
+      - implementation
+      - runtime_dependencies
+      - resolver_schema
+      - sources_and_inputs
+      - prelabel_verification
+      - prebinding_audit
+      - write_boundaries
+      - outcome_absence
+      - roles
+      - resources
+      - activation
+      - lock_identity
+    additional_properties: false
+    constants:
+      schema_version: 1
+      document_kind: s10r4_binding_04_effective_lock
+      checkpoint_id: S10R4
+      binding_id: binding-04
+      lock_state: EFFECTIVE_PRELABEL
+    top_level_property_schemas:
+      authority: authority_record
+      contract: contract_record
+      plans: plans_record
+      implementation: implementation_record
+      runtime_dependencies: runtime_dependencies_record
+      resolver_schema: resolver_schema_record
+      sources_and_inputs: sources_and_inputs_record
+      prelabel_verification: prelabel_verification_record
+      prebinding_audit: prebinding_audit_record
+      write_boundaries: write_boundaries_record
+      outcome_absence: outcome_absence_record
+      roles: roles_record
+      resources: resources_record
+      activation: activation_record
+      lock_identity: lock_identity_record
+    exact_path_identity_record:
+      required_exact_keys: [path, mode, size_bytes, raw_sha256, canonical_sha256_or_null, git_blob_oid_or_null]
+      additional_properties: false
+      path_type: safe_repo_relative_POSIX
+      mode_enum: ["100644", "100755"]
+      digest_type: lowercase_sha256_hex
+      size_bytes_type: nonnegative_integer
+      canonical_sha256_or_null_type: lowercase_sha256_hex_or_null
+      git_blob_oid_or_null_type: lowercase_git_oid_hex_or_null
+    review_record:
+      required_exact_keys: [role, task_id, path, raw_sha256, verdict, findings_count]
+      additional_properties: false
+      role_enum: [independent_reviewer_a, adversarial_reviewer_b, independent_contract_reviewer_a, adversarial_contract_auditor, independent_resolver_schema_reviewer_a, adversarial_resolver_schema_auditor]
+      task_id_type: nonempty_string
+      path_type: safe_repo_relative_POSIX
+      raw_sha256_type: lowercase_sha256_hex
+      verdict_enum:
+        - PASS
+        - AUDIT_PASS
+        - PASS_AUTHORITY_PRECOMMIT
+        - AUDIT_PASS_AUTHORITY_POSTCOMMIT
+        - PASS_CONTRACT_PRECOMMIT
+        - AUDIT_PASS_CONTRACT_POSTCOMMIT
+        - PASS_RESOLVER_SCHEMA_PRECOMMIT
+        - AUDIT_PASS_PLAN_B
+        - AUDIT_PASS_PREBINDING
+        - AUDIT_PASS_LOCK_POSTCOMMIT
+        - AUDIT_PASS_LOCKED_READY
+      findings_count_exact: 0
+    cross_document_reference_roots:
+      contract_document: exact_unique_key_finite_YAML_document_being_defined_by_this_file
+      effective_lock_instance: future_JSON_instance_validated_by_effective_lock_closed_schema
+    review_phase_identity_matrix:
+      authority_postcommit:
+        record_templates:
+          - {task_id: /root/s10r4_design_reviewer_a, role: independent_reviewer_a, path: agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/authority/reviewer-a-authority-postcommit.json, verdict: AUDIT_PASS_AUTHORITY_POSTCOMMIT, findings_count: 0}
+          - {task_id: /root/s10r4_design_reviewer_b, role: adversarial_reviewer_b, path: agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/authority/adversarial-authority-postcommit.json, verdict: AUDIT_PASS_AUTHORITY_POSTCOMMIT, findings_count: 0}
+      contract_precommit:
+        record_templates:
+          - {task_id: /root/s10r4_design_reviewer_a, role: independent_contract_reviewer_a, path: agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/authority/reviewer-a-contract-precommit-final.json, verdict: PASS_CONTRACT_PRECOMMIT, findings_count: 0}
+          - {task_id: /root/s10r4_adversarial_auditor, role: adversarial_contract_auditor, path: agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/authority/adversarial-contract-precommit-final.json, verdict: PASS_CONTRACT_PRECOMMIT, findings_count: 0}
+      contract_postcommit:
+        record_templates:
+          - {task_id: /root/s10r4_design_reviewer_a, role: independent_contract_reviewer_a, path: agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/authority/reviewer-a-contract-postcommit.json, verdict: AUDIT_PASS_CONTRACT_POSTCOMMIT, findings_count: 0}
+          - {task_id: /root/s10r4_adversarial_auditor, role: adversarial_contract_auditor, path: agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/authority/adversarial-contract-postcommit.json, verdict: AUDIT_PASS_CONTRACT_POSTCOMMIT, findings_count: 0}
+      plan_b_audit:
+        record_templates:
+          - {task_id: /root/s10r4_adversarial_auditor, role: adversarial_contract_auditor, path: agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/gates/s10r4/audit-verdict.json, verdict: AUDIT_PASS_PLAN_B, findings_count: 0}
+      resolver_schema_precommit:
+        record_templates:
+          - {task_id: /root/s10r4_design_reviewer_a, role: independent_resolver_schema_reviewer_a, path: agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/gates/s10r4/resolver-schema-audits.json, verdict: PASS_RESOLVER_SCHEMA_PRECOMMIT, findings_count: 0}
+          - {task_id: /root/s10r4_adversarial_auditor, role: adversarial_resolver_schema_auditor, path: agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/gates/s10r4/resolver-schema-audits.json, verdict: PASS_RESOLVER_SCHEMA_PRECOMMIT, findings_count: 0}
+      prebinding_audit:
+        record_templates:
+          - {task_id: /root/s10r4_adversarial_auditor, role: adversarial_contract_auditor, path: agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/gates/s10r4/prebinding-audit.json, verdict: AUDIT_PASS_PREBINDING, findings_count: 0}
+      lock_postcommit:
+        record_templates:
+          - {task_id: /root/s10r4_design_reviewer_a, role: independent_contract_reviewer_a, path: agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/gates/s10r4/lock-postcommit-reviewer-a.json, verdict: AUDIT_PASS_LOCK_POSTCOMMIT, findings_count: 0}
+          - {task_id: /root/s10r4_adversarial_auditor, role: adversarial_contract_auditor, path: agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/gates/s10r4/lock-postcommit-adversarial.json, verdict: AUDIT_PASS_LOCK_POSTCOMMIT, findings_count: 0}
+      locked_ready:
+        record_templates:
+          - {task_id: /root/s10r4_design_reviewer_a, role: independent_contract_reviewer_a, path: agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/gates/s10r4/locked-ready-reviewer-a.json, verdict: AUDIT_PASS_LOCKED_READY, findings_count: 0}
+          - {task_id: /root/s10r4_adversarial_auditor, role: adversarial_contract_auditor, path: agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/gates/s10r4/locked-ready-adversarial.json, verdict: AUDIT_PASS_LOCKED_READY, findings_count: 0}
+      external_artifact_schema_by_phase:
+        authority_postcommit: immutable_authority_postcommit_artifact_binding
+        contract_precommit: contract_precommit_reviewer_artifact_closed_schema
+        contract_postcommit: contract_postcommit_reviewer_artifact_closed_schema
+        plan_b_audit: plan_b_audit_artifact_closed_schema
+        resolver_schema_precommit: resolver_schema_audit_artifact_closed_schema
+        prebinding_audit: prebinding_audit_artifact_closed_schema
+        lock_postcommit: ordinal_0_activation_event_closed_schema.lock_postcommit_reviewer_artifact_closed_schema
+        locked_ready: locked_ready_audit_closed_schema.locked_ready_reviewer_artifact_closed_schema
+      materialization_rule:
+        - read_exact_external_path_bytes_once
+        - parse_as_unique_key_finite_JSON_and_validate_against_external_artifact_schema_by_phase_before_hashing
+        - require_schema_defined_parsed_reviewer_task_id_review_role_verdict_and_empty_findings_exact_equal_record_template
+        - for_immutable_authority_postcommit_only_review_role_is_exact_authority_role_mapping_and_all_other_identity_fields_are_parsed
+        - require_parsed_candidate_path_raw_hash_and_size_when_present_exact_equal_the_same_contract_candidate_bytes_reviewed_by_this_phase
+        - require_parsed_commit_record_when_present_exact_equal_the_subject_commit_parent_tree_path_and_committed_raw_bytes
+        - require_parsed_subject_hashes_deterministic_projection_digests_and_commit_identities_exact_equal_corresponding_contract_effective_lock_or_aggregate_subject
+        - require_parsed_checks_exact_key_set_and_all_true_values_equal_the_phase_external_closed_schema_reject_missing_extra_or_arbitrary_checks_for_every_phase_except_immutable_authority_postcommit
+        - immutable_authority_postcommit_checks_are_not_reinterpreted_and_are_bound_by_exact_full_file_raw_hash_plus_exact_commit_shape
+        - add_raw_sha256_equal_fresh_SHA256_of_the_same_validated_external_path_bytes_to_exact_template_fields
+        - reject_any_schema_identity_subject_or_hash_mismatch
+      raw_sha256_is_not_stored_inside_referenced_reviewer_artifact: true
+      task_id_unique_within_each_phase: true
+      task_id_must_exist_in_roles_record_role_registry_exact: true
+      task_id_participated_in_implementation_must_be_false: true
+      role_alias_and_task_id_pair_must_exactly_match_this_matrix: true
+      unknown_task_role_verdict_or_path: reject
+    immutable_authority_postcommit_artifact_binding:
+      exact_path_raw_hash_task_verdict_records:
+        - {path: agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/authority/reviewer-a-authority-postcommit.json, raw_sha256: d32148d41730cc624a67f1b4c372bdbf79ce82ddce06a22a3add21b6433a80e4, reviewer_task_id: /root/s10r4_design_reviewer_a, review_role: independent_reviewer_a, verdict: AUDIT_PASS_AUTHORITY_POSTCOMMIT, findings: []}
+        - {path: agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/authority/adversarial-authority-postcommit.json, raw_sha256: 02f96141770236a122b8d3c86f6c84783c0decf8ac0fda345141e6ad431c7c0e, reviewer_task_id: /root/s10r4_design_reviewer_b, review_role: adversarial_reviewer_b, verdict: AUDIT_PASS_AUTHORITY_POSTCOMMIT, findings: []}
+      parsed_required_fields: [schema_version, document_kind, checkpoint_id, binding_id, authority_id, reviewer_task_id, verdict, findings, created_utc]
+      parsed_exact_values: {schema_version: 1, checkpoint_id: S10R4, binding_id: binding-04, authority_id: A51, verdict: AUDIT_PASS_AUTHORITY_POSTCOMMIT, findings: []}
+      review_role_source: exact_path_raw_hash_task_verdict_records_task_to_role_mapping
+      checks_validation: exact_full_file_bytes_bound_by_path_specific_raw_sha256_no_all_true_or_generic_check_schema_applied
+      commit_shape_by_exact_artifact_path:
+        - exact_artifact_path: agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/authority/reviewer-a-authority-postcommit.json
+          required_top_level_fields: [commit_oid, parent_oid]
+          exact_values: {commit_oid: 119a1bfc4deffda59959ff51e43a1a6ae99f648e, parent_oid: 572f6b07be9cd5042bc90bc411c350c89c2fd684}
+        - exact_artifact_path: agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/authority/adversarial-authority-postcommit.json
+          required_commit_object_exact_keys: [sha, parent, tree, subject]
+          exact_values: {sha: 119a1bfc4deffda59959ff51e43a1a6ae99f648e, parent: 572f6b07be9cd5042bc90bc411c350c89c2fd684, tree: 39eb11d5c6b3d26a6071d9de21d8920d2f117324, subject: "study: authorize S10R4 resolver-effective binding"}
+      raw_hash_mismatch_or_unknown_property_affecting_identity: reject
+    reviewer_attestation_without_raw_record:
+      required_exact_keys: [reviewer_task_id, review_role, checks, findings, verdict, created_utc]
+      reviewer_task_id_type: nonempty_string
+      review_role_type: review_record.role_enum
+      checks_type: nonempty_object_with_every_value_boolean_true
+      findings_exact: []
+      verdict_type: review_record.verdict_enum
+      created_utc_type: RFC3339_UTC_Z
+      artifact_contains_own_raw_sha256: false
+      additional_properties: false
+    reviewer_identity_and_checks_record:
+      required_exact_keys: [reviewer_task_id, review_role, checks]
+      reviewer_task_id_type: nonempty_string
+      review_role_type: review_record.role_enum
+      checks_type: nonempty_object_with_every_value_boolean_true
+      additional_properties: false
+    contract_precommit_reviewer_artifact_closed_schema:
+      required_exact_keys: [schema_version, document_kind, checkpoint_id, binding_id, candidate, reviewer, subject, verdict, findings, created_utc]
+      exact_values: {schema_version: 1, document_kind: s10r4_binding_04_contract_precommit_reviewer_artifact, checkpoint_id: S10R4, binding_id: binding-04, verdict: PASS_CONTRACT_PRECOMMIT, findings: []}
+      candidate_record:
+        required_exact_keys: [path, raw_sha256, size_bytes]
+        exact_path: study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4-stage1-resolver-effective-entry-binding-04-contract.yaml
+        raw_sha256_type: lowercase_sha256_hex
+        size_bytes_type: positive_integer
+        cross_bindings:
+          path: exact_equal_contract_document.$.identity.contract_path
+          raw_sha256: exact_equal_fresh_SHA256_of_contract_document_exact_bytes_for_both_precommit_artifacts_and_effective_lock_instance.$.contract.raw_sha256
+          size_bytes: exact_equal_byte_length_of_the_same_frozen_contract_bytes_for_both_precommit_artifacts
+        additional_properties: false
+      reviewer_schema: reviewer_identity_and_checks_record
+      reviewer_checks_exact_keys: [candidate_hash_and_size, unique_key_finite_YAML, A51_authority_identity, scientific_oracle_and_outcome_matrix, lifecycle_and_edge_projection, resolver_identity_and_lock_schema_closure, exact_write_and_delivery_boundaries, no_remaining_row_or_outcome_access]
+      subject_record:
+        required_exact_keys: [authority_commit_oid, authority_six_path_digest, contract_acceptance_criteria_digest]
+        authority_commit_oid_type: lowercase_git_oid_hex
+        digest_fields_type: lowercase_sha256_hex
+        authority_six_path_digest_input: canonical_JSON_array_of_contract_document.$.authority.committed_projection_projected_as_id_path_raw_sha256_in_stored_array_order
+        contract_acceptance_criteria_digest_input: canonical_JSON_of_exact_contract_document.$.acceptance_criteria_array_in_stored_order
+        digest_algorithm: SHA256_of_identity_stack_canonical_JSON_bytes
+        cross_bindings:
+          authority_commit_oid: exact_equal_contract_document.$.identity.authority_commit_oid
+          authority_six_path_digest: exact_equal_fresh_recomputation_from_contract_document.$.authority.committed_projection
+          contract_acceptance_criteria_digest: exact_equal_fresh_recomputation_from_contract_document.$.acceptance_criteria
+        additional_properties: false
+      created_utc_type: RFC3339_UTC_Z
+      additional_properties: false
+    contract_postcommit_reviewer_artifact_closed_schema:
+      required_exact_keys: [schema_version, document_kind, checkpoint_id, binding_id, commit, reviewer, findings, verdict, created_utc]
+      exact_values: {schema_version: 1, document_kind: s10r4_binding_04_contract_postcommit_reviewer_artifact, checkpoint_id: S10R4, binding_id: binding-04, findings: [], verdict: AUDIT_PASS_CONTRACT_POSTCOMMIT}
+      commit_record:
+        required_exact_keys: [commit_oid, parent_oid, tree_oid, exact_path, raw_sha256]
+        commit_fields_type: lowercase_git_oid_hex
+        exact_path: study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4-stage1-resolver-effective-entry-binding-04-contract.yaml
+        raw_sha256_type: lowercase_sha256_hex
+        additional_properties: false
+      reviewer_schema: reviewer_identity_and_checks_record
+      reviewer_checks_exact_keys: [commit_exact_single_path, parent_and_tree_identity, committed_bytes_equal_precommit_candidate, precommit_review_pair_hashes, unrelated_index_and_worktree_excluded, no_lock_formal_or_outcome_artifact, local_only_no_push]
+      created_utc_type: RFC3339_UTC_Z
+      additional_properties: false
+    plan_b_audit_artifact_closed_schema:
+      required_exact_keys: [schema_version, document_kind, checkpoint_id, binding_id, phase, reviewer_task_id, review_role, subject, checks, findings, verdict, created_utc]
+      exact_values: {schema_version: 1, document_kind: s10r4_binding_04_plan_b_audit, checkpoint_id: S10R4, binding_id: binding-04, phase: PLAN_B, reviewer_task_id: /root/s10r4_adversarial_auditor, review_role: adversarial_contract_auditor, findings: [], verdict: AUDIT_PASS_PLAN_B}
+      subject_record:
+        required_exact_keys: [contract_commit_oid, contract_raw_sha256, plan_b_raw_sha256, plan_b_freeze_raw_sha256]
+        contract_commit_oid_type: lowercase_git_oid_hex
+        digest_fields_type: lowercase_sha256_hex
+        additional_properties: false
+      checks_exact_keys: [contract_and_authority_identity, oracle_covers_all_acceptance_criteria, evidence_requests_and_unacceptable_fallbacks_exact, frozen_outcome_matrix_and_edges, fresh_verification_feasible, no_remaining_row_or_outcome_access]
+      every_check_value_exact: true
+      created_utc_type: RFC3339_UTC_Z
+      artifact_contains_own_raw_sha256: false
+      additional_properties: false
+    resolver_schema_audit_artifact_closed_schema:
+      required_exact_keys: [schema_version, document_kind, checkpoint_id, binding_id, phase, subject, reviewer_attestations, findings, verdict, created_utc]
+      exact_values: {schema_version: 1, document_kind: s10r4_binding_04_resolver_schema_audits, checkpoint_id: S10R4, binding_id: binding-04, phase: RESOLVER_SCHEMA_PRECOMMIT, findings: [], verdict: PASS_RESOLVER_SCHEMA_PRECOMMIT}
+      subject_record:
+        required_exact_keys: [resolver_schema_path, resolver_schema_raw_sha256, resolver_schema_document_digest, source_closure_sha256]
+        exact_path: study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r4-resolver-schema.json
+        digest_fields_type: lowercase_sha256_hex
+        additional_properties: false
+      reviewer_attestations:
+        type: array_length_2
+        items: reviewer_attestation_without_raw_record
+        exact_task_role_verdict_pairs: review_phase_identity_matrix.resolver_schema_precommit.record_templates
+        each_attestation_checks_exact_keys: [closed_meta_schema, pinned_source_closure, complete_consumer_field_projection, transformation_and_guard_rules, MI_inverse_only, candidate_registry_digest_chain, synthetic_faults, no_remaining_row_or_outcome_access]
+      created_utc_type: RFC3339_UTC_Z
+      artifact_contains_own_raw_sha256: false
+      additional_properties: false
+    source_commit_tree_record:
+      required_exact_keys: [ref, commit_oid, subtree_path_or_null, tree_oid_or_null]
+      additional_properties: false
+      ref_type: nonempty_string
+      commit_oid_type: lowercase_git_oid_hex
+      subtree_path_or_null_type: safe_repo_relative_POSIX_or_null
+      tree_oid_or_null_type: lowercase_git_oid_hex_or_null
+      null_pair_rule: subtree_path_or_null_and_tree_oid_or_null_are_both_null_or_both_nonnull
+    semantic_source_record:
+      required_exact_keys: [path, mode, blob_oid, raw_sha256, symbols]
+      additional_properties: false
+      path_type: safe_repo_relative_POSIX
+      mode_enum: ["100644", "100755"]
+      blob_oid_type: lowercase_git_oid_hex
+      raw_sha256_type: lowercase_sha256_hex
+      symbols_type: nonempty_unique_array_of_nonempty_strings
+      record_order: path_lexical_ASCII
+    input_record:
+      required_exact_keys: [path, mode, size_bytes, raw_sha256, git_blob_oid_or_null]
+      additional_properties: false
+      path_type: safe_repo_relative_POSIX
+      mode_enum: ["100644", "100755"]
+      size_bytes_type: nonnegative_integer
+      raw_sha256_type: lowercase_sha256_hex
+      git_blob_oid_or_null_type: lowercase_git_oid_hex_or_null
+    candidate_registry_input_record:
+      required_exact_keys: [path, mode, size_bytes, raw_sha256, git_blob_oid_or_null, full_document_canonical_sha256, internal_registry_digest]
+      exact_values:
+        path: study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r3-candidate-atom-registry.json
+        mode: "100644"
+        size_bytes: 14841135
+        raw_sha256: 24ae3c4eb0a358f3e9ed6f3f5d2cdeae54bdf151bdb347d68d2ede879613d010
+        git_blob_oid_or_null: ec6bc2f5cdda15d4ddec9310d3956af3dbdd93ea
+        full_document_canonical_sha256: 94eac53847d314b5f5fd487712d64f7c94cbfd07f091c128d7650f939801c500
+        internal_registry_digest: ab366af55ed1b0666bda8535f91c60b1712692e5e2ed3b83b11b69f3590cad9c
+      git_blob_oid_or_null_type: lowercase_git_oid_hex_or_null
+      additional_properties: false
+    toolchain_record:
+      required_exact_keys: [path, mode, size_bytes, raw_sha256, version_stdout_sha256, dependency_closure_sha256]
+      additional_properties: false
+      path_type: absolute_POSIX
+      mode_enum: ["100755"]
+      size_bytes_type: positive_integer
+      digest_fields_type: lowercase_sha256_hex
+      record_order: path_lexical_ASCII
+    python_import_record:
+      required_exact_keys: [module, path, mode, git_blob_oid_or_null, raw_sha256]
+      additional_properties: false
+      module_type: nonempty_Python_module_name
+      path_type: absolute_or_safe_repo_relative_POSIX
+      mode_enum: ["100644", "100755"]
+      git_blob_oid_or_null_type: lowercase_git_oid_hex_or_null
+      raw_sha256_type: lowercase_sha256_hex
+      record_order: [module_ASCII, path_ASCII]
+    native_link_record:
+      required_exact_keys: [product_path, mode, size_bytes, raw_sha256, build_argv_sha256, linked_input_sha256s]
+      additional_properties: false
+      product_path_type: absolute_POSIX
+      mode_enum: ["100755"]
+      size_bytes_type: positive_integer
+      raw_sha256_type: lowercase_sha256_hex
+      build_argv_sha256_type: lowercase_sha256_hex
+      linked_input_sha256s_type: nonempty_unique_array_of_lowercase_sha256_hex_sorted_ASCII
+      record_order: product_path_ASCII
+    read_deny_check_record:
+      required_exact_keys: [denied_prefixes, scanner_argv_sha256, matches]
+      additional_properties: false
+      denied_prefixes_exact_order:
+        - agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame-binding-02
+        - agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame-binding-03
+      scanner_argv_sha256_type: lowercase_sha256_hex
+      matches_exact: []
+    command_verification_record:
+      required_exact_keys: [command_id, argv, cwd, environment_sha256, exit_code, stdout_sha256, stderr_sha256, status]
+      additional_properties: false
+      command_id_type: nonempty_unique_string
+      argv_type: nonempty_array_of_nonempty_strings
+      cwd_type: absolute_POSIX
+      environment_sha256_type: lowercase_sha256_hex
+      exit_code_exact: 0
+      stdout_sha256_type: lowercase_sha256_hex
+      stderr_sha256_type: lowercase_sha256_hex
+      status_exact: PASS
+      record_order: command_id_ASCII
+    absent_path_record:
+      required_exact_keys: [path, path_type, exists]
+      additional_properties: false
+      path_type: safe_repo_relative_POSIX
+      path_type_enum: [file, directory, prefix]
+      exists_exact: false
+      record_order: [path_ASCII, path_type_ASCII]
+    process_scan_record:
+      required_exact_keys: [argv_sha256, matched_processes]
+      additional_properties: false
+      argv_sha256_type: lowercase_sha256_hex
+      matched_processes_exact: []
+    role_record:
+      required_exact_keys: [task_id, role, lineage_state, participated_in_implementation, participated_in_verification]
+      additional_properties: false
+      task_id_type: nonempty_unique_string
+      role_enum: [original_scientific_design_reviewer, prelabel_adversarial_authority_auditor, independent_operational_reviewer, implementation_owner, A51_design_authority_reviewer, A51_design_adversarial_reviewer, still_fresh_terminal_verifier]
+      lineage_state_enum: [completed, active, interrupted_resumable, reserved_unspawned]
+      participation_field_type: boolean
+      separation_rule: no_role_with_participated_in_implementation_true_may_have_participated_in_verification_true
+      record_order: task_id_ASCII
+    historical_usage_record:
+      required_exact_keys: [measurement_boundary, wall_seconds, CPU_seconds, GPU_seconds, storage_peak_bytes, throughput, source_status]
+      additional_properties: false
+      measurement_boundary_exact: cumulative_Stage_1_lineage_through_phase2_lock_creation
+      wall_seconds_type: nonnegative_number_or_exact_UNKNOWN
+      CPU_seconds_type: nonnegative_number_or_exact_UNKNOWN
+      GPU_seconds_type: nonnegative_number_or_exact_UNKNOWN
+      storage_peak_bytes_type: nonnegative_integer_or_exact_UNKNOWN
+      throughput_type: nonnegative_number_or_exact_UNKNOWN
+      source_status_enum: [known, partial, unknown]
+      consistency_rule: exact_UNKNOWN_requires_source_status_partial_or_unknown
+    planning_targets_record:
+      required_exact_keys: [wall_seconds, CPU_seconds, GPU_seconds, new_transient_storage_bytes]
+      additional_properties: false
+      exact_values: {wall_seconds: 21600, CPU_seconds: 86400, GPU_seconds: 3600, new_transient_storage_bytes: 2147483648}
+    first_reforecast_boundary_record:
+      required_exact_keys: [exact_boundary, terminal_children_count, telemetry_only, may_change_workload_order_selection_or_threshold]
+      additional_properties: false
+      exact_values:
+        exact_boundary: after_Census_A_registry_indices_0_1_2_are_terminal
+        terminal_children_count: 3
+        telemetry_only: true
+        may_change_workload_order_selection_or_threshold: false
+    authority_record:
+      required_exact_keys: [commit_oid, parent_oid, tree_oid, six_path_records, reviewer_a_postcommit_audit, adversarial_postcommit_audit]
+      commit_oid_type: lowercase_git_oid_hex
+      parent_oid_type: lowercase_git_oid_hex
+      tree_oid_type: lowercase_git_oid_hex
+      six_path_records_count: 6
+      six_path_records_items: exact_path_identity_record
+      six_path_records_order: A51_authority_whitelist_order
+      reviewer_a_postcommit_audit: review_record
+      adversarial_postcommit_audit: review_record
+      postcommit_audit_records_materialization: review_phase_identity_matrix.authority_postcommit.record_templates_plus_matrix_materialization_rule
+      additional_properties: false
+    contract_record:
+      required_exact_keys: [path, phase1_commit_oid, phase1_parent_oid, raw_sha256, canonical_sha256, precommit_review_records, postcommit_audit_records]
+      path_type: safe_repo_relative_POSIX
+      phase1_commit_oid_type: lowercase_git_oid_hex
+      phase1_parent_oid_type: lowercase_git_oid_hex
+      raw_sha256_type: lowercase_sha256_hex
+      canonical_sha256_type: lowercase_sha256_hex
+      canonical_sha256_algorithm: SHA256_of_identity_stack_canonical_JSON_encoding_of_unique_key_YAML_parsed_document
+      precommit_review_records_count: 2
+      precommit_review_records_items: review_record
+      precommit_review_records_materialization: review_phase_identity_matrix.contract_precommit.record_templates_plus_matrix_materialization_rule
+      postcommit_audit_records_count: 2
+      postcommit_audit_records_items: review_record
+      postcommit_audit_records_materialization: review_phase_identity_matrix.contract_postcommit.record_templates_plus_matrix_materialization_rule
+      additional_properties: false
+    plan_b_freeze_closed_schema:
+      required_exact_keys: [schema_version, document_kind, checkpoint_id, binding_id, state, plan_b_path, plan_b_raw_sha256, contract_commit_oid, contract_raw_sha256, freeze_identity]
+      exact_values: {schema_version: 1, document_kind: s10r4_binding_04_plan_b_freeze, checkpoint_id: S10R4, binding_id: binding-04, state: FROZEN, plan_b_path: agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/gates/s10r4/plan_b.md}
+      digest_fields_type: lowercase_sha256_hex
+      contract_commit_oid_type: lowercase_git_oid_hex
+      freeze_identity:
+        required_exact_keys: [canonicalization, self_hash_field, canonical_self_sha256]
+        exact_values: {canonicalization: UTF8_sorted_keys_compact_finite_type_preserving, self_hash_field: freeze_identity.canonical_self_sha256}
+        self_hash_input: exact_canonical_freeze_with_canonical_self_sha256_null
+        canonical_self_sha256_type: lowercase_sha256_hex
+        additional_properties: false
+      cross_bindings:
+        plan_b_raw_sha256: exact_equal_plans_record_plan_b_raw_sha256_and_fresh_SHA256_of_plan_b_path_bytes
+        contract_commit_oid: exact_equal_contract_record_phase1_commit_oid
+        contract_raw_sha256: exact_equal_contract_record_raw_sha256_and_fresh_SHA256_of_phase1_committed_contract_bytes
+        state: exact_equal_plans_record_plan_b_state_FROZEN
+      additional_properties: false
+    plans_record:
+      required_exact_keys: [plan_b_path, plan_b_raw_sha256, plan_b_state, plan_b_freeze_path, plan_b_freeze_raw_sha256, plan_b_audit_path, plan_b_audit_raw_sha256, plan_b_audit_record, plan_a_path, plan_a_revision, plan_a_raw_sha256, plan_a_revision_ledger_path, plan_a_revision_ledger_raw_sha256]
+      plan_b_state: FROZEN
+      exact_path_values:
+        plan_b_path: agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/gates/s10r4/plan_b.md
+        plan_b_freeze_path: agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/gates/s10r4/plan_b.freeze.json
+        plan_b_audit_path: agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/gates/s10r4/audit-verdict.json
+        plan_a_path: agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/gates/s10r4/plan_a.md
+        plan_a_revision_ledger_path: agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/gates/s10r4/plan_a-revisions.jsonl
+      plan_a_revision_minimum: 1
+      path_fields_type: safe_repo_relative_POSIX
+      digest_fields_type: lowercase_sha256_hex
+      plan_b_audit_record: review_record
+      plan_b_audit_record_materialization: review_phase_identity_matrix.plan_b_audit.record_templates[0]_plus_matrix_materialization_rule
+      plan_b_freeze_document_schema: plan_b_freeze_closed_schema
+      plan_a_revision_type: positive_integer
+      additional_properties: false
+    implementation_record:
+      required_exact_keys: [exact_path_records, exact_path_count, phase2_parent_oid]
+      exact_path_count: 10
+      path_order: contract_implementation_whitelist_order
+      exact_path_records_items: exact_path_identity_record
+      phase2_parent_oid_type: lowercase_git_oid_hex
+      additional_properties: false
+    runtime_dependencies_record:
+      required_exact_keys: [modified_path_records, unchanged_path_records, python_import_closure, native_link_closure, B02_B03_read_deny_check]
+      modified_path_count: 10
+      unchanged_path_count: 5
+      modified_path_records_items: exact_path_identity_record
+      modified_path_records_order: contract_implementation_whitelist_order
+      unchanged_path_records_items: exact_path_identity_record
+      unchanged_path_records_order: contract_runtime_unchanged_exact_records_order
+      python_import_closure:
+        type: nonempty_array
+        items: python_import_record
+        complete_transitive_closure: true
+      native_link_closure:
+        type: nonempty_array
+        items: native_link_record
+        complete_transitive_closure: true
+      B02_B03_read_deny_check: read_deny_check_record
+      additional_properties: false
+    resolver_schema_record:
+      required_exact_keys: [path, mode, size_bytes, raw_sha256, canonical_sha256, document_digest, source_closure_sha256, independent_review_records]
+      path_type: safe_repo_relative_POSIX
+      mode_enum: ["100644"]
+      size_bytes_type: positive_integer
+      digest_fields_type: lowercase_sha256_hex
+      independent_review_records_minimum: 2
+      independent_review_records_items: review_record
+      independent_review_records_materialization: review_phase_identity_matrix.resolver_schema_precommit.record_templates_plus_matrix_materialization_rule
+      additional_properties: false
+    sources_and_inputs_record:
+      required_exact_keys: [ductile_commit_and_tree, geko_commit, semantic_source_closure, actual_yaml, candidate_atom_registry, exact_frame_registry, size_registry, native_fixture, toolchain_closure]
+      ductile_commit_and_tree: source_commit_tree_record
+      geko_commit: source_commit_tree_record
+      semantic_source_closure:
+        type: nonempty_array
+        items: semantic_source_record
+        order: path_lexical_ASCII
+      actual_yaml: input_record
+      candidate_atom_registry: candidate_registry_input_record
+      exact_frame_registry: input_record
+      size_registry: input_record
+      native_fixture: input_record
+      exact_input_bindings:
+        actual_yaml: {path: study_docs/research/ductile-origami-warmstart/protocol/v1/inputs/s10-generated.yaml, mode: "100644", size_bytes: 3214702, raw_sha256: faaa8d65014d30646b89b84a8e97395539e52684bef7b430804a63ef2d64cf36, git_blob_oid_or_null: 1fd6fb401d5baebd4665a87e9002687fb725b2dc}
+        exact_frame_registry: {path: study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r4-exact-frame-registry.json, mode: "100644", size_bytes: 900981, raw_sha256: 29c52bffec04bb93ae608f8ddbc36d07928f26e8cd2286b9f62882b0f5d3d97d, git_blob_oid_or_null: 3a149b93ff21bc2db5efacdfbd9cebe46d6f9742}
+        size_registry: {path: study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r4-size-registry.json, mode: "100644", size_bytes: 479, raw_sha256: 0b39c06756357bfed95958ea9c5cc59b2d1b064f887dacf4568766f4ae8778fd, git_blob_oid_or_null: 47341279eaeb3efc1c6355913c681d373c7b0d45}
+        native_fixture: {path: study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r4-native-fixture.json, mode: "100644", size_bytes: 3330, raw_sha256: 9078a5fbca27aa91f3854ab49be2d76d774b72cb21fc83e64361c9fe98fd7b0b, git_blob_oid_or_null: 3eeb22d65998583c06145ab6836bcc09a1d8308c}
+      toolchain_closure:
+        type: nonempty_array
+        items: toolchain_record
+        complete_transitive_closure: true
+      additional_properties: false
+    prelabel_verification_record:
+      required_exact_keys: [source_materialization, contract_validation, schema_validation, synthetic_fixtures, fault_tests, unit_tests, remaining_rows_firewall]
+      every_status: PASS
+      remaining_rows_firewall_exact_value: not_read
+      source_materialization: {type: nonempty_array, items: command_verification_record}
+      contract_validation: {type: nonempty_array, items: command_verification_record}
+      schema_validation: {type: nonempty_array, items: command_verification_record}
+      synthetic_fixtures: {type: nonempty_array, items: command_verification_record}
+      fault_tests: {type: nonempty_array, items: command_verification_record}
+      unit_tests: {type: nonempty_array, items: command_verification_record}
+      additional_properties: false
+    prebinding_audit_record:
+      schema: review_record
+      materialization: review_phase_identity_matrix.prebinding_audit.record_templates[0]_plus_matrix_materialization_rule
+      external_artifact_schema: prebinding_audit_artifact_closed_schema
+      external_artifact_must_parse_and_validate_before_hash_materialization: true
+      parsed_identity_subject_checks_findings_and_verdict_must_cross_bind: true
+      required_verdict: AUDIT_PASS_PREBINDING
+      findings_count_exact: 0
+    prebinding_audit_artifact_closed_schema:
+      required_exact_keys: [schema_version, document_kind, checkpoint_id, binding_id, phase, reviewer_task_id, review_role, subject, checks, findings, verdict, created_utc]
+      exact_values:
+        schema_version: 1
+        document_kind: s10r4_binding_04_prebinding_audit
+        checkpoint_id: S10R4
+        binding_id: binding-04
+        phase: PREBINDING
+        reviewer_task_id: /root/s10r4_adversarial_auditor
+        review_role: adversarial_contract_auditor
+        findings: []
+        verdict: AUDIT_PASS_PREBINDING
+      subject_record:
+        required_exact_keys: [contract_commit_oid, plan_b_raw_sha256, plan_b_freeze_raw_sha256, plan_a_raw_sha256, plan_a_revision_ledger_raw_sha256, implementation_set_sha256, resolver_schema_raw_sha256]
+        contract_commit_oid_type: lowercase_git_oid_hex
+        digest_fields_type: lowercase_sha256_hex
+        implementation_set_sha256_exact_input: canonical_JSON_array_of_implementation_record_exact_path_records_projected_as_path_mode_size_bytes_raw_sha256_canonical_sha256_or_null_git_blob_oid_or_null_in_contract_implementation_whitelist_order
+        implementation_set_sha256_exact_algorithm: SHA256_of_identity_stack_canonical_JSON_bytes
+        implementation_set_sha256_cross_binding: exact_equal_fresh_recomputation_from_effective_lock_implementation_record_exact_path_records
+        cross_binding: exact_equal_effective_lock_contract_plans_implementation_and_resolver_schema_projections
+        additional_properties: false
+      checks_record:
+        required_exact_keys: [authority_and_contract, plan_b_and_plan_a, implementation_whitelist, resolver_schema, synthetic_and_fault_tests, B02_B03_read_deny, outcome_absence, no_remaining_row_access]
+        every_value_exact: true
+        additional_properties: false
+      created_utc_type: RFC3339_UTC_Z
+      artifact_contains_own_raw_sha256: false
+      exact_path: agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/gates/s10r4/prebinding-audit.json
+      additional_properties: false
+    write_boundaries_record:
+      required_exact_keys: [implementation_whitelist_sha256, execution_artifact_whitelist_sha256, delivery_whitelist_sha256, forbidden_paths_sha256]
+      every_value_type: lowercase_sha256_hex
+      additional_properties: false
+    outcome_absence_record:
+      required_exact_keys: [checked_utc, absent_paths, process_scan, remaining_rows_scanned]
+      checked_utc_type: RFC3339_UTC_Z
+      absent_paths_items: absent_path_record
+      absent_paths_exact_order:
+        - {path: study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r4-codegen-classification.json, path_type: file, exists: false}
+        - {path: study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r4-operational-selection.json, path_type: file, exists: false}
+        - {path: study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r4-mapping-corpus.json, path_type: file, exists: false}
+        - {path: study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r4-sentinel-conformance.json, path_type: file, exists: false}
+        - {path: study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r4-environment.json, path_type: file, exists: false}
+        - {path: study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s10r4-smoke-correctness.json, path_type: file, exists: false}
+        - {path: study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s10r4-noise-pilot.json, path_type: file, exists: false}
+        - {path: study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s10r4-decision.json, path_type: file, exists: false}
+        - {path: study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s10r4-operational-blocker.json, path_type: file, exists: false}
+        - {path: study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/gate-records/s10r4-s1-entry-go-exact-frame.json, path_type: file, exists: false}
+        - {path: study_docs/research/ductile-origami-warmstart/reports/staged/s10r4-stage1-exact-frame-entry-report.md, path_type: file, exists: false}
+        - {path: agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/artifacts/formal-codegen, path_type: prefix, exists: false}
+        - {path: agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/artifacts/formal-mapping, path_type: prefix, exists: false}
+        - {path: agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/artifacts/formal-native, path_type: prefix, exists: false}
+        - {path: agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/artifacts/formal-gpu, path_type: prefix, exists: false}
+        - {path: agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/artifacts/reproduction, path_type: prefix, exists: false}
+      process_scan: process_scan_record
+      process_scan_required_empty: true
+      remaining_rows_scanned: false
+      additional_properties: false
+    roles_record:
+      required_exact_keys: [lineage_cap, spawned, reserved, role_records]
+      exact_values: {lineage_cap: 8, spawned: 7, reserved: 1}
+      reserved_role: still_fresh_terminal_verifier
+      role_records_count: 8
+      role_records_items: role_record
+      role_records_order: task_id_ASCII
+      role_registry_exact:
+        - {task_id: /root/pipeline_rebaseline_reviewer_a, role: original_scientific_design_reviewer, lineage_state: completed, participated_in_implementation: false, participated_in_verification: false}
+        - {task_id: /root/pipeline_rebaseline_reviewer_b, role: original_scientific_design_reviewer, lineage_state: completed, participated_in_implementation: false, participated_in_verification: false}
+        - {task_id: /root/s10r4_adversarial_auditor, role: prelabel_adversarial_authority_auditor, lineage_state: completed, participated_in_implementation: false, participated_in_verification: false}
+        - {task_id: /root/s10r4_design_reviewer_a, role: A51_design_authority_reviewer, lineage_state: completed, participated_in_implementation: false, participated_in_verification: false}
+        - {task_id: /root/s10r4_design_reviewer_b, role: A51_design_adversarial_reviewer, lineage_state: completed, participated_in_implementation: false, participated_in_verification: false}
+        - {task_id: /root/s10r4_failure_reviewer_a, role: independent_operational_reviewer, lineage_state: completed, participated_in_implementation: false, participated_in_verification: false}
+        - {task_id: /root/s10r4_fresh_implementer, role: implementation_owner, lineage_state: completed, participated_in_implementation: true, participated_in_verification: false}
+        - {task_id: /root/s10r4_fresh_terminal_verifier, role: still_fresh_terminal_verifier, lineage_state: reserved_unspawned, participated_in_implementation: false, participated_in_verification: false}
+      exact_task_id_uniqueness: true
+      reserved_unspawned_count_exact: 1
+      reserved_unspawned_task_id_exact: /root/s10r4_fresh_terminal_verifier
+      additional_properties: false
+    resources_record:
+      required_exact_keys: [historical_usage, current_planning_targets, first_reforecast_boundary, hard_pause_categories]
+      historical_usage: historical_usage_record
+      current_planning_targets: planning_targets_record
+      first_reforecast_boundary: first_reforecast_boundary_record
+      hard_pause_categories_exact_order:
+        - unsafe_continuation
+        - actual_external_platform_or_allocation_limit
+        - unavailable_compute_memory_or_storage
+        - inability_to_complete_full_frozen_workload_verification_closeout_or_artifact_preservation
+        - outcome_dependent_optional_stopping_or_selection_risk
+        - required_workload_measurement_claim_or_authority_change
+        - compromised_or_unverifiable_evidence
+        - explicit_prelabel_scientific_resource_boundary
+      unknown_not_zero: true
+      additional_properties: false
+    activation_record:
+      required_exact_keys: [required_ordinal, activation_state, requires_phase2_commit, requires_postcommit_audit, event_schema_id, event_path, preactivation_event_exists]
+      exact_values:
+        required_ordinal: 0
+        activation_state: PENDING_POSTCOMMIT
+        requires_phase2_commit: true
+        requires_postcommit_audit: true
+        event_schema_id: s10r4_binding_04_ordinal_0_activation_v1
+        event_path: agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/gates/s10r4/lock-activation.json
+        preactivation_event_exists: false
+      additional_properties: false
+    lock_identity_record:
+      required_exact_keys: [canonicalization, self_hash_field, canonical_self_sha256]
+      canonicalization: UTF8_sorted_keys_compact_finite_type_preserving
+      self_hash_field: lock_identity.canonical_self_sha256
+      self_hash_input: exact_canonical_lock_with_canonical_self_sha256_null
+      canonical_self_sha256_type: lowercase_sha256_hex
+      additional_properties: false
+    unknown_or_missing_property_at_any_level: reject
+    null_policy: null_only_where_exact_field_name_says_or_null_or_self_hash_input
+    cross_binding_rules:
+      authority_commit_parent_tree: exact_equal_authority_commit_identity
+      authority_six_path_records: exact_paths_modes_sizes_raw_hashes_and_git_blobs_freshly_recomputed_for_authority_exact_six_paths_in_contract_order
+      authority_review_records: exact_role_path_raw_hash_and_verdict_equal_authority_postcommit_audits
+      contract_path_and_phase1_commit: exact_equal_this_contract_path_and_its_exact_phase1_commit_parent
+      contract_raw_and_canonical_hashes: freshly_recomputed_from_phase1_committed_bytes
+      contract_review_records: exact_role_path_raw_hash_and_verdict_equal_final_precommit_and_postcommit_reviews
+      review_identity_and_independence: every_phase_exact_equal_review_phase_identity_matrix_and_task_role_pair_exists_in_role_registry_with_participated_in_implementation_false
+      prebinding_audit: exact_materialized_review_phase_identity_matrix_prebinding_audit_record_with_external_file_hash_and_zero_findings
+      plans: every_path_and_raw_hash_freshly_recomputed_for_exact_Main_authored_Plan_B_freeze_audit_Plan_A_and_revision_ledger_and_freeze_document_conforms_plan_b_freeze_closed_schema
+      implementation_path_records: exact_equal_implementation_whitelist_order_and_phase2_candidate_bytes
+      runtime_modified_records: exact_equal_implementation_path_records
+      runtime_unchanged_records: exact_equal_contract_runtime_unchanged_exact_records
+      runtime_import_and_link_closure: complete_fresh_transitive_closure_no_unbound_path_or_product
+      resolver_schema: exact_equal_phase2_resolver_schema_bytes_document_digest_and_independent_review_records
+      ductile_and_geko: exact_equal_source_and_input_identity_commit_tree_records
+      semantic_source_closure: exact_equal_contract_semantic_source_chain_plus_native_Formocast_runtime_queue_and_MI_converter_records
+      actual_yaml_candidate_registry_exact_frame_size_and_native_fixture: exact_paths_modes_byte_sizes_raw_hashes_and_tracked_git_blob_OIDs_freshly_recomputed_and_equal_source_and_input_identity
+      candidate_registry_canonical_and_internal_digest: exact_equal_candidate_atom_registry_canonicalization_relationships
+      toolchain_closure: complete_fresh_transitive_closure_for_every_prelabel_and_formal_executable
+      prelabel_commands: exact_argv_cwd_environment_and_output_hashes_from_reached_PASS_commands
+      write_boundary_digests:
+        implementation_whitelist_sha256: SHA256_of_contract_canonical_JSON_implementation_whitelist
+        execution_artifact_whitelist_sha256: SHA256_of_contract_canonical_JSON_execution_artifact_whitelist
+        delivery_whitelist_sha256: SHA256_of_contract_canonical_JSON_delivery_whitelist_exact_paths
+        forbidden_paths_sha256: SHA256_of_contract_canonical_JSON_forbidden_paths
+      outcome_absence: exact_equal_outcome_absence_record_absent_paths_exact_order_and_fresh_process_scan
+      roles: exact_equal_roles_record_role_registry_exact
+      resources: exact_equal_governance_resources_current_planning_targets_first_one_percent_reforecast_and_hard_pause_categories
+      activation: exact_equal_pending_activation_record_and_exact_whitelisted_event_path
+      any_cross_binding_mismatch: CHANGES_REQUIRED
+  ordinal_0_activation_event_closed_schema:
+    top_level_required_exact_keys: [schema_version, document_kind, checkpoint_id, binding_id, ordinal, event_state, parent_lock, phase2_commit, postcommit_audit_records, created_utc, event_identity]
+    constants:
+      schema_version: 1
+      document_kind: s10r4_binding_04_lock_activation
+      checkpoint_id: S10R4
+      binding_id: binding-04
+      ordinal: 0
+      event_state: ACTIVATED_PENDING_LOCKED_READY_AUDIT
+    parent_lock_record:
+      required_exact_keys: [path, raw_sha256, canonical_self_sha256]
+      exact_path: study_docs/research/ductile-origami-warmstart/protocol/v1/locks/s10r4-stage1-resolver-effective-entry-binding-04-lock.json
+      digest_fields_type: lowercase_sha256_hex
+      cross_binding: exact_recompute_from_phase2_committed_lock_bytes
+      additional_properties: false
+    phase2_commit_record:
+      required_exact_keys: [commit_oid, parent_oid, tree_oid, exact_path_count, exact_path_records]
+      commit_parent_tree_types: lowercase_git_oid_hex
+      exact_path_count: 12
+      exact_path_records_items: effective_lock_closed_schema.exact_path_identity_record
+      exact_path_records_order: contract_exact_phase2_commit_paths_order
+      cross_binding: commit_contains_exactly_phase2_12_paths_relative_to_parent_and_parent_equals_lock_implementation_record_phase2_parent_oid
+      additional_properties: false
+    lock_postcommit_reviewer_artifact_closed_schema:
+      required_exact_keys: [schema_version, document_kind, checkpoint_id, binding_id, phase, reviewer_task_id, review_role, subject, checks, findings, verdict, created_utc]
+      exact_values: {schema_version: 1, document_kind: s10r4_binding_04_lock_postcommit_reviewer_artifact, checkpoint_id: S10R4, binding_id: binding-04, phase: LOCK_POSTCOMMIT, findings: [], verdict: AUDIT_PASS_LOCK_POSTCOMMIT}
+      allowed_reviewer_pairs:
+        - {reviewer_task_id: /root/s10r4_design_reviewer_a, review_role: independent_contract_reviewer_a, exact_path: agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/gates/s10r4/lock-postcommit-reviewer-a.json}
+        - {reviewer_task_id: /root/s10r4_adversarial_auditor, review_role: adversarial_contract_auditor, exact_path: agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/gates/s10r4/lock-postcommit-adversarial.json}
+      subject_record:
+        required_exact_keys: [lock_path, lock_raw_sha256, lock_canonical_self_sha256, phase2_commit_oid, contract_commit_oid]
+        exact_lock_path: study_docs/research/ductile-origami-warmstart/protocol/v1/locks/s10r4-stage1-resolver-effective-entry-binding-04-lock.json
+        digest_fields_type: lowercase_sha256_hex
+        commit_fields_type: lowercase_git_oid_hex
+        additional_properties: false
+      checks_record:
+        required_exact_keys: [exact_12_path_commit, lock_schema_and_self_hash, contract_and_authority_cross_bindings, prelabel_tests_and_prebinding_audit, outcome_absence, no_formal_process]
+        every_value_exact: true
+        additional_properties: false
+      created_utc_type: RFC3339_UTC_Z
+      referenced_artifact_contains_own_raw_sha256: false
+      additional_properties: false
+    postcommit_audit_record_array:
+      type: array_length_2
+      items: effective_lock_closed_schema.review_record
+      every_verdict_exact: AUDIT_PASS_LOCK_POSTCOMMIT
+      every_findings_count: 0
+      materialized_records: effective_lock_closed_schema.review_phase_identity_matrix.lock_postcommit.record_templates_plus_matrix_materialization_rule
+      external_artifacts_must_validate_against: lock_postcommit_reviewer_artifact_closed_schema
+    created_utc_type: RFC3339_UTC_Z
+    event_identity_record:
+      required_exact_keys: [canonicalization, self_hash_field, canonical_self_sha256]
+      exact_values:
+        canonicalization: UTF8_sorted_keys_compact_finite_type_preserving
+        self_hash_field: event_identity.canonical_self_sha256
+      self_hash_input: exact_canonical_event_with_canonical_self_sha256_null
+      canonical_self_sha256_type: lowercase_sha256_hex
+      additional_properties: false
+    top_level_property_schemas:
+      parent_lock: parent_lock_record
+      phase2_commit: phase2_commit_record
+      postcommit_audit_records: postcommit_audit_record_array
+      event_identity: event_identity_record
+    event_path_exact: agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/gates/s10r4/lock-activation.json
+    event_path_must_be_execution_artifact_whitelist_exact_control_file: true
+    additional_properties: false
+    unknown_or_missing_property_at_any_level: reject
+  locked_ready_audit_closed_schema:
+    top_level_required_exact_keys: [schema_version, document_kind, checkpoint_id, binding_id, activation_event, parent_lock, phase2_commit_oid, reviewer_records, checks, findings, verdict, lifecycle_projection, created_utc, audit_identity]
+    constants:
+      schema_version: 1
+      document_kind: s10r4_binding_04_locked_ready_audit
+      checkpoint_id: S10R4
+      binding_id: binding-04
+      findings: []
+      verdict: AUDIT_PASS_LOCKED_READY
+      lifecycle_projection: LOCKED_READY
+    activation_event_record:
+      required_exact_keys: [path, raw_sha256, canonical_self_sha256]
+      exact_path: agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/gates/s10r4/lock-activation.json
+      digest_fields_type: lowercase_sha256_hex
+      cross_binding: exact_recompute_from_valid_ordinal_0_activation_event
+      additional_properties: false
+    parent_lock_record:
+      required_exact_keys: [path, raw_sha256, canonical_self_sha256]
+      exact_path: study_docs/research/ductile-origami-warmstart/protocol/v1/locks/s10r4-stage1-resolver-effective-entry-binding-04-lock.json
+      digest_fields_type: lowercase_sha256_hex
+      cross_binding: exact_equal_activation_event_parent_lock_and_phase2_committed_lock
+      additional_properties: false
+    locked_ready_reviewer_artifact_closed_schema:
+      required_exact_keys: [schema_version, document_kind, checkpoint_id, binding_id, phase, reviewer_task_id, review_role, subject, checks, findings, verdict, created_utc]
+      exact_values: {schema_version: 1, document_kind: s10r4_binding_04_locked_ready_reviewer_artifact, checkpoint_id: S10R4, binding_id: binding-04, phase: LOCKED_READY, findings: [], verdict: AUDIT_PASS_LOCKED_READY}
+      allowed_reviewer_pairs:
+        - {reviewer_task_id: /root/s10r4_design_reviewer_a, review_role: independent_contract_reviewer_a, exact_path: agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/gates/s10r4/locked-ready-reviewer-a.json}
+        - {reviewer_task_id: /root/s10r4_adversarial_auditor, review_role: adversarial_contract_auditor, exact_path: agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/gates/s10r4/locked-ready-adversarial.json}
+      subject_record:
+        required_exact_keys: [activation_event_path, activation_event_raw_sha256, activation_event_canonical_self_sha256, lock_path, lock_raw_sha256, lock_canonical_self_sha256, phase2_commit_oid]
+        exact_paths:
+          activation_event_path: agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/gates/s10r4/lock-activation.json
+          lock_path: study_docs/research/ductile-origami-warmstart/protocol/v1/locks/s10r4-stage1-resolver-effective-entry-binding-04-lock.json
+        digest_fields_type: lowercase_sha256_hex
+        phase2_commit_oid_type: lowercase_git_oid_hex
+        additional_properties: false
+      checks_record:
+        required_exact_keys: [activation_event_schema_and_self_hash, parent_lock_schema_and_self_hash, phase2_exact_commit_identity, lock_postcommit_audit_pair, ordinal_zero_and_event_order, outcome_absence_rechecked, formal_process_absence_rechecked, role_and_resource_cross_bindings, execution_and_delivery_whitelists, B02_B03_read_deny]
+        every_value_exact: true
+        additional_properties: false
+      created_utc_type: RFC3339_UTC_Z
+      referenced_artifact_contains_own_raw_sha256: false
+      additional_properties: false
+    reviewer_record_array:
+      type: array_length_2
+      items: effective_lock_closed_schema.review_record
+      materialized_records: effective_lock_closed_schema.review_phase_identity_matrix.locked_ready.record_templates_plus_matrix_materialization_rule
+      external_artifacts_must_validate_against: locked_ready_reviewer_artifact_closed_schema
+    checks_record:
+      required_exact_keys: [activation_event_schema_and_self_hash, parent_lock_schema_and_self_hash, phase2_exact_commit_identity, lock_postcommit_audit_pair, ordinal_zero_and_event_order, outcome_absence_rechecked, formal_process_absence_rechecked, role_and_resource_cross_bindings, execution_and_delivery_whitelists, B02_B03_read_deny]
+      every_value_exact: true
+      additional_properties: false
+    audit_identity_record:
+      required_exact_keys: [canonicalization, self_hash_field, canonical_self_sha256]
+      exact_values: {canonicalization: UTF8_sorted_keys_compact_finite_type_preserving, self_hash_field: audit_identity.canonical_self_sha256}
+      self_hash_input: exact_canonical_audit_with_canonical_self_sha256_null
+      canonical_self_sha256_type: lowercase_sha256_hex
+      additional_properties: false
+    top_level_property_schemas:
+      activation_event: activation_event_record
+      parent_lock: parent_lock_record
+      phase2_commit_oid: lowercase_git_oid_hex_equal_activation_event_phase2_commit_commit_oid
+      reviewer_records: reviewer_record_array
+      checks: checks_record
+      audit_identity: audit_identity_record
+    created_utc_type: RFC3339_UTC_Z
+    exact_path: agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04/gates/s10r4/lock-activation-audit.json
+    exact_path_is_execution_artifact_whitelist_control_file: true
+    requires_existing_authorized_nonimplementer_reviewers: true
+    establishes_formal_access_only_when_exact_schema_valid: true
+    additional_properties: false
+    unknown_or_missing_property_at_any_level: reject
+  unique_transition_order:
+    - A51_authority_commit_and_postcommit_audits
+    - phase1_contract_precommit_reviews
+    - phase1_contract_exact_commit_and_postcommit_audits
+    - Main_authored_Plan_B_freeze_and_adversarial_audit
+    - Main_authored_Plan_A_and_revision_ledger
+    - implementation_source_schema_synthetic_and_offline_tests
+    - prebinding_adversarial_audit
+    - atomic_effective_lock_creation
+    - exact_12_path_phase2_commit
+    - phase2_postcommit_audit
+    - ordinal_0_activation
+    - independent_LOCKED_READY_audit
+    - formal_outcome_access
+  any_order_violation: CHANGES_REQUIRED
+  phase2_exact_path_commit_required: true
+  lock_create_mode: atomic_no_overwrite
+  ordinal_0_activation_after_commit: required
+  independent_LOCKED_READY_audit_required: true
+  formal_outcome_access_before_LOCKED_READY: forbidden
+
+governance:
+  role_threads:
+    risk_tier_default_cap: 6
+    A51_one_time_lineage_cap: 8
+    spawned_before_terminal_verifier: 7
+    reserved_remaining_slot: 1
+    reserved_role: still_fresh_terminal_verifier
+    replacement_or_new_binding_resets_history: false
+    existing_implementer_auditor_and_reviewers_must_resume: true
+  repair:
+    numeric_stop_cap: null
+    append_only_provenance: true
+    unique_reviewer_supported_contract_preserving_repair_auto_authorized: true
+    multiple_consequential_non_design_choices_require_two_independent_operational_reviewers: true
+    two_rounds_no_material_progress_triggers_operational_adjudication_not_terminalization: true
+  resources:
+    historical_S10R4_lineage_usage_carries_forward: true
+    unknown_fields_recorded_as_UNKNOWN_not_zero: true
+    current_planning_targets:
+      wall_seconds: 21600
+      CPU_seconds: 86400
+      GPU_seconds: 3600
+      new_transient_storage_bytes: 2147483648
+    default_transient_planning_target_bytes: 5368709120
+    first_one_percent_reforecast:
+      exact_boundary: after_Census_A_registry_indices_0_1_2_are_terminal
+      terminal_children_count: 3
+      telemetry_only: true
+      may_change_workload_order_selection_or_threshold: false
+    planning_variance_and_2x_crossing: record_notify_continue
+    hard_pause_categories:
+      - unsafe_continuation
+      - actual_external_platform_or_allocation_limit
+      - unavailable_compute_memory_or_storage
+      - inability_to_complete_full_frozen_workload_verification_closeout_or_artifact_preservation
+      - outcome_dependent_optional_stopping_or_selection_risk
+      - required_workload_measurement_claim_or_authority_change
+      - compromised_or_unverifiable_evidence
+      - explicit_prelabel_scientific_resource_boundary
+    resume_procedure: preserve_atomic_boundary_record_direct_evidence_then_continue_same_frozen_workload_when_category_clears
+    bare_UNKNOWN_2x_variance_internal_cap_or_cumulative_total_is_hard_pause: false
+    runtime_alone_optional_stop: forbidden
+  GPU:
+    selection_rule: lowest_physical_card_index_among_currently_eligible_free_gfx942_cards_in_perlee_container_without_reservation
+    notify_before_long_running_work: true
+    container_lifecycle_mutation: forbidden
+  closeout:
+    still_fresh_verifier_required: true
+    verifier_must_not_read_Plan_A: true
+    verifier_must_recompute_from_direct_evidence: true
+    implementer_report_is_untrusted_claim_index: true
+    terminal_report_required_for_positive_negative_or_inconclusive: true
+    CHANGES_REQUIRED_has_no_scientific_report: true
+    exact_path_commit_and_postcommit_audit_required: true
+    CHECKPOINT_COMPLETE_requires_criteria_C01_through_C14_PASS: true
+    scientific_terminal_commit_requires_complete_outcome_delivery_matrix_branch: true
+    only_postaudited_positive_updates_S11_edge: true
+    push_authorized: false
+
+unacceptable_fallbacks:
+  - partial_timeout_killed_or_still_running_presented_as_complete
+  - trust_implementer_summary_without_fresh_reproduction
+  - change_threshold_fixture_workload_metric_goal_or_claim_to_pass
+  - substitute_proxy_for_pinned_raw_resolver_codegen_mapping_or_native_path
+  - omit_raw_occurrence_mass_after_collision_or_attrition
+  - treat_normalized_away_raw_value_as_realized_or_guidance_eligible
+  - use_digest_equality_without_exact_canonical_byte_equality
+  - deduplicate_before_preserving_all_114_aliases_and_multiplicity
+  - inspect_remaining_rows_before_effective_lock
+  - retry_mapping_after_first_success_or_use_nonunique_attempt_branch
+  - use_binding_02_or_binding_03_artifacts_as_binding_04_gate_credit
+  - start_S11_without_postaudited_S10R4_positive_edge
+  - push_or_mutate_container_dependencies_or_unrelated_user_paths
