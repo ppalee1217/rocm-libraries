@@ -4,7 +4,7 @@
 >
 > **研究 scope／claim authority：**[Formocast Factorized Gen0 Guidance Feasibility Study — Research Charter](surrogate-dse-plan.md)。
 >
-> **狀態：**`post_empirical / s10r3_terminal_negative`。S00是durable
+> **狀態：**`post_empirical / s10r4_design_approved`。S00是durable
 > positive；S10是durable `negative / S1_ENTRY_BLOCKED / edge=null`，兩者不變。
 > User-authorized A32已在safe boundary取消S10R1：operational
 > `cancelled / BLOCKED`、scientific `not_evaluated`、`edge=null`，沒有scientific
@@ -31,6 +31,11 @@
 > failure，closeout為
 > `CHECKPOINT_COMPLETE / negative / S1_ENTRY_BLOCKED / FT-BLOCKED-MAPPING /
 > edge=null`。因沒有post-audited `S10R3:S1_ENTRY_GO`，S11維持未啟動。
+> A47經兩位fresh reviewers完成bounded design discussion並由使用者核准exact-frame
+> S10R4：它不重開S10R3 draws，而對其完整sealed 114-config frame執行兩次normal
+> codegen census，再以stable survivors建立bounded fixture。S10R4目前
+> `DESIGN_APPROVED / not_started / not_evaluated / edge=null`；只有post-audited
+> `S10R4:S1_ENTRY_GO_EXACT_FRAME`可啟動S11。
 >
 > **Foundation provenance：**active `protocol/v1/`與S00 report是fresh foundation；退役M00內容仍不得作schema、hash、lock、registry、fixture、test或PASS evidence。S00只支持CPU-only evidence semantics，不是GPU／performance結果。
 >
@@ -79,6 +84,7 @@ orchestration／resource floor；它不能靜默修改上列scientific authority
 | S10R1 | Cancelled nominal-boundary recovery diagnostics | approved | cancelled | BLOCKED | not_evaluated | superseded | [design](ductile-origami-warmstart/s10r1-stage1-valid-support-entry-recovery-design.md) | none (A32 operational record only) |
 | S10R2 | Stage 1 support-aware entry recovery | approved | completed | CHECKPOINT_COMPLETE | inconclusive | effective | [design](ductile-origami-warmstart/s10r2-stage1-support-aware-entry-recovery-design.md) | [report](ductile-origami-warmstart/reports/staged/s10r2-stage1-support-aware-entry-report.md) |
 | S10R3 | Stage 1 bounded-cover entry recovery | approved | completed | CHECKPOINT_COMPLETE | negative | effective (`S10R3-A46.5-G3`) | [design](ductile-origami-warmstart/s10r3-stage1-bounded-cover-entry-recovery-design.md) | [report](ductile-origami-warmstart/reports/staged/s10r3-stage1-bounded-cover-entry-report.md) |
+| S10R4 | Stage 1 exact-frame operational entry recovery | approved | not_started | DESIGN_APPROVED | not_evaluated | absent | [design](ductile-origami-warmstart/s10r4-stage1-exact-frame-operational-entry-design.md) | `reports/staged/s10r4-stage1-exact-frame-entry-report.md` |
 | S11 | Stage 1 model-only factorization／guidance lock | approved | gated | DESIGN_APPROVED | not_activated | absent | [design](ductile-origami-warmstart/s11-stage1-model-only-factorization-design.md) | `reports/staged/s11-stage1-model-only-factorization-report.md` |
 | S12 | Stage 1 D5 real-score／oracle audit | approved | gated | DESIGN_APPROVED | not_evaluated | absent | [design](ductile-origami-warmstart/s12-stage1-real-score-ranking-oracle-audit-design.md) | `reports/staged/s12-stage1-real-score-audit-report.md` |
 | S13 | Stage 1 actual Gen0 mechanism | approved | gated | DESIGN_APPROVED | not_evaluated | absent | [design](ductile-origami-warmstart/s13-stage1-actual-gen0-mechanism-design.md) | `reports/gen0-factorization-mvp-report.md` |
@@ -99,6 +105,7 @@ flowchart TD
   s10r1["S10R1 Cancelled diagnostics"]
   s10r2["S10R2 Support-aware entry"]
   s10r3["S10R3 Bounded-cover entry"]
+  s10r4["S10R4 Exact-frame operational entry"]
   s11["S11 Guidance lock"]
   s12["S12 D5 audit"]
   s13["S13 Actual Gen0"]
@@ -113,7 +120,8 @@ flowchart TD
   s10 -. "terminal provenance only; no scientific edge" .-> s10r2
   s10r1 -. "A32 status only; evidence reuse forbidden" .-> s10r2
   s10r2 -. "terminal inconclusive provenance; evidence reuse forbidden" .-> s10r3
-  s10r3 -->|"S1_ENTRY_GO"| s11
+  s10r3 -. "terminal negative provenance + sealed frame only" .-> s10r4
+  s10r4 -->|"S1_ENTRY_GO_EXACT_FRAME"| s11
   s11 -->|"S1_GUIDANCE_LOCKED"| s12
   s12 -->|"D5_PASS"| s13
   s13 -->|"D6_MECHANISM_POSITIVE"| s20
@@ -135,7 +143,10 @@ administrative prerequisites；虛線不是scientific edge，且S10R1 artifacts�
 S10R2已依其frozen exact-ten criterion誠實closeout為inconclusive/null。A38另建立
 [S10R3](ductile-origami-warmstart/s10r3-stage1-bounded-cover-entry-recovery-design.md)；
 S10R2對它只提供immutable terminal provenance，所有outcome-bearing artifacts禁止
-重用。只有post-audited `S10R3:S1_ENTRY_GO -> S11`。所有downgrade仍先停在
+重用。S10R3其後合法closeout為negative/null。A47新增
+[S10R4](ductile-origami-warmstart/s10r4-stage1-exact-frame-operational-entry-design.md)，
+只窄重用S10R3完整sealed discovery frame，不重用其K=19選擇、mapping結果或negative
+判讀。只有post-audited `S10R4:S1_ENTRY_GO_EXACT_FRAME -> S11`。所有downgrade仍先停在
 `blocked-awaiting-user-decision`。
 
 ### Stable criterion IDs
@@ -144,6 +155,7 @@ Checkpoint designs只能引用下列parent IDs，不得自行改門檻：
 
 - `S00_EVIDENCE_READY`
 - `S1_ENTRY_GO`
+- `S1_ENTRY_GO_EXACT_FRAME`
 - `S1_ENTRY_DEGRADED_PROXY`
 - `S1_ENTRY_BLOCKED`
 - `S1_GUIDANCE_LOCKED`
@@ -163,9 +175,12 @@ Checkpoint designs只能引用下列parent IDs，不得自行改門檻：
 語意：
 
 - `S00_EVIDENCE_READY`：observer neutrality、checkpoint/resume parity、lineage lock與artifact reconciliation全部通過。
-- `S1_ENTRY_GO`：§2 entry gates通過，且actual YAML guidance可追溯。S10、已取消的
-  S10R1與terminal inconclusive的S10R2都不會發出此edge；只有S10R3可產生新的
-  checkpoint-scoped `S1_ENTRY_GO`。
+- `S1_ENTRY_GO`：historical generic Stage-1 entry token；S10、已取消的S10R1、terminal
+  inconclusive的S10R2及terminal negative的S10R3均沒有active outgoing instance。
+- `S1_ENTRY_GO_EXACT_FRAME`：S10R4 exact sealed frame經normal codegen filter後，bounded
+  operational fixture、mapping/native/correctness/noise gates全部通過的qualified entry
+  token；claim只限該exact frame。只有checkpoint-scoped
+  `S10R4:S1_ENTRY_GO_EXACT_FRAME`可啟動S11。
 - `S1_ENTRY_DEGRADED_PROXY`：§2 entry gates通過，但只能使用exact-space GEKO branch proxy；另需user downgrade approval。
 - `S1_ENTRY_BLOCKED`：§2.8任一hard stop成立。
 - `S1_GUIDANCE_LOCKED`：§4–§5 model-only frame、gene decisions、weights、shuffle與hash在real labels前完成鎖定。
@@ -199,6 +214,7 @@ partial working-tree evidence只能屬於前者。
 | --- | --- | --- |
 | `T-S10R2` | S10R2=`R2` | `CU-S10R2` standalone |
 | `T-S10R3` | S10R3=`R3` | `CU-S10R3` standalone |
+| `T-S10R4` | S10R4=`R3` | `CU-S10R4` standalone |
 | `T-S1-MECHANISM` | S11=`R2` → S12=`R2` → S13=`R1` | `CU-S1-MECHANISM` |
 | `T-S20` | S20=`R1` | `CU-S20` standalone |
 | `T-S3-REPLICATION` | S30=`R2` → S31=`R1` | `CU-S3-REPLICATION` |
@@ -773,6 +789,55 @@ Positive、negative與inconclusive都要durable outcome closure。Operational
   post-commit audit完成。本commit投影S10R3為`CHECKPOINT_COMPLETE`；因edge為null，
   S11維持`not_activated`。沒有positive gate record或push。
 
+### 2026-08-02 A47 S10R4 exact-frame operational entry authority
+
+- **Trigger：**S10R3 G3的pinned Ductile validator接受114個distinct configs，但其
+  frozen mapping rule在第一個required config的KernelWriter resource error後terminalize。
+  唯讀code trace確認normal Ductile benchmark workflow會把validator-accepted solutions
+  交給`writeSolutionsAndKernels(..., errorTolerant=True)`，並把codegen failures從
+  operational pool移除。Validator acceptance與operational codegen survival因此是不同
+  層級；S10R3 negative正確但沒有完成whole-frame operational classification。
+- **Design discussion：**fresh Reviewer A
+  `/root/pipeline_rebaseline_reviewer_a`與Reviewer B
+  `/root/pipeline_rebaseline_reviewer_b`獨立分析相同current bytes/direct evidence，完成
+  兩輪cross-examination及一輪evidence-backed final，均`AGREE`。使用者選擇並核准
+  exact-frame S10R4，要求依plan實作。
+- **Immutable predecessor：**S10R3保持
+  `CHECKPOINT_COMPLETE / negative / S1_ENTRY_BLOCKED / FT-BLOCKED-MAPPING /
+  edge=null`。不得重標、補跑或修改其artifacts/report。S10R4只窄重用完整sealed
+  512-chunk／262,144-draw discovery frame的114 accepted/distinct configs及直接重建
+  atom coverage所需registry identities；S10R3 K=19 membership、mapping attempts、
+  failure/decision及verifier verdict禁止作S10R4 result evidence。
+- **Complete census：**對全部114 configs做兩個fresh isolated、無early-stop codegen
+  passes，共228 terminal children。2/2全-kernel success為stable survivor；2/2合法
+  ordinary attrition留在exact-frame denominator但排除survivor pool；discordance、
+  exception、timeout、partial、association/path/toolchain drift為
+  `CHANGES_REQUIRED / not_evaluated`。
+- **Selector與downstream gates：**complete census後機械計算
+  `mandatory = prelocked_candidate_atoms ∩ operational_codegen_witnessed_atoms`，使用
+  frozen greedy `K=max(10,C_greedy)`, `K_max=20`；禁止replacement、K+1、redraw、
+  conditional extension或人工改atom。Fresh mapping A/B、native conformance、3 anchors×
+  3 sizes correctness及63 noise cells保持。
+- **Outcome／edge：**唯一positive是
+  `S10R4:S1_ENTRY_GO_EXACT_FRAME -> S11`。Complete census後少於10 survivors、無cover、
+  `C_greedy>20`或reproducible mapping failure為
+  `negative / S1_ENTRY_BLOCKED / FT-BLOCKED-MAPPING`；reproducible correctness failure為
+  `FT-BLOCKED-CORRECTNESS`；完整noise不穩定為`FT-INCONCLUSIVE`；harness/identity/
+  partial/discordance問題不是scientific outcome。
+- **Claim：**positive只說明這一個exact sealed frame在指定identity及normal filter下含
+  bounded reproducible entry fixture；不宣稱general support、support absence、survival
+  probability、independent replication、ranking、factorization或production readiness。
+- **S11 amendment：**只有qualified edge能activate S11。S11須用disjoint seeds建立fresh
+  multiplicity-preserving `F_valid`，再以相同normal filter形成`F_codegen`；codegen
+  rejects保留在`F_valid` global occurrence-mass coverage denominator，只對survivors
+  mapping/scoring，conditional streams不pool。既有`>=95%` coverage、4,096/8,192
+  accepted occurrences、128/256 conditional support及whole-gene fail-closed eligibility
+  不變；value-level guidance proposal延後。
+- **Governance：**S10R4是R3 standalone `T-S10R4 / CU-S10R4`，依current
+  `implement-verify-loop`先contract/Plan-B/adversarial audit，再fresh implementer、
+  effective lock、formal evidence及fresh verifier。Repair count只作provenance；不授權
+  push、S11 evidence、container lifecycle mutation或scientific downgrade。
+
 ### Downgrade user gates
 
 `DEGRADED_PROXY`、two-size／reduced-regime、S2 H5 resource-bounded pilot、single-cluster Stage 3 pilot，以及任何減少workloads、runs、seeds、metrics、validation、acceptance或scope的方案，都必須先產生完整decision packet並停在`blocked-awaiting-user-decision`。Diagnostic partial run不能滿足checkpoint或解鎖下游。
@@ -1067,7 +1132,20 @@ correctness與noise semantics，但formal evidence全部fresh：
 完整contract、identity、selector、lower-bound disclosure、GPU free-card policy、
 outcome matrix與future paths見
 [S10R3 design](ductile-origami-warmstart/s10r3-stage1-bounded-cover-entry-recovery-design.md)。
-只有post-audited `S10R3:S1_ENTRY_GO`可啟動S11。
+S10R3已terminal negative/null；其historical positive edge沒有形成，且已由A47的qualified
+S10R4 dependency prospectively取代。
+
+#### S10R4 exact-frame operational overlay
+
+A47不重抽S10R3 schedule。S10R4先逐child驗證完整sealed 114-config frame，再對每個
+config各做兩次normal error-tolerant KernelWriter classification。Stable survivors形成
+`operational_codegen_witnessed_atoms`；stable attrition保留在exact-frame denominator。
+只有complete 228-child census後才依相同greedy語意計算
+`K=max(10,C_greedy)`, `K_max=20`，並fresh執行mapping/native/correctness/noise。
+
+完整identity、reuse prohibition、classification、outcome matrix與claim見
+[S10R4 design](ductile-origami-warmstart/s10r4-stage1-exact-frame-operational-entry-design.md)。
+只有post-audited `S10R4:S1_ENTRY_GO_EXACT_FRAME`可啟動S11。
 
 ### 2.4 Size registry
 
@@ -1890,6 +1968,10 @@ S10R3 positive、negative或inconclusive的唯一report是：
 
 `study_docs/research/ductile-origami-warmstart/reports/staged/s10r3-stage1-bounded-cover-entry-report.md`
 
+S10R4 positive、negative或inconclusive的唯一report是：
+
+`study_docs/research/ductile-origami-warmstart/reports/staged/s10r4-stage1-exact-frame-entry-report.md`
+
 D5 或 D6 已形成 empirical evidence，不論 positive、negative 或 inconclusive：
 
 `study_docs/research/ductile-origami-warmstart/reports/gen0-factorization-mvp-report.md`
@@ -1967,6 +2049,20 @@ S10R3 current state：
 S10R3已依frozen matrix誠實closeout為negative/null。Predecessor G2 bytes仍是immutable
 diagnostic lineage，不是G3 evidence；G3也沒有對S11產生outgoing edge。S11、S12與S13
 維持未啟動，不能把合法未到達的後段工作當成可補跑缺漏。
+
+S10R4 current state：
+
+- [x] A47 exact-frame scientific/design authority approved by two-reviewer consensus and user
+- [ ] Durable machine-readable contract／Plan-B／adversarial pre-label audit
+- [ ] Fresh implementation、offline tests及effective execution lock
+- [ ] Two complete 114-config normal-workflow codegen census passes
+- [ ] Operational-atom bounded exact-K selection
+- [ ] Fresh mapping A/B與native conformance
+- [ ] 9 correctness cells與63 noise cells
+- [ ] Fresh verification、terminal closeout與post-commit audit
+
+S10R4目前是`DESIGN_APPROVED / not_started / not_evaluated / edge=null`；上列未勾選項目
+不是outcome。S11只接受post-audited qualified edge。
 
 ---
 

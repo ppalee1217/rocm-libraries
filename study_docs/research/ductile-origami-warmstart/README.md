@@ -1,7 +1,7 @@
 # Ductile Factorized Guidance — Active Checkpoint Index
 
 > **Active-state authority banner：**本研究目前是
-> `post_empirical / s10r3_terminal_negative`。S00是durable positive，
+> `post_empirical / s10r4_design_approved`。S00是durable positive，
 > S10是durable `negative / S1_ENTRY_BLOCKED / edge=null`，兩者不變。User-authorized
 > A32已在safe boundary取消S10R1：operational
 > `cancelled / BLOCKED`、scientific `not_evaluated`、`edge=null`，沒有scientific
@@ -15,9 +15,9 @@
 > evidence integrity或scientific result的resource-accounting缺口定為non-blocking
 > caveat，不要求resource-only rerun；A37 prospectively取消internal resource target
 > 與cumulative ledger作blanket hard gate，改為record＋notify＋continue，只有
-> material safety／availability／completion／evidence boundary才暫停。A38已核准
-> R3 sibling S10R3，S10R2保持immutable inconclusive/null；只有S10R3的post-audited
-> `S1_ENTRY_GO`可啟動S11。A44把所有prospective R0–R3 repair cap統一為6 rounds，
+> material safety／availability／completion／evidence boundary才暫停。A38當時核准
+> R3 sibling S10R3，S10R2保持immutable inconclusive/null；該historical
+> `S1_ENTRY_GO`沒有形成。A44把所有prospective R0–R3 repair cap統一為6 rounds，
 > 並把experiment-design user gate與非設計dual-agent預授權分開。A45以clean
 > execution baseline與雙seal lifecycle對齊current `.agents` workflow；S10R3保持
 > `not_evaluated / edge=null`、threads `9/9`，scientific plan不變。A46取消numeric
@@ -25,7 +25,10 @@
 > fresh 512-chunk schedule、`C_greedy=K=19`與兩次可重現required mapping failure；
 > independent reproduction及fresh verification PASS，terminal closeout為
 > `CHECKPOINT_COMPLETE / negative / S1_ENTRY_BLOCKED / FT-BLOCKED-MAPPING /
-> edge=null`。S11沒有被啟動。
+> edge=null`。A47已由兩位fresh reviewers形成`AGREE`並由使用者核准exact-frame
+> S10R4；它對S10R3完整sealed 114-config frame執行normal codegen census，不重開draws
+> 或改寫S10R3。S10R4目前`DESIGN_APPROVED / not_started / not_evaluated / edge=null`；
+> 只有post-audited `S10R4:S1_ENTRY_GO_EXACT_FRAME`可啟動S11。
 >
 > **唯一 active 導航入口：**本 README。`legacy/` 內的 M00–M09 仍是 dead-protocol archive，不能提供 schema、hash、lock、registry、criterion、fixture、test或 PASS evidence；S00 positive只支持CPU-only evidence foundation。
 >
@@ -68,6 +71,7 @@ hypothesis、criterion、edge或timebox。
 | S10R1 | Cancelled nominal-boundary recovery diagnostics | `approved` | `cancelled` | `BLOCKED` | `not_evaluated` | `superseded` | none (A32 operational record only) |
 | S10R2 | Stage 1 support-aware entry recovery | `approved` | `completed` | `CHECKPOINT_COMPLETE` | `inconclusive` | `effective` | [report](reports/staged/s10r2-stage1-support-aware-entry-report.md) |
 | S10R3 | Stage 1 bounded-cover entry recovery | `approved` | `completed` | `CHECKPOINT_COMPLETE` | `negative` | `effective (S10R3-A46.5-G3)` | [report](reports/staged/s10r3-stage1-bounded-cover-entry-report.md) |
+| S10R4 | Stage 1 exact-frame operational entry recovery | `approved` | `not_started` | `DESIGN_APPROVED` | `not_evaluated` | `absent` | `reports/staged/s10r4-stage1-exact-frame-entry-report.md` |
 | S11 | Stage 1 model-only factorization／guidance lock | `approved` | `gated` | `DESIGN_APPROVED` | `not_activated` | `absent` | `reports/staged/s11-stage1-model-only-factorization-report.md` |
 | S12 | Stage 1 real-score／ranking／oracle audit | `approved` | `gated` | `DESIGN_APPROVED` | `not_evaluated` | `absent` | `reports/staged/s12-stage1-real-score-audit-report.md` |
 | S13 | Stage 1 actual Gen0 mechanism | `approved` | `gated` | `DESIGN_APPROVED` | `not_evaluated` | `absent` | `reports/gen0-factorization-mvp-report.md` |
@@ -84,6 +88,7 @@ Designs：
 - [S10R1 — Cancelled recovery diagnostic record](s10r1-stage1-valid-support-entry-recovery-design.md)
 - [S10R2 — Stage 1 support-aware entry recovery](s10r2-stage1-support-aware-entry-recovery-design.md)
 - [S10R3 — Stage 1 bounded-cover entry recovery](s10r3-stage1-bounded-cover-entry-recovery-design.md)
+- [S10R4 — Stage 1 exact-frame operational entry recovery](s10r4-stage1-exact-frame-operational-entry-design.md)
 - [S11 — Stage 1 model-only factorization](s11-stage1-model-only-factorization-design.md)
 - [S12 — Stage 1 real-score audit](s12-stage1-real-score-ranking-oracle-audit-design.md)
 - [S13 — Stage 1 actual Gen0](s13-stage1-actual-gen0-mechanism-design.md)
@@ -102,6 +107,7 @@ flowchart TD
   s10r1["S10R1 Cancelled diagnostics"]
   s10r2["S10R2 Support-aware entry"]
   s10r3["S10R3 Bounded-cover entry"]
+  s10r4["S10R4 Exact-frame operational entry"]
   s11["S11 Model-only factorization"]
   s12["S12 Real-score audit"]
   s13["S13 Actual Gen0"]
@@ -116,7 +122,8 @@ flowchart TD
   s10 -. "terminal provenance only; no scientific edge" .-> s10r2
   s10r1 -. "A32 status only; evidence reuse forbidden" .-> s10r2
   s10r2 -. "terminal inconclusive provenance; evidence reuse forbidden" .-> s10r3
-  s10r3 -->|"S1_ENTRY_GO"| s11
+  s10r3 -. "terminal negative provenance + sealed frame only" .-> s10r4
+  s10r4 -->|"S1_ENTRY_GO_EXACT_FRAME"| s11
   s11 -->|"S1_GUIDANCE_LOCKED"| s12
   s12 -->|"D5_PASS"| s13
   s13 -->|"D6_MECHANISM_POSITIVE"| s20
@@ -145,8 +152,10 @@ flowchart TD
   administrative prerequisites；虛線不是scientific edge，且S10R1 evidence reuse
   forbidden。S10R2已closeout為inconclusive/null。A38新增
   [S10R3](s10r3-stage1-bounded-cover-entry-recovery-design.md)；S10R2對它只提供
-  immutable terminal provenance，不提供formal evidence。S10R3是唯一新的
-  `S1_ENTRY_GO`來源。
+  immutable terminal provenance，不提供formal evidence。S10R3已closeout為
+  negative/null。A47新增[S10R4](s10r4-stage1-exact-frame-operational-entry-design.md)，
+  只窄重用S10R3完整sealed frame，不重用其selection/mapping/outcome。S10R4是唯一新的
+  qualified `S1_ENTRY_GO_EXACT_FRAME`來源。
 - `S1_ENTRY_DEGRADED_PROXY`、two-size mode、H5 pilot、single-cluster pilot或任何縮減不會自動形成 outgoing edge；必須先停在 `blocked-awaiting-user-decision`。
 - S12／S31 只有 parent 明列的 predictor-specific、oracle-positive evidence可送入 S40。
 - S40 沒有合法 trigger時不執行，由上游 report記 `not_activated`；不替 S40 建假 report或commit。
@@ -179,6 +188,7 @@ report/update/staged audit/commit，但
 | --- | --- | --- | --- |
 | `T-S10R2` | S10R2=`R2` | S10R2 | `CU-S10R2` standalone |
 | `T-S10R3` | S10R3=`R3` | S10R3 | `CU-S10R3` standalone |
+| `T-S10R4` | S10R4=`R3` | S10R4 | `CU-S10R4` standalone |
 | `T-S1-MECHANISM` | S11/S12=`R2`, S13=`R1` | S11 → S12 → S13 | `CU-S1-MECHANISM` |
 | `T-S20` | S20=`R1` | S20 | `CU-S20` standalone |
 | `T-S3-REPLICATION` | S30=`R2`, S31=`R1` | S30 → S31 | `CU-S3-REPLICATION` |
@@ -226,6 +236,10 @@ completion；`skipped_by_gate`／`not_activated`不建立假report。
   [S10R3 Stage 1 bounded-cover entry report](reports/staged/s10r3-stage1-bounded-cover-entry-report.md)。
   它記錄sealed G3 formal execution的
   `negative / S1_ENTRY_BLOCKED / FT-BLOCKED-MAPPING / edge=null`，不建立positive edge。
+- S10R4 positive、negative或inconclusive的唯一formal report是
+  `reports/staged/s10r4-stage1-exact-frame-entry-report.md`；在正式outcome前不得建立
+  placeholder。Operational blocker只可寫
+  `protocol/v1/evidence/s10r4-operational-blocker.json`，不是scientific completion。
 - S40 data insufficiency是科學 negative，寫入 S40 formal report；不使用 data-insufficiency blocker memo。
 - Outcome evidence已開始後，即使中途失敗，也不得退回 blocker memo來避開 formal negative／inconclusive report。
 - S11／S12／S30／S40 internal positive使用各design指定compact gate record；若
@@ -558,6 +572,30 @@ completion；`skipped_by_gate`／`not_activated`不建立假report。
   C10由exact staged audit、`CLOSEOUT_ACK`、local commit及post-commit audit完成。
   S10R3 committed projection為`CHECKPOINT_COMPLETE`，S11維持`not_activated`，沒有
   positive gate record或push。
+
+### 6.16 2026-08-02 A47 S10R4 exact-frame authority
+
+- Fresh reviewers `/root/pipeline_rebaseline_reviewer_a`與
+  `/root/pipeline_rebaseline_reviewer_b`完成兩輪cross-examination及一輪
+  evidence-backed final，均`AGREE`；使用者選擇並核准exact-frame S10R4。
+- S10R3 terminal negative/null及所有artifacts保持immutable。S10R4不redraw、不開
+  conditional stream；只在pre-outcome逐child rehash成功後窄重用完整sealed
+  114-config frame。S10R3 K=19 membership、mapping attempt/decision及verifier verdict
+  不可作S10R4 result evidence。
+- 全部114 configs各跑兩次normal KernelWriter filter。2/2 success進stable survivor
+  pool；2/2 ordinary attrition保留在exact-frame denominator；discordance、exception、
+  timeout、partial或identity/path drift為`CHANGES_REQUIRED / not_evaluated`。
+- Complete census後才計算
+  `mandatory = prelocked_candidate_atoms ∩ operational_codegen_witnessed_atoms`及
+  `K=max(10,C_greedy)`, `K_max=20`。Fresh mapping/native/correctness/noise gates保持，
+  禁止replacement、K+1、redraw或人工atom selection。
+- 唯一positive edge是`S10R4:S1_ENTRY_GO_EXACT_FRAME -> S11`；claim只限exact sealed
+  frame含bounded reproducible fixture。
+- S11須fresh建立multiplicity-preserving `F_valid -> F_codegen` frame；codegen rejects
+  保留在global `F_valid` occurrence-mass coverage denominator，conditional streams不
+  pooled。Whole-gene fail-closed保持；value-level proposal延後。
+- S10R4是R3 standalone `T-S10R4 / CU-S10R4`，目前
+  `DESIGN_APPROVED / not_started / not_evaluated / edge=null`。沒有push授權。
 
 ## 7. Downgrade review gate
 

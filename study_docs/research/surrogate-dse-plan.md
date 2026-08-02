@@ -524,6 +524,36 @@ Independent reproduction與Plan-A-blind fresh verifier通過；exact-path closur
 post-commit audit完成後，S10R3為`CHECKPOINT_COMPLETE`。本結果不改寫S10／S10R2，
 不建立positive gate record，也不啟動S11或授權push。
 
+### 1.23 A47 S10R4 exact-frame operational entry recovery
+
+2026-08-02，使用者要求先釐清normal workflow是否會把Ductile-validator accepted
+configs交給KernelWriter，以及S10R3同一config為何穩定codegen失敗。Code trace確認：
+normal benchmark workflow確實先接受solution，再以error-tolerant KernelWriter建立
+operational kernel pool；resource-constrained codegen failures會被移出pool。因此
+validator acceptance與operational codegen survival是兩個不同證據層級。
+
+Fresh Reviewer A `/root/pipeline_rebaseline_reviewer_a`與Reviewer B
+`/root/pipeline_rebaseline_reviewer_b`使用相同current bytes/direct evidence獨立分析，
+完成兩輪cross-examination及一輪evidence-backed final，均`AGREE`。使用者選擇並核准
+[S10R4 exact-frame design](ductile-origami-warmstart/s10r4-stage1-exact-frame-operational-entry-design.md)：
+
+- S10R3 negative/null完全immutable；S10R4不redraw、不resume conditional streams；
+- 只窄重用S10R3完整sealed 114-config discovery frame，不重用其K=19 selection、
+  mapping failure、decision或verifier result；
+- 對全部114 configs做兩次完整normal codegen census；stable attrition保留在exact-frame
+  denominator，stable survivors才提供operational atoms；
+- Census後以prelocked intersection與greedy
+  `K=max(10,C_greedy)`, `K_max=20`建立fixture，再fresh完成mapping/native/correctness/noise；
+- 唯一qualified edge是`S10R4:S1_ENTRY_GO_EXACT_FRAME -> S11`；positive claim只限該
+  exact sealed frame含bounded reproducible fixture，不宣稱general support或independent
+  replication；
+- S11必須fresh建立multiplicity-preserving `F_valid -> F_codegen` frame，codegen rejects
+  保留在global occurrence-mass coverage denominator，只對survivors mapping/scoring；
+  whole-gene fail-closed不變，value-level guidance proposal延後。
+
+這是post-observation但pre-S10R4-outcome的prospective sibling design。它不修改本charter
+north star、Stage 1–4 claim ladder或S10R3歷史結果，不授權push。
+
 ---
 
 ## 2. 研究問題與假設
@@ -945,10 +975,12 @@ S00 -> S10 [terminal negative; edge=null]
                                                      |
                                                      +-- terminal inconclusive; edge=null --> S10R3
                                                                                               |
-                                                                                              +-- terminal negative; edge=null
+                                                                                              +-- terminal negative; sealed frame --> S10R4
+                                                                                                                              |
+                                                                                                                              +-- S1_ENTRY_GO_EXACT_FRAME --> S11
 
 S11 -> S12 -> S13 -> S20 -> S30 -> S31
-  [not activated: no S10R3:S1_ENTRY_GO]
+  [not activated until post-audited S10R4 qualified edge]
                                   \
                                    +---- conditional ------> S40 -> S41
 
@@ -961,7 +993,9 @@ record，不是S10R2 parent或evidence source；A32固定它為
 S10R2已terminalize為inconclusive/null；它對S10R3只提供immutable terminal
 provenance，不提供formal evidence或scientific edge。S10R3現已terminalize為
 `CHECKPOINT_COMPLETE / negative / S1_ENTRY_BLOCKED / FT-BLOCKED-MAPPING /
-edge=null`，因此沒有啟動S11。
+edge=null`，因此沒有啟動S11。A47新增S10R4；它目前
+`DESIGN_APPROVED / not_started / not_evaluated / edge=null`，只有其post-audited
+`S1_ENTRY_GO_EXACT_FRAME`可啟動S11。
 
 M00–M09移入`ductile-origami-warmstart/legacy/`，只保留歷史正文：
 
@@ -1040,4 +1074,6 @@ post-audited positive才啟動S11。A46.5 G3 successor已完成fresh固定512-ch
 `C_greedy=K=19`與兩次可重現required mapping failure，最終closeout為
 `negative / S1_ENTRY_BLOCKED / FT-BLOCKED-MAPPING / edge=null`。因此S11仍是
 `not_activated`，後續不得把G2 diagnostics或G3合法未到達的後段工作補升為edge。
+A47已核准S10R4 exact-frame sibling；它只能在完整sealed 114-config frame上依新
+contract產生fresh qualified evidence，不能借用S10R3 decision補升結果。
 本authority不授權push。
