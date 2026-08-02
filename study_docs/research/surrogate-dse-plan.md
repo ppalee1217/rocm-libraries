@@ -618,8 +618,44 @@ final並均`AGREE`；使用者核准
   model catalog保留全部raw aliases/multiplicity；normalized-away、context-dependent或
   collision-confounded raw value沒有guidance credit，whole-gene fail-closed保持。
 
-只有binding-04 post-audited `S10R4:S1_ENTRY_GO_EXACT_FRAME`可啟動S11。A51不改本
-charter north star或Stage 1–4 claim ladder，也不授權push。
+A51當時只允許binding-04 post-audited `S10R4:S1_ENTRY_GO_EXACT_FRAME`啟動S11；
+該execution projection現由下節B05 supersede。A51不改本charter north star或Stage 1–4
+claim ladder，也不授權push。
+
+### 1.26 S10R4 binding-05 clean relational-selector authority
+
+Binding-04在effective lock與任何formal row前，由source-closure audit發現一個新的
+non-scientific defect：`KernelWriter.getTensorParameters`的literal
+`tensorIdx in {0,1}`不是TDM consumer實際使用的selector；ordinary與wave-separated
+TDM讀取的是`ProblemType.Index{tensorIdx}`產生的`idx/ti`，再形成
+`MacroTile{ti}`。因此只證明`tensorIdx` domain不足以關閉actual consumer key。
+Binding-04固定為
+`superseded_prelock / cancelled / BLOCKED / CHANGES_REQUIRED / not_evaluated /
+edge=null / lock=absent / lock_never_created=true`，沒有scientific outcome或formal
+report。
+
+使用者核准
+[binding-05 authority](ductile-origami-warmstart/s10r4-binding-05-relational-selector-recovery-authority.md)
+與[active B05 design](ductile-origami-warmstart/s10r4-stage1-relational-selector-operational-entry-design.md)：
+
+- 在fresh worktree/root中禁止讀取或重用B02-B04 formal artifacts；B04 contract只作
+  preserved-science input，沒有B05 criterion credit；
+- 以pinned actual YAML/default/override、`initGEMM`與`assignDerivedParameters`逐步證明
+  `Index0=0 / Index1=1`，再證明A/B ordinary及wave-separated TDM只要求
+  `MacroTile0/1`；唯一新增named rule是`problemtype_index_to_macrotile_v1`；
+- whole pinned Tensile subtree以canonical AST＋key-carrier def-use census固定exact 89個
+  dynamic
+  `MacroTile*` subscript nodes；Reviewer A/B必須獨立author/traverse closure，canonical
+  records完全相同且terminal unresolved count exact 0；
+- 114 raw denominator、ordered 114x2 census、dual-lineage identities、
+  `K=max(10,C_greedy)`且`10<=K<=20`、mapping/native/correctness/noise、outcome matrix、
+  claim及唯一S11 edge完全不變；
+- cumulative S10R4 role cap為9：七個historical roles、clean successor Main為第8、唯一
+  remaining slot保留fresh terminal verifier。其他工作只能resume既有roles。
+
+只有binding-05 terminal commit及postcommit audit後的positive
+`S10R4:S1_ENTRY_GO_EXACT_FRAME`可啟動S11。本amendment不改charter north star、claim
+ladder或S11 science，也不授權push或S11 implementation。
 
 ---
 
@@ -872,7 +908,8 @@ flowchart TD
 必要 metadata 只能靠猜、sentinel 未解析、candidate order／field parity 無法確認。這是 mapping blocker。
 
 上述是historical/general taxonomy description；S10R4 binding-04依A51採更嚴格的唯一
-decision table。對B04，metadata猜測、sentinel/consumer/projection未解析、A/B identity
+decision table，current B05完整繼承。對B04/B05，metadata猜測、
+sentinel/consumer/projection未解析、A/B identity
 drift、partial或unknown一律是`CHANGES_REQUIRED / not_evaluated / edge=null`，不得分配
 failure ID。只有同一個prelocked allowlisted native mapping failure在exactly兩個complete
 attempts重現，才可使用`FT-BLOCKED-MAPPING`形成scientific negative；first-attempt success
@@ -1069,9 +1106,10 @@ S10R2已terminalize為inconclusive/null；它對S10R3只提供immutable terminal
 provenance，不提供formal evidence或scientific edge。S10R3現已terminalize為
 `CHECKPOINT_COMPLETE / negative / S1_ENTRY_BLOCKED / FT-BLOCKED-MAPPING /
 edge=null`，因此沒有啟動S11。A47新增S10R4；A48 binding-02與A50 binding-03均已
-退休為immutable non-scientific provenance。A51核准fresh binding-04 dual-lineage
-recovery；S10R4目前`DESIGN_APPROVED / not_started / not_evaluated / edge=null`、
-binding-04 lock absent，只有binding-04 post-audited
+退休為immutable non-scientific provenance。A51核准的binding-04 dual-lineage
+science保留，但B04 execution已因prelock relational-selector closure gap superseded。
+Current B05為`DESIGN_APPROVED / not_started / not_evaluated / edge=null`、
+binding-05 lock absent，只有binding-05 post-audited
 `S10R4:S1_ENTRY_GO_EXACT_FRAME`可啟動S11。
 
 M00–M09移入`ductile-origami-warmstart/legacy/`，只保留歷史正文：
@@ -1122,7 +1160,7 @@ M00–M09移入`ductile-origami-warmstart/legacy/`，只保留歷史正文：
 - Internal positive scientific gate使用compact durable record並在同tranche繼續；
   internal terminal negative／inconclusive產生planned report；final gate report整合
   prior records。Tranches固定為historical S10R2、S10R3，active standalone
-  `T-S10R4-B04 / CU-S10R4`，以及future S11+S12+S13、S20、S30+S31、S40+S41。
+  `T-S10R4-B05 / CU-S10R4`，以及future S11+S12+S13、S20、S30+S31、S40+S41。
 - Positive、negative與inconclusive在evidence integrity完整時都需durable outcome
   closure、parent update、`CLOSEOUT_ACK`、isolated commit與post-commit audit。
 - Technical`PASS`只是`VERIFIED_PENDING_CLOSEOUT`；完成全部closeout後才是`CHECKPOINT_COMPLETE`。
@@ -1152,6 +1190,8 @@ post-audited positive才啟動S11。A46.5 G3 successor已完成fresh固定512-ch
 `negative / S1_ENTRY_BLOCKED / FT-BLOCKED-MAPPING / edge=null`。因此S11仍是
 `not_activated`，後續不得把G2 diagnostics或G3合法未到達的後段工作補升為edge。
 A47已核准S10R4 exact-frame sibling；A51進一步核准binding-04 resolver-effective
-dual-lineage authority。它只能在完整sealed 114-occurrence raw frame上依fresh contract與
-lock產生qualified evidence，不能借用S10R3 decision或binding-02/03 diagnostics補升結果。
+dual-lineage science，但其execution現已immutable prelock superseded，不能產生qualified
+evidence。Current binding-05 relational-selector authority保留該science，且只有B05能在
+完整sealed 114-occurrence raw frame上依fresh contract與lock產生qualified evidence；
+它不能借用S10R3 decision或binding-02/03/04 formal artifacts或diagnostics補升結果。
 本authority不授權push。

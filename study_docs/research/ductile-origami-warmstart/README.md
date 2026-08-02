@@ -37,12 +37,19 @@
 > `binding_status=superseded_prelock / execution_status=cancelled /
 > checkpoint_state=BLOCKED / criterion_status=CHANGES_REQUIRED /
 > scientific_outcome=not_evaluated / edge=null / lock_state=absent /
-> lock_never_created=true`。兩者都沒有scientific formal outcome。A51現已核准
+> lock_never_created=true`。兩者都沒有scientific formal outcome。A51曾核准
 > [binding-04 dual-lineage recovery](s10r4-binding-04-resolver-effective-recovery-authority.md)：
 > 它固定raw occurrence denominator，另將resolver-effective semantics綁成normal
-> KernelWriter workflow實際消費的operational measurement boundary，並在任何剩餘
-> 113-row evidence前建立fresh design／contract／lock。目前
-> `DESIGN_APPROVED / not_started / not_evaluated / edge=null`，binding-04 lock absent。
+> KernelWriter workflow實際消費的operational measurement boundary。其prelock source
+> closure後來發現`MacroTile{ti}`的`ti`來自`ProblemType.Index{tensorIdx}`，不能只證明
+> literal `tensorIdx`；因此binding-04現為
+> `superseded_prelock / cancelled / BLOCKED / CHANGES_REQUIRED / not_evaluated /
+> edge=null / lock=absent / lock_never_created=true`。Current user-approved authority是
+> [binding-05 relational-selector recovery](s10r4-binding-05-relational-selector-recovery-authority.md)：
+> 它在clean worktree/root中以exact one relational rule與兩份獨立whole-subtree closure
+> 關閉exact 89 dynamic accesses（68 direct＋21 `tP["mt"]` carrier consumers），要求
+> terminal unresolved exact 0，再允許任何formal row。
+> 目前`DESIGN_APPROVED / not_started / not_evaluated / edge=null`，binding-05 lock absent。
 >
 > **唯一 active 導航入口：**本 README。`legacy/` 內的 M00–M09 仍是 dead-protocol archive，不能提供 schema、hash、lock、registry、criterion、fixture、test或 PASS evidence；S00 positive只支持CPU-only evidence foundation。
 >
@@ -85,7 +92,7 @@ hypothesis、criterion、edge或timebox。
 | S10R1 | Cancelled nominal-boundary recovery diagnostics | `approved` | `cancelled` | `BLOCKED` | `not_evaluated` | `superseded` | none (A32 operational record only) |
 | S10R2 | Stage 1 support-aware entry recovery | `approved` | `completed` | `CHECKPOINT_COMPLETE` | `inconclusive` | `effective` | [report](reports/staged/s10r2-stage1-support-aware-entry-report.md) |
 | S10R3 | Stage 1 bounded-cover entry recovery | `approved` | `completed` | `CHECKPOINT_COMPLETE` | `negative` | `effective (S10R3-A46.5-G3)` | [report](reports/staged/s10r3-stage1-bounded-cover-entry-report.md) |
-| S10R4 | Stage 1 resolver-effective exact-frame operational entry recovery | `approved` | `not_started` | `DESIGN_APPROVED` | `not_evaluated` | `binding-01/02 superseded; binding-03/04 absent` | `reports/staged/s10r4-stage1-exact-frame-entry-report.md` |
+| S10R4 | Stage 1 relational-selector exact-frame operational entry recovery | `approved` | `not_started` | `DESIGN_APPROVED` | `not_evaluated` | `binding-01/02/03/04 superseded; binding-05 absent` | `reports/staged/s10r4-stage1-relational-selector-entry-report.md` |
 | S11 | Stage 1 model-only factorization／guidance lock | `approved` | `gated` | `DESIGN_APPROVED` | `not_activated` | `absent` | `reports/staged/s11-stage1-model-only-factorization-report.md` |
 | S12 | Stage 1 real-score／ranking／oracle audit | `approved` | `gated` | `DESIGN_APPROVED` | `not_evaluated` | `absent` | `reports/staged/s12-stage1-real-score-audit-report.md` |
 | S13 | Stage 1 actual Gen0 mechanism | `approved` | `gated` | `DESIGN_APPROVED` | `not_evaluated` | `absent` | `reports/gen0-factorization-mvp-report.md` |
@@ -107,6 +114,8 @@ Designs：
 - [S10R4 binding-03 — Census backend recovery authority](s10r4-binding-03-census-backend-recovery-authority.md)
 - [S10R4 binding-04 — Resolver-effective recovery authority](s10r4-binding-04-resolver-effective-recovery-authority.md)
 - [S10R4 binding-04 — Resolver-effective operational entry design](s10r4-stage1-resolver-effective-operational-entry-design.md)
+- [S10R4 binding-05 — Relational-selector recovery authority](s10r4-binding-05-relational-selector-recovery-authority.md)
+- [S10R4 binding-05 — Relational-selector operational entry design](s10r4-stage1-relational-selector-operational-entry-design.md)
 - [S11 — Stage 1 model-only factorization](s11-stage1-model-only-factorization-design.md)
 - [S12 — Stage 1 real-score audit](s12-stage1-real-score-ranking-oracle-audit-design.md)
 - [S13 — Stage 1 actual Gen0](s13-stage1-actual-gen0-mechanism-design.md)
@@ -174,7 +183,9 @@ flowchart TD
   negative/null。A47新增[S10R4](s10r4-stage1-exact-frame-operational-entry-design.md)，
   只窄重用S10R3完整sealed raw frame，不重用其selection/mapping/outcome。A51進一步
   以fresh binding-04固定`F_valid(raw) -> F_effective -> F_codegen`的dual-lineage
-  measurement boundary；S10R4仍是唯一新的qualified `S1_ENTRY_GO_EXACT_FRAME`來源。
+  measurement science，但B04 execution已immutable prelock superseded且不能產生
+  qualified evidence。Current binding-05 relational-selector closure保留該science，並是
+  S10R4唯一可產生新的qualified `S1_ENTRY_GO_EXACT_FRAME` evidence之來源。
 - `S1_ENTRY_DEGRADED_PROXY`、two-size mode、H5 pilot、single-cluster pilot或任何縮減不會自動形成 outgoing edge；必須先停在 `blocked-awaiting-user-decision`。
 - S12／S31 只有 parent 明列的 predictor-specific、oracle-positive evidence可送入 S40。
 - S40 沒有合法 trigger時不執行，由上游 report記 `not_activated`；不替 S40 建假 report或commit。
@@ -207,7 +218,7 @@ report/update/staged audit/commit，但
 | --- | --- | --- | --- |
 | `T-S10R2` | S10R2=`R2` | S10R2 | `CU-S10R2` standalone |
 | `T-S10R3` | S10R3=`R3` | S10R3 | `CU-S10R3` standalone |
-| `T-S10R4-B04` | S10R4 binding-04=`R3`；binding-01/02/03 superseded diagnostics | S10R4 | `CU-S10R4` standalone |
+| `T-S10R4-B05` | S10R4 binding-05=`R3`；binding-01/02/03/04 superseded non-scientific diagnostics | S10R4 | `CU-S10R4` standalone |
 | `T-S1-MECHANISM` | S11/S12=`R2`, S13=`R1` | S11 → S12 → S13 | `CU-S1-MECHANISM` |
 | `T-S20` | S20=`R1` | S20 | `CU-S20` standalone |
 | `T-S3-REPLICATION` | S30=`R2`, S31=`R1` | S30 → S31 | `CU-S3-REPLICATION` |
@@ -256,7 +267,7 @@ completion；`skipped_by_gate`／`not_activated`不建立假report。
   它記錄sealed G3 formal execution的
   `negative / S1_ENTRY_BLOCKED / FT-BLOCKED-MAPPING / edge=null`，不建立positive edge。
 - S10R4 positive、negative或inconclusive的唯一formal report是
-  `reports/staged/s10r4-stage1-exact-frame-entry-report.md`；在正式outcome前不得建立
+  `reports/staged/s10r4-stage1-relational-selector-entry-report.md`；在正式outcome前不得建立
   placeholder。Operational blocker只可寫
   `protocol/v1/evidence/s10r4-operational-blocker.json`，不是scientific completion。
 - S40 data insufficiency是科學 negative，寫入 S40 formal report；不使用 data-insufficiency blocker memo。
@@ -651,14 +662,15 @@ completion；`skipped_by_gate`／`not_activated`不建立假report。
   resolver與normal KernelWriter workflow形成bounded reproducible distinct-effective-state
   entry fixture；不主張raw injectivity、value-level causal effect、general support、
   ranking或production readiness。
-- Binding-04是R3 standalone `T-S10R4-B04 / CU-S10R4`。目前
-  `DESIGN_APPROVED / not_started / not_evaluated / edge=null`，fresh contract與lock
-  absent；剩餘row evidence、formal report、decision與outgoing edge都尚不存在。沒有push
-  授權。
-- B04 committed machine contract須在Plan-B/Plan-A前凍結exact implementation、
-  execution-artifact與delivery lists。S10R4 cumulative fresh-role cap依本輪user automatic
-  authority由6最小提高為8：目前7個spawned roles，唯一剩餘slot保留fresh terminal
-  verifier；其他工作resume既有implementer/auditor/reviewers。
+- Binding-04在prelock source closure因derived `ProblemType.Index{tensorIdx}` relation未關閉
+  而固定為`superseded_prelock / CHANGES_REQUIRED / not_evaluated / edge=null /
+  lock=absent`。Current binding-05是R3 standalone `T-S10R4-B05 / CU-S10R4`；目前
+  `DESIGN_APPROVED / not_started / not_evaluated / edge=null`，fresh contract與lock absent。
+- B05以exact one relational rule與兩份independently authored exact-89-node closure要求
+  unresolved exact 0。Committed machine contract須在Plan-B/Plan-A前凍結exact
+  implementation、execution-artifact與delivery lists。S10R4 cumulative role cap exact 9：
+  historical 7、clean successor Main第8、唯一剩餘slot保留fresh terminal verifier；其他
+  工作resume既有implementer/auditor/reviewers。
 
 ## 7. Downgrade review gate
 

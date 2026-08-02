@@ -154,14 +154,19 @@ Future lock：
 `protocol/v1/locks/s11-stage1-model-only-factorization-lock.json`
 
 它綁定S10 immutable terminal provenance、S10R1 A32 cancellation、S10R2 immutable
-inconclusive/null provenance、S10R3 immutable negative/null closeout、S10R4 qualified
-positive closure、binding-04 layered identity／resolver schema、frozen
+inconclusive/null provenance、S10R3 immutable negative/null closeout，以及terminal
+post-audited positive S10R4 binding-05 closure、binding-05 relational-selector
+contract／schema／effective-lock identities與positive gate record；另綁定frozen
 YAML／space／groups／weights／sizes／support-aware valid mapping、study mode、
 Formocast／validity revisions、parent constants、randomness bundles、
-label-seal evidence、Plan-B、exact whitelists與report target。S10R4的exact-K corpus
-只作mapping／conformance entry fixture；不得假設它是十筆，也不得替代S11自己的
-fresh population。S11仍須建立自己的multiplicity-preserving raw occurrence frame及
-fresh raw→effective→codegen projection，且不得從S10R2 outcome artifacts建立它。
+label-seal evidence、Plan-B、exact whitelists與report target。Binding-04 layered
+identity／resolver semantics只可作immutable historical non-scientific provenance；
+任何需要的layered semantics都必須由committed B05 authority／contract重新
+materialize，B04 formal artifacts不得取得S11 evidence或criterion credit。S10R4的
+exact-K corpus只作mapping／conformance entry fixture；不得假設它是十筆，也不得
+替代S11自己的fresh population。S11仍須建立自己的multiplicity-preserving raw
+occurrence frame及fresh raw→effective→codegen projection，且不得從S10R2 outcome
+artifacts建立它。
 
 Outputs至少包括：
 
@@ -369,3 +374,27 @@ record與claim boundary。若S13成為tranche final，S13 report整合本record�
 - Parent既有4,096/8,192 accepted occurrences、128/256 conditional support、whole-config
   Formocast coverage `>=95%`、`alpha`、`epsilon`、lambda grid、weights、shuffle、label
   seal、`S1_GUIDANCE_LOCKED -> S12`、timebox與claim不變；不授權push。
+
+### 2026-08-02 S10R4 binding-05 relational-selector dependency amendment
+
+- Binding-04在effective lock與formal rows前發現source-closure defect，固定為
+  `superseded_prelock / cancelled / BLOCKED / CHANGES_REQUIRED / not_evaluated /
+  edge=null / lock=absent / lock_never_created=true`。該defect不是codegen attrition、
+  mapping/correctness failure或scientific result。
+- Current B05必須以actual YAML/defaults、`initGEMM`、`assignDerivedParameters`及
+  `getTensorParameters`證明`Index0=0 / Index1=1`，再關閉ordinary與wave-separated
+  TDM的`MacroTile{ti}`至`MacroTile0/1`。此外，兩位existing reviewers獨立author/traverse
+  whole pinned Tensile subtree exact 89-node dynamic-access closure（68 direct＋21
+  `tP["mt"]` carrier consumers），canonical records相同且
+  unresolved exact 0，才能建立effective lock。
+- B05不改S10R4的114 raw denominator、dual-lineage operational identity、ordered 114x2
+  census、selector、mapping/native/correctness/noise、outcome matrix或claim。B02-B04
+  formal artifacts不提供B05或S11 evidence credit。
+- S11唯一dependency仍是post-audited
+  `S10R4:S1_ENTRY_GO_EXACT_FRAME`。只有B05 terminal commit及postcommit audit後的positive
+  edge有效；B05 technical closure PASS或`LOCKED_READY`都不能啟動S11。
+- S11仍需disjoint seeds fresh建立
+  `F_valid(raw) -> F_effective -> F_codegen`，保留raw mass、aliases及multiplicity。
+  Existing 4,096/8,192 occurrences、128/256 support、coverage、whole-gene fail-closed、
+  model criteria、weights、shuffle、label seal、timebox、claim與S12 edge全部不變。
+- B05只更新dependency provenance；不授權S11 implementation、evidence、report、lock或push。
