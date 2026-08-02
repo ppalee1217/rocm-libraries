@@ -547,9 +547,10 @@ Fresh Reviewer A `/root/pipeline_rebaseline_reviewer_a`與Reviewer B
 - 唯一qualified edge是`S10R4:S1_ENTRY_GO_EXACT_FRAME -> S11`；positive claim只限該
   exact sealed frame含bounded reproducible fixture，不宣稱general support或independent
   replication；
-- S11必須fresh建立multiplicity-preserving `F_valid -> F_codegen` frame，codegen rejects
-  保留在global occurrence-mass coverage denominator，只對survivors mapping/scoring；
-  whole-gene fail-closed不變，value-level guidance proposal延後。
+- A47當時要求S11 fresh建立multiplicity-preserving `F_valid -> F_codegen` frame；A51
+  後續擴充為`F_valid(raw) -> F_effective -> F_codegen`。Codegen rejects保留在global
+  raw occurrence-mass coverage denominator，只對survivors mapping/scoring；whole-gene
+  fail-closed不變，value-level guidance proposal延後。
 
 這是post-observation但pre-S10R4-outcome的prospective sibling design。它不修改本charter
 north star、Stage 1–4 claim ladder或S10R3歷史結果，不授權push。
@@ -577,7 +578,48 @@ top-level formal stage。兩者都是execution harness／lineage缺陷，不是s
 - successor不重置role、repair或resource provenance，且不授權push。
 
 這是measurement-lineage／execution-binding authority amendment，不改本charter的scientific
-estimand或claim ladder。只有binding-02 post-audited positive仍可啟動S11。
+estimand或claim ladder。它是historical A48 projection，後由A50/A51 supersede；沒有形成
+positive edge。
+
+### 1.25 A51 S10R4 binding-04 resolver-effective dual-lineage authority
+
+Binding-02曾完成effective lock與`LOCKED_READY`，但第一個Census-A child在backend
+factory留下partial後fail closed；它已退休為
+`cancelled / BLOCKED / not_evaluated / edge=null / lock=superseded`。A50 binding-03只
+修復`Backend.Name: Exhaustive -> Tensile`，其prelock row-0 diagnostic接著證明normal
+resolver會把raw declaration轉成不同effective state：MI9→MI4可精確反演，但
+`ScheduleGROverBarrier`、`StaggerU`及`StaggerUStride`發生behavior-changing
+resolution。原始write、KernelWriter、GPU與GFLOPS未到達。Binding-03因此固定為
+`execution_status=cancelled / checkpoint_state=BLOCKED /
+criterion_status=CHANGES_REQUIRED / scientific_outcome=not_evaluated / edge=null /
+lock_state=absent / lock_never_created=true`。
+
+兩位fresh reviewers以相同evidence完成一輪cross-examination與一輪evidence-backed
+final並均`AGREE`；使用者核准
+[binding-04 authority](ductile-origami-warmstart/s10r4-binding-04-resolver-effective-recovery-authority.md)
+與[active design](ductile-origami-warmstart/s10r4-stage1-resolver-effective-operational-entry-design.md)：
+
+- exact 114 raw occurrences／hashes及multiplicity仍是immutable sampling population與
+  denominator；resolver collision或codegen attrition不刪除raw mass；
+- 在其餘113 rows evidence前，以source-only／synthetic／known-row0 evidence prelock
+  declaration、resolver semantic/evidence、effective atom、codegen semantic/evidence及
+  mapping identities；
+- `operational_identity`只由consumer-relevant resolver/atom/codegen semantic bytes構成；
+  raw association、pass、cwd/path與artifact digests只留在evidence identity；
+- formal census仍是ordered 114×2；complete resolver partition multiplicity總和114，
+  stable-survivor subset的raw mass可小於114；mixed terminal或same-resolver/different-codegen
+  fail closed；
+- deterministic selector只要求存在`10 <= K=max(10,C_greedy) <= 20` fixture，不限制
+  整個survivor pool至多20；mapping/native/correctness/noise與outcome matrix保持；
+- positive claim只限固定raw frame經pinned resolver與normal KernelWriter形成bounded
+  reproducible distinct-effective-state entry fixture，不支持raw injectivity、value-level
+  causal effect、general support、ranking、factorization或production claims；
+- S11必須fresh/disjoint建立`F_valid(raw) -> F_effective -> F_codegen`。Operational
+  model catalog保留全部raw aliases/multiplicity；normalized-away、context-dependent或
+  collision-confounded raw value沒有guidance credit，whole-gene fail-closed保持。
+
+只有binding-04 post-audited `S10R4:S1_ENTRY_GO_EXACT_FRAME`可啟動S11。A51不改本
+charter north star或Stage 1–4 claim ladder，也不授權push。
 
 ---
 
@@ -829,6 +871,13 @@ flowchart TD
 
 必要 metadata 只能靠猜、sentinel 未解析、candidate order／field parity 無法確認。這是 mapping blocker。
 
+上述是historical/general taxonomy description；S10R4 binding-04依A51採更嚴格的唯一
+decision table。對B04，metadata猜測、sentinel/consumer/projection未解析、A/B identity
+drift、partial或unknown一律是`CHANGES_REQUIRED / not_evaluated / edge=null`，不得分配
+failure ID。只有同一個prelocked allowlisted native mapping failure在exactly兩個complete
+attempts重現，才可使用`FT-BLOCKED-MAPPING`形成scientific negative；first-attempt success
+禁止retry，failure→success、signature不同或第三次attempt也都是`CHANGES_REQUIRED`。
+
 ### `FT-BLOCKED-CORRECTNESS`
 
 在frozen valid corpus、source／mapping identity、environment與measurement contract都
@@ -974,7 +1023,8 @@ Noise、support、coverage、importance ESS、unique configs 或兩-regime evide
 - fixed MT 還是 MTDU、DepthU 是否自由；
 - dtype/layout 與可共用同一 search space 的 sizes；
 - Formocast mapping coverage、score ties 與 throughput；
-- `F_valid` 在 cap 內的 unique catalog 大小與 multiplicity concentration；
+- `F_valid(raw)`在cap內經`F_effective -> F_codegen`後的unique stable operational catalog
+  大小、resolver collisions與raw multiplicity concentration；
 - gfx942 slot、measurement noise 與可用 GPU-hours；
 - branch proxy 是否能只改 weights、不改 candidate space；
 - Stage 2十代完整 panel的實際 evaluation／GPU成本；
@@ -1018,10 +1068,11 @@ record，不是S10R2 parent或evidence source；A32固定它為
 S10R2已terminalize為inconclusive/null；它對S10R3只提供immutable terminal
 provenance，不提供formal evidence或scientific edge。S10R3現已terminalize為
 `CHECKPOINT_COMPLETE / negative / S1_ENTRY_BLOCKED / FT-BLOCKED-MAPPING /
-edge=null`，因此沒有啟動S11。A47新增S10R4，A48再將binding-01退役為原地
-diagnostic並核准binding-02 recovery；S10R4目前
-`DESIGN_APPROVED / gated / not_evaluated / edge=null`、binding-02 lock absent，只有
-binding-02 post-audited `S1_ENTRY_GO_EXACT_FRAME`可啟動S11。
+edge=null`，因此沒有啟動S11。A47新增S10R4；A48 binding-02與A50 binding-03均已
+退休為immutable non-scientific provenance。A51核准fresh binding-04 dual-lineage
+recovery；S10R4目前`DESIGN_APPROVED / not_started / not_evaluated / edge=null`、
+binding-04 lock absent，只有binding-04 post-audited
+`S10R4:S1_ENTRY_GO_EXACT_FRAME`可啟動S11。
 
 M00–M09移入`ductile-origami-warmstart/legacy/`，只保留歷史正文：
 
@@ -1070,8 +1121,8 @@ M00–M09移入`ductile-origami-warmstart/legacy/`，只保留歷史正文：
 - `skipped_by_gate`／`not_activated`由上游report與closeout記錄，不建立自己的report或commit。
 - Internal positive scientific gate使用compact durable record並在同tranche繼續；
   internal terminal negative／inconclusive產生planned report；final gate report整合
-  prior records。Tranches固定為historical S10R2、S10R3、S11+S12+S13、S20、
-  S30+S31、S40+S41。
+  prior records。Tranches固定為historical S10R2、S10R3，active standalone
+  `T-S10R4-B04 / CU-S10R4`，以及future S11+S12+S13、S20、S30+S31、S40+S41。
 - Positive、negative與inconclusive在evidence integrity完整時都需durable outcome
   closure、parent update、`CLOSEOUT_ACK`、isolated commit與post-commit audit。
 - Technical`PASS`只是`VERIFIED_PENDING_CLOSEOUT`；完成全部closeout後才是`CHECKPOINT_COMPLETE`。
@@ -1100,6 +1151,7 @@ post-audited positive才啟動S11。A46.5 G3 successor已完成fresh固定512-ch
 `C_greedy=K=19`與兩次可重現required mapping failure，最終closeout為
 `negative / S1_ENTRY_BLOCKED / FT-BLOCKED-MAPPING / edge=null`。因此S11仍是
 `not_activated`，後續不得把G2 diagnostics或G3合法未到達的後段工作補升為edge。
-A47已核准S10R4 exact-frame sibling；它只能在完整sealed 114-config frame上依新
-contract產生fresh qualified evidence，不能借用S10R3 decision補升結果。
+A47已核准S10R4 exact-frame sibling；A51進一步核准binding-04 resolver-effective
+dual-lineage authority。它只能在完整sealed 114-occurrence raw frame上依fresh contract與
+lock產生qualified evidence，不能借用S10R3 decision或binding-02/03 diagnostics補升結果。
 本authority不授權push。

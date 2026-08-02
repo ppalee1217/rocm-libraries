@@ -35,13 +35,18 @@
 > S10R4：它不重開S10R3 draws，而對其完整sealed 114-config frame執行兩次normal
 > codegen census，再以stable survivors建立bounded fixture。A47核准當時的S10R4投影為
 > `DESIGN_APPROVED / not_started / not_evaluated / edge=null`；只有post-audited
-> `S10R4:S1_ENTRY_GO_EXACT_FRAME`可啟動S11。A48另核准
-> [binding-02 execution recovery authority](ductile-origami-warmstart/s10r4-binding-02-execution-recovery-authority.md)：
-> binding-01首個child在進入Ductile／KernelWriter前因cwd admission defect fail closed，
-> 且live-absence validator存在必然阻止下一stage的缺陷。Binding-01固定為原地
-> `retired diagnostic / not_evaluated / edge=null`；S10R4科學設計與114×2 workload不變，
-> binding-02以全新run／ledger／lock namespace重新seal並從config 0完整執行。目前
-> `DESIGN_APPROVED / gated / not_evaluated / edge=null`，binding-02 lock尚未建立。
+> `S10R4:S1_ENTRY_GO_EXACT_FRAME`可啟動S11。A48 binding-02曾完成seal與
+> `LOCKED_READY`，但第一個Census-A child留下partial後fail closed，現為
+> `cancelled / BLOCKED / not_evaluated / edge=null / lock=superseded`。A50 binding-03
+> 在prelock diagnostic證明normal resolver會把raw declaration轉成不同effective state，
+> 現為`execution_status=cancelled / checkpoint_state=BLOCKED /
+> criterion_status=CHANGES_REQUIRED / scientific_outcome=not_evaluated / edge=null /
+> lock_state=absent`。A51已核准
+> [binding-04 dual-lineage authority](ductile-origami-warmstart/s10r4-binding-04-resolver-effective-recovery-authority.md)
+> 與[new active design](ductile-origami-warmstart/s10r4-stage1-resolver-effective-operational-entry-design.md)：
+> 固定114 raw occurrence denominator，並在剩餘row evidence前prelock
+> `F_valid(raw) -> F_effective -> F_codegen` measurement。目前
+> `DESIGN_APPROVED / not_started / not_evaluated / edge=null`，binding-04 lock absent。
 >
 > **Foundation provenance：**active `protocol/v1/`與S00 report是fresh foundation；退役M00內容仍不得作schema、hash、lock、registry、fixture、test或PASS evidence。S00只支持CPU-only evidence semantics，不是GPU／performance結果。
 >
@@ -90,7 +95,7 @@ orchestration／resource floor；它不能靜默修改上列scientific authority
 | S10R1 | Cancelled nominal-boundary recovery diagnostics | approved | cancelled | BLOCKED | not_evaluated | superseded | [design](ductile-origami-warmstart/s10r1-stage1-valid-support-entry-recovery-design.md) | none (A32 operational record only) |
 | S10R2 | Stage 1 support-aware entry recovery | approved | completed | CHECKPOINT_COMPLETE | inconclusive | effective | [design](ductile-origami-warmstart/s10r2-stage1-support-aware-entry-recovery-design.md) | [report](ductile-origami-warmstart/reports/staged/s10r2-stage1-support-aware-entry-report.md) |
 | S10R3 | Stage 1 bounded-cover entry recovery | approved | completed | CHECKPOINT_COMPLETE | negative | effective (`S10R3-A46.5-G3`) | [design](ductile-origami-warmstart/s10r3-stage1-bounded-cover-entry-recovery-design.md) | [report](ductile-origami-warmstart/reports/staged/s10r3-stage1-bounded-cover-entry-report.md) |
-| S10R4 | Stage 1 exact-frame operational entry recovery | approved | gated | DESIGN_APPROVED | not_evaluated | binding-01 superseded；binding-02 absent | [design](ductile-origami-warmstart/s10r4-stage1-exact-frame-operational-entry-design.md)／[binding-02 authority](ductile-origami-warmstart/s10r4-binding-02-execution-recovery-authority.md) | `reports/staged/s10r4-stage1-exact-frame-entry-report.md` |
+| S10R4 | Stage 1 resolver-effective exact-frame operational entry recovery | approved | not_started | DESIGN_APPROVED | not_evaluated | binding-01/02 superseded；binding-03/04 absent | [A51 authority](ductile-origami-warmstart/s10r4-binding-04-resolver-effective-recovery-authority.md)／[active design](ductile-origami-warmstart/s10r4-stage1-resolver-effective-operational-entry-design.md) | `reports/staged/s10r4-stage1-exact-frame-entry-report.md` |
 | S11 | Stage 1 model-only factorization／guidance lock | approved | gated | DESIGN_APPROVED | not_activated | absent | [design](ductile-origami-warmstart/s11-stage1-model-only-factorization-design.md) | `reports/staged/s11-stage1-model-only-factorization-report.md` |
 | S12 | Stage 1 D5 real-score／oracle audit | approved | gated | DESIGN_APPROVED | not_evaluated | absent | [design](ductile-origami-warmstart/s12-stage1-real-score-ranking-oracle-audit-design.md) | `reports/staged/s12-stage1-real-score-audit-report.md` |
 | S13 | Stage 1 actual Gen0 mechanism | approved | gated | DESIGN_APPROVED | not_evaluated | absent | [design](ductile-origami-warmstart/s13-stage1-actual-gen0-mechanism-design.md) | `reports/gen0-factorization-mvp-report.md` |
@@ -151,8 +156,10 @@ S10R2已依其frozen exact-ten criterion誠實closeout為inconclusive/null。A38
 S10R2對它只提供immutable terminal provenance，所有outcome-bearing artifacts禁止
 重用。S10R3其後合法closeout為negative/null。A47新增
 [S10R4](ductile-origami-warmstart/s10r4-stage1-exact-frame-operational-entry-design.md)，
-只窄重用S10R3完整sealed discovery frame，不重用其K=19選擇、mapping結果或negative
-判讀。只有post-audited `S10R4:S1_ENTRY_GO_EXACT_FRAME -> S11`。所有downgrade仍先停在
+只窄重用S10R3完整sealed raw discovery frame，不重用其K=19選擇、mapping結果或negative
+判讀。A51的fresh binding-04另固定
+`F_valid(raw) -> F_effective -> F_codegen` layered identity、collision與mapping boundary。
+只有post-audited `S10R4:S1_ENTRY_GO_EXACT_FRAME -> S11`。所有downgrade仍先停在
 `blocked-awaiting-user-decision`。
 
 ### Stable criterion IDs
@@ -183,12 +190,14 @@ Checkpoint designs只能引用下列parent IDs，不得自行改門檻：
 - `S00_EVIDENCE_READY`：observer neutrality、checkpoint/resume parity、lineage lock與artifact reconciliation全部通過。
 - `S1_ENTRY_GO`：historical generic Stage-1 entry token；S10、已取消的S10R1、terminal
   inconclusive的S10R2及terminal negative的S10R3均沒有active outgoing instance。
-- `S1_ENTRY_GO_EXACT_FRAME`：S10R4 exact sealed frame經normal codegen filter後，bounded
-  operational fixture、mapping/native/correctness/noise gates全部通過的qualified entry
-  token；claim只限該exact frame。只有checkpoint-scoped
+- `S1_ENTRY_GO_EXACT_FRAME`：S10R4 exact sealed raw frame經pinned resolver與normal
+  codegen filter後，bounded distinct-effective-state operational fixture、mapping/native/
+  correctness/noise gates全部通過的qualified entry token；claim只限該exact frame。只有checkpoint-scoped
   `S10R4:S1_ENTRY_GO_EXACT_FRAME`可啟動S11。
 - `S1_ENTRY_DEGRADED_PROXY`：§2 entry gates通過，但只能使用exact-space GEKO branch proxy；另需user downgrade approval。
-- `S1_ENTRY_BLOCKED`：§2.8任一hard stop成立。
+- `S1_ENTRY_BLOCKED`：historical/general Stage-1 entry依§2.8 hard stop成立；S10R4
+  binding-04只依A51/B04 frozen outcome table形成，guess/drift/partial/unknown不得使用此
+  criterion。
 - `S1_GUIDANCE_LOCKED`：§4–§5 model-only frame、gene decisions、weights、shuffle與hash在real labels前完成鎖定。
 - `S3_REGISTRY_PROCEDURE_LOCKED`：§16的兩primary slots、reserve、denominator、frozen procedure與完整budget均在任何Stage 3 score前鎖定。
 - `S4_TRIGGER_ELIGIBLE`：§18.1 predictor-specific failure成立，且§18.2禁止patterns均不存在。
@@ -220,7 +229,7 @@ partial working-tree evidence只能屬於前者。
 | --- | --- | --- |
 | `T-S10R2` | S10R2=`R2` | `CU-S10R2` standalone |
 | `T-S10R3` | S10R3=`R3` | `CU-S10R3` standalone |
-| `T-S10R4-B02` | S10R4 binding-02=`R3`；binding-01 retired diagnostic | `CU-S10R4` standalone |
+| `T-S10R4-B04` | S10R4 binding-04=`R3`；binding-01/02/03 superseded diagnostics | `CU-S10R4` standalone |
 | `T-S1-MECHANISM` | S11=`R2` → S12=`R2` → S13=`R1` | `CU-S1-MECHANISM` |
 | `T-S20` | S20=`R1` | `CU-S20` standalone |
 | `T-S3-REPLICATION` | S30=`R2` → S31=`R1` | `CU-S3-REPLICATION` |
@@ -833,17 +842,60 @@ Positive、negative與inconclusive都要durable outcome closure。Operational
 - **Claim：**positive只說明這一個exact sealed frame在指定identity及normal filter下含
   bounded reproducible entry fixture；不宣稱general support、support absence、survival
   probability、independent replication、ranking、factorization或production readiness。
-- **S11 amendment：**只有qualified edge能activate S11。S11須用disjoint seeds建立fresh
-  multiplicity-preserving `F_valid`，再以相同normal filter形成`F_codegen`；codegen
-  rejects保留在`F_valid` global occurrence-mass coverage denominator，只對survivors
-  mapping/scoring，conditional streams不pool。既有`>=95%` coverage、4,096/8,192
-  accepted occurrences、128/256 conditional support及whole-gene fail-closed eligibility
-  不變；value-level guidance proposal延後。
-- **Governance：**A47最初將S10R4設為R3 standalone `T-S10R4 / CU-S10R4`；A48已將
-  active execution tranche改為`T-S10R4-B02 / CU-S10R4`並保留binding-01 diagnostic，依current
-  `implement-verify-loop`先contract/Plan-B/adversarial audit，再fresh implementer、
-  effective lock、formal evidence及fresh verifier。Repair count只作provenance；不授權
-  push、S11 evidence、container lifecycle mutation或scientific downgrade。
+- **S11 amendment：**A47當時要求qualified edge後以disjoint seeds建立fresh
+  multiplicity-preserving `F_valid -> F_codegen`；A51進一步把它擴充為
+  `F_valid(raw) -> F_effective -> F_codegen`。Codegen rejects保留在raw global
+  occurrence-mass coverage denominator，只對survivors mapping/scoring，conditional streams
+  不pool。既有`>=95%` coverage、4,096/8,192 accepted occurrences、128/256 conditional
+  support及whole-gene fail-closed eligibility不變；value-level guidance proposal延後。
+- **Governance：**A47最初將S10R4設為R3 standalone `T-S10R4 / CU-S10R4`；A48當時的
+  historical projection改為`T-S10R4-B02 / CU-S10R4`並保留binding-01 diagnostic。
+  A50/A51已supersede該execution projection；current authority是
+  `T-S10R4-B04 / CU-S10R4`，依current `implement-verify-loop`先contract/Plan-B/
+  adversarial audit，再resume existing implementer、effective lock、formal evidence及唯一
+  reserved fresh verifier。Repair count只作provenance；不授權push、S11 evidence、
+  container lifecycle mutation或scientific downgrade。
+
+### 2026-08-02 A51 S10R4 binding-04 resolver-effective dual-lineage authority
+
+- **Trigger／immutable history：**Binding-02曾完成effective lock與`LOCKED_READY`，但第一
+  Census-A child在backend factory留下partial；其retirement為
+  `cancelled / BLOCKED / not_evaluated / edge=null / lock=superseded`。A50 binding-03修正
+  `Exhaustive -> Tensile`後，在prelock row-0 diagnostic觀察MI reversible representation及
+  `ScheduleGROverBarrier`、`StaggerU`、`StaggerUStride` behavior-changing resolution；它
+  固定為`execution_status=cancelled / checkpoint_state=BLOCKED /
+  criterion_status=CHANGES_REQUIRED / scientific_outcome=not_evaluated / edge=null /
+  lock_state=absent / lock_never_created=true`。兩者都沒有scientific formal outcome。
+- **Approved measurement：**兩位fresh reviewers以相同direct evidence完成一輪
+  cross-examination與一輪evidence-backed final並均`AGREE`；使用者核准fresh binding-04。
+  Exact 114 raw occurrences／hashes及multiplicity仍是sampling population與denominator；
+  resolver collision或codegen attrition不能刪除raw mass。Fresh closed identity依序為
+  declaration、resolver semantic/evidence、effective atom、codegen semantic/evidence及
+  mapping；剩餘113 rows在contract/lock前不得解析。
+- **Operational identity：**`operational_identity`只由canonical
+  `resolver_semantic_identity + atom_identity + codegen_semantic_identity`構成，排除raw
+  hash、occurrence/pass、cwd/path/timestamp與evidence digests。全114 raw rows先形成
+  resolver-effective partition且multiplicity總和114；stable survivor selection只使用
+  terminal-consistent survivor groups，其raw mass可以小於114。Mixed success/attrition、
+  consumer mismatch或same resolver/different codegen semantics為`CHANGES_REQUIRED`。
+- **Workload／outcome：**Formal execution仍是ordered Census A 114 + Census B 114，無
+  early stop、dedup、replacement、third pass或prefix credit。Selector使用
+  `K=max(10,C_greedy)<=20`，只限制selected fixture而不限制完整survivor-pool cardinality。
+  Mapping A/B各exact `3K`；只有exact same prelocked allowlisted native mapping failure在
+  exactly兩個complete attempts重現才mapping-negative，所有guess/drift/partial/discordance
+  為`CHANGES_REQUIRED`。Correctness/noise/outcome matrix與唯一positive edge不變。
+- **S11 consumer：**只有post-audited
+  `S10R4:S1_ENTRY_GO_EXACT_FRAME -> S11`。S11使用disjoint seeds fresh建立
+  `F_valid(raw) -> F_effective -> F_codegen`，保留raw occurrence denominator、resolver
+  aliases及multiplicity；mapping／Formocast features按stable operational identity catalog。
+  Normalized-away、context-dependent或collision-confounded raw values沒有raw-value guidance
+  credit，既有whole-gene fail-closed rule保持。
+- **Whitelists／roles：**Committed B04 machine contract在Plan-B/Plan-A前凍結exact
+  implementation、execution-artifact與delivery lists；Plan-A不得創造authority。S10R4 R3
+  cumulative fresh-role cap依使用者`在此輪實驗全部做完之前自動核准`由6最小提高至8：
+  pre-A51五個spawned roles加兩個A51 design reviewers為7，唯一剩餘slot保留fresh terminal
+  verifier；其他B04工作resume existing implementer/auditor/reviewers。New binding/root不reset
+  role、repair或resource provenance。沒有push授權。
 
 ### Downgrade user gates
 
@@ -1142,16 +1194,21 @@ outcome matrix與future paths見
 S10R3已terminal negative/null；其historical positive edge沒有形成，且已由A47的qualified
 S10R4 dependency prospectively取代。
 
-#### S10R4 exact-frame operational overlay
+#### S10R4 resolver-effective exact-frame operational overlay
 
-A47不重抽S10R3 schedule。S10R4先逐child驗證完整sealed 114-config frame，再對每個
-config各做兩次normal error-tolerant KernelWriter classification。Stable survivors形成
-`operational_codegen_witnessed_atoms`；stable attrition保留在exact-frame denominator。
-只有complete 228-child census後才依相同greedy語意計算
+A47不重抽S10R3 schedule；其原始raw→codegen敘述是historical design layer。A51 active
+binding-04先逐child驗證完整sealed 114-occurrence raw frame，再對每個occurrence各做兩次
+normal resolver與error-tolerant KernelWriter classification。全部raw rows形成
+resolver-effective partition；stable survivor operational identities形成realized atoms，stable
+attrition保留在raw denominator。只有complete 228-child census後才依相同greedy語意計算
 `K=max(10,C_greedy)`, `K_max=20`，並fresh執行mapping/native/correctness/noise。
 
-完整identity、reuse prohibition、classification、outcome matrix與claim見
-[S10R4 design](ductile-origami-warmstart/s10r4-stage1-exact-frame-operational-entry-design.md)。
+Historical A47 semantics見
+[original design](ductile-origami-warmstart/s10r4-stage1-exact-frame-operational-entry-design.md)；
+current完整identity、reuse prohibition、classification、outcome matrix與claim只以
+[A51 authority](ductile-origami-warmstart/s10r4-binding-04-resolver-effective-recovery-authority.md)
+及[active B04 design](ductile-origami-warmstart/s10r4-stage1-resolver-effective-operational-entry-design.md)
+為準。
 只有post-audited `S10R4:S1_ENTRY_GO_EXACT_FRAME`可啟動S11。
 
 ### 2.4 Size registry
@@ -1240,6 +1297,12 @@ S10R2已依自己的outcome matrix完成closeout。S10R3的pre-evidence material
 operational failure是`BLOCKED`／decision packet；evidence-integrity完整的negative或
 inconclusive寫入S10R3 formal report。不得建立假裝執行過的MVP report。
 
+本§2.8 mapping-guess條目不覆蓋A51 S10R4 binding-04。B04的required metadata猜測、
+sentinel/consumer/projection mismatch、A/B identity drift、partial或unknown只可為
+`CHANGES_REQUIRED / not_evaluated / edge=null`；只有同一prelocked allowlisted native
+mapping failure在exactly兩個complete attempts重現才是
+`negative / S1_ENTRY_BLOCKED / FT-BLOCKED-MAPPING`。
+
 ---
 
 ## 3. 三種分布與分析單位
@@ -1280,21 +1343,22 @@ pi_valid(x) = pi_nominal(x | valid_fn(x) = true)
 
 ### 3.4 Analysis units
 
-- D5：256 個 unique configs；每 config 的所有 size observations綁在一起。
+- D5：256個unique stable operational identities；每identity的所有size observations及全部
+  raw aliases綁在一起。
 - 三 sizes時有 768 config×size observations，但不是 768 個獨立 workloads。
 - D6：一個 `pop=P0` population是 joint realization；三 paired seeds只有三次方向性 evidence。
 
 ---
 
-## 4. Model-only valid occurrence frame
+## 4. Model-only raw／resolver-effective／codegen occurrence frame
 
-### 4.1 Global frame `F_valid`
+### 4.1 Global raw frame `F_valid(raw)`
 
 使用 pinned `sample_chunk` 等價路徑，在加入 `IndividualSet` 前收集 valid occurrences：
 
 - default target／hard cap：8,192 accepted occurrences；
 - duplicate occurrences保留；
-- 每 occurrence保存 occurrence ID、seed／chunk、raw config、resolved config hash、validity provenance；
+- 每 occurrence保存 occurrence ID、seed／chunk、raw config／hash、validity provenance；
 - 不因看到 GFLOPS結果追加 occurrences。
 
 可在 4,096 occurrences後依 model-only stability提早停止，但只能在：
@@ -1306,35 +1370,51 @@ pi_valid(x) = pi_nominal(x | valid_fn(x) = true)
 
 否則繼續到8,192 cap。Cap後仍不穩定的 gene維持uniform。
 
-### 4.2 Deduplicated model catalog
+### 4.2 Resolver-effective與codegen frame
 
-依 canonical config hash去重只為節省 mapping／Formocast scoring：
+每個fresh `F_valid(raw)` occurrence依S10R4 qualified edge所綁的pinned resolver建立
+`F_effective`，再經相同normal error-tolerant KernelWriter filter建立`F_codegen`：
 
-- 每 unique config只需 resolve／score一次；
-- 保存 multiplicity `m_i`；
+- raw occurrence及multiplicity永遠保留在global denominator；resolver collision與codegen
+  rejection都不能刪除raw mass；
+- 每個resolver-effective group保存全部raw aliases／multiplicity；同effective state若產生
+  不同codegen semantic identity或mixed terminal class，fail closed；
+- operational identity只含resolver／atom／codegen consumer-relevant semantic bytes，不含raw
+  hash、pass、cwd、path或evidence digest；
+- raw value只有在frozen raw→effective relation中實現且沒有behavior-changing overwrite時才有
+  raw-value guidance evidence。Normalized-away、context-dependent或collision-confounded raw
+  value不取得credit，依whole-gene fail-closed rule使該gene不eligible。
+
+### 4.3 Deduplicated operational model catalog
+
+依stable operational identity去重只為節省mapping／Formocast scoring：
+
+- 每unique stable operational identity只需mapping／score一次；
+- 保存raw occurrence multiplicity `m_i`及所有resolver aliases；
 - 保存所有 occurrence IDs；
 - analysis時恢復 occurrence multiplicity。
 
-若 complete、scoreable unique catalog少於256：
+若complete、scoreable unique stable operational catalog少於256：
 
 - 原 D5 design `blocked_or_underpowered`；
-- 不得把 duplicate occurrences當不同 configs補足；
+- 不得把duplicate occurrences或resolver-colliding raw aliases當不同configs補足；
 - 不得降低256門檻後仍聲稱照原protocol完成。
 
-### 4.3 Model scoring
+### 4.4 Model scoring
 
-每 unique config對全部 sizes取得：
+每unique stable operational identity對全部sizes取得：
 
-- resolved Formocast model input；
+- resolver-effective Formocast model input及完整raw/effective/codegen provenance；
 - latency／status；
 - mapping與scoring time；
 - rejection reason；
 - score ties；
 - model revision。
 
-Whole-config Formocast coverage以 `F_valid` occurrence mass計算，也並報 unique-config coverage。
+Whole-config Formocast coverage以完整`F_valid(raw)` occurrence mass計算，也並報
+unique-operational-identity coverage。
 
-### 4.4 Conditional top-up
+### 4.5 Conditional top-up
 
 對 eligible residual `(gene g, value v)`：
 
@@ -1365,6 +1445,9 @@ Whole-config Formocast coverage以 `F_valid` occurrence mass計算，也並報 u
 - cardinality > 1；
 - direct或deterministic derived mapping complete；
 - 每 candidate value model coverage ≥95%。
+- 該gene每個raw value在frozen raw→effective relation下皆value-preserving或approved
+  reversible；任何behavior-changing overwrite、context dependence、ambiguity或collision
+  confounding使整個gene不eligible。
 
 Existing `group_i` 一律不 eligible。
 
@@ -1373,7 +1456,8 @@ Existing `group_i` 一律不 eligible。
 對每 size `s`：
 
 ```text
-r_s(x) = Formocast latency percentile rank in F_valid  # 0 is best
+r_s(x) = Formocast latency percentile rank in the F_codegen operational catalog,
+         weighted by F_valid(raw) occurrence mass  # 0 is best
 b_s(x) = 1 - r_s(x)                                   # larger is better
 ```
 
@@ -1478,27 +1562,27 @@ w_g(v) = -log(p_g(v)) / weight_beta
 
 ### 6.1 Real-score pool
 
-從 deduplicated model catalog抽固定256 unique configs。
+從deduplicated stable operational model catalog抽固定256 unique operational identities。
 
 建立 strata：
 
-1. 對 scoreable configs依 aggregate Formocast score排序；
+1. 對scoreable operational identities依aggregate Formocast score排序；
 2. 依 occurrence multiplicity切成10個 weighted deciles；
-3. sampling-only ties用 canonical config hash stable tie-break；
+3. sampling-only ties用operational hash、再用representative raw hash stable tie-break；
 4. metric計算保留真實 ties／midranks；
-5. unscored／rejected configs獨立為第11 stratum，不可靜默刪除。
+5. unscored／rejected operational identities獨立為第11 stratum，不可靜默刪除。
 
 Allocation：
 
 - 依各 stratum occurrence mass做 largest-remainder proportional allocation至256；
 - 每個非空 stratum至少1個；
 - 若 quota > unique `N_h`，該層 census，剩餘 quota按同一規則重分；
-- stratum內對 unique config做 simple random sampling without replacement；
+- stratum內對unique operational identity做simple random sampling without replacement；
 - 保存 `stratum_id, N_h, n_h, rho_i=n_h/N_h`。
 
 ### 6.2 Measurement
 
-每個 selected config在全部 sizes：
+每個selected operational identity在全部sizes：
 
 - generate／compile／benchmark；
 - 使用鎖定 warmup／timed iterations；
@@ -1508,36 +1592,40 @@ Allocation：
 
 三 sizes時：
 
-- 256 unique configs；
+- 256 unique stable operational identities；
 - 768 config×size observations；
 - primary bootstrap／permutation單位仍是 config。
 
 ### 6.3 Baseline design weight
 
-對 selected unique config `i`：
+對selected unique operational identity `j`：
 
 ```text
-W_0i = m_i / rho_i
+W_0j = (sum_h m_jh) / rho_j
 ```
 
 其中：
 
-- `m_i`：`F_valid` occurrence multiplicity；
-- `rho_i`：stratified sampling inclusion probability。
+- `h`：identity `j`內的一個distinct raw alias；
+- `m_jh`：該alias在`F_valid(raw)`的occurrence multiplicity；
+- `rho_j`：operational-identity stratified sampling inclusion probability。
 
-Primary estimand只限 frozen `F_valid` empirical accepted-occurrence frame。
+Primary estimand只限frozen `F_valid(raw)` empirical accepted-occurrence frame；resolver
+collision不把多個raw aliases改成一票。
 
 ### 6.4 Alternative prior mass
 
-對 alternative arm `a`：
+對alternative arm `a`，先在raw alias層計算ratio再聚合到selected operational identity：
 
 ```text
-r_a(x_i) = pi_nominal,a(x_i) / pi_nominal,0(x_i)
-W_ai     = W_0i * r_a(x_i)
+r_a(x_jh) = pi_nominal,a(x_jh) / pi_nominal,0(x_jh)
+W_aj      = (sum_h m_jh * r_a(x_jh)) / rho_j
 
-M_a(T) = sum_i W_ai * I(x_i in real_top_decile_T)
-         / sum_i W_ai
+M_a(T) = sum_j W_aj * I(operational_identity_j in real_top_decile_T)
+         / sum_j W_aj
 ```
+
+不得用deterministic representative raw config的ratio代替alias-weighted sum。
 
 - Validity function相同，因此未知 valid normalization在 self-normalization中抵消；
 - preserved groups在 density ratio中相消；
@@ -1574,21 +1662,21 @@ Secondary：
 
 Bootstrap：
 
-- 在各 stratum內以 config為block重抽；
-- 同一 config的全部 size outcomes一起移動；
+- 在各stratum內以stable operational identity為block重抽；
+- 同一identity的全部size outcomes及raw alias multiplicity一起移動；
 - 不把768 rows視為獨立。
 
 Permutation null：
 
-- 以 config為整體 permutation unit；
-- 保留同 config的全部 size outcomes；
+- 以stable operational identity為整體permutation unit；
+- 保留同一identity的全部size outcomes及alias association；
 - 規則與次數在 protocol lock中保存。
 
 ### 6.6 Coverage／rejection gate
 
 同時要求：
 
-- `F_valid` occurrence-mass complete Formocast coverage ≥95%；
+- `F_valid(raw)` occurrence-mass complete Formocast coverage ≥95%；
 - D5 planned real measurements coverage ≥95%；
 - unscored／failed rows保留；
 - 對 planned count ≥10 的 gene/value，rejection rate不得比 overall高超過10 percentage points。
@@ -1811,7 +1899,7 @@ median_quality_F / median_quality_G >= 1 / (1 + delta_noise)
 | 觀察 | 結果 ID |
 | --- | --- |
 | 無 GPU／YAML／artifact | `FT-BLOCKED-ACCESS` |
-| Mapping需猜值或 parity失敗 | `FT-BLOCKED-MAPPING` |
+| Historical/general gate的mapping需猜值或parity失敗（S10R4 B04例外見表後） | `FT-BLOCKED-MAPPING` |
 | Locked generate／compile／smoke／nonzero correctness可重現失敗 | `FT-BLOCKED-CORRECTNESS` |
 | Whole ranking gate失敗 | `FT-MODEL-RANK` |
 | Whole rank好、model marginal差、oracle好 | `FT-MODEL-MARGINAL` |
@@ -1822,6 +1910,11 @@ median_quality_F / median_quality_G >= 1 / (1 + delta_noise)
 | Formocast不勝 shuffled | `FT-ENTROPY-ONLY` |
 | Gen0好但後續未知 | `FT-WASHOUT-UNTESTED` |
 | Noise／support／ESS／coverage不足 | `FT-INCONCLUSIVE` |
+
+此表是跨階段摘要，不取代checkpoint-specific frozen decision table。對S10R4 B04，
+「Mapping需猜值或parity失敗」列必須重讀為`CHANGES_REQUIRED / not_evaluated /
+edge=null`；只有exact same prelocked allowlisted native failure在exactly兩個complete
+attempts重現才使用`FT-BLOCKED-MAPPING`。
 
 不得以「模型沒用」取代層級判讀。
 
@@ -1850,8 +1943,8 @@ median_quality_F / median_quality_G >= 1 / (1 + delta_noise)
 
 ### D3 — Model-only frame
 
-- `F_valid` accepted occurrences；
-- deduplicated catalog；
+- `F_valid(raw)` accepted occurrences與`F_effective -> F_codegen` projection；
+- deduplicated stable operational catalog及raw aliases/multiplicity；
 - Formocast scoring；
 - conditional top-ups；
 - model-sensitive gene decisions；
@@ -2061,17 +2154,24 @@ S10R4 current state：
 
 - [x] A47 exact-frame scientific/design authority approved by two-reviewer consensus and user
 - [x] A48 binding-01 retirement／binding-02 execution recovery authority approved
+- [x] Binding-02 reached `LOCKED_READY`, then first-child partial; retired
+  `cancelled / BLOCKED / not_evaluated / edge=null / lock=superseded`
+- [x] A50 binding-03 backend recovery reached row-0 prelock diagnostic; superseded with
+  `criterion_status=CHANGES_REQUIRED / scientific_outcome=not_evaluated / edge=null /
+  lock_state=absent`
+- [x] A51 binding-04 resolver-effective dual-lineage authority approved
 - [ ] Durable machine-readable contract／Plan-B／adversarial pre-label audit
-- [ ] Fresh implementation、offline tests及effective execution lock
+- [ ] B04 implementation、offline tests及effective execution lock
 - [ ] Two complete 114-config normal-workflow codegen census passes
-- [ ] Operational-atom bounded exact-K selection
+- [ ] Resolver-effective partition／operational-atom bounded exact-K selection
 - [ ] Fresh mapping A/B與native conformance
 - [ ] 9 correctness cells與63 noise cells
 - [ ] Fresh verification、terminal closeout與post-commit audit
 
-S10R4目前是`DESIGN_APPROVED / gated / not_evaluated / edge=null`；binding-01為原地
-retired diagnostic，binding-02 lock absent。上列未勾選項目不是outcome。S11只接受
-binding-02 post-audited qualified edge。
+S10R4目前是`DESIGN_APPROVED / not_started / not_evaluated / edge=null`；binding-01/02/03
+都是immutable superseded diagnostics，binding-04 lock absent。上列未勾選項目不是
+outcome。S11只接受binding-04依A51完成、fresh verification與post-audit後的checkpoint-scoped
+`S10R4:S1_ENTRY_GO_EXACT_FRAME` qualified edge。
 
 ---
 
@@ -2599,13 +2699,16 @@ Report：
 
 ### 20.4 Gate record與closure integration
 
-- Historical `S10R2`、current `S10R3`與future `S20`各是standalone tranche／closure。
+- Historical `S10R2`、historical terminal `S10R3`、active
+  `T-S10R4-B04 / CU-S10R4`與future `T-S20 / CU-S20`各是standalone
+  tranche／closure。
 - `S11+S12+S13`、`S30+S31`、`S40+S41`各共享一個execution tranche與closure
   unit，但每個scientific gate及edge保持獨立。
 - Internal positive只建立design指定的compact durable gate record，在fresh verifier
   確認frozen edge後繼續；不提前建立重複full report，也不把closure unit標complete。
 - Internal terminal negative／inconclusive建立該design既定formal report並停止；
-  `CHANGES_REQUIRED`只在repair budget內重驗，不是scientific outcome。
+  `CHANGES_REQUIRED`只在reviewer-governed uncapped repair lifecycle內重驗，不是
+  scientific outcome。
 - Final gate report整合全部prior compact records、各gate verdict、resource ledger與
   claim boundary。Closure commit／post-audit前，partial狀態只屬
   `live_run_state`，不得回填`committed_projection_state`。

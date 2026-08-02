@@ -59,14 +59,18 @@ consensus_status: approved_two_reviewer_agree
 
 ## 1. 白話目標
 
-在完全label-blind的條件下，建立accepted-occurrence frame、deduplicated catalog、Formocast scores、residual-gene factorization、weights與same-entropy shuffle，通過candidate-order／probability round-trip後鎖死。這一步只建立guidance，不能偷看real GFLOPS。
+在完全label-blind的條件下，建立保留raw occurrence multiplicity的
+`F_valid(raw) -> F_effective -> F_codegen` frame、effective-state catalog、Formocast
+scores、residual-gene factorization、weights與same-entropy shuffle，通過
+candidate-order／probability round-trip後鎖死。這一步只建立guidance，不能偷看real
+GFLOPS，也不能把resolver normalized-away的raw value當成可控制的guidance witness。
 
 ## 2. Hypothesis 與 falsification
 
-**S11-H1：**在S10R4以相同actual YAML／source pins建立exact-frame operational
-entry boundary後，Formocast能對至少一個eligible residual gene產生符合parent model-only
-criteria的穩定prior，並可無損轉成與`SearchSpace.map`完全對齊的weights與shuffled
-control。
+**S11-H1：**在S10R4以相同actual YAML／source pins建立resolver-effective exact-frame
+operational entry boundary後，Formocast能對至少一個在frozen raw→effective relation下
+完整eligible的residual gene產生符合parent model-only criteria的穩定prior，並可無損
+轉成與`SearchSpace.map`完全對齊的weights與shuffled control。
 
 反證或inconclusive：
 
@@ -75,6 +79,8 @@ control。
 - occurrence multiplicity在dedup後遺失；
 - probability／cost round-trip、candidate order或weight sign錯誤；
 - existing group／weight被修改；
+- behavior-changing resolver overwrite、context dependence或collision-confounding仍被
+  當成raw-value guidance evidence；
 - 任何real score、oracle output或outcome-derived feature參與gene／weight選擇。
 
 ## 3. Dependencies、entry 與 outgoing edge
@@ -124,7 +130,8 @@ S1_GUIDANCE_LOCKED -> S12
 允許：
 
 - `pi_nominal`／`pi_valid` occurrence collection與multiplicity-preserving catalog；
-- canonical config resolution、Formocast scoring與coverage/tie audit；
+- layered raw/resolver-effective/codegen resolution、stable operational catalog、Formocast
+  scoring與coverage/tie audit；
 - conditional top-up、shrinkage marginals、gene decisions與global lambda；
 - probability→hook-cost conversion、candidate-order parity與round-trip tests；
 - same-entropy non-identity shuffle；
@@ -148,16 +155,18 @@ Future lock：
 
 它綁定S10 immutable terminal provenance、S10R1 A32 cancellation、S10R2 immutable
 inconclusive/null provenance、S10R3 immutable negative/null closeout、S10R4 qualified
-positive closure、frozen
+positive closure、binding-04 layered identity／resolver schema、frozen
 YAML／space／groups／weights／sizes／support-aware valid mapping、study mode、
 Formocast／validity revisions、parent constants、randomness bundles、
 label-seal evidence、Plan-B、exact whitelists與report target。S10R4的exact-K corpus
-只作mapping／conformance entry fixture；不得假設它是十筆。S11仍須建立自己的
-multiplicity-preserving occurrence frame，且不得從S10R2 outcome artifacts建立它。
+只作mapping／conformance entry fixture；不得假設它是十筆，也不得替代S11自己的
+fresh population。S11仍須建立自己的multiplicity-preserving raw occurrence frame及
+fresh raw→effective→codegen projection，且不得從S10R2 outcome artifacts建立它。
 
 Outputs至少包括：
 
-- valid occurrence frame與deduplicated catalog/multiplicity；
+- raw valid occurrence frame、resolver-effective/codegen catalog、alias collision與
+  multiplicity-preserving lineage；
 - model scores、coverage、ties與conditional top-ups；
 - eligible/guided gene decision與marginals；
 - Formocast residual weights；
@@ -167,13 +176,25 @@ Outputs至少包括：
 
 ## 6. Controls 與 measurement boundary
 
-- `pi_nominal`、`F_valid`、`F_codegen`與operational Gen0 sampler明確分離；
+- `pi_nominal`、`F_valid(raw)`、`F_effective`、`F_codegen`與operational Gen0 sampler
+  明確分離；
 - duplicate occurrences保留；
-- S11使用fresh/disjoint seeds建立完整multiplicity-preserving `F_valid`，再經與S10R4
-  相同的normal error-tolerant KernelWriter filter形成`F_codegen`；
-- codegen rejects保留在`F_valid` occurrence-mass coverage分母，只對`F_codegen`
-  survivors做mapping與Formocast scoring；whole-config Formocast coverage仍以完整
-  `F_valid` occurrence mass計算且須`>=95%`；
+- S11使用fresh/disjoint seeds建立完整multiplicity-preserving `F_valid(raw)`，經與
+  S10R4相同的pinned resolver形成`F_effective`，再經normal error-tolerant
+  KernelWriter filter形成`F_codegen`；
+- resolver collision或codegen reject不刪除raw occurrence mass；每個effective/codegen
+  state保留所有raw aliases及multiplicity；codegen rejects仍在完整`F_valid(raw)`
+  occurrence-mass coverage分母，只對`F_codegen` survivors做mapping與Formocast
+  scoring；whole-config Formocast coverage仍以完整`F_valid(raw)` occurrence mass計算且
+  須`>=95%`；
+- mapping與operational feature只能消費frozen effective semantics。Raw value只有在沒有
+  behavior-changing overwrite且relation可確定時才有guidance evidence；normalized-away、
+  context-dependent或collision-confounded value無raw-value credit，並依既有whole-gene
+  fail-closed rule使該gene不eligible；
+- model catalog及D5 sampling unit是unique stable operational identity，不是raw hash；每個
+  identity保存全部raw aliases與multiplicity。Alternative-prior weights先在raw alias層按
+  `pi_nominal,a/pi_nominal,0`計算，再按multiplicity聚合；不得以representative raw config
+  取代alias-weighted sum；
 - conditional top-up只進對應cell；
 - existing groups／weightsbyte-level或canonical parity；
 - shuffle保留每gene probability multiset與nominal entropy；
@@ -319,3 +340,32 @@ record與claim boundary。若S13成為tranche final，S13 report整合本record�
   延後，不在本amendment採用。
 - S11其餘model-only criteria、`alpha`、`epsilon`、lambda grid、weights、shuffle、
   label seal、`S1_GUIDANCE_LOCKED -> S12`、timebox與claim不變；不授權push。
+
+### 2026-08-02 A51 S10R4 binding-04 dual-lineage dependency amendment
+
+- S10R4 binding-02曾完成effective lock與`LOCKED_READY`，但第一個formal child留下
+  partial後fail closed，現為
+  `cancelled / BLOCKED / not_evaluated / edge=null / lock=superseded`。Binding-03則在
+  effective lock前fail closed，現為
+  `binding_status=superseded_prelock / execution_status=cancelled /
+  checkpoint_state=BLOCKED / criterion_status=CHANGES_REQUIRED /
+  scientific_outcome=not_evaluated / edge=null / lock_state=absent /
+  lock_never_created=true`。A51沒有重解讀任一failure為KernelWriter、mapping或
+  scientific outcome；它建立fresh binding-04 authority。
+- 兩位fresh independent reviewers以相同direct evidence完成一輪cross-examination及
+  一輪evidence-backed final並均`AGREE`；使用者核准dual-lineage amendment。
+- S10R4唯一可能的post-audited edge仍是`S1_ENTRY_GO_EXACT_FRAME`。該edge現在只證明
+  固定114-occurrence raw frame經pinned resolver與normal KernelWriter workflow產生
+  bounded reproducible distinct-effective-state entry fixture，不證明literal raw
+  realization、injectivity、general support或value-level causal effect。
+- S11不得重用S10R4的114 rows作formal population。它必須以disjoint seeds fresh建立
+  multiplicity-preserving `F_valid(raw) -> F_effective -> F_codegen`；raw occurrence
+  始終保留於denominator，resolver collision group保留aliases及multiplicity，effective
+  semantics才供mapping與operational features使用。
+- Raw candidate value只有在frozen relation中沒有behavior-changing overwrite且確實
+  realized時才取得guidance evidence。Normalized-away、context-dependent、ambiguous或
+  collision-confounded raw values沒有controllability/guidance credit；whole-gene
+  fail-closed eligibility與deferred value-level guidance proposal保持。
+- Parent既有4,096/8,192 accepted occurrences、128/256 conditional support、whole-config
+  Formocast coverage `>=95%`、`alpha`、`epsilon`、lambda grid、weights、shuffle、label
+  seal、`S1_GUIDANCE_LOCKED -> S12`、timebox與claim不變；不授權push。
