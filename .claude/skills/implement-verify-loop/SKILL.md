@@ -655,9 +655,79 @@ experiment-scoped external drift 與窄範圍 current-run artifact recovery；�
 
 Formal report 同時服務第一次閱讀的工程師與需要重現證據的稽核者。證據完整不等於把 execution ledger 當成主敘事；先建立可理解的主線，再保留完整稽核細節：
 
+#### Reader-facing terminology and dataflow contract
+
+這份 clarity contract 不只管 formal report；在本 workflow 產生的 general chat Q&A、
+report、guide、review、plan 與 experiment explanation 都適用：
+
+- 中央且非簡單的 term 第一次出現時，必須解釋它指哪個 object、role/purpose、
+  inputs/outputs 或 contents、位於 current flow 哪裡、讀者為何需要在意、以及一個
+  concrete example；有常見混淆時再給 non-example。只寫 3-6 字 gloss、只展開 acronym，
+  或改用另一個 jargon 都不算 definition。Simple term 可以保持簡短。
+- Acronym 第一次出現時展開；`R2`、`PASS`、`W7` 等 status/ID 必須另用文字說明意義。
+- 使用 `10 configs × 3 sizes = 30 rows` 之類 compact notation 前，先定義 `config`、
+  `size`、`row`，給一個 concrete pairing，並說明它們是 independent units 還是同條件
+  repetitions；repetition count 另列。
+- Central formula 必須定義每個 symbol、unit、higher/lower 哪個較好、constant 的來源，
+  並給一個 worked numerical example。
+- 對 `mandatory atom`、`fresh witness`、`conditional target`、`valid support` 或任何
+  set/classification，說明 membership rule、誰在何時 create/select、哪個 downstream
+  actor 如何 consume，以及 membership **不能**支持哪個 conclusion。
+- Dataflow 一律寫成 **actor -> action -> input -> output -> next consumer**。明說資訊由誰
+  produce，下一階段用它做哪個 lookup、decision、validation 或 transformation；不可停在
+  「used downstream」。
+- 若使用者說看不懂，回到更簡單的 mental model/analogy 再逐步重建；不可只換句話重複
+  同一批 terms。
+- 分開標示 planned behavior、live observation 與 committed result；同時分開 technical
+  `PASS` 與 positive/negative/inconclusive scientific outcome。
+- 當 central terms 多到 inline definitions 會打斷主線時，formal report 必須在 metrics
+  之前放一小節讀者導向的「名詞與資料流」。Audit appendix 只有在 main explanation 已
+  self-contained 且通過下方 audit 後，才可以維持 technical-only 寫法。
+
+**Anti-pattern：**
+
+```text
+10 configs × 3 sizes = 30 rows。Fresh witness 覆蓋 mandatory atom，供 downstream 使用。
+```
+
+這段沒有定義計數單位、independence/repetition boundary、classification rule、producer、
+consumer、exact use 或不支持的結論。
+
+**Good count example：**
+
+```text
+Config 是一組完整的待比較設定；例如 C03 用 256 個 GPU threads 計算
+128-by-128 output block。Size 是一組輸入形狀；例如 S02 將 1024-by-512 matrix
+與 512-by-1024 matrix 相乘。Row 是一個 config-size pairing 的一筆結果；
+例如 R08 記錄 C03 在 S02 的結果。
+所以 10 configs × 3 distinct sizes 形成 30 個獨立指定的 pairings，不是同一條件
+重複 30 次；每個 pairing 內的 timing repetitions 另外計數。
+```
+
+**Good classification/dataflow example：**
+
+```text
+以下是 toy protocol，不是 project term 的預設定義：design author 在結果可見前，
+把 mandatory atom A 放入 frozen required set。Runner 讀取 A 的 evidence rule，
+並在 freeze 後產生 observation W7。只有 W7 未被用來選 A 且符合該 rule 時，
+W7 才是 A 的 fresh witness。Run 結束後，verifier 只有在該 rule 通過時才把
+W7 classify 為 valid support；claim evaluator 再把 A 計為有合格 evidence。
+這只支持 A，不證明整體 hypothesis。Design author 也在結果可見前預先宣告
+conditional target T；scheduler consume A 的 verdict，只在 A 通過後啟用 T。
+啟用不代表 T 已通過。
+```
+
+Reader-facing self-audit：
+
+- [ ] 第一次閱讀者能對每個 central term 回答 what、why、how、example、downstream
+      consumer/exact use，以及 not-implied conclusion。
+- [ ] 沒有 unexplained acronym、status ID、set membership 或 compact count notation。
+- [ ] Central formula 的 symbols、units、direction、constant sources 與 worked example 完整。
+- [ ] Main explanation 本身 self-contained；technical appendix 不是用來補救主文缺少的解釋。
+
 - 報告開頭先用繁體中文白話回答五件事：這一關要驗什麼、實際看到什麼、為什麼得到這個判決、證據能與不能支持什麼，以及下一個合法 checkpoint 是什麼。
 - 第一個畫面內用表格或短清單分開 technical verification、scientific outcome、checkpoint state、criterion、failure ID 與 outgoing edge。Technical `PASS` 和 scientific positive／negative 不得混為同一件事。
-- 有三個以上步驟的流程使用精簡 Mermaid flowchart 或編號流程。每個 project-specific／domain term 第一次出現時先給一句白話定義，再使用精確術語。
+- 有三個以上步驟的流程使用精簡 Mermaid flowchart 或編號流程。
 - 主文依「問題 → 方法 → 結果 → 原因 → 限制 → 下一步」組織，不依 agent、command 或 repair 發生時間寫成流水帳。Exact hashes、commands、working directories、exit codes、iterations、repairs、deviations 與 closeout ledger 放入同檔、具名的「稽核附錄」，不可刪除或只改成 transient link。
 - 中文與 English、數字、inline code 之間使用半形空格。Identifier、path、hash、command、machine output 與 fenced code block 內部維持原始 bytes，不套用文字間距。
 - Prose 不為了固定欄寬在詞組或 inline code 中間硬斷行。每個實體行保留完整句意；主題改變時用空行，enumeration 改用一點一義的 bullet、nested list 或 table。

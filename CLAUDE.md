@@ -15,12 +15,102 @@ prior context; explanations must build up from the basics.
 # Writing and reasoning standards
 
 - Lead with a plain-language overview before technical detail; do not hide reasoning behind jargon.
-- Define each project-specific or domain term the first time it appears.
+- Define each project-specific or domain term the first time it appears, following the
+  reader-facing clarity contract below.
 - Keep explanations self-contained: a reader should not need prior chats, PRs, or unstated assumptions.
 - Be evidence-based and avoid overstated conclusions.
 - Avoid long multi-fact `>` blockquotes; they read poorly. Reserve `>` for a single short
   callout idea. When a point carries multiple facts, use a plain lead sentence followed by a
   bullet list instead of a multi-line blockquote.
+
+## Reader-facing clarity contract
+
+This contract applies to every reader-facing explanation: general chat Q&A, reports,
+guides, reviews, plans, onboarding and code-trace documents, and experiment explanations.
+It applies even when the answer is informal or no document is being created.
+
+- On first use, define every central nontrivial term before later reasoning depends on it.
+  A 3-6 word gloss, an acronym expansion alone, or replacement with different jargon does
+  not count. Explain:
+  - what object the term denotes;
+  - its role or purpose;
+  - its inputs and outputs, or what it contains;
+  - where it appears in the current flow;
+  - why it matters to the reader;
+  - one concrete example;
+  - when useful, a non-example or common confusion.
+  A definition may use nearby bullets or a short terminology section rather than one
+  overloaded sentence. Simple, familiar terms may stay concise.
+- Expand acronyms on first use. Explain status IDs and named states in words; do not assume
+  that an identifier such as `R2`, `PASS`, or `W7` explains itself.
+- Expand compact count notation before using it. For `10 configs × 3 sizes = 30 rows`,
+  define `config`, `size`, and `row`; show one concrete config-size pairing; and say whether
+  the factors are independent units or repeated measurements of the same condition.
+  Keep repetition count separate.
+- For a central formula, define every symbol and unit, state whether higher or lower is
+  better, identify the source of constants, and provide one worked numerical example.
+- For a set or classification, including `mandatory atom`, `fresh witness`,
+  `conditional target`, and `valid support`, state:
+  - the membership rule;
+  - who creates or selects members, and whether that happens before or after results;
+  - which later actor consumes the classification and exactly how;
+  - what conclusion membership does **not** support.
+- Explain dataflow as **actor -> action -> input -> output -> next consumer**. Name who
+  produces each piece of information and what exact decision, lookup, validation, or
+  transformation the next stage performs with it. Never stop at "used downstream."
+- If the user says they do not understand, restart with a simpler mental model or analogy,
+  then rebuild the explanation step by step. Do not merely paraphrase the same terms.
+- Label planned behavior, live observation, and committed result separately:
+  - planned behavior is intended but not yet observed;
+  - live observation comes from current, possibly incomplete evidence;
+  - committed result is the durable recorded outcome.
+  Also separate technical `PASS` (the implementation or check met its criteria) from the
+  scientific outcome (positive, negative, or inconclusive).
+
+### Clarity examples
+
+**Anti-pattern:**
+
+```text
+10 configs × 3 sizes = 30 rows. A fresh witness covers the mandatory atom and is used downstream.
+```
+
+This fails because the counted objects, independence/repetition boundary, classifications,
+producer, consumer, exact use, and unsupported conclusions are all missing.
+
+**Good count explanation:**
+
+```text
+A config is one complete choice of settings being compared; for example, C03
+processes a 128-by-128 output block with 256 GPU threads. A size is one input
+shape; for example, S02 multiplies a 1024-by-512 matrix by a 512-by-1024 matrix.
+A row is one recorded result for one config-size pairing, so R08 records C03
+run on S02. Therefore 10 configs × 3 distinct sizes creates 30 independently
+specified pairings, not 30 repetitions of one condition. Timing repetitions
+within each pairing are counted separately.
+```
+
+**Good classification/dataflow explanation:**
+
+```text
+Toy protocol example (not a default definition for project terms): a mandatory atom
+is a condition that the design author places in the frozen required set {A, B} before
+results are visible. The runner produces observation W7 after that freeze. W7 is a
+fresh witness for A only if it was not used to choose A and it satisfies A's declared
+evidence rule. After the run, the verifier classifies W7 as valid support only when that
+rule passes; the claim evaluator then counts A as having qualifying evidence. This
+supports A only; it does not prove the overall hypothesis. The design author also
+predeclares conditional target T. The scheduler consumes A's verdict and activates T
+only after A passes; activation does not mean T has passed.
+```
+
+## Reader-facing self-audit
+
+Before sending an explanation, verify that a first-time reader can answer, for every
+central term: **what is it, why does it exist, how does it move or act, what is one
+example, who consumes it downstream and how, and what is not implied?** Unexplained
+acronyms, status IDs, set membership, or compact count notation fail the audit. If the
+main explanation fails this audit, a technical appendix or glossary does not repair it.
 
 ## GEKO and Ductile source-branch authority
 
