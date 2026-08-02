@@ -1,0 +1,1380 @@
+# Copyright Advanced Micro Devices, Inc., or its affiliates.
+# SPDX-License-Identifier: MIT
+
+schema_version: 1
+contract_id: S10R4-A47-EXACT-FRAME-OPERATIONAL-ENTRY-V1
+checkpoint_id: S10R4
+payload_state: PREIMPLEMENTATION_SCIENTIFIC_SEAL_PAYLOAD
+scientific_outcome: not_evaluated
+edge: null
+
+identity:
+  scientific_gate: S10R4
+  execution_tranche: T-S10R4
+  closure_unit: CU-S10R4
+  risk_tier: R3
+  hypothesis_id: S10R4-H1
+  authority_commit: d784d3cd336b982f13b3e57f319ee4073e5e67a0
+  base_head: d784d3cd336b982f13b3e57f319ee4073e5e67a0
+  authority_amendment: A47
+  contract_path: study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4-stage1-exact-frame-entry-contract.yaml
+  effective_lock_path: study_docs/research/ductile-origami-warmstart/protocol/v1/locks/s10r4-stage1-exact-frame-entry-lock.json
+  formal_report_path: study_docs/research/ductile-origami-warmstart/reports/staged/s10r4-stage1-exact-frame-entry-report.md
+  positive_gate_record_path: study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/gate-records/s10r4-s1-entry-go-exact-frame.json
+  operational_blocker_path: study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s10r4-operational-blocker.json
+
+authority:
+  order:
+    - research_charter
+    - experiment_plan
+    - checkpoint_index
+    - checkpoint_design
+    - this_machine_contract
+    - effective_execution_lock
+    - direct_evidence_and_terminal_report
+  committed_projection:
+    - id: research_charter
+      path: study_docs/research/surrogate-dse-plan.md
+      sha256: 495d66443f3f7aab5fe459c5cf58a58364a398e0cdd0f2f2f605eb450b37d9ae
+    - id: experiment_plan
+      path: study_docs/research/ductile-origami-warmstart-experiment-plan.md
+      sha256: e57d59f0a6292a7189a02dfdbc8604464d412e934ca04cce48a26d5e21de7f7f
+    - id: checkpoint_index
+      path: study_docs/research/ductile-origami-warmstart/README.md
+      sha256: 238eafb1924582c98088d755a90640b67a1d906e98e2c4cbbac40fd62623c4ba
+    - id: checkpoint_design
+      path: study_docs/research/ductile-origami-warmstart/s10r4-stage1-exact-frame-operational-entry-design.md
+      sha256: b63cff6fe0f7f03d2a69c6cb41b7b137fa373d8935fdf8c2283ee173e692c027
+    - id: downstream_consumer_design
+      path: study_docs/research/ductile-origami-warmstart/s11-stage1-model-only-factorization-design.md
+      sha256: e9ae0b25dcb33a2fe3bbb36fb2556fd05f6fc25ad4674261d58430832f6ad608
+    - id: design_discussion_record
+      path: study_docs/research/s10r3-s11-value-level-guidance-amendment-proposal.md
+      sha256: 60b9410fae9786c026516822dc3c720b3758ff8af04081c29ee68c3492d2d568
+  user_authority:
+    exact_frame_s10r4_selected: true
+    implement_the_plan: true
+    s10r3_immutable: true
+    design_change_requires_user_decision: true
+    reviewer_supported_contract_preserving_repair_auto_authorized: true
+    repair_numeric_stop_cap: null
+    resource_accounting_semantics: record_notify_continue_unless_material_boundary
+    perlee_free_card_no_reservation: true
+    push_authorized: false
+    container_lifecycle_mutation_authorized: false
+    dependency_install_authorized: false
+    unrelated_path_mutation_authorized: false
+
+workflow_authority:
+  entries:
+    - path: AGENTS.md
+      sha256: d6f163de760751465c6615efd2b33bb549470f8f8d73ce70c62e6c01ee7f9d21
+    - path: CLAUDE.md
+      sha256: c6e05fd3accc76182635bd9ee8ced07d44919f2b47a3ba75191d8f4bdb2f9abe
+    - path: .cursor/rules/hipblaslt-onboarding.mdc
+      sha256: 8013f531a9667fefd2465d9b812981be582d8568cec90cafea46f42fd355171d
+    - path: .agents/skills/implement-verify-loop/SKILL.md
+      sha256: 73d802bd7126077c37438e8c4fcb7179fb16f35bcab8fd414c83f4ba5217d783
+    - path: .agents/skills/implement-verify-loop/references/authority-gates.md
+      sha256: b56a1cd42dea0b6308726b89eafbeb4a9534b8811313703b8e24f4249d6dd3f6
+    - path: .agents/skills/implement-verify-loop/references/planning-contract.md
+      sha256: 4cb35eda1cb9b162b28d40474af6d0d602942d0e4ee31655bbccb4246ac689f6
+    - path: .agents/skills/design-discussion/SKILL.md
+      sha256: 1d46673ef14b4c2eaf1bcbb8a074ec853ad401a8fe16bcaa461ec8fe9f196dbc
+  drift_policy: fail_closed_on_S10R4_overlap_otherwise_record_notify_continue
+  current_bytes_may_be_uncommitted: true
+
+scientific_oracle:
+  objective: exact_sealed_frame_contains_bounded_reproducible_operational_entry_fixture
+  positive_criterion: S1_ENTRY_GO_EXACT_FRAME
+  only_allowed_positive_edge: S10R4:S1_ENTRY_GO_EXACT_FRAME->S11
+  claim_boundary:
+    answers:
+      - exact_S10R3_G3_sealed_frame_codegen_survivor_fixture_exists
+      - exact_frame_operational_atom_cover_is_bounded_by_K_max_20
+      - fresh_mapping_native_correctness_and_noise_entry_gates_pass
+    does_not_answer:
+      - general_valid_or_operational_support
+      - absence_of_unobserved_candidates
+      - codegen_survival_probability
+      - independent_replication
+      - Formocast_ranking_accuracy
+      - factorization_efficacy
+      - prior_mass_or_Gen0_improvement
+      - mathematical_minimum_cover
+      - production_readiness
+  no_outcome_dependent_optional_stopping: true
+  no_redraw_or_conditional_extension: true
+  s10r3_terminal_result_immutable: true
+
+acceptance_criteria:
+  - id: S10R4-C01
+    required: true
+    description: phase1_phase2_authority_contract_lock_and_prelabel_absence_integrity
+    direct_evidence:
+      - committed_phase1_contract_and_post_commit_audit
+      - committed_effective_lock_and_post_binding_audit
+  - id: S10R4-C02
+    required: true
+    description: exact_S10R3_G3_frame_raw_replay_inventory_and_114_row_registry_integrity
+    direct_evidence:
+      - s10r4_exact_frame_registry
+      - predecessor_raw_inventory_digest
+  - id: S10R4-C03
+    required: true
+    description: two_complete_114_config_codegen_passes_and_stable_exhaustive_classification
+    direct_evidence:
+      - 228_atomic_codegen_child_records
+      - s10r4_codegen_classification
+  - id: S10R4-C04
+    required: true
+    description: operational_atom_intersection_and_deterministic_bounded_exact_K_selection
+    direct_evidence:
+      - s10r4_operational_selection
+  - id: S10R4-C05
+    required: true_when_reached
+    description: exact_3K_mapping_A_B_and_required_field_provenance_or_frozen_terminal_mapping_branch
+    direct_evidence:
+      - s10r4_mapping_corpus
+  - id: S10R4-C06
+    required: true_when_reached
+    description: native_formocast_runtime_queue_conformance_and_fault_substitution
+    direct_evidence:
+      - s10r4_sentinel_conformance
+  - id: S10R4-C07
+    required: true_when_reached
+    description: selected_free_gfx942_identity_and_phase_continuity
+    direct_evidence:
+      - s10r4_environment
+  - id: S10R4-C08
+    required: true_when_reached
+    description: nine_generate_compile_smoke_nonzero_correctness_cells_or_frozen_terminal_correctness_branch
+    direct_evidence:
+      - s10r4_smoke_correctness
+  - id: S10R4-C09
+    required: true_when_reached
+    description: complete_9_group_by_7_repeat_noise_panel_and_aggregate_threshold
+    direct_evidence:
+      - s10r4_noise_pilot
+  - id: S10R4-C10
+    required: true
+    description: one_canonical_machine_decision_and_deterministic_independent_reproduction
+    direct_evidence:
+      - s10r4_decision
+      - independent_reproduction_record
+  - id: S10R4-C11
+    required: true
+    description: fresh_Plan_A_blind_verifier_reproduces_applicable_criteria_and_outcome
+    direct_evidence:
+      - fresh_verifier_verdict
+  - id: S10R4-C12
+    required: true_for_scientific_terminal
+    description: outcome_specific_documents_closeout_ack_exact_commit_and_post_commit_audit
+    direct_evidence:
+      - terminal_report_or_gate_record_as_required
+      - closeout_ack
+      - post_commit_audit
+
+independent_reproduction:
+  mode: deterministic_raw_to_decision_recomputation_without_new_outcome_workload
+  timeout_s: 7200
+  isolated_cwd: agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame/artifacts/reproduction
+  may_read:
+    - committed_authority_contract_and_effective_lock
+    - predecessor_raw_frame_and_exact_frame_registry
+    - all_reached_S10R4_raw_formal_children
+    - all_reached_S10R4_durable_manifests_and_evidence
+  must_recompute:
+    - predecessor_raw_inventory_and_114_row_association
+    - all_228_codegen_child_completeness_and_per_config_stable_class
+    - survivor_pool_and_operational_atom_union
+    - mandatory_atom_intersection_C_greedy_K_and_final_order
+    - reached_mapping_A_B_parity_and_failure_table_branch
+    - reached_native_fixture_expected_actual_and_fault_results
+    - reached_GPU_identity_correctness_completeness_and_noise_aggregates
+    - canonical_outcome_criterion_failure_id_edge_and_document_policy
+  exact_match_fields:
+    - every_recomputed_input_and_child_digest
+    - every_count_set_order_and_classification
+    - every_reached_summary_digest
+    - scientific_outcome
+    - criterion
+    - failure_id
+    - edge
+  new_codegen_mapping_native_GPU_or_noise_execution: forbidden
+  resampling_reselection_replacement_or_outcome_write: forbidden
+  PASS: all_required_recomputations_complete_and_exact_match_with_zero_unknowns
+  otherwise: CHANGES_REQUIRED_not_evaluated_edge_null
+
+source_and_input_identity:
+  ductile:
+    ref: refs/remotes/origin/ductile_integration
+    commit: 5d6bdc8a6438b5fc73a96e46a907f9a5b1cd4e39
+  geko:
+    ref: refs/remotes/origin/users/pkamd/geko_pr
+    commit: d32abacfd13579d1f523f035b7a10b0734c4ac47
+  actual_yaml:
+    path: study_docs/research/ductile-origami-warmstart/protocol/v1/inputs/s10-generated.yaml
+    sha256: faaa8d65014d30646b89b84a8e97395539e52684bef7b430804a63ef2d64cf36
+  ordered_axes_sha256: 926a6d9502546dda22ea2edc483c0f61ef74b3e378bcf32f222f17130bb668a3
+  expanded_groups_sha256: 0526a9b3c1d8a1bbe1db2cb03616bfda6e5a1f2dfad3826c0747d8dcb3ab9140
+  search_space_map_sha256: 5785871bc0779fb67627943ef2ed5fde8e96647be7e0bb0db4f770473cd7a1a0
+  baseline_weights_sha256: 56c34446385e93138944082b1801649271fd6a49df948aa41017cb05d012f34f
+  problem_identity:
+    dtype_layout: batched_B_B_S_NN
+    soo: false
+    reduce_fn: max
+    n_elements_to_validate: 128
+  sizes_m_n_batch_k:
+    - [8, 8, 1, 128]
+    - [256, 256, 1, 1024]
+    - [2304, 1024, 1, 214336]
+  normal_workflow_sources:
+    - path: projects/hipblaslt/tensilelite/Tensile/BenchmarkProblems.py
+      blob: c9e4144ca0b2d7396c57249eaf3770b12ebd87f8
+      required_symbol: writeBenchmarkFiles
+    - path: projects/hipblaslt/tensilelite/Tensile/TensileCreateLibrary/Run.py
+      blob: 87b6bfd931701801e1e626884068390360083e5c
+      required_symbol: writeSolutionsAndKernels
+    - path: projects/hipblaslt/tensilelite/Tensile/backends/ductile_backend.py
+      blob: e295e481f832cf00d9826e7aaf6130aaaf9651d2
+      required_symbol: _validate_solution
+    - path: projects/hipblaslt/tensilelite/Tensile/KernelWriterAssembly.py
+      blob: 99ff3ec21c68facde233ba60073588bdfbefb281
+      required_symbol: KernelWriterAssembly
+  native_formocast:
+    source_path: shared/origami/src/simulator/tensilelite/formocast_simulator.cpp
+    source_blob: cac2b324984a9fe2e1fadb018702486545e86e80
+    header_path: shared/origami/include/origami/simulator/tensilelite/formocast_simulator.hpp
+    header_blob: 96741965d34f2da1b0a08eaecab15e72082a78bc
+    symbol: "origami::Formocast::predictedPerformance() const"
+    guard_first_true_order:
+      - global-split-u-zero
+      - small-mn-macro-tile-gap
+      - large-mn-macro-tile-gap
+      - bf16-half-depthu-k-batch-mi
+      - direct-to-lds-a-small-m
+      - direct-to-lds-b-small-n
+      - derived-plr-zero
+    guard_predicates:
+      global-split-u-zero: GlobalSplitU_equal_0
+      small-mn-macro-tile-gap: M_below_128_and_MT0_minus_M_at_least_16_or_N_equivalent
+      large-mn-macro-tile-gap: M_at_least_128_and_MT0_minus_M_at_least_32_or_N_equivalent
+      bf16-half-depthu-k-batch-mi: BF16_or_Half_bpe2_depthU_K_condition_NumBatches_below_NumCUs_MI2_at_least_32
+      direct-to-lds-a-small-m: DirectToLdsA_and_M_below_MT0
+      direct-to-lds-b-small-n: DirectToLdsB_and_N_below_MT1
+      derived-plr-zero: PLR_equal_0
+    depthU_K_condition: K_at_least_64_and_depthU_at_most_32_or_K_at_most_32_and_depthU_above_32_or_K_above_32_and_depthU_above_K
+    early_terminate:
+      microSeconds: 9999999.9
+      hitRate: 0.0
+  runtime_queue:
+    source_path: projects/hipblaslt/tensilelite/client/src/SolutionIterator.cpp
+    source_blob: 33e86cfc4bf3d4ce8fa8da194b94c024bbb5639f
+    header_path: projects/hipblaslt/tensilelite/client/include/SolutionIterator.hpp
+    header_blob: bad091c0f299f30c4235bc8313c9e8f134fa66a5
+    symbols:
+      - "SolutionIterator::checkSolution(ContractionSolution&, ContractionProblemGemm&, bool)"
+      - "AllSolutionsIterator::preProblem"
+    threshold_semantics: stable_sort_then_floor_N_times_threshold_clamped_to_last_and_prefix_less_equal
+  normal_filter:
+    error_tolerant: true
+    validator_get_kernel_src_default: false
+    operational_codegen_must_call_actual_kernel_writer: true
+    static_formula_or_mock_is_not_formal_evidence: true
+
+predecessor_frame:
+  checkpoint: S10R3
+  generation: S10R3-A46.5-G3
+  terminal_state: CHECKPOINT_COMPLETE_negative_S1_ENTRY_BLOCKED_FT_BLOCKED_MAPPING_edge_null
+  allowed_reuse: complete_sealed_discovery_frame_only
+  forbidden_reuse:
+    - s10r3_C_greedy_and_K19_membership_or_order
+    - s10r3_mapping_attempts_or_slot5_stopping_signature
+    - s10r3_terminal_decision_as_S10R4_result
+    - s10r3_native_gpu_correctness_noise_nonresults
+    - s10r3_verifier_verdict_as_S10R4_PASS
+  committed_inputs:
+    - id: s10r3_effective_lock
+      path: study_docs/research/ductile-origami-warmstart/protocol/v1/locks/s10r3-stage1-bounded-cover-entry-lock.json
+      raw_sha256: 2333589fada1df201d233807a8b7cdee10b7554e64cc61b3cc00d352f1b8e352
+    - id: s10r3_candidate_atom_registry
+      path: study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r3-candidate-atom-registry.json
+      raw_sha256: 24ae3c4eb0a358f3e9ed6f3f5d2cdeae54bdf151bdb347d68d2ede879613d010
+    - id: s10r3_support_classification
+      path: study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r3-support-classification.json
+      raw_sha256: d3477cb6fc616b4ca10f28a4ce8ac798b3432b7116355aec73ca173c4a99a115
+    - id: s10r3_size_registry
+      path: study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r3-size-registry.json
+      raw_sha256: 353b91a42029a9959d2adc20755cda3d08345a8a14a85e55b8d8c6058ca745a4
+    - id: s10r3_terminal_decision_identity_only
+      path: study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s10r3-decision.json
+      raw_sha256: c324205db9bb9c1ebc94c806c3e9b95158dd74b466f774f30cf93fab2f6c6aa5
+  raw_frame:
+    host_root: agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/formal-cpu
+    container_root: /src/rocm-libraries/agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/formal-cpu
+    complete_schedule:
+      chunk_size: 512
+      global_chunks: 32
+      activated_conditional_streams: 15
+      conditional_chunks_each: 32
+      total_chunks: 512
+      total_nominal_draws: 262144
+    expected_ledger_events: 512
+    expected_raw_child_records: 3586
+    expected_accepted_occurrences: 114
+    expected_distinct_config_hashes: 114
+    frame_inventory_algorithm: sorted_ordinary_file_records_plus_canonical_SHA256
+    registry_order:
+      - stream_rank
+      - conditional_priority_rank
+      - chunk_index
+      - draw_index
+      - config_hash
+    direct_raw_replay_required: true
+    report_summary_substitution_forbidden: true
+    S10R3_implementation_import_forbidden: true
+    predecessor_tree_mutation_forbidden: true
+
+prelabel_registries:
+  exact_frame:
+    path: study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r4-exact-frame-registry.json
+    required_rows: 114
+    required_distinct_hashes: 114
+    binds_full_raw_inventory: true
+    contains_S10R4_codegen_result: false
+    canonical_serialization: UTF8_JSON_sorted_keys_compact_separators_no_NaN_newline
+    inventory_records:
+      order: relative_path_UTF8_byte_order
+      exact_fields:
+        - relative_path
+        - mode
+        - size_bytes
+        - sha256
+      ordinary_files_only: true
+      symlink_device_fifo_socket_or_path_escape: reject
+      projection: canonical_SHA256_of_exact_ordered_records
+    row_order:
+      - stream_rank
+      - conditional_priority_rank
+      - chunk_index
+      - draw_index
+      - config_hash
+    row_exact_fields:
+      - registry_index
+      - occurrence_id
+      - stream_id
+      - stream_rank
+      - conditional_atom_id_or_null
+      - conditional_priority_rank
+      - chunk_index
+      - draw_index
+      - raw_config
+      - raw_config_canonical_sha256
+      - config_hash
+      - source_child_relative_path
+      - source_child_sha256
+      - source_ledger_event_index
+      - candidate_atom_ids_in_config
+      - candidate_atom_membership_sha256
+    row_association_rule: every_row_maps_to_exactly_one_verified_accepted_raw_child_and_ledger_event
+    duplicate_occurrence_or_config_hash: reject
+  sizes:
+    path: study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r4-size-registry.json
+    required_rows: 3
+  native_fixture:
+    path: study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r4-native-fixture.json
+    fixture_id: s10r4-native-whole-cohort-v1
+    canonical_payload_sha256: f0b15e5bfe263b1378d5627c7307fda1c0a52569b7784c3fc0df51358510191d
+    document_kind: sentinel_fixture
+    checkpoint_id: S10R4
+    outcome_blind: true
+    problem:
+      M: 256
+      N: 256
+      NumBatches: 1
+      K: 1024
+      transpose_a: false
+      transpose_b: false
+      data_type: BFloat16
+      compute_type: Float
+    row_ordinals: [0, 1, 2, 3]
+    validity_mask: [true, false, true, true]
+    oracle_microseconds: [18.199829979797979, null, 18.199829979797979, 22.466412606060604]
+    mapping_overrides:
+      - {}
+      - {macroTile: [96, 64, 1]}
+      - {}
+      - {macroTile: [128, 64, 1]}
+    base_size_mapping:
+      waveNum: 4
+      macroTile: [64, 64, 1]
+      matrixInstruction: [16, 16, 16, 1]
+      grvwA: 4
+      grvwB: 4
+      gwvwC: 4
+      gwvwD: 4
+      depthU: 32
+      globalSplitU: 1
+      workGroupMapping: 1
+      globalAccumulation: 0
+      workGroupMappingXCC: 1
+      workGroupMappingXCCGroup: -1
+      globalSplitUCoalesced: false
+      globalSplitUWorkGroupMappingRoundRobin: false
+      CUOccupancy: 2
+      PrefetchGlobalRead: 2
+      MathClocksUnrolledLoop: 16
+      DirectToVgprA: false
+      DirectToVgprB: false
+      NumLoadsCoalescedA: 1
+      NumLoadsCoalescedB: 1
+      VectorWidthA: 4
+      VectorWidthB: 4
+      LocalSplitU: 1
+      DirectToLdsA: false
+      DirectToLdsB: false
+      waveGroup: [2, 2]
+    thresholds: [0.0, 0.5, 1.0, 2.0]
+    expected_tie_ordinals: [0, 2]
+    expected_queues:
+      "0.0":
+        prediction_disabled: false
+        sorted_ordinals: [0, 2, 3]
+        threshold_index: 0
+        threshold_value: 18.19982997979798
+        queue_prefix: [0]
+      "0.5":
+        prediction_disabled: false
+        sorted_ordinals: [0, 2, 3]
+        threshold_index: 1
+        threshold_value: 18.19982997979798
+        queue_prefix: [0, 2]
+      "1.0":
+        prediction_disabled: false
+        sorted_ordinals: [0, 2, 3]
+        threshold_index: 2
+        threshold_value: 22.466412606060604
+        queue_prefix: [0, 2, 3]
+      "2.0":
+        prediction_disabled: true
+        sorted_ordinals: [0, 1, 2, 3]
+        threshold_index: null
+        threshold_value: null
+        queue_prefix: [0, 1, 2, 3]
+  effective_lock_must_bind_all_three: true
+
+effective_lock_required_bindings:
+  phase1:
+    - phase1_contract_commit_oid
+    - phase1_contract_raw_sha256
+    - phase1_contract_canonical_sha256
+    - phase1_post_commit_audit_path_and_sha256
+    - all_committed_authority_path_raw_sha256_records
+    - workflow_authority_projection_sha256
+    - scientific_oracle_projection_sha256
+  plans:
+    - frozen_plan_b_path_raw_sha256_size_and_freeze_record
+    - current_plan_a_path_revision_raw_sha256_size_and_predecessor_identity
+    - plan_A_plan_B_contract_parity_audit
+  implementation:
+    - exact_15_implementation_path_mode_size_sha256_and_git_state_records
+    - external_schema_raw_and_canonical_sha256
+    - unit_test_raw_sha256
+    - command_template_IDs_and_exact_argv_allowlists
+    - formal_environment_allowlist
+    - timeout_map
+  predecessor_and_registries:
+    - all_five_predecessor_committed_input_raw_hashes
+    - predecessor_raw_root_absolute_container_path
+    - complete_raw_inventory_count_size_and_projection_sha256
+    - exact_frame_registry_path_raw_and_canonical_sha256
+    - size_registry_path_raw_and_canonical_sha256
+    - native_fixture_path_raw_and_canonical_sha256
+  source_realization:
+    - Ductile_and_GEKO_commit_resolution
+    - pinned_source_path_blob_and_materialized_file_sha256_records
+    - actual_YAML_path_blob_and_raw_sha256
+    - tool_path_version_binary_sha256_records
+    - container_name_mount_host_path_container_path_and_device_surface
+    - GPU_selection_predicate_before_any_GPU_label
+  governance_and_boundary:
+    - role_task_IDs_independence_and_fresh_thread_counts
+    - resource_known_UNKNOWN_and_planning_target_projection
+    - implementation_prelabel_formal_delivery_forbidden_projection_hashes
+    - prelabel_durable_and_raw_scope_absence_records
+    - unrelated_worktree_baseline_and_exact_stage_projection
+    - outcome_document_policy_projection_sha256
+    - downstream_handoff_projection_sha256
+  lifecycle:
+    - lock_state_effective
+    - execution_status_ready
+    - checkpoint_state_LOCKED_READY
+    - scientific_outcome_not_evaluated
+    - edge_null
+    - formal_evidence_allowed_false_before_phase2_post_commit_audit
+    - canonical_self_hash_with_64_zero_placeholder
+  unknown_or_duplicate_field: reject
+  incomplete_exact_set_or_projection_mismatch: reject
+
+codegen_census:
+  pass_order: [A, B]
+  configs_per_pass: 114
+  total_terminal_children: 228
+  registry_order_required: true
+  pass_B_requires_complete_pass_A: true
+  isolated_cwd_per_pass_and_config: true
+  actual_normal_kernel_writer_required: true
+  early_stop: forbidden
+  replacement: forbidden
+  reorder: forbidden
+  third_retry: forbidden
+  child_timeout_s: 7200
+  child_atomic_boundary: one_complete_config_classification
+  child_record_requirements:
+    - pass_id
+    - registry_index
+    - config_hash
+    - input_digest
+    - cwd_identity
+    - argv_and_environment
+    - process_exit_semantics
+    - normal_filter_membership
+    - stdout_sha256
+    - stderr_sha256
+    - artifact_inventory
+    - completion_digest
+  required_kernel_set:
+    assembly:
+      source: pinned_solution_getKernels
+      canonical_identity: sorted_getKeyNoInternalArgs_names_with_input_config_hash
+      duplicate_handling: pinned_getKeyNoInternalArgs_semantics
+      required_per_child: nonempty_and_exactly_bound_before_codegen
+      native_result_required_for_every_member: true
+      determines_error_tolerant_solution_membership: true
+    helpers:
+      source: pinned_initHelperKernelObjects_All
+      canonical_identity: sorted_helper_kernel_names_with_input_config_hash
+      duplicate_handling: pinned_helper_kernel_name_semantics
+      required_per_child: exactly_bound_before_codegen
+      native_processKernelSource_result_required: false
+      source_header_and_declared_artifact_completeness_required: true
+      exception_unknown_or_missing: CHANGES_REQUIRED_not_evaluated_edge_null
+      may_determine_survivor_or_ordinary_attrition_class: false
+  native_membership_oracle:
+    call_chain:
+      - BenchmarkProblems.writeBenchmarkFiles
+      - TensileCreateLibrary.Run.writeSolutionsAndKernels_errorTolerant_true
+      - processKernelSource_for_every_required_assembly_kernel
+      - removeInvalidSolutionsAndKernels
+    success_requires:
+      - process_returncode_zero
+      - input_solution_present_in_mutated_post_filter_solution_list
+      - every_required_assembly_kernel_has_native_result_err_false
+      - every_required_assembly_kernel_artifact_present_in_inventory
+      - every_required_helper_source_header_and_declared_artifact_present
+      - no_exception_signal_timeout_unknown_or_partial_artifact
+    ordinary_attrition_requires:
+      - process_returncode_in_allowlist
+      - input_solution_absent_from_mutated_post_filter_solution_list
+      - at_least_one_required_assembly_kernel_native_result_err_true
+      - every_required_assembly_kernel_has_a_terminal_native_result
+      - every_required_helper_source_header_and_declared_artifact_present
+      - worker_completion_schema_and_association_complete
+      - no_exception_signal_timeout_unknown_or_partial_artifact
+    process_returncode_allowlist:
+      success: [0]
+      ordinary_all_solutions_removed: [23]
+    stdout_or_stderr_text_may_define_classification: false
+  pass_neutral_signature_fields:
+    - classification_kind
+    - ordered_failed_kernel_names
+    - ordered_native_result_error_codes
+    - ordered_processKernelSource_result_codes
+    - post_filter_solution_membership
+    - process_returncode
+    - required_assembly_kernel_set_digest
+    - required_helper_kernel_set_digest
+  stable_classes:
+    operational_codegen_witnessed:
+      required: both_passes_satisfy_native_membership_oracle_success
+      equality: required_assembly_and_helper_set_digests_and_post_filter_solution_identity_equal
+      enters_survivor_pool: true
+      retained_in_exact_frame_denominator: true
+    stable_operational_attrition:
+      required: both_passes_satisfy_native_membership_oracle_ordinary_attrition
+      equality: all_pass_neutral_signature_fields_exactly_equal
+      enters_survivor_pool: false
+      retained_in_exact_frame_denominator: true
+  changes_required_conditions:
+    - success_failure_discordance
+    - failure_signature_discordance
+    - exception_or_signal
+    - timeout
+    - missing_or_partial_child
+    - config_association_drift
+    - cwd_or_path_escape
+    - toolchain_or_source_drift
+    - unknown_result_or_field
+  runtime_reforecast_after_terminal_children: 3
+
+operational_selection:
+  prelocked_candidate_atoms_source: s10r3_candidate_atom_registry_fresh_direct_replay
+  operational_codegen_witnessed_atoms: union_of_prelocked_atoms_in_stable_survivor_configs
+  mandatory_mapping_atoms: prelocked_candidate_atoms_intersection_operational_codegen_witnessed_atoms
+  selector_id: deterministic_greedy_set_cover_v2_bounded_k20
+  first_occurrence_order:
+    - stream_rank
+    - conditional_priority_rank
+    - chunk_index
+    - draw_index
+    - config_hash
+  gain: maximum_remaining_mandatory_atoms
+  tie_break: first_occurrence_then_config_hash
+  K_rule: max_10_C_greedy
+  K_max: 20
+  padding_below_ten: first_occurrence_from_remaining_survivors
+  final_order: config_hash_ascending
+  replacement: forbidden
+  K_plus_one: forbidden
+  exact_solver: forbidden
+  redraw: forbidden
+  conditional_extension: forbidden
+  manual_atom_selection: forbidden
+
+mapping_and_conformance:
+  mapping_pass_order: [A, B]
+  rows_per_pass: three_times_K
+  maximum_rows_per_pass: 60
+  all_rows_required: true
+  pass_B_fresh: true
+  parity_fields:
+    - raw_config
+    - resolved_solution
+    - canonical_config_hash
+    - size_mapping
+    - formocast_input
+    - required_field_provenance
+  guessed_required_field: forbidden
+  proxy_or_replacement: forbidden
+  attempt_protocol:
+    mapping_attempt_timeout_s: 7200
+    first_attempt_success: seal_pass_and_continue_without_retry
+    first_attempt_allowlisted_failure: run_exactly_one_fresh_full_same_pass_reproduction
+    first_attempt_nonallowlisted_or_partial: CHANGES_REQUIRED_not_evaluated_edge_null
+    maximum_attempts_for_failed_pass: 2
+    third_attempt: forbidden
+    attempt_cwd_and_artifacts: isolated_append_only
+  allowlisted_reproducible_failure_signatures:
+    - id: codegen_resource_overflow
+      exact_fields:
+        failure_stage: kernel_source_generation
+        native_error_class: KernelWriterAssembly_overflowedResources
+        native_error_code: 5
+        processKernelSource_result_code: -2
+        worker_returncode: 23
+        post_filter_solution_present: false
+    - id: required_field_unresolved
+      exact_fields:
+        failure_stage: required_field_resolution
+        resolver_result: null
+        guessed_value_used: false
+        input_source_and_mapping_identity_complete: true
+  two_attempt_decision_table:
+    - attempts: [success]
+      result: mapping_pass_PASS
+    - attempts: [same_allowlisted_failure, same_allowlisted_failure]
+      equality_fields:
+        - signature_id
+        - failing_pass_id
+        - first_failing_config_hash
+        - first_failing_sorted_slot
+        - exact_signature_fields
+        - complete_request_digest
+        - source_toolchain_harness_identity
+      result: negative_S1_ENTRY_BLOCKED_FT_BLOCKED_MAPPING_edge_null
+    - attempts: [allowlisted_failure, success]
+      result: CHANGES_REQUIRED_not_evaluated_edge_null
+    - attempts: [success, any_second_attempt]
+      result: CHANGES_REQUIRED_unpermitted_retry
+    - attempts: [different_or_nonallowlisted_or_partial_or_timeout_or_unknown]
+      result: CHANGES_REQUIRED_not_evaluated_edge_null
+  stdout_stderr_text_may_define_or_match_signature: false
+  native_fixture:
+    score_blind: true
+    deterministic: true
+    actual_predictedPerformance_path_required: true
+    actual_source_guard_order_required: true
+    same_mapping_runtime_helper_required: true
+    actual_checkSolution_queue_adapter_required: true
+    source_identity_references:
+      - source_and_input_identity.native_formocast
+      - source_and_input_identity.runtime_queue
+    prelabel_fixture_path: study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r4-native-fixture.json
+    prelabel_fixture_canonical_payload_sha256: f0b15e5bfe263b1378d5627c7307fda1c0a52569b7784c3fc0df51358510191d
+    adapter_source_path: study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/native_formocast_runtime_adapter.cpp
+    adapter_binary_and_source_hash_bound_in_effective_lock: true
+    independent_oracle_can_replace_native: false
+    substitution_faults_must_fail_closed:
+      - native_helper_binary_or_path
+      - source_blob_or_guard_order
+      - host_adapter
+      - runtime_queue_semantics
+    fault_expected_result: fail_closed_CHANGES_REQUIRED_not_evaluated_edge_null
+    command_timeout_s: 7200
+    numeric_comparison:
+      parse: strict_JSON_number_to_IEEE754_binary64
+      expected: fixture_expected_transcript_binary64_value
+      actual: native_transcript_binary64_value
+      equality: exact_IEEE754_binary64_value_equality
+      absolute_tolerance: 0.0
+      relative_tolerance: 0.0
+      NaN_or_positive_negative_infinity: reject
+      signed_zero: negative_zero_rejected_and_positive_zero_only_where_exactly_expected
+      integer_ordinal_index_boolean_and_queue_fields: exact_type_and_value_equality
+      applied_identically_to_native_conformance_and_all_fault_tests: true
+
+gpu_correctness_and_noise:
+  container: perlee
+  card_selection:
+    snapshot_commands:
+      - /opt/rocm/bin/rocm-smi --showproductname --showuniqueid --showserial --showuse --showmemuse --showcomputepartition --showmemorypartition --json
+      - /opt/rocm/bin/rocm-smi --showpidgpus
+    snapshot_timeout_s: 60
+    eligible_predicate:
+      gfx_version: gfx942
+      compute_partition: SPX
+      memory_partition: NPS1
+      gpu_use_percent_exact_string: "0"
+      vram_allocated_percent_exact_string: "0"
+      foreign_PID_list: []
+    deterministic_choice: lowest_physical_card_index_among_eligible
+    captured_identity_fields:
+      - physical_visible_index
+      - logical_device_index_zero_under_ROCR_VISIBLE_DEVICES
+      - unique_id
+      - serial_number
+      - gfx_version
+      - compute_partition
+      - memory_partition
+      - container_mount
+      - allocation_snapshot_sha256
+      - process_snapshot_sha256
+    before_each_cell: exact_selected_identity_and_eligible_predicate_must_still_hold
+    phase_continuity: one_selected_physical_identity_for_all_reached_GPU_cells
+    selected_card_becomes_busy:
+      default_action: wait_and_recheck_same_card_at_safe_boundary
+      operational_BLOCKED_only_if: direct_evidence_satisfies_resources.safe_pause_only_for_material_platform_resource_or_completion_boundary
+      selecting_a_different_card_after_first_GPU_label: forbidden_without_design_authority
+  reservation_required: false
+  exclusivity_claimed: false
+  foreign_workload_rejected: true
+  anchors_from_sorted_final_hashes:
+    - 0
+    - floor_midpoint
+    - last
+  anchor_replacement: forbidden
+  correctness:
+    anchors: 3
+    sizes: 3
+    cells: 9
+    each_requires:
+      - generate
+      - compile
+      - smoke
+      - nonzero_correctness
+    cell_timeout_s: 7200
+    attempt_protocol:
+      first_complete_PASS: seal_cell_PASS_and_forbid_retry
+      first_complete_allowlisted_failure: run_one_fresh_isolated_same_anchor_size_reproduction
+      maximum_attempts_for_failed_cell: 2
+      third_attempt: forbidden
+      second_attempt_uses_same_selected_GPU_identity: true
+      attempt_outputs: isolated_append_only
+      allowlisted_failure_stages:
+        - generate
+        - compile
+        - smoke
+        - nonzero_correctness
+      complete_failure_requires:
+        - status_FAIL
+        - one_exact_allowlisted_failure_stage
+        - complete_config_anchor_size_source_toolchain_GPU_and_command_identity
+        - terminal_process_and_validation_record
+        - no_exception_signal_timeout_partial_unknown_or_association_drift
+      reproducible_signature_equality_fields:
+        - config_hash
+        - anchor_index
+        - size_id
+        - failure_stage
+        - process_returncode
+        - validation_status_and_error_code
+        - source_toolchain_GPU_command_identity
+      two_attempt_decision_table:
+        - attempts: [PASS]
+          result: correctness_cell_PASS
+        - attempts: [same_allowlisted_complete_failure, same_allowlisted_complete_failure]
+          result: negative_S1_ENTRY_BLOCKED_FT_BLOCKED_CORRECTNESS_edge_null
+        - attempts: [allowlisted_failure, PASS]
+          result: CHANGES_REQUIRED_not_evaluated_edge_null
+        - attempts: [different_or_nonallowlisted_or_partial_or_timeout_or_unknown]
+          result: CHANGES_REQUIRED_not_evaluated_edge_null
+        - attempts: [PASS, any_second_attempt]
+          result: CHANGES_REQUIRED_unpermitted_retry
+      stdout_stderr_text_may_define_or_match_signature: false
+  noise:
+    starts_only_after_all_correctness_pass: true
+    anchors: 3
+    sizes: 3
+    repeats: 7
+    cells: 63
+    reduce_fn: max
+    measured_quality_unit: positive_finite_GFLOPS_after_reduce_fn_max
+    timed_iteration_schedule:
+      NumWarmups: 321
+      EnqueuesPerSync: 321
+      escalation_levels: [321]
+      maximum: 321
+      outcome_dependent_escalation_or_extension: forbidden
+    group_definition: each_of_3_anchors_cross_3_sizes_has_exactly_7_repeat_qualities
+    group_count: 9
+    cv_formula:
+      mean: arithmetic_mean_of_7_positive_finite_Q_values
+      standard_deviation: sample_standard_deviation_denominator_6
+      cv_percent: 100_times_standard_deviation_divided_by_mean
+    cv_p95:
+      inputs: 9_group_CV_percent_values
+      quantile: nearest_rank
+      one_based_rank: ceil_0_95_times_9_equals_9
+      equivalent: maximum_of_9_group_CV_values
+      maximum_percent_inclusive: 0.5
+    delta_noise:
+      per_repeat_deviation: abs_natural_log_Q_minus_within_group_median_of_7_natural_log_Q
+      pooled_inputs: all_63_per_repeat_deviations
+      quantile: nearest_rank
+      one_based_rank: ceil_0_95_times_63_equals_60
+      formula: exp_60th_sorted_deviation_minus_1
+      required_output: positive_finite_or_zero
+    cell_timeout_s: 7200
+    aggregate_PASS: all_63_cells_complete_and_9_group_CV_P95_maximum_at_most_0_5_percent_and_delta_noise_computed
+  cell_atomic_resume: true
+  unfavorable_result_deletion: forbidden
+
+outcome_matrix:
+  positive:
+    exact_condition:
+      - exact_frame_integrity_PASS
+      - all_228_codegen_children_stably_classified
+      - stable_survivor_count_at_least_10
+      - full_mandatory_cover
+      - K_at_most_20
+      - mapping_A_B_PASS
+      - native_conformance_PASS
+      - all_9_correctness_cells_PASS
+      - all_63_noise_cells_complete_and_noise_aggregate_PASS
+    scientific_outcome: positive
+    criterion: S1_ENTRY_GO_EXACT_FRAME
+    failure_id: null
+    edge: S10R4:S1_ENTRY_GO_EXACT_FRAME->S11
+  negative_mapping:
+    any_complete_condition:
+      - stable_survivor_count_below_10_after_complete_census
+      - mandatory_cover_impossible_after_complete_census
+      - C_greedy_above_20_after_complete_census
+      - fresh_reproducible_mapping_failure_with_valid_harness_identity
+    scientific_outcome: negative
+    criterion: S1_ENTRY_BLOCKED
+    failure_id: FT-BLOCKED-MAPPING
+    edge: null
+  negative_correctness:
+    exact_condition: fresh_reproducible_generate_compile_smoke_or_nonzero_correctness_failure
+    scientific_outcome: negative
+    criterion: S1_ENTRY_BLOCKED
+    failure_id: FT-BLOCKED-CORRECTNESS
+    edge: null
+  inconclusive_noise:
+    exact_condition: complete_63_cell_panel_fails_frozen_noise_criterion
+    scientific_outcome: inconclusive
+    criterion: null
+    failure_id: FT-INCONCLUSIVE
+    edge: null
+  changes_required:
+    any_condition:
+      - predecessor_frame_integrity_or_association_failure
+      - codegen_pass_discordance_or_partial_or_unknown
+      - implementation_schema_harness_path_toolchain_or_lineage_defect
+      - GPU_identity_association_partial_timeout_or_resume_defect
+      - outcome_not_uniquely_determined
+    scientific_outcome: not_evaluated
+    criterion: CHANGES_REQUIRED
+    failure_id: null
+    edge: null
+  operational_blocked:
+    condition: material_external_safety_availability_or_completion_boundary
+    scientific_outcome: not_evaluated
+    criterion: BLOCKED
+    failure_id: null
+    edge: null
+  result_priority:
+    - changes_required
+    - operational_blocked
+    - negative_mapping
+    - negative_correctness
+    - inconclusive_noise
+    - positive
+
+downstream_handoff:
+  qualified_edge_token: S10R4:S1_ENTRY_GO_EXACT_FRAME
+  target_checkpoint: S11
+  gate_record_must_bind_this_projection_hash: true
+  S11_admission_must_verify_same_projection_hash: true
+  handed_off_fixture:
+    allowed:
+      - exact_final_K_config_hashes_and_mapping_conformance_fixture
+      - exact_source_YAML_size_and_helper_identities
+      - entry_correctness_noise_readiness_for_this_exact_frame
+    forbidden_as_S11_population_or_model_evidence:
+      - S10R4_114_row_frame
+      - S10R4_codegen_survival_or_attrition_rate
+      - S10R4_selected_membership_or_multiplicity
+      - S10R4_mapping_native_correctness_noise_scores_as_S11_model_outcomes
+  S11_fresh_frame:
+    seeds: fresh_disjoint_from_S10R4_and_all_predecessor_formal_frames
+    F_valid: fresh_multiplicity_preserving_validator_accepted_occurrences
+    F_codegen: normal_error_tolerant_KernelWriter_survivors_of_complete_F_valid
+    codegen_rejects_retained_in_F_valid_denominator: true
+    mapping_and_Formocast_scoring_only_for_F_codegen_survivors: true
+    global_whole_config_Formocast_coverage:
+      denominator: complete_F_valid_occurrence_mass_including_codegen_rejects
+      threshold_minimum_percent: 95
+      survivor_only_denominator: forbidden
+    conditional_streams:
+      stay_in_corresponding_gene_value_cell: true
+      pooled_into_global_denominator: false
+    accepted_occurrence_targets: [4096, 8192]
+    conditional_support_targets: [128, 256]
+  guidance_eligibility:
+    whole_gene_fail_closed: true
+    any_unobserved_or_nonoperationally_scoreable_required_value_makes_gene_ineligible: true
+    value_level_guidance: deferred_not_authorized
+  claim_expansion_beyond_exact_frame: forbidden
+
+execution_order:
+  steps:
+    - verify_effective_lock_and_prelabel_absence
+    - codegen_census_pass_A_all_114
+    - codegen_census_pass_B_all_114
+    - seal_codegen_classification
+    - deterministic_operational_exact_K_selection
+    - mapping_pass_A
+    - mapping_pass_B
+    - native_sentinel_runtime_conformance
+    - GPU_environment
+    - nine_correctness_cells
+    - sixty_three_noise_cells
+    - machine_decision
+    - independent_reproduction
+    - fresh_verification
+    - terminal_closeout
+    - exact_path_commit_and_post_commit_audit
+  stop_on_terminal_matrix_branch: true
+  later_step_before_prior_PASS: forbidden
+
+resources:
+  historical_usage_policy: preserve_known_and_UNKNOWN_without_successor_entry_debit
+  planning_targets:
+    wall_s: 21600
+    cpu_s: 86400
+    gpu_s: 3600
+    new_transient_storage_bytes: 2147483648
+  default_transient_notification_bytes: 5368709120
+  first_reforecast_after_codegen_children: 3
+  projected_cost_multiplier_notification: 2.0
+  planning_variance_action: record_notify_continue
+  safe_pause_only_for:
+    - unsafe_continuation
+    - actual_platform_or_resource_unavailability
+    - inability_to_complete_full_frozen_workload_verification_closure_or_preservation
+    - outcome_dependent_optional_stopping_or_selection_risk
+    - unverifiable_evidence
+    - required_scientific_workload_claim_or_authority_change
+    - external_irreversible_authority_needed
+
+role_governance:
+  main:
+    authors_contract: true
+    authors_plan_b: true
+    authors_plan_a: true
+    implements_source: false
+    may_commit_exact_authorized_paths: true
+  adversarial_auditor:
+    fresh_required: true
+    may_read_contract: true
+    may_read_plan_b: true
+    may_read_plan_a_for_parity_only: true
+    may_implement: false
+  implementer:
+    fresh_required: true
+    plan_a_visible: true
+    plan_b_visible: false
+    contract_edit_authority: false
+    plan_edit_authority: false
+    commit_authority: false
+  verifier:
+    fresh_required: true
+    implementation_participation_forbidden: true
+    plan_b_visible: true
+    plan_a_visible: false
+    commit_authority: false
+  fresh_role_threads:
+    design_reviewers_used: 2
+    planned_auditor: 1
+    planned_implementer: 1
+    planned_verifier: 1
+    maximum: 6
+    reset_on_restart_or_new_root: false
+  repair:
+    numeric_stop_cap: null
+    append_only_provenance_required: true
+    reviewer_supported_contract_preserving_repairs_continue: true
+
+write_boundaries:
+  implementation_exact_paths:
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/run_s10r4_entry.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/schemas/s10r4-entry.schema.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/__init__.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/census.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/conformance.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/contract.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/correctness.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/frame.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/ledger.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/mapping.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/native_adapter.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/native_formocast_runtime_adapter.cpp
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/selector.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/state_machine.py
+    - projects/hipblaslt/tensilelite/Tensile/Tests/unit/test_ductile_s10r4_entry.py
+  prelabel_durable_exact_paths:
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r4-exact-frame-registry.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r4-size-registry.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r4-native-fixture.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/locks/s10r4-stage1-exact-frame-entry-lock.json
+  formal_durable_exact_paths:
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r4-codegen-classification.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r4-operational-selection.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r4-mapping-corpus.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r4-sentinel-conformance.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r4-environment.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s10r4-smoke-correctness.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s10r4-noise-pilot.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s10r4-decision.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s10r4-operational-blocker.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/gate-records/s10r4-s1-entry-go-exact-frame.json
+    - study_docs/research/ductile-origami-warmstart/reports/staged/s10r4-stage1-exact-frame-entry-report.md
+  formal_raw_scopes:
+    - agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame/artifacts/formal-codegen
+    - agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame/artifacts/formal-mapping
+    - agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame/artifacts/formal-native
+    - agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame/artifacts/formal-gpu
+    - agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame/artifacts/reproduction
+  implementation_transient_scopes:
+    - agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame/artifacts/prelabel-build
+    - agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame/artifacts/prelabel-fixtures
+    - agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame/artifacts/prelabel-tests
+  governance_transient_exact_paths:
+    - agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame/baseline.md
+    - agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame/gate-map.md
+    - agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame/adjudication.md
+    - agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame/subagents.md
+    - agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame/tranche-state.json
+    - agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame/gates/s10r4/plan_b.md
+    - agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame/gates/s10r4/plan_b.freeze.json
+    - agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame/gates/s10r4/plan_a.md
+    - agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame/gates/s10r4/plan_a-revisions.jsonl
+    - agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame/gates/s10r4/audit-request.json
+    - agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame/gates/s10r4/audit-verdict.json
+    - agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame/gates/s10r4/implementer-report.md
+    - agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame/gates/s10r4/implementer-report.json
+    - agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame/gates/s10r4/verifier-verdict.md
+    - agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame/gates/s10r4/verifier-verdict.json
+    - agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame/closure/closeout-ack.json
+    - agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame/closure/post-commit-audit.json
+  delivery_authority_paths:
+    - study_docs/research/s10r3-s11-value-level-guidance-amendment-proposal.md
+    - study_docs/research/surrogate-dse-plan.md
+    - study_docs/research/ductile-origami-warmstart-experiment-plan.md
+    - study_docs/research/ductile-origami-warmstart/README.md
+    - study_docs/research/ductile-origami-warmstart/s10r4-stage1-exact-frame-operational-entry-design.md
+    - study_docs/research/ductile-origami-warmstart/s11-stage1-model-only-factorization-design.md
+  phase1_delivery_exact_paths:
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4-stage1-exact-frame-entry-contract.yaml
+  phase2_delivery_exact_paths: same_as_seal_protocol_phase2_exact_commit_paths
+  terminal_delivery_maximum:
+    - all_reached_formal_durable_exact_paths
+    - study_docs/research/surrogate-dse-plan.md
+    - study_docs/research/ductile-origami-warmstart-experiment-plan.md
+    - study_docs/research/ductile-origami-warmstart/README.md
+    - study_docs/research/ductile-origami-warmstart/s10r4-stage1-exact-frame-operational-entry-design.md
+    - study_docs/research/ductile-origami-warmstart/s11-stage1-model-only-factorization-design.md
+  forbidden:
+    - any_S10R3_file_mutation
+    - any_S11_implementation_or_evidence_before_verified_edge
+    - any_S12_or_later_implementation_evidence_or_report
+    - any_unrelated_worktree_path_mutation
+    - broad_staging_reset_restore_stash_or_clean
+    - push
+
+outcome_document_policy:
+  immutable_after_phase1_seal:
+    - all_six_committed_A47_authority_Git_objects_at_authority_commit
+    - scientific_projection_criteria_thresholds_claim_and_edge_of_all_six_authority_paths
+    - phase1_contract_bytes
+  terminal_authority_updates_allowed_only_for:
+    - mechanically_derived_current_lifecycle_status_fields
+    - mechanically_derived_outcome_failure_edge_and_report_link_fields
+    - factual_closeout_projection_prose_that_does_not_change_science
+  immutable_after_phase2_seal:
+    - all_phase2_implementation_schema_test_registry_fixture_and_lock_bytes
+  common_scientific_terminal_required:
+    - s10r4_codegen_classification_if_census_completed
+    - s10r4_operational_selection_if_census_completed
+    - s10r4_decision
+    - s10r4_terminal_formal_report
+    - fresh_verifier_verdict
+    - closeout_ack
+    - exact_path_commit_and_post_commit_audit
+  by_outcome:
+    positive:
+      required:
+        - s10r4_codegen_classification
+        - s10r4_operational_selection
+        - s10r4_mapping_corpus_PASS
+        - s10r4_sentinel_conformance_PASS
+        - s10r4_environment_PASS
+        - s10r4_smoke_correctness_PASS
+        - s10r4_noise_pilot_PASS
+        - s10r4_decision_positive
+        - s10r4_positive_gate_record
+        - s10r4_terminal_formal_report
+      forbidden:
+        - s10r4_operational_blocker
+    negative_mapping:
+      required:
+        - s10r4_codegen_classification
+        - s10r4_operational_selection
+        - s10r4_mapping_corpus_terminal_record_if_mapping_was_reached
+        - s10r4_decision_negative_mapping
+        - s10r4_terminal_formal_report
+      forbidden:
+        - s10r4_positive_gate_record
+        - s10r4_operational_blocker
+        - native_GPU_correctness_or_noise_documents_after_pre_mapping_terminal
+    negative_correctness:
+      required:
+        - s10r4_codegen_classification
+        - s10r4_operational_selection
+        - s10r4_mapping_corpus_PASS
+        - s10r4_sentinel_conformance_PASS
+        - s10r4_environment_PASS
+        - s10r4_smoke_correctness_terminal_record
+        - s10r4_decision_negative_correctness
+        - s10r4_terminal_formal_report
+      forbidden:
+        - s10r4_noise_pilot
+        - s10r4_positive_gate_record
+        - s10r4_operational_blocker
+    inconclusive_noise:
+      required:
+        - s10r4_codegen_classification
+        - s10r4_operational_selection
+        - s10r4_mapping_corpus_PASS
+        - s10r4_sentinel_conformance_PASS
+        - s10r4_environment_PASS
+        - s10r4_smoke_correctness_PASS
+        - s10r4_noise_pilot_complete_FAIL
+        - s10r4_decision_inconclusive
+        - s10r4_terminal_formal_report
+      forbidden:
+        - s10r4_positive_gate_record
+        - s10r4_operational_blocker
+    changes_required:
+      required:
+        - append_only_finding_and_direct_evidence_in_transient_governance_scope
+      forbidden:
+        - s10r4_decision
+        - s10r4_positive_gate_record
+        - s10r4_terminal_formal_report
+        - s10r4_operational_blocker_unless_a_separate_material_external_block_exists
+    operational_blocked:
+      required:
+        - s10r4_operational_blocker_only
+      forbidden:
+        - s10r4_decision
+        - s10r4_positive_gate_record
+        - s10r4_terminal_formal_report
+  unreached_documents: must_be_absent
+  placeholder_or_prefilled_outcome_document: forbidden
+
+lifecycle_state_machine:
+  initial_after_A47_authority_commit:
+    design_status: approved
+    execution_status: not_started
+    checkpoint_state: DESIGN_APPROVED
+    scientific_outcome: not_evaluated
+    lock_state: absent
+    edge: null
+  after_phase1_contract_commit_and_post_audit:
+    design_status: approved
+    execution_status: not_started
+    checkpoint_state: DESIGN_APPROVED
+    scientific_outcome: not_evaluated
+    lock_state: absent
+    edge: null
+  after_phase2_binding_commit_before_post_audit:
+    design_status: approved
+    execution_status: blocked
+    checkpoint_state: BLOCKED
+    scientific_outcome: not_evaluated
+    lock_state: absent
+    edge: null
+    formal_evidence_allowed: false
+  after_phase2_post_commit_audit_PASS:
+    design_status: approved
+    execution_status: ready
+    checkpoint_state: LOCKED_READY
+    scientific_outcome: not_evaluated
+    lock_state: effective
+    edge: null
+    formal_evidence_allowed: true
+  during_formal_execution:
+    design_status: approved
+    execution_status: running
+    checkpoint_state: RUNNING
+    scientific_outcome: not_evaluated
+    lock_state: effective
+    edge: null
+  after_machine_scientific_decision_before_fresh_verification:
+    design_status: approved
+    execution_status: completed
+    checkpoint_state: RUNNING
+    verification_status: RESULT_PENDING_FRESH_VERIFICATION
+    scientific_outcome: one_of_positive_negative_inconclusive
+    lock_state: effective
+    edge: positive_internal_qualified_token_only_else_null
+  changes_required:
+    design_status: approved
+    execution_status: blocked
+    checkpoint_state: BLOCKED
+    scientific_outcome: not_evaluated
+    lock_state: effective_if_phase2_was_post_audited_else_absent
+    edge: null
+  operational_blocked:
+    design_status: approved
+    execution_status: blocked
+    checkpoint_state: BLOCKED
+    scientific_outcome: not_evaluated
+    lock_state: effective_if_phase2_was_post_audited_else_absent
+    edge: null
+  after_fresh_technical_PASS_before_closeout_commit:
+    design_status: approved
+    execution_status: completed
+    checkpoint_state: VERIFIED_PENDING_CLOSEOUT
+    scientific_outcome: one_of_positive_negative_inconclusive
+    lock_state: effective
+    edge: positive_internal_qualified_token_only_else_null
+  after_terminal_exact_commit_and_post_commit_audit:
+    design_status: approved
+    execution_status: completed
+    checkpoint_state: CHECKPOINT_COMPLETE
+    scientific_outcome: one_of_positive_negative_inconclusive
+    lock_state: effective
+    edge: positive_S10R4_qualified_edge_only_else_null
+  technical_PASS_is_not_CHECKPOINT_COMPLETE: true
+  scientific_edge_is_not_external_until_terminal_post_commit_audit: true
+
+downgrade_policy:
+  blocked_awaiting_user_decision_for_any_reduction_of:
+    - exact_114_config_frame
+    - two_complete_codegen_passes_or_228_terminal_children
+    - native_membership_or_classification_requirements
+    - mandatory_atom_set_or_K_rule_or_K_max
+    - mapping_pass_rows_or_parity_or_failure_reproduction
+    - native_fixture_or_fault_substitution
+    - GPU_identity_or_9_correctness_cells
+    - 9_groups_times_7_repeats_or_noise_formulas_or_threshold
+    - timeout_or_validation_requirements
+    - outcome_matrix_or_document_policy
+    - independent_reproduction_or_fresh_verification
+    - claim_scope_or_qualified_edge
+  partial_evidence_may_satisfy_scientific_outcome_or_edge: false
+  diagnostic_or_reduced_mode_edge: null
+  only_design_discussion_plus_user_decision_can_amend: true
+
+seal_protocol:
+  phase1:
+    name: PREIMPLEMENTATION_SCIENTIFIC_SEAL
+    outcome_access: false
+    exact_commit_paths:
+      - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4-stage1-exact-frame-entry-contract.yaml
+    required_audit_verdict: AUDIT_PASS_PREIMPLEMENTATION
+    post_commit_audit_required: true
+    plan_b_allowed_after_post_commit_audit: true
+    plan_a_allowed_only_after_plan_b_freeze: true
+  phase2:
+    name: EFFECTIVE_EXECUTION_BINDING
+    outcome_access: false_until_post_commit_audit
+    lock_path: study_docs/research/ductile-origami-warmstart/protocol/v1/locks/s10r4-stage1-exact-frame-entry-lock.json
+    exact_commit_paths:
+      - study_docs/research/ductile-origami-warmstart/protocol/v1/run_s10r4_entry.py
+      - study_docs/research/ductile-origami-warmstart/protocol/v1/schemas/s10r4-entry.schema.json
+      - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/__init__.py
+      - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/census.py
+      - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/conformance.py
+      - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/contract.py
+      - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/correctness.py
+      - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/frame.py
+      - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/ledger.py
+      - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/mapping.py
+      - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/native_adapter.py
+      - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/native_formocast_runtime_adapter.cpp
+      - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/selector.py
+      - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/state_machine.py
+      - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r4-exact-frame-registry.json
+      - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r4-size-registry.json
+      - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r4-native-fixture.json
+      - study_docs/research/ductile-origami-warmstart/protocol/v1/locks/s10r4-stage1-exact-frame-entry-lock.json
+      - projects/hipblaslt/tensilelite/Tensile/Tests/unit/test_ductile_s10r4_entry.py
+    required_audit_verdict: AUDIT_PASS_POST_BINDING
+    post_commit_audit_required: true
+    required_lock_state_after_post_audit: effective
+    required_execution_status_after_post_audit: ready
+    required_checkpoint_state_after_post_audit: LOCKED_READY
+    formal_evidence_allowed_only_after_post_audit: true
+  terminal:
+    name: CU-S10R4
+    closeout_ack_required: true
+    exact_path_local_commit_only: true
+    post_commit_audit_required: true
+    push: false
+
+prelabel_absence:
+  durable_paths:
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r4-codegen-classification.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r4-operational-selection.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r4-mapping-corpus.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r4-sentinel-conformance.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r4-environment.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s10r4-smoke-correctness.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s10r4-noise-pilot.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s10r4-decision.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s10r4-operational-blocker.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/gate-records/s10r4-s1-entry-go-exact-frame.json
+    - study_docs/research/ductile-origami-warmstart/reports/staged/s10r4-stage1-exact-frame-entry-report.md
+  raw_scopes:
+    - agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame/artifacts/formal-codegen
+    - agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame/artifacts/formal-mapping
+    - agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame/artifacts/formal-native
+    - agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame/artifacts/formal-gpu
+    - agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame/artifacts/reproduction
+  must_be_absent_through_phase2_post_commit_audit: true
