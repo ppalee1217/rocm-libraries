@@ -27,8 +27,13 @@
 > `CHECKPOINT_COMPLETE / negative / S1_ENTRY_BLOCKED / FT-BLOCKED-MAPPING /
 > edge=null`。A47已由兩位fresh reviewers形成`AGREE`並由使用者核准exact-frame
 > S10R4；它對S10R3完整sealed 114-config frame執行normal codegen census，不重開draws
-> 或改寫S10R3。S10R4目前`DESIGN_APPROVED / not_started / not_evaluated / edge=null`；
-> 只有post-audited `S10R4:S1_ENTRY_GO_EXACT_FRAME`可啟動S11。
+> 或改寫S10R3。A47核准當時S10R4為`DESIGN_APPROVED / not_started / not_evaluated / edge=null`；
+> 只有post-audited `S10R4:S1_ENTRY_GO_EXACT_FRAME`可啟動S11。A48已核准
+> [binding-02 recovery authority](s10r4-binding-02-execution-recovery-authority.md)：
+> binding-01因pre-KernelWriter cwd admission與historical/live absence混用缺陷退役為
+> 原地diagnostic，scientific outcome仍`not_evaluated`。Binding-02保持全部科學條件，
+> 使用全新run／ledger／lock namespace重新seal並從config 0完整重跑。目前
+> `DESIGN_APPROVED / gated / not_evaluated / edge=null`，binding-02 lock absent。
 >
 > **唯一 active 導航入口：**本 README。`legacy/` 內的 M00–M09 仍是 dead-protocol archive，不能提供 schema、hash、lock、registry、criterion、fixture、test或 PASS evidence；S00 positive只支持CPU-only evidence foundation。
 >
@@ -71,7 +76,7 @@ hypothesis、criterion、edge或timebox。
 | S10R1 | Cancelled nominal-boundary recovery diagnostics | `approved` | `cancelled` | `BLOCKED` | `not_evaluated` | `superseded` | none (A32 operational record only) |
 | S10R2 | Stage 1 support-aware entry recovery | `approved` | `completed` | `CHECKPOINT_COMPLETE` | `inconclusive` | `effective` | [report](reports/staged/s10r2-stage1-support-aware-entry-report.md) |
 | S10R3 | Stage 1 bounded-cover entry recovery | `approved` | `completed` | `CHECKPOINT_COMPLETE` | `negative` | `effective (S10R3-A46.5-G3)` | [report](reports/staged/s10r3-stage1-bounded-cover-entry-report.md) |
-| S10R4 | Stage 1 exact-frame operational entry recovery | `approved` | `not_started` | `DESIGN_APPROVED` | `not_evaluated` | `absent` | `reports/staged/s10r4-stage1-exact-frame-entry-report.md` |
+| S10R4 | Stage 1 exact-frame operational entry recovery | `approved` | `gated` | `DESIGN_APPROVED` | `not_evaluated` | `binding-01 superseded; binding-02 absent` | `reports/staged/s10r4-stage1-exact-frame-entry-report.md` |
 | S11 | Stage 1 model-only factorization／guidance lock | `approved` | `gated` | `DESIGN_APPROVED` | `not_activated` | `absent` | `reports/staged/s11-stage1-model-only-factorization-report.md` |
 | S12 | Stage 1 real-score／ranking／oracle audit | `approved` | `gated` | `DESIGN_APPROVED` | `not_evaluated` | `absent` | `reports/staged/s12-stage1-real-score-audit-report.md` |
 | S13 | Stage 1 actual Gen0 mechanism | `approved` | `gated` | `DESIGN_APPROVED` | `not_evaluated` | `absent` | `reports/gen0-factorization-mvp-report.md` |
@@ -89,6 +94,7 @@ Designs：
 - [S10R2 — Stage 1 support-aware entry recovery](s10r2-stage1-support-aware-entry-recovery-design.md)
 - [S10R3 — Stage 1 bounded-cover entry recovery](s10r3-stage1-bounded-cover-entry-recovery-design.md)
 - [S10R4 — Stage 1 exact-frame operational entry recovery](s10r4-stage1-exact-frame-operational-entry-design.md)
+- [S10R4 binding-02 — Execution recovery authority](s10r4-binding-02-execution-recovery-authority.md)
 - [S11 — Stage 1 model-only factorization](s11-stage1-model-only-factorization-design.md)
 - [S12 — Stage 1 real-score audit](s12-stage1-real-score-ranking-oracle-audit-design.md)
 - [S13 — Stage 1 actual Gen0](s13-stage1-actual-gen0-mechanism-design.md)
@@ -188,7 +194,7 @@ report/update/staged audit/commit，但
 | --- | --- | --- | --- |
 | `T-S10R2` | S10R2=`R2` | S10R2 | `CU-S10R2` standalone |
 | `T-S10R3` | S10R3=`R3` | S10R3 | `CU-S10R3` standalone |
-| `T-S10R4` | S10R4=`R3` | S10R4 | `CU-S10R4` standalone |
+| `T-S10R4-B02` | S10R4 binding-02=`R3`；binding-01 retired diagnostic | S10R4 | `CU-S10R4` standalone |
 | `T-S1-MECHANISM` | S11/S12=`R2`, S13=`R1` | S11 → S12 → S13 | `CU-S1-MECHANISM` |
 | `T-S20` | S20=`R1` | S20 | `CU-S20` standalone |
 | `T-S3-REPLICATION` | S30=`R2`, S31=`R1` | S30 → S31 | `CU-S3-REPLICATION` |
@@ -594,8 +600,9 @@ completion；`skipped_by_gate`／`not_activated`不建立假report。
 - S11須fresh建立multiplicity-preserving `F_valid -> F_codegen` frame；codegen rejects
   保留在global `F_valid` occurrence-mass coverage denominator，conditional streams不
   pooled。Whole-gene fail-closed保持；value-level proposal延後。
-- S10R4是R3 standalone `T-S10R4 / CU-S10R4`，目前
-  `DESIGN_APPROVED / not_started / not_evaluated / edge=null`。沒有push授權。
+- S10R4 binding-02是R3 standalone `T-S10R4-B02 / CU-S10R4`。Binding-01為原地
+  retired diagnostic；目前`DESIGN_APPROVED / gated / not_evaluated / edge=null`，
+  binding-02 lock absent。沒有push授權。
 
 ## 7. Downgrade review gate
 

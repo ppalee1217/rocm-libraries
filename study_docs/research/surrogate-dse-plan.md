@@ -554,6 +554,31 @@ Fresh Reviewer A `/root/pipeline_rebaseline_reviewer_a`與Reviewer B
 這是post-observation但pre-S10R4-outcome的prospective sibling design。它不修改本charter
 north star、Stage 1–4 claim ladder或S10R3歷史結果，不授權push。
 
+### 1.24 A48 S10R4 binding-02 execution recovery authority
+
+2026-08-02，S10R4 binding-01的第一個formal census child在進入Ductile、Tensile或
+KernelWriter前即fail closed。Direct evidence證明parent依frozen design在child root啟動
+worker，但runner在parse command前錯誤要求repository-root cwd；另由current code證實
+lock verifier把historical activation absence錯誤重算成live absence，將必然阻止下一個
+top-level formal stage。兩者都是execution harness／lineage缺陷，不是scientific result。
+
+兩位獨立reviewers完成交叉詰問並一致拒絕改寫舊commit或以少數path overlay假裝原lock
+仍有效。使用者核准
+[binding-02 recovery authority](ductile-origami-warmstart/s10r4-binding-02-execution-recovery-authority.md)：
+
+- binding-01的commit、lock、ledgers、Plan與partial原地保留為immutable diagnostic，
+  `scientific_outcome=not_evaluated / edge=null`；
+- 原S10R4 scientific design、contract criteria、114×2 workload、outcome matrix、claim及
+  唯一outgoing edge完全不變；
+- binding-02使用revisioned run／raw／prelabel／ledger／lock namespace、fresh contract
+  supplement與fresh exact-19 seal；
+- 修復worker cwd admission與historical/live absence混用後，從config 0執行完整228-child
+  census，禁止讀取或計入binding-01 partial；
+- successor不重置role、repair或resource provenance，且不授權push。
+
+這是measurement-lineage／execution-binding authority amendment，不改本charter的scientific
+estimand或claim ladder。只有binding-02 post-audited positive仍可啟動S11。
+
 ---
 
 ## 2. 研究問題與假設
@@ -993,9 +1018,10 @@ record，不是S10R2 parent或evidence source；A32固定它為
 S10R2已terminalize為inconclusive/null；它對S10R3只提供immutable terminal
 provenance，不提供formal evidence或scientific edge。S10R3現已terminalize為
 `CHECKPOINT_COMPLETE / negative / S1_ENTRY_BLOCKED / FT-BLOCKED-MAPPING /
-edge=null`，因此沒有啟動S11。A47新增S10R4；它目前
-`DESIGN_APPROVED / not_started / not_evaluated / edge=null`，只有其post-audited
-`S1_ENTRY_GO_EXACT_FRAME`可啟動S11。
+edge=null`，因此沒有啟動S11。A47新增S10R4，A48再將binding-01退役為原地
+diagnostic並核准binding-02 recovery；S10R4目前
+`DESIGN_APPROVED / gated / not_evaluated / edge=null`、binding-02 lock absent，只有
+binding-02 post-audited `S1_ENTRY_GO_EXACT_FRAME`可啟動S11。
 
 M00–M09移入`ductile-origami-warmstart/legacy/`，只保留歷史正文：
 
