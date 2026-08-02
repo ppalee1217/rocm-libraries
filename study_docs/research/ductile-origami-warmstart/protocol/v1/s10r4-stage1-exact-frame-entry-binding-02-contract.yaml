@@ -1,0 +1,365 @@
+schema_version: 1
+document_kind: s10r4_binding_recovery_contract_supplement
+checkpoint_id: S10R4
+binding_id: binding-02
+contract_id: S10R4-A48-EXACT-FRAME-BINDING-02
+payload_state: PREIMPLEMENTATION_BINDING_RECOVERY_SEAL_PAYLOAD
+scientific_outcome: not_evaluated
+edge: null
+
+composition:
+  base_contract:
+    path: study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4-stage1-exact-frame-entry-contract.yaml
+    raw_sha256: be79e72f0eb7d54a6457eb5fabcdcd64b67523966300597efb0877e0fb82eeba
+    phase1_commit_oid: 9e10067d6ea7ae6b979cf99d97ebee007d1ceec6
+  recovery_authority:
+    path: study_docs/research/ductile-origami-warmstart/s10r4-binding-02-execution-recovery-authority.md
+    raw_sha256: 43102f3db93d3b8044738b1c25413ab3d01dda1da0b360baeeb549bc7f3fed0c
+    commit_oid: 37c846e5b0edc182fd84432da3596090dbf3ee15
+  semantics: base_contract_plus_exact_binding_replacements_only
+  unknown_replacement: forbidden
+  scientific_field_replacement: forbidden
+  original_contract_mutation: forbidden
+  supplement_alias_or_fallback: forbidden
+
+authority:
+  order:
+    - research_charter
+    - experiment_plan
+    - checkpoint_index
+    - checkpoint_scientific_design
+    - original_scientific_contract
+    - binding_02_recovery_authority
+    - this_binding_02_supplement
+    - binding_02_effective_lock
+    - direct_evidence_and_terminal_report
+  committed_projection:
+    - id: research_charter
+      path: study_docs/research/surrogate-dse-plan.md
+      raw_sha256: 8615835a11f35bbf83a9f36520257ef96932434f3b845dec6e8e33a2030a378a
+      commit_oid: 37c846e5b0edc182fd84432da3596090dbf3ee15
+    - id: experiment_plan
+      path: study_docs/research/ductile-origami-warmstart-experiment-plan.md
+      raw_sha256: f39a7e8e97fee8816c4654c405dce76357c54748d2435f40a591e3b170864e2c
+      commit_oid: 37c846e5b0edc182fd84432da3596090dbf3ee15
+    - id: checkpoint_index
+      path: study_docs/research/ductile-origami-warmstart/README.md
+      raw_sha256: 6624326c441eae36818711797a4323dc22ccf43be531e47c60578a04ddc83ed2
+      commit_oid: 37c846e5b0edc182fd84432da3596090dbf3ee15
+    - id: checkpoint_scientific_design
+      path: study_docs/research/ductile-origami-warmstart/s10r4-stage1-exact-frame-operational-entry-design.md
+      raw_sha256: b63cff6fe0f7f03d2a69c6cb41b7b137fa373d8935fdf8c2283ee173e692c027
+      commit_oid: d784d3cd336b982f13b3e57f319ee4073e5e67a0
+    - id: downstream_consumer_design
+      path: study_docs/research/ductile-origami-warmstart/s11-stage1-model-only-factorization-design.md
+      raw_sha256: e9ae0b25dcb33a2fe3bbb36fb2556fd05f6fc25ad4674261d58430832f6ad608
+      commit_oid: d784d3cd336b982f13b3e57f319ee4073e5e67a0
+    - id: original_scientific_contract
+      path: study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4-stage1-exact-frame-entry-contract.yaml
+      raw_sha256: be79e72f0eb7d54a6457eb5fabcdcd64b67523966300597efb0877e0fb82eeba
+      commit_oid: 9e10067d6ea7ae6b979cf99d97ebee007d1ceec6
+    - id: binding_02_recovery_authority
+      path: study_docs/research/ductile-origami-warmstart/s10r4-binding-02-execution-recovery-authority.md
+      raw_sha256: 43102f3db93d3b8044738b1c25413ab3d01dda1da0b360baeeb549bc7f3fed0c
+      commit_oid: 37c846e5b0edc182fd84432da3596090dbf3ee15
+  authority_postcommit_audit:
+    path: agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame-binding-02/authority/postcommit-audit.json
+    raw_sha256: 1eb70fa4129a2112f58acec9371da8ad97a1bc2bdf0d37d91c1e8a544c681147
+  user_authority:
+    binding_02_recovery_selected: true
+    preserve_scientific_design_and_workload: true
+    reviewer_supported_non_design_repairs_continue: true
+    repair_numeric_stop_cap: null
+    perlee_free_card_no_reservation: true
+    resource_accounting: record_notify_continue_unless_material_boundary
+    push_authorized: false
+    dependency_install_authorized: false
+    container_lifecycle_mutation_authorized: false
+    unrelated_path_mutation_authorized: false
+
+workflow_authority:
+  entries:
+    - path: AGENTS.md
+      raw_sha256: d6f163de760751465c6615efd2b33bb549470f8f8d73ce70c62e6c01ee7f9d21
+    - path: CLAUDE.md
+      raw_sha256: c6e05fd3accc76182635bd9ee8ced07d44919f2b47a3ba75191d8f4bdb2f9abe
+    - path: .cursor/rules/hipblaslt-onboarding.mdc
+      raw_sha256: 8013f531a9667fefd2465d9b812981be582d8568cec90cafea46f42fd355171d
+    - path: .agents/skills/implement-verify-loop/SKILL.md
+      raw_sha256: 73d802bd7126077c37438e8c4fcb7179fb16f35bcab8fd414c83f4ba5217d783
+    - path: .agents/skills/implement-verify-loop/references/authority-gates.md
+      raw_sha256: b56a1cd42dea0b6308726b89eafbeb4a9534b8811313703b8e24f4249d6dd3f6
+    - path: .agents/skills/implement-verify-loop/references/planning-contract.md
+      raw_sha256: 4cb35eda1cb9b162b28d40474af6d0d602942d0e4ee31655bbccb4246ac689f6
+    - path: .agents/skills/design-discussion/SKILL.md
+      raw_sha256: 1d46673ef14b4c2eaf1bcbb8a074ec853ad401a8fe16bcaa461ec8fe9f196dbc
+  risk_tier: R3
+  scientific_gate: S10R4
+  execution_tranche: T-S10R4-B02
+  closure_unit: CU-S10R4
+  threads:
+    original_design_reviewers_used: 2
+    adversarial_auditor_threads_used: 1
+    implementer_threads_used: 1
+    binding_recovery_operational_reviewer_threads_used: 1
+    planned_fresh_verifier_threads: 1
+    projected_total: 6
+    maximum: 6
+    reset_on_successor_or_new_root: false
+  repair:
+    numeric_stop_cap: null
+    append_only_provenance_required: true
+    reviewer_supported_contract_preserving_repairs_continue: true
+
+binding_01_retirement:
+  state: retired_diagnostic_in_place
+  scientific_outcome: not_evaluated
+  edge: null
+  completed_terminal_census_prefix: 0
+  run_root: agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame
+  phase2_commit_oid: 95e29a8618a4cf6bab1addb26376b1917ddb8404
+  lock:
+    path: study_docs/research/ductile-origami-warmstart/protocol/v1/locks/s10r4-stage1-exact-frame-entry-lock.json
+    raw_sha256: 168c5dd6b24b7843131c3ef32645ab1518aa4233b25aef918d41ab273af9abc4
+    canonical_self_sha256: 8fa4973790170c471df52f1551a10885b4a6344d9e75ac676a5ac600c0e72853
+  prebinding_ledger:
+    path: agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame/gates/s10r4/audit-verdict.json
+    raw_sha256: 032b80e1de6c2d49101562a186dec20edc282438583940eb4928af8e26e18162
+    ledger_digest: 3efbf295227089c17045a197ee56ea36a0d4cee5423341e4f03b89362d46c80a
+  postbinding_ledger:
+    path: agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame/closure/post-commit-audit.json
+    raw_sha256: 0eee0af8f9a77018d01b9dd0f93b85e9d0820ef4dead6fbcf5cf2723a547f756
+    ledger_digest: e02404f24b72a87b606cf7fc5a5bea9db0d8194f7481d917e88d7a53b4c2138d
+    event_digest: d593d13fddd9423077a2e11f56dc3808087c5afbbae8a3783a3f9f8f90863545
+  partial_child:
+    root: agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame/artifacts/formal-codegen/pass-A/000-72dec49998a8db0bb51fcc723e5585925a7ec87906e61c149a7754d4c9b9ae0b
+    request_sha256: a69c04a12620cba5d6cdf28baf07b44df09b88cd8adcb16ce6dfa43052c34c24
+    stderr_sha256: c847d187fdc7abeac3c6e703b6e95fb3b0ac3ddd32d82ecb6d1b519bbb03a328
+    stdout_sha256: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+    result_absent: true
+    process_completion_absent: true
+    native_artifacts_absent: true
+  preservation:
+    in_place: true
+    move_delete_overwrite_or_complete: forbidden
+    empirical_reuse_by_binding_02: forbidden
+    governance_or_prelabel_reuse_by_binding_02: forbidden
+    read_allowed_only_for_authority_boundary_audit: true
+
+identity_replacements:
+  authority_commit_oid: 37c846e5b0edc182fd84432da3596090dbf3ee15
+  authority_amendment: A48
+  execution_tranche: T-S10R4-B02
+  run_root: agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame-binding-02
+  contract_supplement_path: study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4-stage1-exact-frame-entry-binding-02-contract.yaml
+  effective_lock_path: study_docs/research/ductile-origami-warmstart/protocol/v1/locks/s10r4-stage1-exact-frame-entry-binding-02-lock.json
+  plan_root: agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame-binding-02/gates/s10r4
+  closure_root: agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame-binding-02/closure
+
+canonical_governance_paths:
+  baseline: agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame-binding-02/baseline.md
+  gate_map: agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame-binding-02/gate-map.md
+  adjudication: agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame-binding-02/adjudication.md
+  subagents: agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame-binding-02/subagents.md
+  tranche_state: agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame-binding-02/tranche-state.json
+  plan_b: agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame-binding-02/gates/s10r4/plan_b.md
+  plan_b_freeze: agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame-binding-02/gates/s10r4/plan_b.freeze.json
+  plan_a: agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame-binding-02/gates/s10r4/plan_a.md
+  plan_a_revisions: agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame-binding-02/gates/s10r4/plan_a-revisions.jsonl
+  audit_request: agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame-binding-02/gates/s10r4/audit-request.json
+  prebinding_audit_ledger: agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame-binding-02/gates/s10r4/audit-verdict.json
+  postcommit_audit_ledger: agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame-binding-02/closure/post-commit-audit.json
+  implementer_report_markdown: agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame-binding-02/gates/s10r4/implementer-report.md
+  implementer_report_json: agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame-binding-02/gates/s10r4/implementer-report.json
+  verifier_verdict_markdown: agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame-binding-02/gates/s10r4/verifier-verdict.md
+  verifier_verdict_json: agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame-binding-02/gates/s10r4/verifier-verdict.json
+  closeout_ack: agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame-binding-02/closure/closeout-ack.json
+  uniqueness_rule: exact_paths_no_alias_fallback_mirror_or_overwrite
+  postcommit_ordinals:
+    binding_activation: 0
+    terminal_closeout: 1
+    cross_binding_chain: forbidden
+
+binding_run_root_replacement:
+  base_prefix: agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame/
+  binding_02_prefix: agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame-binding-02/
+  applies_to_every_base_contract_path_under_prefix: true
+  required_exact_categories:
+    - implementation_transient_scopes
+    - governance_transient_exact_paths
+    - formal_raw_scopes
+    - prelabel_summary_and_build_products
+    - Plan_and_audit_records
+    - reproduction
+  only_exception: binding_01_retirement_identity_records
+  binding_02_composed_runtime_path_with_base_prefix: forbidden
+  partial_prefix_or_unlisted_fallback: forbidden
+
+prelabel_and_raw_replacements:
+  prelabel_build_root: agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame-binding-02/artifacts/prelabel-build
+  prelabel_fixture_root: agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame-binding-02/artifacts/prelabel-fixtures
+  prelabel_test_root: agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame-binding-02/artifacts/prelabel-tests
+  prelabel_summary: agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame-binding-02/artifacts/prelabel-fixtures/prelabel-build-summary.json
+  formal_raw_scopes:
+    - agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame-binding-02/artifacts/formal-codegen
+    - agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame-binding-02/artifacts/formal-mapping
+    - agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame-binding-02/artifacts/formal-native
+    - agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame-binding-02/artifacts/formal-gpu
+    - agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame-binding-02/artifacts/reproduction
+  formal_durable_paths:
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r4-codegen-classification.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r4-operational-selection.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r4-mapping-corpus.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r4-sentinel-conformance.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r4-environment.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s10r4-smoke-correctness.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s10r4-noise-pilot.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s10r4-decision.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s10r4-operational-blocker.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/gate-records/s10r4-s1-entry-go-exact-frame.json
+    - study_docs/research/ductile-origami-warmstart/reports/staged/s10r4-stage1-exact-frame-entry-report.md
+  source_input:
+    s10r3_raw_root: agent_run/260730-ductile-factorized-guidance-s10r3-restart/artifacts/formal-cpu
+    binding_01_prelabel_or_formal_input: forbidden
+    fresh_double_replay_required: true
+    byte_identity_with_binding_01_is_not_reuse_evidence: true
+
+implementation_repairs:
+  H1_internal_worker_cwd:
+    top_level_required_cwd: /src/rocm-libraries
+    internal_worker_required_cwd_source: exact_request_parent_and_materialized_template
+    parse_before_command_specific_cwd_admission: true
+    second_worker_handler_cwd_environment_request_result_check: required
+    arbitrary_cwd_or_guard_bypass: forbidden
+  H2_activation_absence:
+    activation_check: all_binding_02_formal_durable_and_raw_scopes_absent
+    stored_as: immutable_postbinding_event
+    later_admission: validate_historical_event_shape_paths_booleans_digest_commit_and_lock_without_live_absence_remeasurement
+    live_state_authority: artifact_derived_state_machine
+    preactivation_raw_or_forged_event: fail_closed
+  required_regression_tests:
+    - real_cli_internal_worker_reaches_handler_from_request_bound_child_cwd
+    - top_level_non_repository_cwd_fails_closed
+    - wrong_worker_request_result_cwd_environment_or_argv_fails_closed
+    - second_top_level_admission_after_binding_02_raw_uses_historical_activation_and_live_state_machine
+    - forged_activation_preactivation_raw_foreign_binding_01_path_and_partial_binding_02_child_fail_closed
+    - no_formal_native_gpu_or_outcome_execution_in_tests
+
+phase1_seal:
+  exact_commit_paths:
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4-stage1-exact-frame-entry-binding-02-contract.yaml
+  required_precommit_verdicts:
+    reviewer_a:
+      verdict: PASS
+      path: agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame-binding-02/authority/reviewer-a-supplement-precommit-verdict-r2.json
+    adversarial_auditor:
+      verdict: PASS
+      path: agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame-binding-02/authority/adversarial-supplement-precommit-audit-r2.json
+  postcommit_audit_required: true
+  postcommit_audit_path: agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame-binding-02/authority/supplement-postcommit-audit.json
+  postcommit_audit_must_bind:
+    - supplement_commit_oid_and_parent
+    - exact_single_path_diff_mode_blob_and_current_bytes
+    - supplement_raw_and_canonical_sha256
+    - both_exact_precommit_verdict_path_raw_and_canonical_sha256
+    - authority_commit_ancestry_and_records
+    - binding_01_immutable_projection
+    - binding_02_lock_formal_and_outcome_absence
+  plan_b_allowed_only_after_postcommit_audit: true
+  outcome_access: false
+
+effective_lock_required_supplement_bindings:
+  supplement_record:
+    required_fields:
+      - path
+      - phase1_commit_oid
+      - git_mode
+      - blob_oid
+      - size_bytes
+      - raw_sha256
+      - canonical_sha256
+  supplement_postcommit_audit_record:
+    path: agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame-binding-02/authority/supplement-postcommit-audit.json
+    required_fields:
+      - path
+      - size_bytes
+      - raw_sha256
+      - canonical_sha256
+      - audited_supplement_commit_oid
+      - verdict
+    required_verdict: AUDIT_PASS_BINDING_02_SUPPLEMENT
+  precommit_verdict_records:
+    exact_paths_from_phase1_seal: true
+    path_raw_canonical_and_verdict_required: true
+  alias_fallback_or_unbound_record: forbidden
+
+history_preserving_retirement:
+  old_phase2_commit_to_revert: 95e29a8618a4cf6bab1addb26376b1917ddb8404
+  commit_rewrite_amend_reset_checkout_restore_stash_or_clean: forbidden
+  revert_commit_required_after_supplement_postaudit: true
+  revert_diff_exact_old_phase2_19_paths: true
+  unrelated_path_in_revert: forbidden
+
+phase2_seal:
+  exact_commit_paths:
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/run_s10r4_entry.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/schemas/s10r4-entry.schema.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/__init__.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/census.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/conformance.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/contract.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/correctness.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/frame.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/ledger.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/mapping.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/native_adapter.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/native_formocast_runtime_adapter.cpp
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/selector.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s10r4/state_machine.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r4-exact-frame-registry.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r4-size-registry.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10r4-native-fixture.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/locks/s10r4-stage1-exact-frame-entry-binding-02-lock.json
+    - projects/hipblaslt/tensilelite/Tensile/Tests/unit/test_ductile_s10r4_entry.py
+  exact_path_count: 19
+  required_prebinding_audit: AUDIT_PASS_PREBINDING
+  required_postbinding_audit: AUDIT_PASS_POST_BINDING
+  required_ready_state: LOCKED_READY
+  formal_evidence_before_postbinding: forbidden
+
+scientific_invariants:
+  source: exact_original_scientific_contract
+  exact_frame_config_count: 114
+  census_passes: 2
+  total_terminal_census_children: 228
+  early_stop_reorder_replacement_or_third_retry: forbidden
+  selector: prelocked_intersection_then_deterministic_set_cover
+  K_formula: max_10_C_greedy
+  K_max: 20
+  mapping_passes: 2
+  correctness_cells: 9
+  noise_cells: 63
+  outcome_matrix: unchanged_from_base_contract
+  claim_boundary: unchanged_from_base_contract
+  only_positive_edge: S10R4:S1_ENTRY_GO_EXACT_FRAME->S11
+  binding_recovery_is_independent_scientific_replication: false
+
+resources:
+  carry_from_binding_01:
+    observed_activity_lower_bound_seconds: 15842
+    whole_role_cpu_seconds: UNKNOWN
+    whole_role_wall_seconds: UNKNOWN
+    storage_bytes_before_final_reports: 12248570487
+  reset_on_binding_02: false
+  planning_targets_from_base_contract: unchanged
+  planning_variance_action: record_notify_continue
+  first_reforecast_after_complete_census_A_children: 3
+  safe_pause_only_for: unchanged_from_base_contract
+
+outcome_and_closeout:
+  binding_01_partial_may_satisfy_outcome_or_edge: false
+  canonical_outcomes: unchanged_from_base_contract
+  binding_02_decision_and_reproduction_only: true
+  fresh_verifier_required: true
+  terminal_report_path: study_docs/research/ductile-origami-warmstart/reports/staged/s10r4-stage1-exact-frame-entry-report.md
+  push_authorized: false
