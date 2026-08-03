@@ -1,0 +1,678 @@
+document_kind: s11_factorization_contract
+schema_version: 1
+checkpoint_id: S11
+status: frozen_preimplementation
+risk_tier: R2
+scientific_gate: S11
+positive_criterion: S1_GUIDANCE_LOCKED
+sole_positive_edge: S12
+formal_evidence_authorized: only_by_future_effective_lock
+selected_contract_sha256: self_excluded_raw_file_sha256_bound_by_preimplementation_lock
+execution_tranche: T-S1-MECHANISM
+closure_unit: CU-S1-MECHANISM
+initial_state:
+  authority: approved
+  execution: not_started
+  criterion_status: DESIGN_APPROVED
+  scientific_outcome: not_evaluated
+  lock: absent
+current_edge: null
+lifecycle:
+  tracked_contract_state: frozen_preimplementation
+  effective_lock_state: absent
+  allowed_contract_states: [frozen_preimplementation]
+  allowed_lock_states: [absent, LOCKED_READY]
+  artifact_states: [ABSENT, LOCKED_READY, RUNNING, TERMINAL, REPRODUCED, CLOSED]
+  transitions:
+    - [ABSENT, LOCKED_READY]
+    - [LOCKED_READY, RUNNING]
+    - [RUNNING, TERMINAL]
+    - [TERMINAL, REPRODUCED]
+    - [REPRODUCED, CLOSED]
+  current_artifact_state: ABSENT
+  formal_start_requires:
+    - tracked_authority_and_contract_committed
+    - adversarial_audit_pass
+    - implementation_toolchain_seed_timeout_seal
+    - prelabel_absence_pass
+    - effective_lock_committed_and_postseal_verified
+base_commit: b7f06476dbe14db0161168253f09a16cb9aa2f2d
+design_consensus:
+  decision_packet_path: agent_run/260803-ductile-factorized-guidance-s11/next-experiment-design-discussion/decision-packet.md
+  decision_packet_sha256: deebddf0687b5a86cf052d9fce3013626887fe899a4ddd815204e195ff45c14d
+  final_candidate_materialized_into_tracked_authority: true
+  reviewers:
+    - {role: independent_reviewer_a, final_verdict: AGREE}
+    - {role: independent_reviewer_b, final_verdict: AGREE}
+  user_event:
+    event: unified_S11_direction_auto_authorized_after_two_independent_reviewers_agreed
+    scope: complete_S11_implementation_verification_and_formal_execution_under_this_contract
+    formal_execution_authorized: only_after_effective_lock
+authority_bindings:
+  - path: AGENTS.md
+    base_sha256: d6f163de760751465c6615efd2b33bb549470f8f8d73ce70c62e6c01ee7f9d21
+  - path: .cursor/rules/hipblaslt-onboarding.mdc
+    base_sha256: e9bb26241c2d95594f5283b1ec5727efcaf01ac4b9abd5cdc751017918a5e24b
+  - path: .agents/skills/implement-verify-loop/SKILL.md
+    base_sha256: 38a4fcd0f7924272ab44fd209d4b1edd86d7710b0df1c1fa161ca3176a0bc1e0
+  - path: .cursor/skills/implement-verify-loop/references/authority-gates.md
+    base_sha256: c93a424e9827cee676f4503818d0374fe9962c42b3fa982a074d839242ab28fc
+  - path: .cursor/skills/implement-verify-loop/references/planning-contract.md
+    base_sha256: 3c926adf4a242076d51a0193e16ea8d1f59dbe871f229f66edc1142dca1c1f38
+  - path: study_docs/research/experiment-artifact-governance.md
+    base_sha256: 58c17b6af7b578afd3a18a05d82d46d84f3d818e8bce3c97e689dc19a32dd5cc
+  - path: study_docs/research/surrogate-dse-plan.md
+    base_sha256: 49a4cadee66b995d32b949b84a9ae94e763bcb5e3561fdc474527a59e8a53f81
+  - path: study_docs/research/ductile-origami-warmstart-experiment-plan.md
+    base_sha256: 29183bbfb3f648511129d0263003c4d49f603fcc2870036768f23d62ab6370cf
+  - path: study_docs/research/ductile-origami-warmstart/README.md
+    base_sha256: 8fcf7729250d9cd1c79012895a6544db48908bdb77ebed7da5e5477c14fb4ad3
+  - path: study_docs/research/ductile-origami-warmstart/s10r4-retirement-s11-rebaseline-authority.md
+    base_sha256: 6ccc20d1d824510011c951fb8e3a841b4fdf165df52649898fab6f93530ffc4e
+  - path: study_docs/research/ductile-origami-warmstart/s11-stage1-model-only-factorization-design.md
+    base_sha256: 09e5d31eb533f61708743c4638135b5b0a9586c8acd74fceecc9433d50073d34
+  - path: study_docs/research/ductile-origami-warmstart/s11-s12-fixed-frame-measurement-amendment.md
+    base_sha256: 99792bd7b1ce8aa5db9a34cf8c09e0b23410be86807a40cc191177738047012d
+  - path: study_docs/research/ductile-origami-warmstart/protocol/v1/s11-s12-fixed-frame-measurement-authority-contract.yaml
+    base_sha256: 8fe7e27fa7f55cdb1697d71ba1d5845ceb5b3e32e5ca41ff5506d8533575fabe
+  - path: study_docs/research/ductile-origami-warmstart/protocol/v1/locks/s11-s12-fixed-frame-measurement-authority-lock.yaml
+    base_sha256: 31f6c4fd38c18dfa1e56a11a7cf7513fe306294a91c61547028d50c299d54b39
+governance:
+  roles:
+    main: owns_contract_authority_and_final_scientific_decisions
+    implementer: edits_only_plan_a_whitelist_and_runs_synthetic_tests
+    adversarial_reviewer: independently_audits_without_implementation_edits
+    fresh_verifier: separate_root_second_qualification_and_reproduction
+  role_separation_required: true
+  repair:
+    budget: uncapped
+    traceable: true
+    reviewer_governed: true
+    scientific_weakening_forbidden: true
+    material_scientific_change_requires_design_discussion_and_user_decision: true
+  resources:
+    layer: C
+    action: record_and_notify_only
+    scientific_stop_or_downgrade: false
+input:
+  path: study_docs/research/ductile-origami-warmstart/protocol/v1/inputs/s10-generated.yaml
+  sha256: faaa8d65014d30646b89b84a8e97395539e52684bef7b430804a63ef2d64cf36
+  preserve_candidate_order: true
+  preserve_existing_groups_and_weights: true
+source_pins:
+  ductile_ref: refs/remotes/origin/ductile_integration
+  ductile_commit: 5d6bdc8a6438b5fc73a96e46a907f9a5b1cd4e39
+  ductile_commit_tree: e03a48ef0e3a45d27a51e2cad3aa836ca807567d
+  tensilelite_tree: 0bc3b63205f3aa5e62b64d0302726e7f5177527d
+  geko_ref: refs/remotes/origin/users/pkamd/geko_pr
+  geko_commit: d32abacfd13579d1f523f035b7a10b0734c4ac47
+  geko_commit_tree: 7080a305e53904a9cc0a32f9cf3f919bf1075886
+  provenance_manifest:
+    path: study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10-yaml-provenance.json
+    sha256: 2d120b41d38787c5888304f3e8fda6a033b22f554162d4a500d4d9150be24917
+  ductile_files:
+    - path: projects/hipblaslt/tensilelite/Tensile/ductile/config/defaults.yaml
+      sha256: 12fd4cd38d4479507531cb257c8e740213615ab95ee255dc87ea8c5dde93a814
+    - path: projects/hipblaslt/tensilelite/Tensile/ductile/config/__init__.py
+      sha256: b012308813c9b9bbf0759cac0b63b6c3abff3c97667e4c23ba9bad6c5e884661
+    - path: projects/hipblaslt/tensilelite/Tensile/ductile/algorithm/ga.py
+      sha256: 32b3ed38fd0997212d1e314d8186d00ed4bf4608775c62bc133a25735d445606
+  actual_yaml_is_input_not_historical_evidence: true
+  current_checkout_cache_build_and_old_artifacts_are_not_source_authority: true
+toolchain_bindings:
+  validator_adapter_path: required_pending
+  validator_adapter_sha256: required_pending
+  validator_source_sha256: required_pending
+  validator_timeout_seconds: required_pending
+  compiler_path: required_pending
+  compiler_sha256: required_pending
+  compiler_version: required_pending
+  qualification_python_path: required_pending
+  qualification_python_sha256: required_pending
+  qualification_worker_source_path: study_docs/research/ductile-origami-warmstart/protocol/v1/s11/qualification_worker.py
+  qualification_worker_source_sha256: required_pending
+  native_helper_path: required_pending
+  native_helper_sha256: required_pending
+  native_helper_source_path: study_docs/research/ductile-origami-warmstart/protocol/v1/s11/native_formocast_runtime_adapter.cpp
+  native_helper_source_sha256: required_pending
+  native_build_argv: required_pending
+  resolver_source_sha256: required_pending
+  kernelwriter_source_sha256: required_pending
+  semantic_identity_schema: s11_consumer_semantic_identity_v1
+  qualification_fingerprint_sha256: required_pending
+  qualification_timeout_seconds: required_pending
+  native_timeout_seconds: required_pending
+implementation_bindings:
+  - {path: projects/hipblaslt/tensilelite/Tensile/Tests/unit/test_ductile_s11_factorization.py, sha256: required_pending}
+  - {path: study_docs/research/ductile-origami-warmstart/protocol/v1/run_s11_factorization.py, sha256: required_pending}
+  - {path: study_docs/research/ductile-origami-warmstart/protocol/v1/s11/__init__.py, sha256: required_pending}
+  - {path: study_docs/research/ductile-origami-warmstart/protocol/v1/s11/canonical.py, sha256: required_pending}
+  - {path: study_docs/research/ductile-origami-warmstart/protocol/v1/s11/contract.py, sha256: required_pending}
+  - {path: study_docs/research/ductile-origami-warmstart/protocol/v1/s11/decision.py, sha256: required_pending}
+  - {path: study_docs/research/ductile-origami-warmstart/protocol/v1/s11/guidance.py, sha256: required_pending}
+  - {path: study_docs/research/ductile-origami-warmstart/protocol/v1/s11/ledger.py, sha256: required_pending}
+  - {path: study_docs/research/ductile-origami-warmstart/protocol/v1/s11/native_adapter.py, sha256: required_pending}
+  - {path: study_docs/research/ductile-origami-warmstart/protocol/v1/s11/native_formocast_runtime_adapter.cpp, sha256: required_pending}
+  - {path: study_docs/research/ductile-origami-warmstart/protocol/v1/s11/populations.py, sha256: required_pending}
+  - {path: study_docs/research/ductile-origami-warmstart/protocol/v1/s11/qualification.py, sha256: required_pending}
+  - {path: study_docs/research/ductile-origami-warmstart/protocol/v1/s11/qualification_worker.py, sha256: required_pending}
+  - {path: study_docs/research/ductile-origami-warmstart/protocol/v1/s11/registry.py, sha256: required_pending}
+  - {path: study_docs/research/ductile-origami-warmstart/protocol/v1/s11/sampling.py, sha256: required_pending}
+  - {path: study_docs/research/ductile-origami-warmstart/protocol/v1/s11/state_machine.py, sha256: required_pending}
+  - {path: study_docs/research/ductile-origami-warmstart/protocol/v1/s11/statistics.py, sha256: required_pending}
+  - {path: study_docs/research/ductile-origami-warmstart/protocol/v1/s11/workflow.py, sha256: required_pending}
+  - {path: study_docs/research/ductile-origami-warmstart/protocol/v1/schemas/s11-factorization.schema.json, sha256: required_pending}
+seed:
+  master_nonce: 40e06e51e445c57850f9f705168667853964034cf4f840e2cf43a8b89b189c97
+  generator: numpy.random.Generator
+  bit_generator: PCG64
+  derivation: sha256_domain_separated_uint128
+  fresh_and_disjoint_from_all_prior_checkpoints: true
+  reseed: forbidden
+schedule:
+  chunk_nominal_draws: 512
+  canonical_first_n_prefix_only: true
+  global:
+    stream_id: global
+    diagnostic_prefix_accepted: 4096
+    canonical_prefix_accepted: 8192
+    complete_chunks: 65536
+    complete_nominal_draws: 33554432
+    target_stop: forbidden
+    early_stop: forbidden
+    extension: forbidden
+    later_accepts_after_canonical_prefix: append_only_zero_credit_diagnostic
+  conditional:
+    diagnostic_prefix_accepted: 128
+    canonical_prefix_accepted: 256
+    complete_chunks_per_activated_value: 512
+    complete_nominal_draws_per_activated_value: 262144
+    target_stop: forbidden
+    early_stop: forbidden
+    extension: forbidden
+    later_accepts_after_canonical_prefix: append_only_zero_credit_diagnostic
+  boundary_overshoot_credit: 0
+  zero_credit_rows_keep_nominal_and_acceptance_ledger_fields: true
+  zero_credit_rows_forbidden_from: [Fraw, Fexec, Fscore, Uexec, Uscore, ECDF, statistics, guidance, S12_D5]
+  cap_extension: forbidden
+  resource_forecasts:
+    historical_100x_points: notify_only
+    layer: C
+    may_stop_or_downgrade: false
+registry:
+  eligibility: frozen_free_and_ungrouped_and_currently_unweighted_and_cardinality_gt_1
+  activation: all_typed_values_except_pre_score_sound_complete_independently_replayed_proven_absence
+  model_ranked_screen: forbidden
+  typed_candidate_order: actual_yaml_order
+  eligible_gene_count: 27
+  activated_value_count: 101
+  registry_sha256: e767e2eb5f9ead55b1a38fb174349dc2fdbb2fdf744919b8f99db499c727b848
+  protected_groups_sha256: 0526a9b3c1d8a1bbe1db2cb03616bfda6e5a1f2dfad3826c0747d8dcb3ab9140
+  protected_weights_sha256: 56c34446385e93138944082b1801649271fd6a49df948aa41017cb05d012f34f
+  support_proven_absent_requires: finite_sound_complete_pre_score_proof_and_independent_replay
+  support_unobserved_is_not_absent: true
+  miarch_vgpr_classification:
+    prior_s10r3_residual_gene_count: 27
+    s11_eligible_gene_count: 27
+    included_gene: MIArchVgpr
+    standalone_axis_grouped: false
+    standalone_axis_currently_weighted: false
+    protected_group_override_context_is_value_preservation_trust_gate_only: true
+    historical_empirical_credit: 0
+native_scoring:
+  path: pinned_native_runtime
+  required_symbols: [ProblemInfo, SizeMapping, predictedPerformance]
+  proxy_or_substitution: forbidden
+  all_locked_sizes_required_finite: true
+  size_registry:
+    path: study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10-size-registry.json
+    file_sha256: 71f253fc4d3ab7e23b078f14b254bf65d591f762b6f28aae32e24c87bab536be
+    parent_lock_path: study_docs/research/ductile-origami-warmstart/protocol/v1/locks/s10-stage1-entry-lock.json
+    parent_lock_sha256: 6e119788305913bcf0e69244c2c190d345cb1d360c6dc1f49323ddffcdd397f6
+    row_count: 3
+    extraction:
+      require_kind: s10_size_registry
+      require_status: prelock_complete
+      require_same_space_parity: true
+      require_raw_row_count: 17
+      require_distinct_count: 16
+      require_deduplication_rule: first occurrence by exact (M,N,batch,K) tuple
+      require_selection_key: [K, M*N*batch, M, N, batch]
+      require_selection_indices: [0, 7, 15]
+      require_exact_size_order: true
+      reject_missing_extra_reordered_or_mismatched_field: true
+      output_registry_path: study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s11-structural-registry.json
+      output_encoding: canonical_json_sorted_keys_compact_utf8_single_newline
+  problem_sizes:
+    - [8, 8, 1, 128]
+    - [256, 256, 1, 1024]
+    - [2304, 1024, 1, 214336]
+  soo: false
+  actual_reducer: max
+  weight_beta: 0.25
+  weight_beta_origin: pinned_Ductile_config_loader_resolved_default_when_actual_yaml_omits_field
+populations:
+  fraw: valid_fn_accepted_pre_dedup_occurrence_multiset
+  fexec: complete_resolver_and_stable_semantic_identity_and_normal_kernelwriter_and_pinned_compile
+  fscore: fexec_with_complete_finite_native_formocast_all_locked_sizes
+  value_preservation_is_fexec_membership: false
+  value_preservation: separate_value_trust_gate
+  formulas:
+    Graw_gv: '{o in Fraw_global : X_g(o)=v}'
+    Gexec_gv: '{o in Fexec_global : X_g(o)=v}'
+    Gscore_gv: '{o in Fscore_global : X_g(o)=v}'
+    Draw_gv: Graw_gv_multiset_union_Fraw_cond_gv
+    Dexec_gv: Gexec_gv_multiset_union_Fexec_cond_gv
+    Dscore_gv: Gscore_gv_multiset_union_Fscore_cond_gv
+    support_gv: '|Fraw_cond(g,v)|'
+    Cscore_occ_gv: '|Dscore_gv|/|Dexec_gv|_undefined_when_denominator_zero'
+    n_gv: '|Dscore_gv|'
+    sum_b_gv: sum_benefit_over_Dscore_gv
+    global_mean_g: occurrence_weighted_mean_over_every_Fscore_global_row
+  aliases_and_occurrence_multiplicity_preserved: true
+  deduplication_unit: stable_semantic_operational_identity
+  Uexec: unique_semantic_identities_from_Fexec_global_only
+  global_isolation:
+    conditional_never_enters_global_Y_exec: true
+    conditional_never_enters_global_C_score_occ: true
+    conditional_never_enters_global_ECDF: true
+    conditional_never_enters_global_Uexec: true
+    conditional_never_enters_future_D5: true
+qualification:
+  complete_attempts_total: 2
+  ordered_roles: [producer, fresh_verifier]
+  separate_materialization_roots: true
+  normal_path: complete_resolver_projection_then_normal_non_proxy_KernelWriter_then_pinned_compile
+  matching_complete_accept: executable
+  matching_complete_normal_reject: execution_attrition
+  discordant_partial_association_loss_ambient_or_guess: CHANGES_REQUIRED_not_evaluated
+  blocked_mapping:
+    code: FT-BLOCKED-MAPPING
+    requires_exact_allowlist: true
+    requires_matching_two_complete_no_guess_attempts: true
+    requires_new_scientific_authority: true
+    scientific_negative: false
+    allowlist: []
+trust:
+  support_min_conditional_fraw: 128
+  fexec_min: 1
+  value_relation: unique_value_preserving
+  score_coverage_min: 0.95
+  complete_model_only_statistics: required
+  untrusted_states:
+    - support_unobserved
+    - normalized_away
+    - context_dependent
+    - collision_confounded
+    - unresolved
+    - execution_attrited
+    - score_attrited
+statistics:
+  latency_rank: midrank_percentile_per_locked_size_lower_latency_better
+  benefit: b_s_equals_1_minus_latency_percentile_rank
+  reducer: max
+  alpha: 32
+  shrinkage_formula: mu_gv_equals_sum_b_gv_plus_32_times_global_mean_g_over_n_gv_plus_32
+  sensitivity_formula: S_g_equals_max_mu_over_T_g_minus_min_mu_over_T_g
+  sensitivity_min: 0.05
+  epsilon: 0.20
+  score_coverage_min: 0.95
+  permutations: 2000
+  permutation_unit: occurrence_and_all_size_block
+  shared_global_occurrence_permutation: true
+  conditional_domain_separated_permutations: true
+  final_testable_gene_set_frozen_before_S_observed: true
+  own_null_p95: required_strict
+  familywise_max_null:
+    construction: M_r_equals_max_over_all_final_testable_genes_of_S_gr_star
+    replicates: 2000
+    required_strict: true
+  quantile: hyndman_fan_type_7
+  null_ties_fail: true
+  bootstraps: 2000
+  bootstrap_unit: occurrence_and_all_size_block
+  ci: fixed_observed_best_minus_worst_95_percent_type7
+  ci_half_width_max: 0.025
+  best_worst_recurrence_min: 0.90
+  recurrence_borderline: [0.80, 0.90]
+  size_direction: at_least_2_of_3_or_2_of_2
+  lambda_grid: {start: 0.0, stop: 8.0, step: 0.25}
+  normalized_entropy_min: 0.80
+  half_stability:
+    halves: prelocked_disjoint_global_occurrence_halves
+    shared_conditional_corpus: true
+    independently_rebuild_global_reference: true
+    exact_tuple:
+      - trust_states
+      - trust_reasons
+      - trusted_sets
+      - per_value_Dexec
+      - per_value_Dscore
+      - per_value_n
+      - per_value_Cscore
+      - per_value_mu
+      - guided_states
+      - guided_reasons
+      - best_worst
+      - per_size_directions
+      - own_null_pass
+      - familywise_null_pass
+      - same_positive_global_lambda
+      - per_gene_guidance_probabilities
+      - shuffle_mapping
+      - canonical_guidance_hash
+    numeric_drift: report_non_gating
+    total_variation_gate: absent
+guidance:
+  q_formula: exp_lambda_times_mu_minus_min_mu_over_T_normalized_on_T_only
+  p1_formula: p1_equals_0.20_times_p0_plus_0.80_times_q
+  untrusted_mass: exactly_0.20_times_p0
+  global_lambda: largest_grid_value_meeting_entropy_for_every_guided_gene
+  positive_lambda_required: true
+  shuffle: deterministic_nonidentity_permutation_of_q_within_T_only
+  shuffle_preserves: [untrusted_mass, complete_p1_multiset, nominal_entropy, candidate_order]
+  consumer_inverse_cost_formula: weight_equals_negative_log_probability_div_weight_beta
+  consumer_forward_formula: probability_proportional_to_exp_negative_weight_beta_times_weight_minus_min_weight
+  consumer_round_trip: pinned_float32
+  complete_boundary_guidance_bundle_integrity_hash: required
+fixed_frame_analysis:
+  global_diagnostic_prefix: first_4096_accepted_occurrences_only
+  global_canonical_prefix: first_8192_accepted_occurrences_only
+  conditional_diagnostic_prefix: first_128_accepted_occurrences_only
+  conditional_canonical_prefix: first_256_accepted_occurrences_only
+  canonical_frame_shortage_is_inconclusive: true
+  diagnostic_prefix_cannot_stop_or_change_schedule: true
+  terminal_analysis_after_all_full_stream_caps: true
+  semantic_half_tuple:
+    - trust_states
+    - trust_reasons
+    - trusted_sets
+    - per_value_Dexec
+    - per_value_Dscore
+    - per_value_n
+    - per_value_Cscore
+    - per_value_mu
+    - guided_states
+    - guided_reasons
+    - best_worst
+    - per_size_directions
+    - own_null_pass
+    - familywise_null_pass
+    - same_positive_global_lambda
+    - per_gene_guidance_probabilities
+    - shuffle_mapping
+    - canonical_guidance_hash
+  reseed_new_stream_replacement_pooling: forbidden
+outcomes:
+  ordering:
+    - EVIDENCE_INVALID
+    - CHANGES_REQUIRED
+    - FT-BLOCKED-MAPPING
+    - FT-INCONCLUSIVE
+    - S1_GUIDANCE_LOCKED
+    - COMPLETE_DETERMINISTIC_NO_GUIDANCE
+  positive:
+    code: S1_GUIDANCE_LOCKED
+    operational_status: complete
+    scientific_outcome: positive
+    requirements:
+      stable_guided_gene_count_min: 1
+      trusted_values_per_guided_gene_min: 2
+      global_Uexec_min: 256
+      positive_global_lambda: true
+      all_fixed_familywise_coverage_entropy_roundtrip_shuffle_firewall_replay_fresh_verification_gates: true
+    edge: S12
+  negative:
+    code: COMPLETE_DETERMINISTIC_NO_GUIDANCE
+    scientific_outcome: negative
+    edge: null
+    claim: frozen_S11_procedure_did_not_establish_guidance
+  inconclusive:
+    code: FT-INCONCLUSIVE
+    scientific_outcome: inconclusive
+    material_causes: [support, coverage, precision_or_recurrence, final_half_stability, global_Uexec_below_256]
+    edge: null
+  changes_required:
+    code: CHANGES_REQUIRED
+    scientific_outcome: not_evaluated
+    edge: null
+  blocked_mapping:
+    code: FT-BLOCKED-MAPPING
+    operational_status: BLOCKED
+    scientific_outcome: not_evaluated
+    edge: null
+    decision_packet: required
+  evidence_invalid:
+    code: EVIDENCE_INVALID
+    scientific_outcome: not_evaluated
+    edge: null
+    action: new_lock_fresh_seeds_full_draw0_rerun
+firewall:
+  forbid_real_gflops: true
+  forbid_s12_d5_labels: true
+  forbid_gpu_correctness: true
+  forbid_downstream_outcomes: true
+  forbid_historical_empirical_credit: true
+  prelabel_absence_required: true
+  violation_invalidates_evidence: true
+no_reuse:
+  old_s10_artifacts_state_results_and_empirical_rows_credit: zero
+  structural_authority_read_allowlist:
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/inputs/s10-generated.yaml
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/locks/s10-stage1-entry-lock.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10-size-registry.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s10-yaml-provenance.json
+  allowlist_semantics: original_S10_Layer_A_structural_input_only_zero_empirical_credit
+  s10r2_consistency_crosscheck:
+    permitted: true
+    gating: false
+    empirical_credit: zero
+    production_runtime_read: forbidden
+  forbidden_formal_sources: [S10R3, S10R4, B01, B02, B03, B04, B05, B06]
+  forbidden_s10_reuse:
+    - empirical_rows
+    - seeds
+    - support_results
+    - mapping_results
+    - scores
+    - outcomes
+    - artifact_state
+  production_read_other_old_s10_paths: forbidden
+  production_import_or_read_agent_run_paths: forbidden
+  pure_semantics_identical_source_reimplementation_only: true
+write_boundaries:
+  ownership:
+    main_preimplementation:
+      - study_docs/research/ductile-origami-warmstart/protocol/v1/s11-stage1-model-only-factorization-contract.yaml
+      - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s11-structural-registry.json
+      - study_docs/research/ductile-origami-warmstart/protocol/v1/locks/s11-stage1-model-only-factorization-preimplementation-lock.json
+    main_preseal:
+      - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s11-implementation.json
+      - study_docs/research/ductile-origami-warmstart/protocol/v1/locks/s11-stage1-model-only-factorization-lock.json
+    implementer_exact_paths:
+      - projects/hipblaslt/tensilelite/Tensile/Tests/unit/test_ductile_s11_factorization.py
+      - study_docs/research/ductile-origami-warmstart/protocol/v1/run_s11_factorization.py
+      - study_docs/research/ductile-origami-warmstart/protocol/v1/schemas/s11-factorization.schema.json
+      - study_docs/research/ductile-origami-warmstart/protocol/v1/s11/__init__.py
+      - study_docs/research/ductile-origami-warmstart/protocol/v1/s11/canonical.py
+      - study_docs/research/ductile-origami-warmstart/protocol/v1/s11/contract.py
+      - study_docs/research/ductile-origami-warmstart/protocol/v1/s11/decision.py
+      - study_docs/research/ductile-origami-warmstart/protocol/v1/s11/guidance.py
+      - study_docs/research/ductile-origami-warmstart/protocol/v1/s11/ledger.py
+      - study_docs/research/ductile-origami-warmstart/protocol/v1/s11/native_adapter.py
+      - study_docs/research/ductile-origami-warmstart/protocol/v1/s11/native_formocast_runtime_adapter.cpp
+      - study_docs/research/ductile-origami-warmstart/protocol/v1/s11/populations.py
+      - study_docs/research/ductile-origami-warmstart/protocol/v1/s11/qualification.py
+      - study_docs/research/ductile-origami-warmstart/protocol/v1/s11/qualification_worker.py
+      - study_docs/research/ductile-origami-warmstart/protocol/v1/s11/registry.py
+      - study_docs/research/ductile-origami-warmstart/protocol/v1/s11/sampling.py
+      - study_docs/research/ductile-origami-warmstart/protocol/v1/s11/state_machine.py
+      - study_docs/research/ductile-origami-warmstart/protocol/v1/s11/statistics.py
+      - study_docs/research/ductile-origami-warmstart/protocol/v1/s11/workflow.py
+    formal_producer_descendant_root:
+      path: agent_run/260803-ductile-factorized-guidance-s11/s11-execution-v2/formal/producer
+      staged: false
+      only_writer: producer
+    formal_verifier_descendant_root:
+      path: agent_run/260803-ductile-factorized-guidance-s11/s11-execution-v2/formal/verifier
+      staged: false
+      only_writer: fresh_verifier
+  implementation_whitelist_exact:
+    - projects/hipblaslt/tensilelite/Tensile/Tests/unit/test_ductile_s11_factorization.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/run_s11_factorization.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/schemas/s11-factorization.schema.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s11/__init__.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s11/canonical.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s11/contract.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s11/decision.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s11/guidance.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s11/ledger.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s11/native_adapter.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s11/native_formocast_runtime_adapter.cpp
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s11/populations.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s11/qualification.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s11/qualification_worker.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s11/registry.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s11/sampling.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s11/state_machine.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s11/statistics.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s11/workflow.py
+  execution_whitelist_exact:
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s11-registry.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s11-global-prefix.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s11-conditional-prefixes.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s11-qualifications.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s11-native-scores.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s11-analysis.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s11-guidance.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s11-decision.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s11-reproduction.json
+  delivery_whitelist_union_exact:
+    - projects/hipblaslt/tensilelite/Tensile/Tests/unit/test_ductile_s11_factorization.py
+    - study_docs/research/ductile-origami-warmstart-experiment-plan.md
+    - study_docs/research/ductile-origami-warmstart/README.md
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/README.md
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/gate-records/s11-s1-guidance-locked.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s11-decision.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s11-reproduction.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/locks/s11-stage1-model-only-factorization-lock.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/locks/s11-stage1-model-only-factorization-preimplementation-lock.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s11-analysis.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s11-conditional-prefixes.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s11-global-prefix.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s11-guidance.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s11-implementation.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s11-native-scores.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s11-qualifications.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s11-registry.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s11-structural-registry.json
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/run_s11_factorization.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s11-stage1-model-only-factorization-contract.yaml
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s11/__init__.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s11/canonical.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s11/contract.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s11/decision.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s11/guidance.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s11/ledger.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s11/native_adapter.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s11/native_formocast_runtime_adapter.cpp
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s11/populations.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s11/qualification.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s11/qualification_worker.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s11/registry.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s11/sampling.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s11/state_machine.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s11/statistics.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s11/workflow.py
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/schemas/s11-factorization.schema.json
+    - study_docs/research/ductile-origami-warmstart/reports/staged/s11-stage1-model-only-factorization-report.md
+    - study_docs/research/ductile-origami-warmstart/s11-stage1-model-only-factorization-design.md
+formal_commands:
+  - global-discovery
+  - conditional-discovery
+  - qualify
+  - score
+  - analyze
+  - decide
+  - reproduce
+formal_outcome_paths:
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s11-decision.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s11-reproduction.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s11-analysis.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s11-conditional-prefixes.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s11-global-prefix.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s11-guidance.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s11-native-scores.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s11-qualifications.json
+  - study_docs/research/ductile-origami-warmstart/protocol/v1/manifests/s11-registry.json
+  - study_docs/research/ductile-origami-warmstart/reports/staged/s11-stage1-model-only-factorization-report.md
+branch_delivery:
+  positive:
+    requires:
+      - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/gate-records/s11-s1-guidance-locked.json
+      - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s11-decision.json
+      - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s11-reproduction.json
+      - study_docs/research/ductile-origami-warmstart-experiment-plan.md
+      - study_docs/research/ductile-origami-warmstart/README.md
+      - study_docs/research/ductile-origami-warmstart/s11-stage1-model-only-factorization-design.md
+    forbids:
+      - study_docs/research/ductile-origami-warmstart/reports/staged/s11-stage1-model-only-factorization-report.md
+    edge: S12
+    closure_unit: remains_open
+  negative_or_inconclusive:
+    requires:
+      - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s11-decision.json
+      - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/s11-reproduction.json
+      - study_docs/research/ductile-origami-warmstart/reports/staged/s11-stage1-model-only-factorization-report.md
+      - study_docs/research/ductile-origami-warmstart-experiment-plan.md
+      - study_docs/research/ductile-origami-warmstart/README.md
+      - study_docs/research/ductile-origami-warmstart/s11-stage1-model-only-factorization-design.md
+    forbids:
+      - study_docs/research/ductile-origami-warmstart/protocol/v1/evidence/gate-records/s11-s1-guidance-locked.json
+    edge: null
+  changes_required_or_evidence_invalid:
+    scientific_report: forbidden
+    edge: null
+verification_protocol:
+  cwd: repository_root
+  duplicate_key_yaml_and_json_loading: required
+  implementation_unit_command:
+    argv: [python3, -m, pytest, projects/hipblaslt/tensilelite/Tensile/Tests/unit/test_ductile_s11_factorization.py, -q]
+    expected_exit: 0
+  preseal_runner_commands:
+    - {argv: [python3, study_docs/research/ductile-origami-warmstart/protocol/v1/run_s11_factorization.py, preflight], expected_exit: 0}
+    - {argv: [python3, study_docs/research/ductile-origami-warmstart/protocol/v1/run_s11_factorization.py, self-test], expected_exit: 0}
+  effective_lock_verification:
+    argv: [python3, study_docs/research/ductile-origami-warmstart/protocol/v1/run_s11_factorization.py, verify-lock]
+    expected_exit: 0
+  verifier_semantics:
+    timed_out_killed_or_still_running: not_PASS
+    nonzero_exit: not_PASS
+    stdout_claim_without_direct_artifact_parity: not_PASS
+    implementation_report: claim_index_only
+    direct_artifact_hash_replay: required
+  acceptance_artifacts:
+    PB-S11-V2-C01: [s11_contract, preimplementation_lock, authority_hash_audit]
+    PB-S11-V2-C02: [s11_structural_registry, original_S10_source_chain_replay]
+    PB-S11-V2-C03: [s11_registry, seed_and_candidate_order_replay]
+    PB-S11-V2-C04: [s11_global_prefix, s11_conditional_prefixes, full_ledger_replay]
+    PB-S11-V2-C05: [s11_global_prefix, s11_conditional_prefixes, population_replay]
+    PB-S11-V2-C06: [s11_qualifications, s11_native_scores]
+    PB-S11-V2-C07: [s11_analysis]
+    PB-S11-V2-C08: [s11_analysis]
+    PB-S11-V2-C09: [s11_guidance]
+    PB-S11-V2-C10: [prelabel_absence_audit, forbidden_read_audit]
+    PB-S11-V2-C11: [s11_decision, branch_exclusivity_audit]
+    PB-S11-V2-C12: [s11_reproduction]
+    PB-S11-V2-C13: [implementation_manifest, effective_lock, exact_stage_audit, postcommit_audit]
+fallback_prohibitions:
+  terminal_science_from_timed_out_killed_still_running_or_partial_full_cap: forbidden
+  alter_tests_thresholds_fixtures_workload_metrics_goal_claim_or_authority_to_obtain_PASS: forbidden
+  metric_boundary_mismatch_or_narrow_data_winner_without_locked_mechanism: CHANGES_REQUIRED_not_evaluated
+  false_premise_or_unbound_source_identity: CHANGES_REQUIRED_not_evaluated
+  new_execution_yield_threshold_or_target_stop: forbidden
+  global_Uexec_below_256: FT_INCONCLUSIVE
+  ordinary_repair:
+    permitted_without_user_interruption: true
+    reviewer_governed: true
+    may_not_change_science_measurement_claim_or_lineage: true
