@@ -1,0 +1,79 @@
+document_kind: s11_factorization_contract_revision
+schema_version: 1
+checkpoint_id: S11
+revision: 2
+status: frozen_preimplementation
+formal_evidence_authorized: only_by_future_effective_lock
+reason: close_machine_human_half_tuple_and_exact_scratch_root_parity_before_any_formal_evidence
+scientific_change: false
+measurement_change: false
+claim_change: false
+lineage_change: false
+evidence_reuse: none_no_S11_formal_evidence_exists
+predecessor:
+  seal_commit: fd41875876300c7a18d4dc7346d4b8de52f62f24
+  contract_path: study_docs/research/ductile-origami-warmstart/protocol/v1/s11-stage1-model-only-factorization-contract.yaml
+  contract_sha256: 6b91bb18ba4e70c2a1aaee38440c95365454cd584ae0c74d6d7ab087e5aa6bab
+  preimplementation_lock_path: study_docs/research/ductile-origami-warmstart/protocol/v1/locks/s11-stage1-model-only-factorization-preimplementation-lock.json
+  preimplementation_lock_sha256: 1f0231c84b18875f8895e3c608e695815811a11bbbf555b2a6449829393cf252
+  state: superseded_for_formal_admission_retained_immutable_provenance
+active_contract_resolution:
+  identity: ordered_base_plus_revision_2
+  loader: strict_duplicate_key_rejecting_YAML
+  base_hash_must_match_before_overlay: true
+  unknown_patch_path: fail_closed
+  duplicate_tuple_entry: fail_closed
+  mutation_of_unlisted_base_field: fail_closed
+  all_unlisted_base_fields: inherited_byte_semantics_unchanged
+  patch_operations:
+    - op: append_unique
+      path: /statistics/half_stability/exact_tuple
+      values: [per_size_and_aggregate_direction, each_model_test_result]
+    - op: append_unique
+      path: /fixed_frame_analysis/semantic_half_tuple
+      values: [per_size_and_aggregate_direction, each_model_test_result]
+half_tuple_model_test_expansion:
+  each_model_test_result:
+    - sensitivity_S_g_at_least_0_05
+    - bootstrap_ci_half_width_at_most_0_025
+    - best_worst_recurrence_at_least_0_90
+    - aggregate_direction_2_of_3_or_2_of_2
+    - own_null_strict_pass
+    - familywise_null_strict_pass
+    - score_coverage_at_least_0_95
+    - entropy_at_least_0_80
+    - positive_global_lambda
+    - consumer_float32_roundtrip
+    - shuffle_invariants
+    - firewall
+    - deterministic_replay
+    - fresh_verification
+  equality: exact_field_by_field
+  numeric_drift: reported_non_gating
+write_boundary_addendum:
+  tracked_write_authority: none
+  ignored_descendant_roots:
+    - path: agent_run/260803-ductile-factorized-guidance-s11/s11-execution-v2/build/tests
+      writer: implementer_or_fresh_verifier_test_command
+    - path: agent_run/260803-ductile-factorized-guidance-s11/s11-execution-v2/cache/tests
+      writer: implementer_or_fresh_verifier_test_command
+    - path: agent_run/260803-ductile-factorized-guidance-s11/s11-execution-v2/formal/producer/build
+      writer: producer
+    - path: agent_run/260803-ductile-factorized-guidance-s11/s11-execution-v2/formal/producer/cache
+      writer: producer
+    - path: agent_run/260803-ductile-factorized-guidance-s11/s11-execution-v2/formal/verifier/build
+      writer: fresh_verifier
+    - path: agent_run/260803-ductile-factorized-guidance-s11/s11-execution-v2/formal/verifier/cache
+      writer: fresh_verifier
+  descendant_rule: regular_files_and_directories_only_within_resolved_root_no_symlink_escape
+  staged: false
+  ambient_container_cache: forbidden
+  environment_binding: TMPDIR_PYTHONPYCACHEPREFIX_compiler_output_and_cache_use_applicable_root
+ownership:
+  main_only_revision_path: study_docs/research/ductile-origami-warmstart/protocol/v1/s11-stage1-model-only-factorization-contract-r2.yaml
+  main_only_preimplementation_lock_path: study_docs/research/ductile-origami-warmstart/protocol/v1/locks/s11-stage1-model-only-factorization-preimplementation-lock-r2.json
+formal_admission:
+  requires_both_contract_revisions_and_revision_2_lock_committed: true
+  effective_lock_must_bind_ordered_base_and_revision_hashes: true
+  prior_effective_lock: absent
+  prior_formal_evidence: absent
