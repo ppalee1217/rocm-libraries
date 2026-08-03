@@ -1,0 +1,19 @@
+schema_version: study-authority-lock/v1
+lock_id: L0-S11-S12-FIXED-FRAME-20260803-R1
+status: effective_pre_evidence_authority_lock
+sealed_at_date_utc: 2026-08-03
+parent_commit: 4e8adf2c521f4ef5bc63fa5a3ea20300a770fdad
+contract_path: study_docs/research/ductile-origami-warmstart/protocol/v1/s11-s12-fixed-frame-measurement-authority-contract.yaml
+contract_sha256: 8fe7e27fa7f55cdb1697d71ba1d5845ceb5b3e32e5ca41ff5506d8533575fabe
+decision_packet_sha256: 93388b45c219916acc3026d79c810e09f4e084a54545838f6fda79d0376dc779
+human_authority_goal_thread: 019f964a-6a7c-7183-8822-eedf7d9ebf4a
+scope: prospective_authority_amendment_only
+scientific_evidence_authorized: false
+scientific_outcome: not_evaluated
+outgoing_edge: null
+push_authorized: false
+invalidated_by:
+  - contract_byte_change
+  - delivery_whitelist_expansion
+  - protected_S11_candidate_change
+  - formal_S11_evidence_before_postcommit_reseal

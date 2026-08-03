@@ -10,8 +10,16 @@
 > [繁中變更指南](s10r4-to-s11-experiment-plan-change-guide.md)。下方B01–B06長歷史只作
 > immutable non-gating provenance；B07 dirty draft禁止作authority/evidence。
 >
+> **2026-08-03 latest measurement authority：**
+> [`S11-S12-FIXED-FRAME-20260803`](s11-s12-fixed-frame-measurement-amendment.md) 已核准
+> future S11 canonical first8,192 global accepts、65,536 chunks／33,554,432 draws cap、
+> per-value512 chunks／262,144 draws conditional frame，以及S12/S41 unclipped directional
+> `M_HT`。它沒有執行S11/S12、建立result／effective checkpoint lock／report／edge；S11
+> 仍是`approved / not_started / DESIGN_APPROVED / not_evaluated / lock absent`。第一次閱讀
+> 請看[fixed-frame繁中變更指南](s11-s12-fixed-frame-measurement-change-guide.md)。
+>
 > **Active-state authority banner：**本研究目前是
-> `post_empirical / s10r4_retired_unstarted / s11_rebaseline_approved /
+> `post_empirical / s10r4_retired_unstarted / s11_fixed_frame_approved /
 > no_s10r4_or_s11_evidence`。以下長段落保存歷史authority trail；current狀態只以本頁
 > current table/DAG與上方banner為準。S00是durable positive，
 > S10是durable `negative / S1_ENTRY_BLOCKED / edge=null`，兩者不變。User-authorized
@@ -86,13 +94,15 @@
 2. [Experiment plan](../ductile-origami-warmstart-experiment-plan.md)：公式、samples、seeds、thresholds、data floors、splits、time caps、checkpoint DAG與acceptance IDs。
 3. [S1 rebaseline authority](s10r4-retirement-s11-rebaseline-authority.md)：S10R4退役、
    S11 populations／trusted-value policy與S30/S40/S41 prospective corrections。
-4. 本頁索引的 checkpoint design：implementation handoff、maximum boundary、artifact/evidence binding。
-5. Durable machine-readable frozen contract與checkpoint effective lock：在evidence前把
+4. [S11／S12 fixed-frame authority](s11-s12-fixed-frame-measurement-amendment.md)：S11
+   global／conditional schedules、survivor／familywise tests、S12 `M_HT/T_D5`與S41 inheritance。
+5. 本頁索引的 checkpoint design：implementation handoff、maximum boundary、artifact/evidence binding。
+6. Durable machine-readable frozen contract與checkpoint effective lock：在evidence前把
    committed authorities、criteria/matrix、resources、Plan-B、exact whitelists、
    inputs、fixtures與seeds綁成不可變執行實例。S10R3依A45先seal
    scientific/oracle contract，再於fresh label-blind implementation後seal exact
    effective execution lock；第二seal前`outcome_access=false`。
-6. Compact positive gate record或terminal formal report：只記verified evidence、
+7. Compact positive gate record或terminal formal report：只記verified evidence、
    outcome、edge與closeout，不得反向修改前四層。
 
 Execution governance另以commit
@@ -125,6 +135,8 @@ Designs：
 
 - [S1-REBASELINE-20260803 — S10R4 retirement / S11 rebaseline authority](s10r4-retirement-s11-rebaseline-authority.md)
 - [Standalone Traditional-Chinese change guide（explanation only）](s10r4-to-s11-experiment-plan-change-guide.md)
+- [S11-S12-FIXED-FRAME-20260803 — fixed-frame measurement authority](s11-s12-fixed-frame-measurement-amendment.md)
+- [Fixed-frame Traditional-Chinese change guide（explanation only）](s11-s12-fixed-frame-measurement-change-guide.md)
 - [S00 — Evidence contract、lineage 與 observability](s00-evidence-contract-lineage-observability-design.md)
 - [S10 — Stage 1 entry access／mapping gate](s10-stage1-entry-access-mapping-gate-design.md)
 - [S10R1 — Cancelled recovery diagnostic record](s10r1-stage1-valid-support-entry-recovery-design.md)
@@ -148,6 +160,75 @@ Designs：
 - [S40 — Stage 4 activation gate](s40-stage4-surrogate-activation-gate-design.md)
 - [S41 — Stage 4 learned residual](s41-stage4-learned-residual-analysis-design.md)
 
+### Current S11／S12 fixed-frame summary
+
+S11 global inferential frame是canonical first8,192 accepted`Fraw_global` occurrences；first
+4,096與固定halves只read-only。Atomic chunk是512 nominal slots；global cap為65,536
+chunks／33,554,432 draws。每activated conditional value固定512 chunks／262,144 draws，
+target first256 accepts；128只read-only，cap-terminal 128–255 prefix只測一次，少於128是
+support-insufficient。Planning calculation是：
+
+```text
+p_plan = 114 / 262,144 = 57 / 131,072 ~= 0.00043487548828125
+draws_for_8192 = 8,192 / p_plan = 1,073,741,824 / 57 ~= 18,837,575.85964912
+chunks_for_8192 = draws_for_8192 / 512 = 2,097,152 / 57 ~= 36,792.14035087719
+margin_chunks = 1.5 * chunks_for_8192 = 1,048,576 / 19 ~= 55,188.21052631579
+global_cap_chunks = next_power_of_two(margin_chunks) = 65,536
+global_cap_draws = 65,536 * 512 = 33,554,432
+```
+
+Global rows不給conditional support credit；conditional rows不進global yield、coverage、
+ECDF、`Uexec`或future D5。Value-cell與terminal benefit identities是：
+
+```text
+Graw_gv   = {o in Fraw_global   : X_g(o)=v}
+Gexec_gv  = {o in Fexec_global  : X_g(o)=v}
+Gscore_gv = {o in Fscore_global : X_g(o)=v}
+Draw_gv   = Graw_gv   multiset-union Fraw_cond(g,v)
+Dexec_gv  = Gexec_gv  multiset-union Fexec_cond(g,v)
+Dscore_gv = Gscore_gv multiset-union Fscore_cond(g,v)
+support_gv = |Fraw_cond(g,v)|
+Cscore_occ_gv = |Dscore_gv| / |Dexec_gv|
+n_gv = |Dscore_gv|
+sum_b_gv = sum_{o in Dscore_gv} benefit(o)
+global_mean_g = [sum_{o in Fscore_global} benefit(o)] / |Fscore_global|
+
+r_s(o) = [W_<(L_s(o)) + 0.5 * W_=(L_s(o))] / W
+b_s(o) = 1 - r_s(o)
+benefit(o) = sealed_actual_size_reducer({b_s(o) for every locked size s})
+mu_gv = (sum_b_gv + 32 * global_mean_g) / (n_gv + 32)
+S_g = max_{v in T_g}(mu_gv) - min_{v in T_g}(mu_gv)
+M_r = max_{g in Gtest} S_gr*
+Q95_own,g = HF7_0.95({S_gr*}_{r=1..2000})
+Q95_family = HF7_0.95({M_r}_{r=1..2000})
+```
+
+2,000 replicates的Hyndman–Fan Type-7 P95是
+`0.95*x_(1900)+0.05*x_(1901)`；observed`S_g`必須strictly超過own與family P95，ties
+fail。2,000 block bootstraps另要求fixed best-vs-worst interval half-width`<=0.025`與
+recurrence`>=0.90`。
+
+S12從global`Uexec`無replacement抽fixed256；10個`Uscore` deciles加1個unscored stratum。
+All arms／shuffle／oracle共用同一`rho_j`與prelabel weighted`T_D5`：
+
+```text
+r_a(o)   = pi_nominal,a(o) / pi_nominal,0(o)
+A_aj     = sum_{o aliases j} r_a(o)
+N_HT,a   = sum_{j in D5} [A_aj / rho_j] * I[j in T_D5]
+D_exact,a = sum_{o in Fraw_global} r_a(o)
+M_HT,a   = N_HT,a / D_exact,a
+ESS_a    = [sum_{j in D5} A_aj/rho_j]^2 / sum_{j in D5}[A_aj/rho_j]^2
+
+w_0j = A_0j / rho_j
+Q_D5(t) = [sum_{j in D5} w_0j * I[quality_j <= t]] / sum_{j in D5} w_0j
+t_D5 = min{quality_j : Q_D5(quality_j) >= 0.90}
+T_D5 = {j in D5 : quality_j >= t_D5}
+```
+
+`M_HT`是可大於1的design-based directional index；禁止clip、winsorize、post-hoc
+normalize或sampled denominator。S41 exact inheritance使用
+`oracle_gap_a=max(0,M_HT,oracle-M_HT,a)`，這不是probability gap。
+
 ## 3. Strict dependency DAG
 
 ```mermaid
@@ -159,6 +240,7 @@ flowchart TD
   s10r3["S10R3 Bounded-cover entry"]
   s10r4["S10R4 Retired unstarted"]
   auth["S1-REBASELINE-20260803\nadministrative authority"]
+  fixed["S11-S12-FIXED-FRAME-20260803\nmeasurement authority"]
   s11["S11 Model-only factorization"]
   s12["S12 Real-score audit"]
   s13["S13 Actual Gen0"]
@@ -176,6 +258,9 @@ flowchart TD
   s10r3 -. "terminal negative provenance only" .-> auth
   s10r4 -. "retired; zero gate credit" .-> auth
   auth -. "administrative prerequisite; not scientific" .-> s11
+  fixed -. "prospective measurement authority; not scientific" .-> s11
+  fixed -. "estimator authority; no edge" .-> s12
+  fixed -. "inherited comparator; no edge" .-> s41
   s11 -->|"S1_GUIDANCE_LOCKED"| s12
   s12 -->|"D5_PASS"| s13
   s13 -->|"D6_MECHANISM_POSITIVE"| s20
@@ -208,6 +293,8 @@ flowchart TD
   negative/null。A47–B06的S10R4 trail現由`S1-REBASELINE-20260803`退役為immutable
   historical provenance；B07未被接納。S10R4沒有report、lock、result或edge，不能再
   產生`S1_ENTRY_GO_EXACT_FRAME`。S11只取得administrative future planning authority。
+  `S11-S12-FIXED-FRAME-20260803`只修改future S11/S12/S41 measurement authority，不是
+  empirical outcome或scientific edge。
 - `S1_ENTRY_DEGRADED_PROXY`、two-size mode、H5 pilot、single-cluster pilot或任何縮減不會自動形成 outgoing edge；必須先停在 `blocked-awaiting-user-decision`。
 - S12／S31 只有 parent 明列的 predictor-specific、oracle-positive evidence可送入 S40。
 - S40沒有合法trigger時`not_activated`；trigger但data incomplete時
@@ -250,6 +337,7 @@ report/update/staged audit/commit，但
 | `T-S10R3` | S10R3=`R3` | S10R3 | `CU-S10R3` standalone |
 | `T-S10R4-B06` | retired historical R3 lineage | none active | retired；no active closure |
 | `T-AUTH-S1-REBASELINE-20260803` | R3 authority amendment；no scientific experiment | authority gate only | `CU-AUTH-S1-REBASELINE-20260803` |
+| `T-AUTH-S11-S12-20260803` | R3 prospective measurement amendment；no scientific experiment | authority gate only | `CU-AUTH-S11-S12-20260803` |
 | `T-S1-MECHANISM` | S11/S12=`R2`, S13=`R1` | S11 → S12 → S13 | `CU-S1-MECHANISM` |
 | `T-S20` | S20=`R1` | S20 | `CU-S20` standalone |
 | `T-S3-REPLICATION` | S30=`R2`, S31=`R1` | S30 → S31 | `CU-S3-REPLICATION` |
@@ -718,6 +806,20 @@ completion；`skipped_by_gate`／`not_activated`不建立假report。
   resource是Layer-C；S40採activation-before-instantiation；S41限finite-frame point claim。
 - [Standalone guide](s10r4-to-s11-experiment-plan-change-guide.md)只作繁中說明，不是
   runner/contract authority。本amendment沒有執行experiment或授權push。
+
+### 6.19 2026-08-03 S11／S12 fixed-frame measurement amendment
+
+- R3 authority：[S11-S12-FIXED-FRAME-20260803](s11-s12-fixed-frame-measurement-amendment.md)。
+  Full-study reviewers完成兩輪cross-examination與一輪final後`AGREE/AGREE`；使用者核准。
+- S11 global fixed frame、per-value conditional caps、exact survivor cells、terminal global
+  mid-ECDF、familywise max-null與half stability依本頁current summary及active designs綁定。
+- S12 fixed256 D5使用prelabel weighted`T_D5`與unclipped directional`M_HT`；S41機械繼承
+  同一estimator identity與directional-index gap。
+- S20／S31 day envelopes改成Layer-C record＋notify，不改H10／two-cluster scientific
+  workload、criteria、downgrade gates或edges。
+- [Fixed-frame guide](s11-s12-fixed-frame-measurement-change-guide.md)只作繁中說明。
+  本amendment沒有執行S11/S12、建立result／effective checkpoint lock／report／edge或
+  授權push；S11狀態仍是`not_started / not_evaluated`。
 
 ## 7. Downgrade review gate
 

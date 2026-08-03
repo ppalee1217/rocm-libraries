@@ -14,6 +14,14 @@
 > `S1_GUIDANCE_LOCKED -> S12`。繁中白話說明見
 > [change guide](ductile-origami-warmstart/s10r4-to-s11-experiment-plan-change-guide.md)。
 >
+> **2026-08-03 current measurement authority：**
+> [`S11-S12-FIXED-FRAME-20260803`](ductile-origami-warmstart/s11-s12-fixed-frame-measurement-amendment.md)
+> 將future S11固定為canonical first8,192 accepted global frame、65,536 chunks／
+> 33,554,432 draws global cap及每value512 chunks／262,144 draws conditional frame，並將
+> S12／S41 estimator固定為可大於1、不得clipping的directional `M_HT`。本authority
+> 沒有執行S11/S12、沒有result／effective checkpoint lock／report／edge；繁中說明見
+> [fixed-frame change guide](ductile-origami-warmstart/s11-s12-fixed-frame-measurement-change-guide.md)。
+>
 > **檔名說明：**`surrogate-dse-plan.md` 是為維持既有連結而保留的歷史檔名。Stage 1–3不訓練 self-trained surrogate；主要模型是 **Formocast**。Learned residual只有 Stage 4 trigger與data gate同時通過才啟動。
 >
 > **執行規格：**所有sample counts、公式、門檻、seeds、artifacts與Stage 1–4 stop rules只以[ductile-origami-warmstart-experiment-plan.md](ductile-origami-warmstart-experiment-plan.md)為準。若兩份文件衝突，本charter決定研究scope／claim，experiment plan決定數值與checkpoint DAG。
@@ -698,6 +706,27 @@ final，均`AGREE`且無material dissent；使用者核准R3 authority amendment
 本節supersede §1.23–§1.26 中仍把S10R4 positive當active dependency、仍使用舊population
 名稱或whole-gene fail-closed的normative implication；它們保留為歷史，不得啟動S11。
 
+### 1.28 S11／S12 fixed-frame measurement amendment
+
+2026-08-03，full-study Reviewer A `/root/full_study_review_a`與independent non-implementer
+Reviewer B `/root/s11_contract_auditor`完成兩輪cross-examination及一輪evidence-backed
+final，均`AGREE`且無material dissent；使用者核准R3 prospective authority：
+
+- S11 global inferential frame固定canonical first8,192 accepts；first4,096與固定halves只
+  read-only。Global cap是65,536個512-slot chunks／33,554,432 draws。
+- 每activated conditional value固定512 chunks／262,144 draws、target first256 accepts；
+  128只read-only，terminal 128–255 prefix只測一次。
+- S11的terminal global mid-ECDF、survivor cells、own-null加familywise max-null Type-7 P95、
+  2,000 block bootstrap/permutation與semantic half-stability在labels前固定。
+- S12與S41改用prelabel`T_D5`與design-based directional finite-frame`M_HT`。`M_HT`可大於
+  1；禁止clipping、winsorization、post-hoc normalization與sampled denominator。
+- S20／S31 day envelopes只作Layer-C record＋notify，不是scientific stop；scientific
+  workloads、downgrade gates與claims不變。
+
+本amendment不改S00–S10R4 outcomes／edges，不執行S11／S12，不建立result、effective
+checkpoint lock、report或edge。它supersede active S11 early-look、old bounded-prior-mass與
+S41 self-normalized comparator wording；historical clauses保留為historical provenance。
+
 ## 2. 研究問題與假設
 
 ### RQ1 — Whole-config model signal 是否存在？
@@ -900,6 +929,9 @@ flowchart TD
 ### 6.1 Stage 1 — Gen0 mechanism
 
 - 保留現有七日 D1–D7 exact protocol。
+- S11固定canonical first8,192 global accepts與per-value first256 conditional targets；
+  first4,096／128只read-only，nominal caps分別是33,554,432／262,144 draws。
+- S12使用fixed256 D5、prelabel`T_D5`與unclipped directional`M_HT`驗證full-raw transport。
 - 回答 model signal、factorization 與 actual Gen0。
 - 只有 `D6_MECHANISM_POSITIVE` 可進 Stage 2。
 
@@ -1045,6 +1077,11 @@ Noise、support、coverage、importance ESS、unique configs 或兩-regime evide
 
 > 在指定 frozen YAML、gfx942 non-StreamK、一種 dtype/layout、指定 sizes、bounded real-score pool 與三個 paired sampler seeds 下，Formocast-factorized residual prior 對 Gen0 candidate quality 提供超越 existing guidance／proxy 與 same-entropy shuffled control 的方向性增量，值得進一步驗證。
 
+其中S11 positive只支持fixed executable-and-scoreable survivor frame內的familywise、
+label-blind guidance，不能支持raw transport、yield、representativeness、correctness或real
+performance。S12的`M_HT`是fixed D5 design下可大於1的directional finite-frame index，不是
+probability；只有S13的D6 gate再把完整Stage-1 mechanism claim連到actual Gen0。
+
 ### 8.2 Stage 2 — Short-horizon persistence
 
 只有 Stage 2 gate通過，才能寫：
@@ -1111,6 +1148,9 @@ Noise、support、coverage、importance ESS、unique configs 或兩-regime evide
 - Future S11 `Fraw`經resolver／normal KernelWriter generation／pinned compile形成
   `Fexec/Uexec`後的identity數量、execution yield、resolver collisions與raw multiplicity；
   以及`Fexec`經native Formocast形成`Fscore/Uscore`的occurrence-mass coverage；
+- Future S11在65,536-chunk global cap是否取得fixed8,192 accepts、每個activated value在
+  512-chunk conditional cap的terminal support、familywise model test與semantic half-stability；
+- Future S12 fixed256 D5的`rho_j/T_D5`、unclipped`M_HT`、ESS、ranking、lift與oracle結果；
 - gfx942 slot、measurement noise 與可用 GPU-hours；
 - branch proxy 是否能只改 weights、不改 candidate space；
 - Stage 2十代完整 panel的實際 evaluation／GPU成本；
@@ -1140,6 +1180,7 @@ S00 -> S10 [terminal negative; edge=null]
 
 S10R4 [retired_unstarted; not_evaluated; edge=null] -- administrative only --> S1-REBASELINE-20260803
 S1-REBASELINE-20260803 -. administrative prerequisite; not scientific .-> S11
+S11-S12-FIXED-FRAME-20260803 -. prospective measurement authority; not scientific .-> S11/S12/S41
 
 S11 -> S12 -> S13 -> S20 -> S30 -> S31
   [S11 future scientific edge begins only at S11:S1_GUIDANCE_LOCKED]
@@ -1158,7 +1199,8 @@ provenance，不提供formal evidence或scientific edge。S10R3現已terminalize
 edge=null`。A47–B06的S10R4 records已由`S1-REBASELINE-20260803`退役為immutable
 non-scientific provenance；B07未被接納。S10R4沒有report、lock、result或edge。S11只由
 虛線administrative prerequisite進入future design/contract workflow，沒有scientific
-predecessor edge。
+predecessor edge。`S11-S12-FIXED-FRAME-20260803`只修改future S11/S12/S41 measurement
+authority，不是outcome或scientific edge。
 
 M00–M09移入`ductile-origami-warmstart/legacy/`，只保留歷史正文：
 
@@ -1211,7 +1253,8 @@ M00–M09移入`ductile-origami-warmstart/legacy/`，只保留歷史正文：
   internal terminal negative／inconclusive產生planned report；final gate report整合
   prior records。Tranches固定為historical S10R2、S10R3、retired S10R4，current
   `T-AUTH-S1-REBASELINE-20260803 / CU-AUTH-S1-REBASELINE-20260803`，以及future
-  S11+S12+S13、S20、S30+S31、S40+S41。
+  `T-AUTH-S11-S12-20260803 / CU-AUTH-S11-S12-20260803`、S11+S12+S13、S20、S30+S31、
+  S40+S41。Authority tranches沒有scientific outcome edge。
 - Positive、negative與inconclusive在evidence integrity完整時都需durable outcome
   closure、parent update、`CLOSEOUT_ACK`、isolated commit與post-commit audit。
 - Technical`PASS`只是`VERIFIED_PENDING_CLOSEOUT`；完成全部closeout後才是`CHECKPOINT_COMPLETE`。
@@ -1243,5 +1286,7 @@ post-audited positive才啟動S11。A46.5 G3 successor已完成fresh固定512-ch
 A47–B06的S10R4 authority/design trail已由`S1-REBASELINE-20260803`退役；B07未被接納。
 它們保持immutable historical provenance但提供zero S11 credit。S11現在可進future
 design/contract workflow，仍沒有effective lock、evidence、result或report；只有S11自己
-post-audited的`S1_GUIDANCE_LOCKED`才可形成通往S12的scientific edge。本authority不授權
-push或任何experiment execution。
+post-audited的`S1_GUIDANCE_LOCKED`才可形成通往S12的scientific edge。使用者另核准
+`S11-S12-FIXED-FRAME-20260803`，但它只使future fixed-frame contract／implementation
+alignment與reseal成為下一個合法動作；S11/S12仍未執行、`not_evaluated`，沒有result、
+effective checkpoint lock、report或edge。本authority不授權push或任何experiment execution。

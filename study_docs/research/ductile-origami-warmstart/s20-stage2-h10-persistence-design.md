@@ -94,10 +94,17 @@ S2_DIRECTIONAL_PERSISTENCE_POSITIVE -> S30
 - Entry依governance baseline
   `b0561d2c9216a58a9d71b8e839c47efaa51f9c00`先做cumulative wall-time／CPU／GPU／
   storage／throughput preflight，再seal durable machine-readable contract與
-  effective lock。S20內任何generation、resume、successor或new root都不能重置
-  resource、repair或thread budgets。
-- Stage 2 hands-on target仍為4工作日、hard cap仍為5工作日；target與cap都不是完成
-  承諾，cap不足只能terminal/inconclusive或decision packet，不能縮H10／arms／seeds。
+  effective lock。依`A46_reviewer_governed_uncapped_provenance`，repair沒有numeric
+  maximum；repair count與history只作traceable provenance，不是stop、approval、success或
+  completion criterion。Reviewer-governed、contract-preserving repairs持續進行；scientific
+  sample、thread、downgrade、evidence、safety與resource boundaries仍是hard boundaries，且
+  任何generation、resume、successor或new root都不能重置這些boundaries。
+- Stage 2 hands-on target 4工作日與5工作日planning envelope都只作Layer-C telemetry：
+  operator記錄observed throughput／projection並通知後繼續完整frozen workload。只有direct
+  evidence連到unsafe operation、platform／allocation不可用、full H10×G/F/S×fresh-seed
+  workload／verification／artifact preservation無法完成、optional stopping、evidence
+  integrity或明確frozen scientific resource boundary時才safe-pause。Day count本身不會
+  terminalize、判inconclusive或形成edge；任何縮H10／arms／seeds仍須downgrade user gate。
 - Positive另seal compact record
   `protocol/v1/evidence/gate-records/s20-s2-persistence-positive.json`；positive、
   negative與inconclusive均由`reports/short-horizon-persistence-report.md`形成

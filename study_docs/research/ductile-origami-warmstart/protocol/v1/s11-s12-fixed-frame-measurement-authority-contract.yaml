@@ -1,0 +1,292 @@
+schema_version: study-authority-contract/v1
+contract_id: S11-S12-FIXED-FRAME-20260803
+revision: 1
+status: frozen_pre_evidence
+risk_tier: R3
+parent_commit: 4e8adf2c521f4ef5bc63fa5a3ea20300a770fdad
+authority_gate: AUTH-S11-S12-FIXED-FRAME-20260803
+evidence_executed: false
+scientific_outcome: not_evaluated
+outgoing_edge: null
+
+approval:
+  user_goal_thread: 019f964a-6a7c-7183-8822-eedf7d9ebf4a
+  decision_status: user_approved_for_implementation_and_automatic_next_checkpoint_execution
+  exact_approval_text: >-
+    執行此 plan，完成後保留一份獨立文件詳細完整的說明這整個實驗計畫變動，
+    內容務必要直白且淺顯易懂，完成後進行變動 commit，接著使用 $design-discussion
+    討論接下來要做的實驗內容；有統一結論後自動核准進行後續實驗，直到下一輪實驗
+    完整作完為止。沒有嚴重的實驗計畫變動或類似狀況不要輕易 block goal。
+  decision_packet: agent_run/260803-ductile-factorized-guidance-s11/design-discussion/full-study-review-decision-packet.md
+  decision_packet_sha256: 93388b45c219916acc3026d79c810e09f4e084a54545838f6fda79d0376dc779
+  reviewers: [full_study_review_a, s11_contract_auditor]
+  rounds: {cross_examination: 2, evidence_final: 1}
+  final: AGREE
+
+paths:
+  implementation_write_whitelist:
+    - study_docs/research/ductile-origami-warmstart/s11-s12-fixed-frame-measurement-amendment.md
+    - study_docs/research/ductile-origami-warmstart/s11-s12-fixed-frame-measurement-change-guide.md
+    - study_docs/research/surrogate-dse-plan.md
+    - study_docs/research/ductile-origami-warmstart-experiment-plan.md
+    - study_docs/research/ductile-origami-warmstart-experiment-guide.md
+    - study_docs/research/ductile-origami-warmstart/README.md
+    - study_docs/research/ductile-origami-warmstart/s10r4-to-s11-experiment-plan-change-guide.md
+    - study_docs/research/ductile-origami-warmstart/s11-stage1-model-only-factorization-design.md
+    - study_docs/research/ductile-origami-warmstart/s12-stage1-real-score-ranking-oracle-audit-design.md
+    - study_docs/research/ductile-origami-warmstart/s20-stage2-h10-persistence-design.md
+    - study_docs/research/ductile-origami-warmstart/s31-stage3-bounded-replication-design.md
+    - study_docs/research/ductile-origami-warmstart/s41-stage4-learned-residual-analysis-design.md
+  execution_artifact_whitelist:
+    - agent_run/260803-ductile-factorized-guidance-s11/authority-amendment/frozen_contract.yaml
+    - agent_run/260803-ductile-factorized-guidance-s11/authority-amendment/lock.yaml
+    - agent_run/260803-ductile-factorized-guidance-s11/authority-amendment/plan_b.md
+    - agent_run/260803-ductile-factorized-guidance-s11/authority-amendment/plan_a.md
+    - agent_run/260803-ductile-factorized-guidance-s11/authority-amendment/baseline.md
+    - agent_run/260803-ductile-factorized-guidance-s11/authority-amendment/audit_report.md
+    - agent_run/260803-ductile-factorized-guidance-s11/authority-amendment/impl_report.md
+    - agent_run/260803-ductile-factorized-guidance-s11/authority-amendment/verify_report.md
+    - agent_run/260803-ductile-factorized-guidance-s11/authority-amendment/delivery-manifest.json
+    - agent_run/260803-ductile-factorized-guidance-s11/authority-amendment/postcommit-audit.md
+  delivery_and_commit_whitelist:
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/s11-s12-fixed-frame-measurement-authority-contract.yaml
+    - study_docs/research/ductile-origami-warmstart/protocol/v1/locks/s11-s12-fixed-frame-measurement-authority-lock.yaml
+    - study_docs/research/ductile-origami-warmstart/s11-s12-fixed-frame-measurement-amendment.md
+    - study_docs/research/ductile-origami-warmstart/s11-s12-fixed-frame-measurement-change-guide.md
+    - study_docs/research/surrogate-dse-plan.md
+    - study_docs/research/ductile-origami-warmstart-experiment-plan.md
+    - study_docs/research/ductile-origami-warmstart-experiment-guide.md
+    - study_docs/research/ductile-origami-warmstart/README.md
+    - study_docs/research/ductile-origami-warmstart/s10r4-to-s11-experiment-plan-change-guide.md
+    - study_docs/research/ductile-origami-warmstart/s11-stage1-model-only-factorization-design.md
+    - study_docs/research/ductile-origami-warmstart/s12-stage1-real-score-ranking-oracle-audit-design.md
+    - study_docs/research/ductile-origami-warmstart/s20-stage2-h10-persistence-design.md
+    - study_docs/research/ductile-origami-warmstart/s31-stage3-bounded-replication-design.md
+    - study_docs/research/ductile-origami-warmstart/s41-stage4-learned-residual-analysis-design.md
+  deterministic_prior_guide_rule: add_one_top_supersession_pointer_only
+
+artifact_layers:
+  before_commit: all_tracked_candidates_are_B
+  after_commit:
+    A_authority:
+      - study_docs/research/ductile-origami-warmstart/protocol/v1/s11-s12-fixed-frame-measurement-authority-contract.yaml
+      - study_docs/research/ductile-origami-warmstart/protocol/v1/locks/s11-s12-fixed-frame-measurement-authority-lock.yaml
+      - study_docs/research/ductile-origami-warmstart/s11-s12-fixed-frame-measurement-amendment.md
+      - study_docs/research/surrogate-dse-plan.md
+      - study_docs/research/ductile-origami-warmstart-experiment-plan.md
+      - study_docs/research/ductile-origami-warmstart/README.md
+      - study_docs/research/ductile-origami-warmstart/s11-stage1-model-only-factorization-design.md
+      - study_docs/research/ductile-origami-warmstart/s12-stage1-real-score-ranking-oracle-audit-design.md
+      - study_docs/research/ductile-origami-warmstart/s20-stage2-h10-persistence-design.md
+      - study_docs/research/ductile-origami-warmstart/s31-stage3-bounded-replication-design.md
+      - study_docs/research/ductile-origami-warmstart/s41-stage4-learned-residual-analysis-design.md
+    B_non_authoritative_guides:
+      - study_docs/research/ductile-origami-warmstart/s11-s12-fixed-frame-measurement-change-guide.md
+      - study_docs/research/ductile-origami-warmstart-experiment-guide.md
+      - study_docs/research/ductile-origami-warmstart/s10r4-to-s11-experiment-plan-change-guide.md
+    B_protected_untracked_S11_candidates: agent_run/260803-ductile-factorized-guidance-s11/authority-amendment/baseline.md
+    B_control_artifacts:
+      - agent_run/260803-ductile-factorized-guidance-s11/authority-amendment/plan_b.md
+      - agent_run/260803-ductile-factorized-guidance-s11/authority-amendment/plan_a.md
+      - agent_run/260803-ductile-factorized-guidance-s11/authority-amendment/frozen_contract.yaml
+      - agent_run/260803-ductile-factorized-guidance-s11/authority-amendment/lock.yaml
+    C_bookkeeping:
+      - agent_run/260803-ductile-factorized-guidance-s11/authority-amendment/audit_report.md
+      - agent_run/260803-ductile-factorized-guidance-s11/authority-amendment/impl_report.md
+      - agent_run/260803-ductile-factorized-guidance-s11/authority-amendment/verify_report.md
+      - agent_run/260803-ductile-factorized-guidance-s11/authority-amendment/delivery-manifest.json
+      - agent_run/260803-ductile-factorized-guidance-s11/authority-amendment/postcommit-audit.md
+
+s11_schedule:
+  family: complete_mechanically_eligible_actual_yaml_family
+  preserve: [groups, weights, candidate_order]
+  rng: fresh_prelocked_domain_separated_PCG64
+  nominal_slots_per_chunk: 512
+  global:
+    inferential_frame: canonical_first_8192_accepted_Fraw_occurrences
+    diagnostic_only_prefix: 4096
+    fixed_halves: [[1, 4096], [4097, 8192]]
+    chunks: 65536
+    nominal_draws: 33554432
+    early_stop: forbidden
+    extension: forbidden
+    overshoot_credit: zero
+    cap_short: {scientific_outcome: inconclusive, failure: FT-INCONCLUSIVE, edge: null}
+  conditional:
+    activation: every_registry_value_classified_non_proven_absent_after_global_completion
+    target_count_limit: none
+    chunks_per_activated_value: 512
+    nominal_draws_per_activated_value: 262144
+    inferential_prefix: canonical_first_256_accepted_occurrences
+    diagnostic_only_prefix: 128
+    accepted_128_to_255: test_once_at_cap
+    accepted_below_128: support_insufficient_inconclusive
+    early_stop: forbidden
+    extension: forbidden
+    overshoot_credit: zero
+  historical_empirical_credit: zero
+
+frames:
+  Graw_gv: "{o in global Fraw: X_g(o)=v}"
+  Gexec_gv: "{o in global Fexec: X_g(o)=v}"
+  Gscore_gv: "{o in global Fscore: X_g(o)=v}"
+  Draw_gv: "Graw_gv multiset-union Fraw_cond(g,v)"
+  Dexec_gv: "Gexec_gv multiset-union Fexec_cond(g,v)"
+  Dscore_gv: "Gscore_gv multiset-union Fscore_cond(g,v)"
+  support_gv: "|Fraw_cond(g,v)|"
+  Cscore_occ_gv: "|Dscore_gv|/|Dexec_gv|"
+  n_gv: "|Dscore_gv|"
+  preserve_occurrence_multiplicity: true
+  global_rows_conditional_support_credit: zero
+  conditional_rows_global_yield_ECDF_Uexec_D5_credit: zero
+  report_identity_alias_views: true
+
+qualification:
+  attempts_per_semantic_identity: 2
+  roles: [producer, fresh_verifier]
+  both_complete_required: true
+  mapping_failure_allowlist: {id: empty-v1, entries: []}
+  branches:
+    matching_complete_ordinary_rejection: normal_attrition
+    matching_complete_success: native_result
+    partial_discordant_association_loss_or_guessed_field: CHANGES_REQUIRED_not_evaluated
+    native_failure_not_in_empty_allowlist: CHANGES_REQUIRED_not_evaluated
+    exact_allowlisted_reproduced_no_guess_native_impossibility: negative_FT_BLOCKED_MAPPING
+
+survivor_estimand:
+  population: executable_and_scoreable_survivors
+  no_execution_yield_pass_threshold: true
+  required_reporting: [global_and_value_yield, conditional_and_value_yield, Dexec, Dscore, alias_concentration]
+  claim: familywise_stable_label_blind_candidate_guidance_in_scoreable_executable_survivor_frame
+  no_claim: [raw_transport, yield_representativeness, GPU_correctness, real_performance, ranking_accuracy, production_readiness]
+  forbidden_inputs: [GPU_correctness, GFLOPS, S12_labels, downstream_outcomes]
+
+benefit:
+  reference: terminal_global_Fscore_occurrence_weighted_mid_ECDF
+  per_size_rank: "r_s=(W_less+0.5*W_equal)/W"
+  per_size_benefit: "b_s=1-r_s"
+  aggregate: sealed_actual_reduce_fn_over_all_locked_sizes
+  conditional_query: same_terminal_global_ECDF
+  block: all_sizes_of_one_occurrence
+  global_mean: terminal_global_Fscore_only_and_independent_of_final_Tg
+  shrinkage: "mu_gv=(sum_i b_i+32*global_mean)/(n_gv+32)"
+  observed_statistic: "S_g=max_{v in T_g}(mu_gv)-min_{v in T_g}(mu_gv)"
+  trusted_set_pre_statistics_requirements:
+    - conditional_support_at_least_128
+    - at_least_one_Dexec_occurrence
+    - unique_value_preserving_relation
+    - Cscore_occ_at_least_0.95
+    - complete_model_only_statistics
+
+resampling:
+  replicates: {bootstrap: 2000, permutation: 2000}
+  quantiles: Hyndman_Fan_Type_7
+  global_block: one_occurrence_with_all_locked_sizes_and_complete_gene_vector
+  conditional_block: one_scoreable_occurrence_with_all_locked_sizes_within_gene_value_cell
+  bootstrap:
+    independently_resample: [global_occurrence_blocks, each_conditional_gene_value_cell]
+    preserve_each_observed_cell_count: true
+    reconstruct: [terminal_global_mid_ECDF, per_occurrence_benefit, global_mean, mu_gv, S_g]
+    observed_pair:
+      selection: argmax_and_argmin_observed_mu_with_actual_yaml_order_tiebreak
+      fixed_contrast_each_replicate: "mu_star_best_observed-mu_star_worst_observed"
+      ci: percentile_2.5_to_97.5_Type_7
+      half_width: "(q97.5-q2.5)/2"
+      pass: half_width_at_most_0.025
+    recurrence:
+      replicate_pair: argmax_and_argmin_replicate_mu_with_actual_yaml_order_tiebreak
+      rate: fraction_equal_to_observed_pair
+      pass: at_least_0.90
+      borderline: "[0.80,0.90)"
+  permutation:
+    global_assignment: one_shared_permutation_of_global_score_blocks_against_complete_gene_vectors_for_all_genes
+    preserves_cross_gene_dependence: true
+    conditional_assignment: independently_domain_separated_per_gene_pool_then_allocate_to_values_at_fixed_cell_counts
+    reconstruct: [terminal_global_mid_ECDF, per_occurrence_benefit, global_mean, mu_gv]
+    null_statistic: "S_g_star=max_{v in T_g}(mu_gv_star)-min_{v in T_g}(mu_gv_star)"
+    own_null: "observed_S_g > Type7_P95({S_g_star})"
+    familywise_null: "observed_S_g > Type7_P95({max_h S_h_star})"
+    ties: fail
+  model_tests:
+    - "S_g >= 0.05"
+    - own_null_pass
+    - familywise_null_pass
+    - bootstrap_half_width_at_most_0.025
+    - recurrence_at_least_0.90
+    - aggregate_best_minus_worst_direction_positive_in_at_least_2_of_3_sizes_or_2_of_2_regimes
+  stability_halves_semantic_tuple:
+    - per_gene_trusted_value_set
+    - per_value_trust_or_exclusion_reason
+    - per_value_Dexec_Dscore_n_and_Cscore
+    - per_value_mu
+    - observed_best_worst_with_candidate_order_tiebreak
+    - per_size_and_aggregate_direction
+    - each_model_test_result
+    - guided_gene_set
+    - lambda
+    - per_gene_guidance_probabilities
+    - canonical_guidance_hash
+  half_mismatch: {scientific_outcome: inconclusive, failure: FT-INCONCLUSIVE, edge: null}
+
+guidance:
+  q: "q_g(v)=exp(lambda*(mu_gv-min_{u in T_g}mu_gu))/Z for v in T_g; 0 otherwise"
+  p1: "p1_g(v)=0.20*p0_g(v)+0.80*q_g(v)"
+  lambda_grid: [0, 0.25, 0.50, 0.75, 1.00, 1.25, 1.50, 1.75, 2.00, 2.25, 2.50, 2.75, 3.00, 3.25, 3.50, 3.75, 4.00, 4.25, 4.50, 4.75, 5.00, 5.25, 5.50, 5.75, 6.00, 6.25, 6.50, 6.75, 7.00, 7.25, 7.50, 7.75, 8.00]
+  lambda_rule: largest_common_value_with_each_guided_gene_entropy_ratio_at_least_0.80
+  untrusted_value_mass: exactly_0.20_times_p0_and_never_guided_upweight
+  no_positive_lambda_or_no_guided_gene: complete_no_guidance
+
+terminal_precedence:
+  rows:
+    - {when: prelabel_leakage, status: invalid, outcome: not_evaluated, action: new_lock_fresh_draw0, edge: null}
+    - {when: qualification_or_evidence_integrity_failure, status: CHANGES_REQUIRED, outcome: not_evaluated, edge: null}
+    - {when: exact_allowlisted_mapping_impossibility, status: complete, outcome: negative, failure: FT-BLOCKED-MAPPING, edge: null}
+    - {when: any_material_stochastic_support_coverage_precision_stability_or_catalog_shortage, status: complete, outcome: inconclusive, failure: FT-INCONCLUSIVE, edge: null}
+    - {when: complete_bounded_frames_and_all_positive_guidance_gates_pass, status: complete, outcome: positive, criterion: S1_GUIDANCE_LOCKED, edge: S11_to_S12}
+    - {when: complete_bounded_frames_no_prior_branch_and_no_guided_gene_or_lambda_zero, status: complete, outcome: negative, failure: null, edge: null}
+  mutual_exclusion_rule: first_matching_row_only_after_all_prior_rows_are_proven_false
+
+s12_estimator:
+  identity: S12-DIRECTIONAL-FINITE-FRAME-HT-EXACT-DENOMINATOR-v1
+  name: design_based_directional_finite_frame_raw_mass_capture_estimator
+  A_aj: "sum_{o aliases j} r_a(o)"
+  N_HT_a: "sum_{j in D5} [A_aj/rho_j]*I[j in T_D5]"
+  D_exact_a: "sum_{o in Fraw} r_a(o)"
+  M_HT_a: "N_HT_a/D_exact_a"
+  may_exceed_one: true
+  forbidden: [clipping, winsorization, posthoc_normalization, probability_language, bounded_fraction_language]
+  T_D5:
+    rule_frozen_prelabel: true
+    sample: fixed_exactly_256_D5_identities
+    weights: A_0j_over_rho_j
+    quality: aggregate_all_size_real_quality
+    weighted_ECDF_order: low_to_high_quality
+    cutoff: smallest_quality_where_cumulative_weight_reaches_0.90
+    selected: cutoff_and_higher_quality
+    ties: all_cutoff_ties_included
+    shared_by: [all_arms, shuffle, oracle]
+  bootstrap:
+    unit: stratum_identity
+    reconstruct: [T_D5, M_HT, contrasts, ESS, oracle_gap]
+  inherited_exactly_by: [S12, S31_D5_equivalent_audit, S41_oracle_gap]
+  claim: directional_index_only
+
+runtime_projection:
+  S20_day: 5
+  S31_day: 7
+  action: [record, notify, continue]
+  cannot_create: [scientific_outcome, edge, workload_reduction]
+  safe_pause_only_for: [safety, resource_unavailability, full_workload_or_closure_impossible, evidence_integrity_risk]
+  repair: A46_reviewer_governed_uncapped_provenance
+
+guide_checklist:
+  exact_path: study_docs/research/ductile-origami-warmstart/s11-s12-fixed-frame-measurement-change-guide.md
+  terms: [nominal_draw, accepted_occurrence, Fraw, Fexec, Fscore, unique_identity, alias, global_stream, conditional_stream, survivor_estimand, mid_ECDF, block_bootstrap, permutation, qualification_attempt, familywise_test, rho, M_HT, T_D5, Layer_A, Layer_B, Layer_C]
+  tables: [before_after_checkpoint_matrix, schedule_table, actor_input_output_consumer]
+  examples: [acceptance_rate_cap_calculation, M_HT_greater_than_one]
+  boundaries: [can_conclude, cannot_conclude, historical_no_reuse, next_execution_order]
+
+verification:
+  headline: reproduce_complete_bundle_from_direct_tracked_bytes_without_implementer_report
+  require: [exact_path_inventory, all_content_assertions, no_active_4096_terminal, no_stale_S11_cap, no_frozen_repair_budget, estimator_identity_parity, runtime_projection_parity, protected_hash_parity, no_S11_formal_evidence, arithmetic, link_check, staged_diff_parity, postcommit_reproduction]
+  unacceptable_fallbacks: [partial_bundle, implementer_report_as_evidence, relaxed_oracle, proxy_or_historical_authority, reduced_verification, metric_or_frame_mismatch, downstream_bytes_as_success, historical_empirical_reuse, early_4096_outcome, old_cap, clipped_estimator, sampled_denominator, new_yield_threshold, S11_implementation_edit, broad_stage, push]

@@ -98,11 +98,19 @@ Single-cluster evidence只能在user批准的downgraded pilot中描述，不能�
   本tranche final scientific gate。
 - 第一筆S31 score／label前依
   `b0561d2c9216a58a9d71b8e839c47efaa51f9c00`重做entry preflight並seal durable
-  machine-readable contract／effective lock。S30+S31累積wall-time、CPU/GPU、
-  storage、throughput、repair與thread budget不因cluster、generation、reserve
-  cutover、successor或new root重置。
-- Stage 3 hard cap保持7工作日且不是完成承諾；不能用cache/dedup樂觀估算或縮成
-  single-cluster救回。
+  machine-readable contract／effective lock。依
+  `A46_reviewer_governed_uncapped_provenance`，repair沒有numeric maximum；repair count與
+  history只作traceable provenance，不是stop、approval、success或completion criterion。
+  Reviewer-governed、contract-preserving repairs持續進行；scientific sample、thread、
+  downgrade、evidence、safety與resource boundaries仍是hard boundaries，且不因cluster、
+  generation、reserve cutover、successor或new root重置。
+- Stage 3七工作日只作Layer-C planning telemetry：operator記錄observed
+  throughput／projection並通知後繼續完整frozen two-slot workload。只有direct evidence
+  連到unsafe operation、platform／allocation不可用、兩clusters完整D5／conditional H10／
+  verification／artifact preservation無法完成、optional stopping、evidence integrity或
+  明確frozen scientific resource boundary時才safe-pause。Day count本身不會
+  terminalize、判inconclusive或形成edge；不能用cache/dedup樂觀估算或縮成single-cluster
+  救回。
 - Positive另seal compact record
   `protocol/v1/evidence/gate-records/s31-s3-bounded-replication-positive.json`；
   positive、negative或inconclusive都由S31 final report整合S30 compact record與
@@ -155,6 +163,28 @@ Rollup outputs：
 
 - 同一frozen algorithm可因cluster input不同產生不同label-blind genes/weights，但不得manual retune；
 - 每slot D5 fail仍保留denominator且停止該slot GA；
+- 每slot D5-equivalent audit機械繼承stable estimator identity
+  `S12-DIRECTIONAL-FINITE-FRAME-HT-EXACT-DENOMINATOR-v1`，完整procedure為：
+
+  ```text
+  r_a(o)   = pi_nominal,a(o) / pi_nominal,0(o)
+  A_aj     = sum_{o aliases j} r_a(o)
+  N_HT,a   = sum_{j in D5} [A_aj / rho_j] * I[j in T_D5]
+  D_exact,a = sum_{o in Fraw_global} r_a(o)
+  M_HT,a   = N_HT,a / D_exact,a
+
+  w_0j = A_0j / rho_j
+  Q_D5(t) = [sum_{j in D5} w_0j * I[quality_j <= t]] / sum_{j in D5} w_0j
+  t_D5 = min{quality_j : Q_D5(quality_j) >= 0.90}
+  T_D5 = {j in D5 : quality_j >= t_D5}
+  ```
+
+  每slot所有arms、shuffle與oracle共用同一sealed D5 sample、`rho_j`及materialized
+  `T_D5`；`quality_j`是all-size aggregate quality且所有cutoff ties都進`T_D5`。禁止clip、
+  winsorize、post-hoc normalize或改用sampled／selected-only denominator。Stratum／identity
+  bootstrap每次都重建`t_D5/T_D5/A_aj/N_HT/D_exact/M_HT`、contrasts、ESS與oracle gap，
+  同identity的aliases、sizes與repeats保持同一block。此estimator只支持fixed finite-frame
+  directional comparison，不是bounded probability、population claim或額外replication unit；
 - H10使用fresh per-cluster paired seeds與parent common-support rules；
 - 两cluster是independent generalization units，sizes不是額外clusters；
 - metrics逐cluster判讀，不用跨cluster平均救回；

@@ -7,6 +7,12 @@
 > **歷史快照：**本文件 §§1–22 最初依據 2026-07-29 的 S10R2 狀態整理，當時 HEAD 是 `51c7667212bf40f0e893fc026ee65450d06d72ff`（`study: reseal S10R2 pre-evidence lock`）。S10R2 後來以 inconclusive／edge null 結束，S10R3 成為新的 active entry successor。
 >
 > **2026-08-01 補充：**§23 的 S10R3 專題問答依當日 committed design 與實作整理。Live chunk 數與 process 狀態會持續改變，因此本導讀不把暫時數字寫成 durable result；最新狀態仍須對照 [active checkpoint index](ductile-origami-warmstart/README.md)、formal artifacts 與 Git history。
+>
+> **2026-08-03 current override：**S10R3已terminal negative，S10R4已retired／not evaluated。
+> 最新approved planning是
+> [S11／S12 fixed-frame authority](ductile-origami-warmstart/s11-s12-fixed-frame-measurement-amendment.md)：
+> S11仍`not_started / not_evaluated`，S12仍gated；沒有S11/S12 result、effective checkpoint
+> lock、report或edge。§23的S10R3問答只保留historical explanation，不是current entry。
 
 ---
 
@@ -659,10 +665,25 @@ S11 是真正執行 factorization 的 checkpoint。
 
 ### 8.1 Global valid-occurrence frame
 
-- 最多 8,192 accepted occurrences；
+- 固定canonical first 8,192 accepted occurrences作inferential frame；
 - duplicate occurrences 保留；
-- 4,096 後只有所有 stability 條件都成立才能停止；
+- first4,096與固定兩個4,096 halves只read-only，不能停止或emit outcome；
+- atomic chunk固定512 nominal slots；cap是65,536 chunks／33,554,432 draws；
 - dedup 只用來減少 mapping/Formocast 重算，analysis 時恢復 multiplicity。
+
+Planning只使用historical`114 / 262,144` acceptance rate：
+
+```text
+p_plan = 114 / 262,144 = 57 / 131,072 ~= 0.00043487548828125
+draws_for_8192 = 8,192 / p_plan = 1,073,741,824 / 57 ~= 18,837,575.85964912
+chunks_for_8192 = draws_for_8192 / 512 = 2,097,152 / 57 ~= 36,792.14035087719
+margin_chunks = 1.5 * chunks_for_8192 = 1,048,576 / 19 ~= 55,188.21052631579
+global_cap_chunks = next_power_of_two(margin_chunks) = 65,536
+global_cap_draws = 65,536 * 512 = 33,554,432
+```
+
+Cap時少於8,192 accepts是inconclusive，不能reseed或extension。Historical rows只作planning，
+不進S11 evidence。
 
 ### 8.2 Conditional top-up
 
@@ -671,31 +692,51 @@ S11 是真正執行 factorization 的 checkpoint。
 - 固定該 value；
 - 其他 keys 按 nominal probabilities 抽；
 - 通過同一 valid_fn；
-- minimum 128 accepted；
-- precision不足可到 256；
-- 仍不足則該 gene 維持 uniform。
+- 固定512 chunks／262,144 nominal draws；
+- target canonical first256 accepted；
+- 128只read-only；cap-terminal 128–255 prefix只測一次；
+- 少於128是support-insufficient；不能pool global rows、reseed或extension。
+
+Global與conditional exact cell是：
+
+```text
+Graw_gv   = {o in Fraw_global   : X_g(o)=v}
+Gexec_gv  = {o in Fexec_global  : X_g(o)=v}
+Gscore_gv = {o in Fscore_global : X_g(o)=v}
+Draw_gv   = Graw_gv   multiset-union Fraw_cond(g,v)
+Dexec_gv  = Gexec_gv  multiset-union Fexec_cond(g,v)
+Dscore_gv = Gscore_gv multiset-union Fscore_cond(g,v)
+
+support_gv = |Fraw_cond(g,v)|
+Cscore_occ_gv = |Dscore_gv| / |Dexec_gv|
+n_gv = |Dscore_gv|
+sum_b_gv = sum_{o in Dscore_gv} benefit(o)
+global_mean_g = [sum_{o in Fscore_global} benefit(o)] / |Fscore_global|
+```
+
+Global rows不給conditional support credit；conditional rows不進global yield、coverage、ECDF、
+`Uexec`或future D5。
 
 ### 8.3 Model benefit
 
-對每個完整 config，將 Formocast latency 轉成 percentile rank，再轉成 benefit：
+對terminal global `Fscore`每個locked size，以occurrence-weighted latency mid-ECDF轉成
+benefit。Lower latency較好：
 
 ```text
-r_s(x) = latency percentile rank
-b_s(x) = 1 - r_s(x)
+r_s(o) = [W_<(L_s(o)) + 0.5 * W_=(L_s(o))] / W
+b_s(o) = 1 - r_s(o)
+benefit(o) = sealed_actual_size_reducer({b_s(o) for every locked size s})
 ```
 
-再依 actual reduce function 聚合 sizes。
+Conditional rowsquery同一global ECDF；all sizes of one occurrence是一個analysis block。
 
 ### 8.4 Shrinkage conditional mean
 
 概念公式：
 
 ```text
-mu_gv
-= (該 value 的 benefit 總和 + alpha × global mean)
-  / (support 數 + alpha)
-
-alpha = 32
+mu_gv = (sum_b_gv + 32 * global_mean_g) / (n_gv + 32)
+S_g = max_{v in T_g}(mu_gv) - min_{v in T_g}(mu_gv)
 ```
 
 Shrinkage 避免小樣本 value 因偶然高分得到極端權重。
@@ -707,10 +748,21 @@ Shrinkage 避免小樣本 value 因偶然高分得到極端權重。
 - 每 value support ≥128；
 - model coverage ≥95%；
 - sensitivity `S_g ≥ 0.05`；
-- 2,000 次 permutation 勝過 null P95；
+- 2,000 次permutations；每replicate有一份shared-global occurrence permutation，conditional
+  部分則每gene pool恰有一份independently domain-separated permutation，再依該gene各value
+  的fixed observed cell counts分配；observed `S_g` strict勝own-null與familywise max-null
+  Type-7 P95；ties fail；禁止per-conditional-cell permutation；
 - 2,000 次 bootstrap 半寬 ≤0.025；
 - best/worst pair 重現率 ≥90%；
 - 至少 2/3 sizes 方向一致。
+
+Family statistic是`M_r=max_{g in Gtest}S_gr*`；2,000 replicates的Type-7 P95是
+`0.95*x_(1900)+0.05*x_(1901)`。兩個固定halves各自重建global reference並exact比較完整
+semantic tuple：每value的`Dexec_gv/Dscore_gv/n_gv/Cscore_occ_gv/mu_gv`、trust與guided
+states／reasons、`T_g`、actual-YAML-order best／worst tie-break及best／worst、per-size
+directions、每一項model-test result、own/familywise pass、同一positive global lambda、每gene
+guidance probabilities、shuffle mapping及canonical guidance hash。它們不是independent
+replication。
 
 ### 8.6 Probability construction
 
@@ -823,6 +875,30 @@ S12 是第一個正式用 real GPU labels 判斷 Formocast/factorization 的核�
 - coverage/rejection；
 - cross-fitted oracle。
 
+Real-high-quality set與directional raw-mass index在labels前綁定：
+
+```text
+r_a(o)   = pi_nominal,a(o) / pi_nominal,0(o)
+A_aj     = sum_{o aliases j} r_a(o)
+N_HT,a   = sum_{j in D5} [A_aj / rho_j] * I[j in T_D5]
+D_exact,a = sum_{o in Fraw_global} r_a(o)
+M_HT,a   = N_HT,a / D_exact,a
+ESS_a    = [sum_{j in D5} A_aj/rho_j]^2 / sum_{j in D5}[A_aj/rho_j]^2
+
+w_0j = A_0j / rho_j
+Q_D5(t) = [sum_{j in D5} w_0j * I[quality_j <= t]] / sum_{j in D5} w_0j
+t_D5 = min{quality_j : Q_D5(quality_j) >= 0.90}
+T_D5 = {j in D5 : quality_j >= t_D5}
+```
+
+Stable estimator identity是
+`S12-DIRECTIONAL-FINITE-FRAME-HT-EXACT-DENOMINATOR-v1`。`rho_j`是fixed-256
+stratified design的identity inclusion probability；`quality_j`是all-size aggregate real
+quality、越大越好，cutoff ties全部進`T_D5`。`M_HT`是design-based
+directional index，可大於1，不是bounded probability。禁止clip、winsorize、post-hoc
+normalize或sampled denominator。Stratum／identity bootstrap每次重建cutoff、set、
+estimators、contrasts、ESS與oracle gap。
+
 ### 10.3 `D5_PASS`
 
 全部要求：
@@ -831,7 +907,7 @@ S12 是第一個正式用 real GPU labels 判斷 Formocast/factorization 的核�
 - aggregate Spearman ≥0.25；
 - top-decile lift ≥2×；
 - 至少 2/3 sizes 方向為正；
-- Formocast residual prior mass 勝 existing baseline；
+- Formocast residual `M_HT` strictly勝 existing baseline；
 - 同時勝 shuffled；
 - 每個相關 arm ESS ≥25；
 - 沒有 correctness failure。
@@ -986,8 +1062,9 @@ log(real latency) - log(Formocast latency)
 每個 primary held-out unit 都要：
 
 - ranking strictly 勝 Formocast；
-- prior mass strictly 勝 Formocast-factorized 與 shuffled；
-- oracle gap strictly 變小。
+- exact inherited、unclipped `M_HT` strictly勝Formocast-factorized與shuffled；
+- directional-index `oracle_gap_a=max(0,M_HT,oracle-M_HT,a)` strictly變小；它不是
+  probability gap。
 
 預設不跑 actual GA，且 S41 沒有自動 outgoing edge。
 
@@ -1223,11 +1300,16 @@ Tranche 中間的 positive gate 只寫小型 machine-readable record，沿 edge�
 ## 20. Timeboxes
 
 - Stage 1：最多 7 個 hands-on工作日；
-- Stage 2：target 4 日、hard cap 5 日；
-- Stage 3：hard cap 7 日；
+- Stage 2：target 4 日、5 日 planning envelope；
+- Stage 3：7 日 planning envelope；
 - Stage 4：hard cap 5 日，且不是必跑。
 
-這些是停止界線，不是完成保證。
+Stage2／3的day envelopes是Layer-C record＋notify telemetry，不是scientific停止界線或
+完成保證。Operator記錄throughput／projection並通知後繼續完整frozen workload；只有direct
+evidence連到unsafe operation、platform／allocation不可用、完整workload／verification／
+artifact preservation無法完成、optional stopping、evidence integrity或explicit frozen
+scientific resource boundary時才safe-pause。Day count本身不能判negative／inconclusive、
+形成edge或授權縮H10／arms／seeds／two-cluster denominator。
 
 S10R2 prospective numeric caps目前鎖定為：
 
@@ -1979,7 +2061,7 @@ Experiment-side resolver 可從
 開始讀；batch 與 A/B parity 分別在
 [run_mapping_batch](ductile-origami-warmstart/protocol/v1/s10r3/mapping.py#L384-L421)
 和
-[verify_mapping_parity](ductile-origami-warmstart/protocol/v1/s10r3/mapping.py#L437-L483)。
+[verify_mapping_parity](ductile-origami-warmstart/protocol/v1/s10r3/mapping.py#L437-L477)。
 
 #### Q17：如果程式具有確定性，為什麼還要跑 mapping A/B？
 

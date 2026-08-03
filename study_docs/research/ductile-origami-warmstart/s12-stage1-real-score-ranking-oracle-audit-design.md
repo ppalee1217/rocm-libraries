@@ -16,6 +16,9 @@ hypothesis_id: S12-H1
 dependencies:
   - checkpoint_id: S11
     required_edge: S1_GUIDANCE_LOCKED
+  - authority_id: S11-S12-FIXED-FRAME-20260803
+    relation: prospective_measurement_amendment
+    required_state: approved
 entry_criteria:
   - S1_GUIDANCE_LOCKED
 criterion_refs:
@@ -67,18 +70,23 @@ consensus_status: approved_two_reviewer_agree
 
 ## 1. 白話目標
 
-在 S11 guidance 完全凍結後，才從 `Uexec` 無 replacement 抽 exactly 256 個 unique
-executable identities，建立 frozen D5 judgment pool並取得 real scores。S12回答 whole-
-config ranking是否有訊號、factorized prior是否把完整 `Fraw` mass放到真實高品質區，
-以及失敗究竟在 predictor、marginalization 還是 hook 表達力。
+在S11 guidance完全凍結後，才從global `Uexec`無replacement抽exactly256個unique
+executable identities，建立frozen D5 judgment pool並取得real scores。S12用prelabel
+weighted `T_D5`與design-based directional finite-frame `M_HT`回答whole-config ranking是否
+有訊號、factorized prior是否directionally把完整global `Fraw` mass放到真實高品質區，
+以及失敗究竟在predictor、marginalization還是hook表達力。`M_HT`可大於1，不是probability。
 
 本 design 已由
 [S1 rebaseline authority](s10r4-retirement-s11-rebaseline-authority.md) prospectively amended；
-本 closure 沒有實作或產生 S12 evidence。
+measurement formula再由
+[fixed-frame authority](s11-s12-fixed-frame-measurement-amendment.md) prospectively amended；
+本closure沒有實作或產生S12 evidence。
 
 ## 2. Hypothesis 與 falsification
 
-**S12-H1：**在parent預註冊的finite-frame sampling與weighted analysis下，Formocast whole ranking及factorized prior通過D5，且prior mass同時勝existing／proxy與same-entropy shuffled。
+**S12-H1：**在parent預註冊的fixed-256 finite-frame sampling、prelabel `T_D5`與weighted
+analysis下，Formocast whole ranking及factorized prior通過D5，且directional `M_HT`
+strictly同時勝baseline與same-entropy shuffled。
 
 反證或inconclusive：
 
@@ -88,6 +96,7 @@ config ranking是否有訊號、factorized prior是否把完整 `Fraw` mass放�
 - cross-fitted oracle也不支持factorized main effects；
 - inclusion／multiplicity／fold／measurement lineage不完整；
 - D5 labels回寫S11 genes、weights、shuffle或hyperparameters。
+- `M_HT`被clip／winsorize／normalize、改用sampled denominator或不同arms使用不同`T_D5`。
 
 ## 3. Dependencies、entry 與 outgoing edges
 
@@ -123,8 +132,10 @@ config ranking是否有訊號、factorized prior是否把完整 `Fraw` mass放�
 
 - parent D5 finite pool、strata與inclusion manifest materialization；
 - generate／compile／benchmark／correctness與failure ledger；
-- design-weighted ranking、top-decile、density-ratio prior mass與ESS；
-- parent-specifiedbootstrap／permutation；
+- design-weighted ranking、top-decile與ESS；
+- prelabel weighted`T_D5` materialization、Horvitz–Thompson directional index與
+  stratum／identity bootstrap；
+- parent-specified bootstrap／permutation；
 - config-level cross-fitted oracle；
 - Stage4 data qualification與predictor-trigger evidence rendering。
 
@@ -135,6 +146,7 @@ config ranking是否有訊號、factorized prior是否把完整 `Fraw` mass放�
 - 把oracle回寫成S13 treatment；
 - 建立S13 proposals、S40 activation report或S41 model；
 - 以M05 data／fold／oracle artifacts填補本checkpoint。
+- clip／winsorize／post-hoc normalize `M_HT`，或用sampled denominator強迫0–1。
 
 ## 5. Future effective lock、inputs 與 outputs
 
@@ -142,18 +154,19 @@ Future lock：
 
 `protocol/v1/locks/s12-stage1-real-score-audit-lock.json`
 
-Inputs：
+Inputs（全數由future effective lock綁定）：
 
-- immutable S11 guidance lock與label-seal transition；
+- `S11-S12-FIXED-FRAME-20260803`、immutable S11 guidance lock與label-seal transition；
 - catalog/multiplicity、sizes、mapping與noise protocol；
-- presealed D5 strata/sample/fold manifests；
+- presealed D5 strata/sample/inclusion-probability/fold manifests、all-size quality reducer、
+  `T_D5` cutoff/tie rule與bootstrap identity；
 - measurement/correctness runner與analysis revision。
 
 Outputs：
 
 - real-score pool manifest與per-config/per-size observations；
 - correctness/failure ledger；
-- weighted metrics、density-ratio prior mass與ESS；
+- weighted metrics、`A_aj/N_HT/D_exact/M_HT`、materialized`T_D5`、ESS與bootstrap；
 - oracle fold manifest與cross-fitted results；
 - D5 gate summary；
 - `qualified_for_stage4_data`與conditional trigger evidence；
@@ -182,22 +195,46 @@ Outputs：
 - oracle只診斷main-effect ceiling，不參與S13 arm；
 - D5 measurements不得因outcome被replacement或擴充。
 
-Primary raw-denominator prior mass精確為：
+Primary stable estimator identity是
+`S12-DIRECTIONAL-FINITE-FRAME-HT-EXACT-DENOMINATOR-v1`；其directional finite-frame
+raw-mass capture estimator精確為：
 
 ```text
-r_a(o) = pi_nominal,a(o) / pi_nominal,0(o)
-M_a(T) = [sum_{j in D5} ((sum_{o aliases j} r_a(o)) / rho_j)
-          * I[j in real_top_decile_T]]
-         / [sum_{o in Fraw} r_a(o)]
+r_a(o)   = pi_nominal,a(o) / pi_nominal,0(o)
+A_aj     = sum_{o aliases j} r_a(o)
+N_HT,a   = sum_{j in D5} [A_aj / rho_j] * I[j in T_D5]
+D_exact,a = sum_{o in Fraw_global} r_a(o)
+M_HT,a   = N_HT,a / D_exact,a
+ESS_a    = [sum_{j in D5} A_aj/rho_j]^2 / sum_{j in D5}[A_aj/rho_j]^2
 ```
 
-`o`是raw occurrence，`j`是selected `Uexec` identity，`rho_j`是其sampling inclusion
-probability，`T`是real top-decile set；`M_a(T)`越大表示arm把更多完整raw prior mass放入
-real top decile。不得用selected-only denominator或representative raw alias取代此公式。
+`o`是global raw occurrence，`j`是selected `Uexec` identity，`rho_j`是sealed
+without-replacement design的inclusion probability，`A_aj`聚合`j`的全部global aliases。
+`M_HT`是design-based directional index，越大directionally表示arm把更多完整raw mass投向
+`T_D5`；它不是bounded probability或mass fraction，realized value可大於1。不得clip、
+winsorize、post-hoc normalize，或用selected-only／`Fexec`-only／sampled denominator／
+representative raw alias取代公式。
+
+`T_D5`在labels前以baseline weights與all-size aggregate real quality sealed：
+
+```text
+w_0j = A_0j / rho_j
+Q_D5(t) = [sum_{j in D5} w_0j * I[quality_j <= t]] / sum_{j in D5} w_0j
+t_D5 = min{quality_j : Q_D5(quality_j) >= 0.90}
+T_D5 = {j in D5 : quality_j >= t_D5}
+```
+
+`quality_j`越大越好；cutoff是weighted cumulative mass首次到0.90的最小observed quality，
+所有cutoff ties都進`T_D5`。所有arms、shuffle與oracle共用同一D5 sample、`rho_j`與
+materialized`T_D5`。
+
+Stratum／identity bootstrap每次都重建`t_D5`、`T_D5`、`A_aj`、`N_HT`、`M_HT`、arm
+contrasts、ESS與oracle gap。同identity的aliases、sizes、repeats與derived rows保持一個
+block；failed／unscored rows依frozen no-replacement matrix保留。
 
 Preserved criteria不變：aggregate Spearman pass `>=0.25`、borderline `[0.20,0.25)`；
 top-decile lift pass `>=2.0`、borderline `[1.5,2.0)`；direction至少2/3 sizes；prior mass
-strictly勝 baseline與same-entropy shuffle；ESS `>=25`；planned real-measurement coverage
+即`M_HT` strictly勝 baseline與same-entropy shuffle；ESS `>=25`；planned real-measurement coverage
 `>=0.95`；correctness required；five-fold config-level oracle；existing bootstrap、
 permutation、tie與label-firewall rules。
 
@@ -209,7 +246,7 @@ S12不能說明actual Gen0、H10 persistence或held-out replication。
 
 | 狀況 | checkpoint處理 | outgoing edge |
 | --- | --- | --- |
-| D5全部criterion通過 | positive formal closeout | S13 |
+| D5全部criterion通過，且`M_HT`／`T_D5`／bootstrap／no-clipping parity完整 | positive formal closeout | S13 |
 | Predictor-specific failure且oracle positive | negative formal closeout | 可送S40 trigger |
 | Borderline／support／coverage／ESS不足 | inconclusive formal closeout | 無 |
 | Hook expressiveness failure | negative formal closeout | 無 |
@@ -226,6 +263,12 @@ ties、coverage、weighted/unweighted metrics、ESS、oracle diagnosis、all fai
 rows、先前gate records、outcome與可以／不能支持的claim。若S13成為tranche final，
 S13 report整合S12 positive record，不另建重複positive report。Conditional S40 edge
 只在S12 terminal record明列trigger並完成對應closure audit後存在。
+
+Report必須另外materialize `rho_j`、all aliases、`A_aj`、`N_HT`、`D_exact`、unclipped
+`M_HT`、weighted `t_D5/T_D5`與ties、每次stratum／identity bootstrap重建規則、ESS、arm
+contrasts及oracle gap。`M_HT>1`不是error或clipping trigger。S12 claim只限fixed D5 design
+下的ranking／lift／directional-index evidence；不支持actual Gen0、H10 persistence、held-out
+replication、general speedup或production。
 
 ## 9. Design-consensus record
 
@@ -246,3 +289,16 @@ S13 report整合S12 positive record，不另建重複positive report。Condition
   numerator；executable-unscored selected identities經real measurement仍可取得credit。
 - 每個selected identity在GFLOPS前先通過native/runtime、normal generate/compile、
   correctness與noise readiness。本 authority closure沒有執行或報告任何S12 evidence。
+
+### 2026-08-03 approved `S11-S12-FIXED-FRAME-20260803` amendment
+
+- Full-study reviewers完成兩輪cross-examination與一輪evidence-backed final，均`AGREE`、
+  無material dissent；使用者核准prospective R3 amendment。
+- S12預先commit exact `rho_j`、baseline-weighted all-size `t_D5/T_D5` cutoff-and-ties rule，
+  以及`A_aj/N_HT/D_exact/M_HT`。`M_HT`是可大於1的design-based directional index；禁止
+  clipping、winsorization、post-hoc normalization與sampled denominator。
+- 所有arms、shuffle與oracle共用同一fixed-256 sample、inclusion probabilities與
+  materialized`T_D5`。Stratum／identity bootstrap每次重建cutoff、set、estimators、
+  contrasts、ESS與oracle gap。
+- S12仍是`approved / gated / DESIGN_APPROVED / not_evaluated / lock absent`。本amendment
+  不執行S12、不產生GFLOPS label、result、report、effective checkpoint lock或edge。

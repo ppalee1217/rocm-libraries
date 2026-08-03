@@ -17,6 +17,9 @@ dependencies:
   - authority_id: S1-REBASELINE-20260803
     relation: administrative_prerequisite
     required_state: approved
+  - authority_id: S11-S12-FIXED-FRAME-20260803
+    relation: prospective_measurement_amendment
+    required_state: approved
 incoming_scientific_edge: null
 entry_criteria:
   - approved_S1_REBASELINE_20260803_administrative_prerequisite
@@ -60,29 +63,37 @@ consensus_status: approved_two_reviewer_agree
 
 ## 1. 白話目標
 
-S11 要在完全 label-blind 的條件下，fresh 建立三層 population：validator accepted 的
+S11 要在完全 label-blind 的條件下，以固定global／conditional schedules fresh建立三層
+population：validator accepted 的
 raw occurrences `Fraw`、完成 resolver／normal KernelWriter generation／pinned compile 的
 executable occurrences `Fexec`，以及全部 locked sizes 都有 finite native Formocast
-output 的 `Fscore`。它再用 trusted values 建 residual-gene guidance、weights 與
-same-entropy shuffle，通過 candidate-order／probability round-trip 後鎖定。
+output 的 `Fscore`。Global inferential frame固定為canonical first8,192 accepts；每個
+activated conditional value固定512 chunks／262,144 nominal draws並target first256 accepts。
+它再用trusted survivor cells、own-null與familywise model tests建立residual-gene guidance、
+weights與same-entropy shuffle，通過candidate-order／probability round-trip後鎖定。
 
 這一步只建立 guidance，不能偷看 real GFLOPS，也不能把 normalized-away、collision-
 confounded、context-dependent、execution-attrited 或 score-attrited raw value 當成 trusted
 guidance witness。本 design 已由
 [S1 rebaseline authority](s10r4-retirement-s11-rebaseline-authority.md) prospectively amended；
-下方 2026-07/08 舊 dependency records 只是 historical provenance。
+fixed schedule與measurement則由
+[S11／S12 fixed-frame authority](s11-s12-fixed-frame-measurement-amendment.md)
+prospectively amended。下方2026-07/08舊dependency records只是historical provenance。
 
 ## 2. Hypothesis 與 falsification
 
-**S11-H1：**依 `S1-REBASELINE-20260803` 的 fresh S11 population 與 trusted-value
-contract，Formocast 能對至少一個 `|T_g|>=2` 且通過 frozen model-only criteria 的
-residual gene 產生穩定 prior，並可無損轉成與 `SearchSpace.map` 完全對齊的 weights 與
-shuffled control。這是 future hypothesis，不是本 authority closure 的結果。
+**S11-H1：**依 `S1-REBASELINE-20260803` 與
+`S11-S12-FIXED-FRAME-20260803` 的fresh fixed frames、trusted survivor estimand及
+familywise model-only criteria，Formocast能對至少一個`|T_g|>=2`的residual gene產生穩定
+prior，並可無損轉成與`SearchSpace.map`完全對齊的weights與shuffled control。這是future
+hypothesis，不是authority closure的結果。
 
 反證或inconclusive：
 
 - 無 eligible／guidable residual gene、`|T_g|<2`，或 global lambda 退化；
 - mapping、coverage、support、sensitivity或stability未過；
+- own-null或familywise max-null P95未strictly超過；
+- global cap時未取得8,192 accepts，或material conditional shortage仍可能改變no-guidance；
 - occurrence multiplicity在dedup後遺失；
 - probability／cost round-trip、candidate order或weight sign錯誤；
 - existing group／weight被修改；
@@ -92,16 +103,18 @@ shuffled control。這是 future hypothesis，不是本 authority closure 的結
 
 ## 3. Dependencies、entry 與 outgoing edge
 
-S11 的 `incoming_scientific_edge=null`。唯一 entry authority 是 user-approved
-administrative prerequisite `S1-REBASELINE-20260803`；這條虛線關係不是 empirical
-S10R3/S10R4 success edge。S00–S10R3 completed history保持 immutable；S10R4/B01–B07
+S11 的 `incoming_scientific_edge=null`。Entry authority包括user-approved administrative
+prerequisite `S1-REBASELINE-20260803`與prospective measurement amendment
+`S11-S12-FIXED-FRAME-20260803`；兩者都不是empirical S10R3/S10R4 success edge。
+S00–S10R3 completed history保持 immutable；S10R4/B01–B07
 已依 amendment 退役且沒有 outcome/report/edge。S10R3/S10R4 rows、support states、
 seeds、mapping、GPU、noise、decisions、diagnostics 與 dirty B07 bytes 對 S11 trust、
 support、score、guidance 或 gate credit 全為零。
 
-S11 現在只取得 future planning authority：仍需自己的 machine-readable contract、
-Plan-B、Plan-A、fresh implementation、effective lock 與 prelabel audit。本次 amendment
-沒有建立 S11 evidence、lock、result 或 report，也沒有 proxy／reduced-mode edge。
+S11現在只取得future planning authority：既有draft runner／package／contract／schema不得
+直接沿用；仍需依new authority重新對齊machine-readable contract與implementation、完成
+Plan-B、Plan-A、fresh verification、effective lock與prelabel audit。本次amendment沒有建立
+S11 evidence、effective checkpoint lock、result或report，也沒有proxy／reduced-mode edge。
 
 唯一**未來** outgoing scientific edge：
 
@@ -127,8 +140,9 @@ model-only stability不足或 `|Uexec|<256` 都不會解鎖 S12。
   `protocol/v1/evidence/gate-records/s11-s1-guidance-locked.json`並在verified frozen
   edge後留在同一tranche進S12；此時closure unit尚未`COMPLETE`。
 - Negative／inconclusive是本tranche的terminal internal gate，立即產生本design的
-  planned terminal report並停止後續；`CHANGES_REQUIRED`只在frozen repair budget內
-  修復，不是scientific outcome。
+  planned terminal report並停止後續；`CHANGES_REQUIRED`依current reviewer-governed
+  traceable repair semantics修復，不是scientific outcome，也不受frozen numeric repair
+  budget限制。
 - 若走到S13，最終`reports/gen0-factorization-mvp-report.md`必須整合S11 compact
   record與後續gate records；`live_run_state`與`committed_projection_state`分開，
   後者只在CU-S1 closure commit與post-commit audit後更新。
@@ -161,11 +175,14 @@ Future lock：
 
 `protocol/v1/locks/s11-stage1-model-only-factorization-lock.json`
 
-它綁定 approved administrative `S1-REBASELINE-20260803`、S00–S10R3 immutable
-history identities與 S10R4 retirement／zero-credit matrix；另綁定 frozen YAML／space／
+它綁定 approved administrative `S1-REBASELINE-20260803`、fixed-frame measurement
+`S11-S12-FIXED-FRAME-20260803`、S00–S10R3 immutable history identities與S10R4
+retirement／zero-credit matrix；另綁定frozen YAML／space／
 groups／weights／sizes、pinned sampler／`valid_fn`／resolver／normal KernelWriter／
 compiler／native Formocast revisions、parent constants、fresh S11 randomness bundles、
-label-seal evidence、Plan-B、exact whitelists與report target。B01–B06只能作 historical
+global65,536-chunk與per-value512-chunk schedules、two-attempt qualification、terminal
+formulas／outcome matrix、label-seal evidence、Plan-B、exact whitelists與report target。
+B01–B06只能作 historical
 provenance，B07 是 forbidden input；任何 S10R3/S10R4 empirical row都不得取得 S11
 criterion credit。S11 必須由 fresh S11 seeds 自己建立 `Fraw/Fexec/Fscore`。
 
@@ -173,8 +190,10 @@ Outputs至少包括：
 
 - raw `Fraw` occurrence frame、executable `Fexec/Uexec` catalog、scoreable
   `Fscore/Uscore` catalog、alias collision與multiplicity-preserving lineage；
+- global／conditional terminal prefix manifests、chunk/slot counts、two-attempt qualification
+  parity、global yield／coverage與per-cell`Draw/Dexec/Dscore`；
 - model scores、coverage、ties與conditional top-ups；
-- eligible/guided gene decision與marginals；
+- terminal global mid-ECDF、eligible/guided gene decision、own/familywise null與marginals；
 - Formocast residual weights；
 - shuffle manifest；
 - probability round-trip與candidate-order results；
@@ -182,45 +201,101 @@ Outputs至少包括：
 
 ## 6. Controls 與 measurement boundary
 
-- `Fraw` 是 fresh validator-accepted raw occurrence multiset；duplicates保留，accepted後
-  不因 resolver/generation/compile/score failure 從 raw mass刪除。
-- `Fexec` 只含 unique complete resolver projection、normal non-proxy KernelWriter source、
-  pinned compile與 stable consumer-relevant operational identity 全部成功的 occurrences。
-  `Uexec` 是 deduplicated identities；dedup只節省工作，不改 occurrence mass。
-- `Fscore` 只含 `Fexec` 中每個 locked size 都有 finite native Formocast output 的
-  occurrences；`Uscore` 是 scoreable identities。Mapping failure、missing size、non-finite、
-  exception或partial留在 `Fexec` 的 executable-unscored population。
-- Execution yield 與 primary model coverage 分別是
-  `Y_exec=sum_{o in Fraw}I[o in Fexec]/|Fraw|` 與
-  `C_score_occ=sum_{o in Fexec}I[o in Fscore]/|Fexec|`。Required score coverage
-  `C_score_occ>=0.95`；codegen/compile rejects不屬此 coverage denominator，而留在
-  `Y_exec` 與 S12 `Fraw` prior-mass denominator。
-- S11 使用 fresh/disjoint S11 seeds；S10R3/S10R4 empirical rows 不得取得任何 trust、
-  support、score、guidance或gate credit。
-- Raw value 只有 fresh support `>=128` conditional `Fraw` occurrences、至少一個
-  `Fexec` occurrence、unique value-preserving relation、`C_score_occ(value)>=0.95` 與完整
-  model-only statistics全成立才 trusted。At cap unresolved、normalized-away、context-
-  dependent、collision-confounded、execution/score attrited 都是 untrusted，不是 absent。
-- `T_g` 是 trusted set；`|T_g|>=2` 且 unchanged sensitivity、stability、entropy、
-  round-trip、order與label firewall全過，gene才 guided。Untrusted values不再讓完整 trusted
-  values整個失去eligibility。
-- `mu_gv=(sum_i b_i+32*global_mean_g)/(n_gv+32)`；
-  `q_g(v)=exp(lambda*(mu_gv-min_{u in T_g}mu_gu))/Z` 只在 `T_g` 正規化；
-  `p1_g(v)=0.20*p0_g(v)+0.80*q_g(v)`。Untrusted value精確保留
-  `0.20*p0_g(v)>0`，沒有 guided upweighting。
-- Global schedule是4,096 accepted `Fraw` first boundary與8,192 hard cap；4,096時兩個
-  prelocked halves必須對 `T_g`、guided genes、best/worst/direction、lambda與guidance hash
-  全一致，否則繼續。Conditional schedule每 activated value `>=128`、cap 256，且不pool
-  global frame。Cap後 unresolved保持untrusted。
-- Fixed model tests不變：`S_g>=0.05`、2,000 permutations、2,000 bootstraps、95% half-width
-  `<=0.025`、recurrence `>=0.90`（`[0.80,0.90)` borderline）、2/3 size direction、
-  coverage `>=0.95`、lambda grid 0..8 step 0.25與 entropy `>=0.80`。
-- Model catalog及future D5 sampling unit是 `Uexec` unique stable operational identity，不是
-  raw hash。每identity保存aliases/multiplicity；alternative weights在raw alias層計算。
-- Conditional top-up只進對應cell；existing groups／weights保持byte-level或canonical
-  parity；bootstrap／permutation使用prelocked model-only randomness；real-label root不可讀。
-- Same-entropy shuffle把untrusted values固定在`0.20*p0`，只對 `T_g` 的 `q` 做prelocked
-  deterministic nonidentity permutation，保留完整`p1` multiset與nominal entropy。
+- `Fraw`是fresh validator-accepted raw occurrence multiset；duplicates保留，accepted後不因
+  resolver／generation／compile／score failure從raw mass刪除。`Fexec`要求complete resolver
+  projection、normal non-proxy KernelWriter generation、pinned compile與stable semantic
+  identity；value preservation另在trust gate判。`Fscore`要求所有locked sizes都有finite
+  native Formocast output。`Uexec/Uscore`只deduplicate work，不改occurrence mass。
+- 每個semantic identity恰有producer與fresh verifier各一次complete qualification。Matching
+  complete ordinary rejection是execution attrition；partial／discordant／association-lost／
+  guessed evidence是`CHANGES_REQUIRED / not_evaluated`。
+- Global inferential frame固定canonical first8,192 `Fraw_global` occurrences；first4,096與
+  固定兩halves只read-only。Global cap是65,536個512-slot chunks＝33,554,432 draws；cap
+  少於8,192 accepts是inconclusive。每activated conditional value固定512 chunks＝262,144
+  draws、target first256 accepts；128只read-only，terminal 128–255 prefix只測一次，少於
+  128是support-insufficient。禁止reseed、extension或pooling。
+- Planning calculation固定為下式；historical rows／seeds對S11 criterion credit為零：
+
+  ```text
+  p_plan = 114 / 262,144 = 57 / 131,072 ~= 0.00043487548828125
+  draws_for_8192 = 8,192 / p_plan = 1,073,741,824 / 57 ~= 18,837,575.85964912
+  chunks_for_8192 = draws_for_8192 / 512 = 2,097,152 / 57 ~= 36,792.14035087719
+  margin_chunks = 1.5 * chunks_for_8192 = 1,048,576 / 19 ~= 55,188.21052631579
+  global_cap_chunks = next_power_of_two(margin_chunks) = 65,536
+  global_cap_draws = 65,536 * 512 = 33,554,432
+  ```
+
+Exact global diagnostics與value cells是：
+
+```text
+Y_exec_global = |Fexec_global| / |Fraw_global|
+C_score_occ_global = |Fscore_global| / |Fexec_global|
+C_score_unique_global = |Uscore_global| / |Uexec_global|  # secondary only
+
+Graw_gv   = {o in Fraw_global   : X_g(o)=v}
+Gexec_gv  = {o in Fexec_global  : X_g(o)=v}
+Gscore_gv = {o in Fscore_global : X_g(o)=v}
+Draw_gv   = Graw_gv   multiset-union Fraw_cond(g,v)
+Dexec_gv  = Gexec_gv  multiset-union Fexec_cond(g,v)
+Dscore_gv = Gscore_gv multiset-union Fscore_cond(g,v)
+
+support_gv    = |Fraw_cond(g,v)|
+Cscore_occ_gv = |Dscore_gv| / |Dexec_gv|  # undefined if |Dexec_gv|=0
+n_gv          = |Dscore_gv|
+sum_b_gv      = sum_{o in Dscore_gv} benefit(o)
+global_mean_g = [sum_{o in Fscore_global} benefit(o)] / |Fscore_global|
+```
+
+Global rows給zero conditional support credit；conditional rows不進global yield、coverage、
+ECDF、`Uexec`或future D5。`C_score_occ_global>=0.95`；沒有新增execution-yield threshold。
+
+Terminal global benefit與guidance formulas是：
+
+```text
+r_s(o) = [W_<(L_s(o)) + 0.5 * W_=(L_s(o))] / W
+b_s(o) = 1 - r_s(o)
+benefit(o) = sealed_actual_size_reducer({b_s(o) for every locked size s})
+mu_gv = (sum_b_gv + 32 * global_mean_g) / (n_gv + 32)
+S_g = max_{v in T_g}(mu_gv) - min_{v in T_g}(mu_gv)
+q_g(v) = exp(lambda * (mu_gv - min_{u in T_g} mu_gu)) / Z,  v in T_g
+q_g(v) = 0,                                                v not in T_g
+p1_g(v) = 0.20 * p0_g(v) + 0.80 * q_g(v)
+```
+
+`L_s`是Formocast latency、越低越好；`W_<`／`W_=`是terminal global scoreable occurrence
+mass。Conditional rowsquery同一global ECDF；all sizes of one occurrence是一個block。
+`T_g`只含`support_gv>=128`、`|Dexec_gv|>=1`、unique value-preserving relation、
+`Cscore_occ_gv>=0.95`與complete statistics的values。Untrusted values不是absent，並精確
+保留`0.20*p0>0`。
+
+Trust／mapping／coverage先凍結`Gtest`。2,000 block bootstraps重建ECDF與statistics，要求
+fixed best-vs-worst 95% interval half-width`<=0.025`、recurrence`>=0.90`。每個permutation
+replicate使用一份shared-global occurrence permutation；conditional部分對每個gene pool恰
+產生一份independently domain-separated permutation，再依該gene各value的fixed observed
+cell counts分配，禁止per-conditional-cell permutations。2,000 replicates計：
+
+```text
+M_r = max_{g in Gtest} S_gr*
+Q95_own,g = HF7_0.95({S_gr*}_{r=1..2000})
+Q95_family = HF7_0.95({M_r}_{r=1..2000})
+```
+
+Hyndman–Fan Type 7的`n=2,000` P95是
+`0.95*x_(1900)+0.05*x_(1901)`；observed `S_g>=0.05`且嚴格大於own與family P95，ties
+fail。另要求size direction 2/3、lambda grid 0..8 step0.25、entropy`>=0.80`、
+round-trip／order／firewall與same-entropy shuffle。
+
+兩個fixed 4,096 halves必須exact重建並比較完整semantic tuple：每value的`Dexec_gv`、
+`Dscore_gv`、`n_gv`、`Cscore_occ_gv`與`mu_gv`；trust states／reasons、`T_g`、guided
+states／reasons；按actual-YAML candidate order作best／worst tie-break後的best／worst；
+per-size directions；每一項model-test result；own/familywise pass；同一positive global
+lambda；每gene guidance probabilities；shuffle mapping；canonical guidance hash。全部欄位
+都必須exact相同；numeric drift只報告。
+
+兩固定halves共用sealed conditional corpus、各自重建global reference；完整semantic tuple
+依本節前述每value cells／means、states／reasons、actual-YAML-order tie-break、全部tests、
+probabilities、shuffle及canonical hash逐欄exact比較。Numeric drift只報告；full terminal
+float32 guidance bundle另做integrity hash。Halves不是independent replication。
 
 S11能說明model-only factorization是否可建立，不能說明real ranking、prior mass或actual
 Gen0效果。它必須在S12任何GFLOPS前證明future D5 frame從 `Uexec` fixed 256 identities
@@ -231,15 +306,18 @@ generate/compile、correctness與noise readiness；本 authority closure不執�
 
 唯一positive criterion是parent的`S1_GUIDANCE_LOCKED`。Formal evidence須綁定guided genes、model-only criteria、coverage/support、weights/shuffle hashes、round-trip/order tests與no-leakage attestation。
 
-| 狀況 | checkpoint處理 | downstream |
-| --- | --- | --- |
-| Guidance完整且label-blind鎖定 | positive closeout | S12 |
-| 無guidable gene／lambda退化 | negative formal closeout | 無 |
-| Support／stability不足 | negative或inconclusive formal closeout | 無 |
-| `|Uexec|<256` | `inconclusive / FT-INCONCLUSIVE / edge=null`；不得降門檻 | 無 |
-| Resolver/generation/compile/mapping缺陷 | 停止並記failure；不得猜值 | 無 |
-| Label leakage | evidence invalid；新lock／fresh pool後全量重跑 | 無 |
-| Proxy scope需要再縮減 | `blocked-awaiting-user-decision` | 無 |
+Mapping-impossibility allowlist固定為`empty-v1`、精確內容`entries: []`；在沒有新的
+pre-evidence authority前，mapping scientific outcome不可到達。下表是互斥first-match
+terminal precedence；只有所有較早rows已證明false，才可到達較晚row。
+
+| First-match order | 狀況 | checkpoint處理 | downstream |
+| --- | --- | --- | --- |
+| 1 | 任一prelabel／label-firewall leakage | evidence invalid／`not_evaluated`；新lock／fresh seeds後draw-0全量重跑 | 無 |
+| 2 | Harness／schema／order／round-trip、partial／discordant qualification、association／identity或其他qualification／evidence-integrity failure | `CHANGES_REQUIRED / not_evaluated`；不得猜值 | 無 |
+| 3 | 兩次complete attempts重現exact allowlisted no-guess native impossibility且需new authority | `FT-BLOCKED-MAPPING`；`empty-v1`下不可到達 | 無 |
+| 4 | Material stochastic support／coverage／precision／recurrence／half-stability shortage、global cap少於8,192 accepts或`|Uexec_global|<256`可能改變no-guidance結論 | `inconclusive / FT-INCONCLUSIVE / edge=null`；不得降門檻 | 無 |
+| 5 | 至少一個stable gene有`|T_g|>=2`且全部fixed／familywise／coverage／entropy／round-trip／shuffle／firewall／replay／fresh-verification gates通過，`|Uexec_global|>=256`且global lambda positive | positive closeout | S12 |
+| 6 | Complete bounded family有deterministic terminal evidence，沒有gene通過effect／permutation／direction／entropy，或lambda為0 | complete bounded no-guidance negative formal closeout | 無 |
 
 ## 8. Formal report 與 closeout
 
@@ -250,6 +328,13 @@ S11若negative／inconclusive而成為terminal，唯一formal report才是
 證據、所有criteria、failure localization、artifacts、iteration history、先前gate
 record與claim boundary。若S13成為tranche final，S13 report整合本record，不另製造
 重複的S11 positive report。
+
+Report必須另外列global／per-value chunk與slot counts、terminal accepted prefixes、
+`Fraw/Fexec/Fscore`與`Draw/Dexec/Dscore` counts、two-attempt parity、global／cell yield與
+coverage、mid-ECDF lineage、own/familywise P95、bootstrap、half semantic tuple、所有
+untrusted reasons及terminal shortage。Positive只支持executable-and-scoreable survivor
+frame中的label-blind candidate guidance；不支持raw transport、yield、representativeness、
+correctness、real performance或actual Gen0 benefit。
 
 ## 9. Design-consensus record
 
@@ -443,3 +528,19 @@ record與claim boundary。若S13成為tranche final，S13 report整合本record�
 - S11現為 `approved / not_started / DESIGN_APPROVED / not_evaluated / lock absent`。
   本 amendment 沒有執行 S11 evidence；唯一 future edge仍是
   `S11:S1_GUIDANCE_LOCKED -> S12`。
+
+### 2026-08-03 approved `S11-S12-FIXED-FRAME-20260803` amendment
+
+- Full-study Reviewer A `/root/full_study_review_a`與independent non-implementer Reviewer B
+  `/root/s11_contract_auditor`完成兩輪cross-examination與一輪evidence-backed final，均
+  `AGREE`、無material dissent；使用者核准prospective R3 amendment。
+- Global fixed frame改成canonical first8,192 accepts；first4,096與固定halves只read-only。
+  Finite cap是65,536 chunks／33,554,432 draws。每activated conditional value固定512
+  chunks／262,144 draws、target first256；128只read-only。
+- Exact global／conditional cells、terminal global mid-ECDF、2,000 block bootstraps、own-null
+  與familywise max-null Type-7 P95、strict ties及semantic half-stability依active §§5–7綁定。
+- `Fexec`與raw-value trust分離；每semantic identity固定producer＋fresh verifier兩次complete
+  qualification。S11 positive claim限executable-and-scoreable survivor-frame guidance。
+- 本 amendment 不執行S11、沒有result／effective checkpoint lock／report／edge。既有
+  untracked runner／package／contract／schema必須在committed authority後另行對齊、驗證與
+  reseal，不能提供本次authority evidence。

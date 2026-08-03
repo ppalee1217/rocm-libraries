@@ -1,5 +1,13 @@
 # S10R4 → S11 實驗計畫變更指南
 
+> **CURRENT SUPERSESSION POINTER（2026-08-03）：**本檔只解釋S10R4 retirement與第一版
+> S11 rebaseline。後續已核准的
+> [`S11-S12-FIXED-FRAME-20260803`](s11-s12-fixed-frame-measurement-amendment.md)
+> supersede本文仍把4,096當可停止boundary、8,192當accepted hard cap、128當precision stop，
+> 以及把S12 metric描述成bounded／self-normalized mass的current implication。最新繁中說明
+> 請看[fixed-frame measurement change guide](s11-s12-fixed-frame-measurement-change-guide.md)。
+> 下方文字保持historical explanation，不得用來執行S11/S12或覆蓋new authority。
+
 > **一句話：**我們沒有跑出一個新的好或壞結果；我們把尚未開始、已陷入多輪 execution-binding 修復的 S10R4 正式退役，改由一份 administrative authority 讓 S11 重新設計自己的 fresh、support-aware 實驗。
 
 本指南用白話解釋計畫，但**不是 runner、contract 或 lock authority**。若文字衝突，依序以 [research charter](../surrogate-dse-plan.md)、[experiment parent plan](../ductile-origami-warmstart-experiment-plan.md)、[new authority](s10r4-retirement-s11-rebaseline-authority.md) 與各 checkpoint design 為準。本指南不能授權執行，也不能創造 scientific edge。

@@ -979,6 +979,29 @@ Positive、negative與inconclusive都要durable outcome closure。Operational
   白話說明見[change guide](ductile-origami-warmstart/s10r4-to-s11-experiment-plan-change-guide.md)。
   本closure不執行experiment、不建立evidence/lock/report/edge，也不授權push。
 
+### 2026-08-03 `S11-S12-FIXED-FRAME-20260803` authority amendment
+
+- Full-study Reviewer A `/root/full_study_review_a` 與 independent non-implementer Reviewer B
+  `/root/s11_contract_auditor` 完成兩輪 cross-examination 及一輪 evidence-backed final，
+  均 `AGREE` 且無 material dissent；使用者核准 prospective R3 amendment。
+- S11 global inferential frame固定為canonical first 8,192 accepted `Fraw` occurrences；
+  first 4,096與固定halves只作read-only diagnostics，不能停止或emit outcome。Global cap是
+  65,536個512-slot chunks／33,554,432 nominal draws。
+- 每個activated conditional value固定512 chunks／262,144 draws，target canonical first
+  256 accepts；128只read-only，cap-terminal 128–255 prefix只測一次，少於128是support-
+  insufficient。Global／conditional frames分離。
+- S11沿terminal global `Fscore` mid-ECDF建立benefit；global與conditional survivor cells、
+  2,000 block bootstraps、每replicate一份shared-global及每gene-pool一份independently
+  domain-separated conditional permutation、own-null與familywise max-null Type-7 P95、strict
+  ties及完整semantic tuple的exact half-stability全部precommit。
+- S12改用design-based directional finite-frame `M_HT`與prelabel `T_D5` rule。`M_HT`可大於
+  1；禁止clipping、winsorization、post-hoc normalization或sampled denominator。S41
+  機械繼承同一estimator與directional-index gap。
+- S11／S12仍是`not_evaluated`；本closure沒有執行experiment、建立result／effective
+  checkpoint lock／formal report／edge，也不授權push。Authority與白話說明見
+  [fixed-frame amendment](ductile-origami-warmstart/s11-s12-fixed-frame-measurement-amendment.md)
+  及[change guide](ductile-origami-warmstart/s11-s12-fixed-frame-measurement-change-guide.md)。
+
 ### Downgrade user gates
 
 `DEGRADED_PROXY`、two-size／reduced-regime、S2 H5 resource-bounded pilot、single-cluster Stage 3 pilot，以及任何減少workloads、runs、seeds、metrics、validation、acceptance或scope的方案，都必須先產生完整decision packet並停在`blocked-awaiting-user-decision`。Diagnostic partial run不能滿足checkpoint或解鎖下游。
@@ -1450,20 +1473,47 @@ resolver alias。Membership只由`valid_fn` acceptance決定，接受後沒有�
 它供execution yield、value support、alias-weighted analysis與S12 raw denominator使用；
 membership不證明resolver、generation、compile、Formocast、GPU或performance success。
 
-Global schedule固定4,096 accepted occurrences作first boundary與8,192 hard cap。4,096時
-兩個prelocked halves必須對`T_g`、guided genes、best/worst/direction、global lambda與
-guidance identity/hash全一致，否則繼續至8,192；不得用outcome延長。
+Global inferential frame固定為canonical first 8,192 accepted occurrences。Canonical first
+4,096只作read-only diagnostic；terminal frame的兩個固定4,096 halves只作semantic
+stability comparison，任一half都不能停止experiment、emit outcome或決定是否收集第二
+half。Atomic chunk固定512 nominal slots；global cap是65,536 chunks／33,554,432 nominal
+draws，禁止reseed或extension。Cap時少於8,192 accepts是
+`inconclusive / FT-INCONCLUSIVE`。
+
+Global cap的pre-empirical planning calculation固定為：
+
+```text
+p_plan = 114 / 262,144 = 57 / 131,072 ~= 0.00043487548828125
+draws_for_8192 = 8,192 / p_plan = 1,073,741,824 / 57 ~= 18,837,575.85964912
+chunks_for_8192 = draws_for_8192 / 512 = 2,097,152 / 57 ~= 36,792.14035087719
+margin_chunks = 1.5 * chunks_for_8192 = 1,048,576 / 19 ~= 55,188.21052631579
+global_cap_chunks = next_power_of_two(margin_chunks) = 65,536
+global_cap_draws = 65,536 * 512 = 33,554,432
+```
+
+Historical rate只作planning，S10R3 rows／seeds對S11 evidence credit仍為零。
 
 ### 4.2 Current `Fexec`／`Uexec`
 
 `Fexec` 是`Fraw`中同時通過unique complete resolver projection、normal non-proxy
-KernelWriter generation、pinned-toolchain compilation與stable consumer-relevant operational
-identity的occurrence submultiset。Resolver-none、exception、ambiguous/mixed identity、
-generation/compile failure或timeout都不屬`Fexec`，各自記taxonomy；這些是execution
-attrition，不是Formocast missingness。
+KernelWriter generation、pinned-toolchain compilation與stable consumer-relevant semantic
+operational identity的occurrence submultiset。Value preservation不屬`Fexec` membership，
+而在`(g,v)` trust gate另判；因此normalized-away、context-dependent或cross-value-confounded
+occurrence若其operational identity完整，仍留在`Fexec/Uexec`，但不取得affected raw-value
+guidance credit。Resolver-none、exception、ambiguous/mixed identity、generation/compile
+failure或timeout都不屬`Fexec`，各自記taxonomy；這些是execution attrition，不是
+Formocast missingness。
 
 `Uexec`是deduplicated stable operational-identity catalog。Dedup只節省mapping/scoring，
 不能改`Fraw/Fexec` occurrence mass；每identity保留全部aliases與multiplicity。
+
+每個deduplicated semantic identity恰有producer與fresh verifier各一次complete ordinary
+qualification。Matching complete ordinary rejection是execution attrition；partial、
+discordant、association-lost、ambient invalidation或guessed evidence是
+`CHANGES_REQUIRED / not_evaluated`。Mapping-impossibility allowlist固定為`empty-v1`、
+精確內容`entries: []`；因此目前沒有mapping scientific outcome可達。只有未來新的
+pre-evidence authority先加入exact allowlisted no-guess native impossibility，且由兩次
+complete attempts重現並需new scientific authority，才可能是`FT-BLOCKED-MAPPING`。
 
 ### 4.3 Current `Fscore`／`Uscore` 與 coverage
 
@@ -1473,20 +1523,44 @@ size、non-finite、exception或partial不屬`Fscore`，但仍留在`Fexec`與D5
 `Uscore`是deduplicated scoreable identities。
 
 ```text
-Y_exec = sum_{o in Fraw} I[o in Fexec] / |Fraw|
-C_score_occ = sum_{o in Fexec} I[o in Fscore] / |Fexec|
-C_score_unique = |Uscore| / |Uexec|   # secondary only
+Y_exec_global = |Fexec_global| / |Fraw_global|
+C_score_occ_global = |Fscore_global| / |Fexec_global|
+C_score_unique_global = |Uscore_global| / |Uexec_global|  # secondary only
 ```
 
-`Y_exec`與`C_score_occ`範圍0–1且越大越好；required model coverage是
-`C_score_occ>=0.95`。Codegen/compile rejects不進此coverage denominator，但留在
-`Y_exec`與S12完整`Fraw` denominator。
+分母為零時ratio undefined。`Y_exec_global`與`C_score_occ_global`範圍0–1且越大越好；
+required model coverage是`C_score_occ_global>=0.95`。Codegen/compile rejects不進此
+coverage denominator，但留在`Y_exec_global`與S12完整global `Fraw` denominator。
 
 ### 4.4 Current conditional support
 
-Conditional registry prelocked；每activated value至少128 accepted conditional `Fraw`
-occurrences，最多256，不pool至global frame。Cap後unresolved保持untrusted，不能把
-stochastic zero改成absence。S10R3/S10R4 rows、seeds或diagnostics提供zero S11 credit。
+Conditional registry prelocked；每activated、非proven-absent value固定512個512-slot
+chunks／262,144 nominal draws，target canonical first256 accepted conditional `Fraw`
+occurrences，不pool至global frame。128 point只作read-only diagnostic；cap-terminal prefix有
+128–255 accepts時只作一次terminal analysis，少於128是support-insufficient。Cap後unresolved
+保持untrusted，不能reseed／extension或把stochastic zero改成absence。S10R3/S10R4 rows、
+seeds或diagnostics提供zero S11 credit。
+
+對registry cell `(g,v)`：
+
+```text
+Graw_gv   = {o in Fraw_global   : X_g(o)=v}
+Gexec_gv  = {o in Fexec_global  : X_g(o)=v}
+Gscore_gv = {o in Fscore_global : X_g(o)=v}
+Draw_gv   = Graw_gv   multiset-union Fraw_cond(g,v)
+Dexec_gv  = Gexec_gv  multiset-union Fexec_cond(g,v)
+Dscore_gv = Gscore_gv multiset-union Fscore_cond(g,v)
+
+support_gv    = |Fraw_cond(g,v)|
+Cscore_occ_gv = |Dscore_gv| / |Dexec_gv|  # undefined if |Dexec_gv|=0
+n_gv          = |Dscore_gv|
+sum_b_gv      = sum_{o in Dscore_gv} benefit(o)
+global_mean_g = [sum_{o in Fscore_global} benefit(o)] / |Fscore_global|
+```
+
+Global rows提供zero conditional support credit；conditional rows不進global yield、coverage、
+ECDF、`Uexec`或future D5。`global_mean_g`只由terminal global `Fscore`建立，不依賴final
+`T_g`。
 
 ### 4H. Historical/superseded `F_valid(raw)` frame
 
@@ -1581,10 +1655,10 @@ Structural gene必須是frozen free、ungrouped、currently unweighted、cardina
 actual-YAML candidate order；existing groups/weights不變。`T_g`是gene `g`的trusted set。
 Value `v`只有fresh S11 evidence同時給它：
 
-- 至少128 accepted conditional `Fraw` occurrences；
-- 至少1個`Fexec` occurrence；
+- `support_gv>=128`；
+- `|Dexec_gv|>=1`；
 - unique value-preserving raw-to-operational relation，沒有normalization/context/collision ambiguity；
-- `C_score_occ(value)>=0.95`；
+- `Cscore_occ_gv>=0.95`；
 - complete model-only statistics。
 
 Support-unobserved、normalized-away、collision/context-confounded、unresolved、execution-
@@ -1594,19 +1668,44 @@ Gene只有`|T_g|>=2`，且下列model tests、entropy、round-trip、order與lab
 
 ### 5.2 Current model benefit、shrinkage 與 fixed tests
 
-Benefit direction與existing reduce semantics不變。Trusted values依accepted-occurrence
-multiplicity計：
+Benefit direction與existing reduce semantics不變。對locked size `s`，terminal global
+`Fscore` occurrence mass建立Formocast latency mid-ECDF；`L_s`越低越好，`W_<`／`W_=`分別
+是latency嚴格較低／相等的occurrence mass，`W`是total mass：
 
 ```text
-mu_gv = (sum_i b_i + 32 * global_mean_g) / (n_gv + 32)
+r_s(o) = [W_<(L_s(o)) + 0.5 * W_=(L_s(o))] / W
+b_s(o) = 1 - r_s(o)
+benefit(o) = sealed_actual_size_reducer({b_s(o) for every locked size s})
+mu_gv = (sum_b_gv + 32 * global_mean_g) / (n_gv + 32)
 S_g = max_{v in T_g}(mu_gv) - min_{v in T_g}(mu_gv)
 ```
 
-`b_i`與`mu_gv`越大越好；shrinkage `alpha=32`。Fixed tests是`S_g>=0.05`、2,000
-within-gene permutations且observed `S_g>null P95`、2,000 bootstraps且fixed best-vs-worst
-95% half-width`<=0.025`、best/worst recurrence`>=0.90`（`[0.80,0.90)` borderline）、
-size direction至少2/3（two-regime 2/2）、每trusted value support`>=128`與
-`C_score_occ(value)>=0.95`。
+Conditional rows query同一global ECDF；all sizes of one occurrence是一個block。`benefit`與
+`mu_gv`越大越好；shrinkage `alpha=32`。
+
+Trust／mapping／coverage先凍結`Gtest`。Fixed tests是`S_g>=0.05`；2,000 block
+bootstraps且fixed best-vs-worst contrast的95% half-width`<=0.025`、best/worst
+recurrence`>=0.90`（`[0.80,0.90)` borderline）；size direction至少2/3（two-regime
+2/2）。2,000 permutation replicates各使用一份shared-global occurrence permutation；
+conditional部分對每個gene pool恰產生一份independently domain-separated permutation，
+再依該gene各value的fixed observed cell counts分配，禁止per-conditional-cell
+permutations。每個replicate重建ECDF與statistics，並計：
+
+```text
+M_r = max_{g in Gtest} S_gr*
+Q95_own,g = HF7_0.95({S_gr*}_{r=1..2000})
+Q95_family = HF7_0.95({M_r}_{r=1..2000})
+```
+
+Hyndman–Fan Type 7對`n=2,000`的P95是
+`0.95*x_(1900)+0.05*x_(1901)`。Observed `S_g`必須嚴格大於own與family P95；ties fail。
+Fixed兩個4,096 halves共用sealed conditional corpus、各自重建global reference，並exact
+比較完整semantic tuple：每value的`Dexec_gv`、`Dscore_gv`、`n_gv`、
+`Cscore_occ_gv`、`mu_gv`；trust states／reasons、`T_g`、guided states／reasons；以
+actual-YAML candidate order作best／worst tie-break後的best／worst；per-size directions；
+每一項model-test result；own/familywise pass；同一positive global lambda；每gene guidance
+probabilities；shuffle mapping；canonical guidance hash。Numeric drift只報告，full-frame
+float32 bundle另做integrity hash。
 
 ### 5.3 Current probabilities、lambda 與 shuffle
 
@@ -1625,6 +1724,22 @@ lambda=0時不能emit`S1_GUIDANCE_LOCKED`。Untrusted values精確保留`0.20*p0
 Same-entropy shuffle固定untrusted values，只把`T_g`上的`q`做prelocked deterministic
 nonidentity permutation；保持完整`p1` multiset與nominal entropy。Real GFLOPS、S12/D5或
 downstream labels不得選`T_g`、gene、epsilon、alpha、lambda、support branch、shuffle或test。
+
+### 5.4 Current first-match terminal precedence
+
+Mapping-impossibility allowlist是`empty-v1`、精確內容`entries: []`；沒有新的pre-evidence
+authority時，mapping scientific outcome不可到達。以下互斥order是terminal first-match
+precedence；只有所有較早rows已被證明false，才可到達較晚row：
+
+1. 任一prelabel／label-firewall leakage → evidence invalid／`not_evaluated`；fresh lock、
+   fresh seeds、draw 0全量重跑；
+2. qualification或evidence-integrity failure → `CHANGES_REQUIRED / not_evaluated`；
+3. exact allowlisted mapping impossibility → `FT-BLOCKED-MAPPING`，但`empty-v1`下不可到達；
+4. material stochastic shortage → `inconclusive / FT-INCONCLUSIVE / edge=null`；
+5. complete positive → `S1_GUIDANCE_LOCKED -> S12`；
+6. complete bounded no-guidance negative → `edge=null`。
+
+Runner、analyzer與verifier都不能跳過較早row或臨場擴充allowlist。
 
 ### 5H.1 Historical/superseded whole-gene eligibility
 
@@ -1767,25 +1882,47 @@ identity的repeated observations，不是新的independent configs。
 
 ### 6.2 Current raw-denominator prior mass
 
+Stable estimator identity固定為
+`S12-DIRECTIONAL-FINITE-FRAME-HT-EXACT-DENOMINATOR-v1`。
+
 ```text
-r_a(o) = pi_nominal,a(o) / pi_nominal,0(o)
-M_a(T) = [sum_{j in D5} ((sum_{o aliases j} r_a(o)) / rho_j)
-          * I[j in real_top_decile_T]]
-         / [sum_{o in Fraw} r_a(o)]
+r_a(o)   = pi_nominal,a(o) / pi_nominal,0(o)
+A_aj     = sum_{o aliases j} r_a(o)
+N_HT,a   = sum_{j in D5} [A_aj / rho_j] * I[j in T_D5]
+D_exact,a = sum_{o in Fraw_global} r_a(o)
+M_HT,a   = N_HT,a / D_exact,a
+ESS_a    = [sum_{j in D5} A_aj/rho_j]^2 / sum_{j in D5}[A_aj/rho_j]^2
 ```
 
-`o`是`Fraw` occurrence，`j`是selected `Uexec` identity，`rho_j`是identity inclusion
-probability，`T`是real top-decile set。`M_a(T)`範圍0–1且越大越好。Nonexecutable
-`Fraw\Fexec`留在denominator並取得zero numerator credit；executable-unscored selected
-identities經real measurement後若落入`T`，可取得credit。不得使用selected-only、
-`Fexec`-only或representative-alias denominator。
+`o`是global `Fraw` occurrence，`j`是selected `Uexec` identity，`rho_j`是sealed
+without-replacement design的identity inclusion probability，`A_aj`聚合`j`的全部global raw
+aliases。`M_HT`是design-based directional finite-frame raw-mass capture estimator，越大
+directionally表示arm把更多raw mass投向real-high-quality set；它不是bounded probability或
+mass fraction，realized value可大於1。禁止clip、winsorize、post-hoc normalize、
+selected-only／`Fexec`-only／representative-alias或sampled denominator。
+
+在labels前seal `T_D5` rule：
+
+```text
+w_0j = A_0j / rho_j
+Q_D5(t) = [sum_{j in D5} w_0j * I[quality_j <= t]] / sum_{j in D5} w_0j
+t_D5 = min{quality_j : Q_D5(quality_j) >= 0.90}
+T_D5 = {j in D5 : quality_j >= t_D5}
+```
+
+`quality_j`是sealed reducer的all-size real quality，越大越好；所有cutoff ties都進
+`T_D5`。所有arms、shuffle與oracle使用同一sample、`rho_j`與materialized `T_D5`。
+Nonexecutable `Fraw_global\Fexec_global`留在denominator並取得zero numerator credit；
+executable-unscored selected identities經real measurement後若進`T_D5`可取得credit。
 
 ### 6.3 Preserved D5 gates
 
 Preserved rules：aggregate Spearman pass`>=0.25`、borderline`[0.20,0.25)`；lift
-pass`>=2.0`、borderline`[1.5,2.0)`；direction至少2/3 sizes；prior mass勝baseline與
-same-entropy shuffle；ESS`>=25`；planned real coverage`>=0.95`；correctness；five-fold
-config-level oracle；existing bootstrap/permutation/tie與label-firewall rules。
+pass`>=2.0`、borderline`[1.5,2.0)`；direction至少2/3 sizes；`M_HT` strictly勝baseline
+與same-entropy shuffle；ESS`>=25`；planned real coverage`>=0.95`；correctness；five-fold
+config-level oracle；existing permutation/tie與label-firewall rules。Stratum／identity
+bootstrap每次重建cutoff、`T_D5`、estimators、contrasts、ESS與oracle gap；同identity的aliases、
+sizes與repeats保持同一block。
 
 ### 6H.1 Historical/superseded real-score pool
 
@@ -2842,16 +2979,19 @@ Inner model selection：
 
 #### Prior-mass gate
 
-- 使用§6.4相同的self-normalized real-top-decile prior mass`M_a(T)`；
+- 機械繼承stable estimator identity
+  `S12-DIRECTIONAL-FINITE-FRAME-HT-EXACT-DENOMINATOR-v1`及§6.2 exact
+  `r_a/A_aj/N_HT/D_exact/M_HT/rho_j/T_D5`、all-size quality、
+  cutoff ties、stratum／identity bootstrap與no-clipping semantics；
 - learned factorized prior必須strictly同時勝Formocast-factorized prior與same-entropy shuffled。
 
 #### Oracle-gap gate
 
 ```text
-oracle_gap_a = max(0, M_oracle(T) - M_a(T))
+oracle_gap_a = max(0, M_HT,oracle - M_HT,a)
 ```
 
-Learned oracle gap必須strictly小於Formocast oracle gap。
+Learned directional-index oracle gap必須strictly小於Formocast gap；它不是probability gap。
 
 `S4_LEARNED_RESIDUAL_POSITIVE`要求每個primary held-out unit三項全部通過。Tie不算positive；required support或coverage缺失是inconclusive。沒有使用outer labels重選features／genes／thresholds是必要validity condition。
 

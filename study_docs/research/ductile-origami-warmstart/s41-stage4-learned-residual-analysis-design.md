@@ -16,6 +16,9 @@ hypothesis_id: S41-H1
 dependencies:
   - checkpoint_id: S40
     required_edge: S4_ACTIVATE
+  - authority_id: S11-S12-FIXED-FRAME-20260803
+    relation: inherited_directional_index_authority
+    required_state: approved
 entry_criteria:
   - S4_ACTIVATE
 criterion_refs:
@@ -53,7 +56,7 @@ consensus_status: approved_two_reviewer_agree
 ## 1. 白話目標
 
 用唯一預註冊的inclusion-weighted ridge residual correction，在frozen finite held-out
-frame內比較learned與Formocast的ranking、factorized prior mass與oracle gap之observed
+frame內比較learned與Formocast的ranking、factorized directional `M_HT` index與oracle gap之observed
 point direction。S41只做offline cluster-held-out analysis，不做model zoo、不用row split、
 不跑actual GA；即使positive，也不把point comparison擴張成stable／practical／general effect。
 
@@ -61,7 +64,7 @@ point direction。S41只做offline cluster-held-out analysis，不做model zoo�
 
 **S41-H1：**在每個parent-designated primary held-out unit的frozen finite frame中，
 learned residual predictor的observed ranking point value都strictly高於Formocast，
-其factorized prior-mass point value都strictly高於Formocast-factorized與same-entropy
+其factorized `M_HT` point value都strictly高於Formocast-factorized與same-entropy
 shuffled，且其observed oracle-gap point value strictly更小。
 
 反證或inconclusive：
@@ -72,6 +75,7 @@ shuffled，且其observed oracle-gap point value strictly更小。
 - preprocessing、feature selection或lambda selection讀取outer-test labels；
 - 使用forbidden feature或row-random split；
 - factorization/hook偏離frozen procedure。
+- `M_HT`被clip／winsorize／normalize、改denominator，或未繼承S12 exact`T_D5/rho_j`。
 
 ## 3. Dependencies、entry 與 terminal status
 
@@ -167,16 +171,39 @@ Inner selection：
 
 ### Prior mass
 
-- 使用parent D5相同的self-normalized real-top-decile prior mass`M_a(T)`；
-- learned factorized prior必須strictly同時勝Formocast-factorized prior與same-entropy shuffled。
+- 機械繼承stable estimator identity
+  `S12-DIRECTIONAL-FINITE-FRAME-HT-EXACT-DENOMINATOR-v1`、S12 exact fixed-sample
+  identities、global raw aliases、inclusion probabilities、
+  all-size aggregate quality、cutoff ties、stratum／identity bootstrap與no-clipping semantics：
+
+  ```text
+  r_a(o)   = pi_nominal,a(o) / pi_nominal,0(o)
+  A_aj     = sum_{o aliases j} r_a(o)
+  N_HT,a   = sum_{j in D5} [A_aj / rho_j] * I[j in T_D5]
+  D_exact,a = sum_{o in Fraw_global} r_a(o)
+  M_HT,a   = N_HT,a / D_exact,a
+  ESS_a    = [sum_{j in D5} A_aj/rho_j]^2 / sum_{j in D5}[A_aj/rho_j]^2
+
+  w_0j = A_0j / rho_j
+  Q_D5(t) = [sum_{j in D5} w_0j * I[quality_j <= t]] / sum_{j in D5} w_0j
+  t_D5 = min{quality_j : Q_D5(quality_j) >= 0.90}
+  T_D5 = {j in D5 : quality_j >= t_D5}
+  ```
+
+- `quality_j`是sealed all-size real quality、越大越好，所有cutoff ties都進`T_D5`。
+  `M_HT`是可大於1的design-based directional index，不是bounded probability；禁止clip、
+  winsorize、post-hoc normalize或sampled denominator。
+- learned factorized `M_HT`必須strictly同時高於Formocast-factorized與same-entropy shuffled。
 
 ### Oracle gap
 
 ```text
-oracle_gap_a = max(0, M_oracle(T) - M_a(T))
+oracle_gap_a = max(0, M_HT,oracle - M_HT,a)
 ```
 
-Learned oracle gap必須strictly小於Formocast oracle gap。
+Learned directional-index oracle gap必須strictly小於Formocast gap；它不是probability gap。
+每個stratum／identity bootstrap replicate都重建`t_D5`、`T_D5`、estimators、contrasts、
+ESS與oracle gap。
 
 每個primary held-out unit都必須同時通過ranking、prior mass與oracle gap。Tie不算positive；required support或coverage缺失是inconclusive。
 
@@ -213,7 +240,10 @@ Future lock：
 
 `protocol/v1/locks/s41-stage4-learned-residual-analysis-lock.json`
 
-它綁定S40 closure、qualified registry、primary/secondary units、feature manifest、target、ridge grid、preprocessing、inner objective/tie-break、split manifest、weights、factorization、comparators、primary gates、Plan-B、exact whitelists與formal report。
+它綁定`S11-S12-FIXED-FRAME-20260803`、S40 closure、qualified registry、primary/secondary
+units、feature manifest、target、ridge grid、preprocessing、inner objective/tie-break、split
+manifest、weights、exact inherited`rho_j/T_D5/M_HT` identities、bootstrap、comparators、
+primary gates、Plan-B、exact whitelists與formal report。
 
 Outputs：
 
@@ -221,7 +251,8 @@ Outputs：
 - outer/inner split manifest；
 - per-fold preprocessing state與selected lambda；
 - predictions、factorized priors與comparator outputs；
-- per-primary-unit ranking、prior mass、ESS/support、oracle gap；
+- per-primary-unit ranking、unclipped`M_HT`、`T_D5`／ties、ESS/support、directional-index
+  oracle gap與bootstrap；
 - leakage audit與machine decision。
 
 ## 9. Acceptance binding 與 stop matrix
@@ -241,7 +272,10 @@ Outputs：
 
 `reports/learned-residual-surrogate-report.md`
 
-Report逐primary unit呈現feature/split lineage、lambda selection、all comparators、ranking、prior mass、support與oracle gap；secondary LOCO不得混入primary verdict。Positive、negative、inconclusive都照常closeout。
+Report逐primary unit呈現feature/split lineage、lambda selection、all comparators、ranking、
+exact inherited`rho_j/T_D5/A_aj/N_HT/D_exact`、unclipped`M_HT`、support／ESS、bootstrap與
+directional-index oracle gap；secondary LOCO不得混入primary verdict。`M_HT>1`不是error或
+clipping trigger。Positive、negative、inconclusive都照常closeout。
 
 Report的positive wording只能是「在frozen finite held-out frame中，observed point value
 方向符合strict comparison」；不得使用「general improvement」、「stable improvement」、
@@ -271,3 +305,15 @@ S40 positive不另建重複formal report。S41 positive另seal
 - Positive claim縮為frozen finite held-out frame的observed point-direction comparison。
   它不證明practical effect、stability、significance、population generalization、prospective
   replication、production readiness或actual-GA benefit。
+
+### 2026-08-03 approved `S11-S12-FIXED-FRAME-20260803` amendment
+
+- S41機械繼承stable estimator identity
+  `S12-DIRECTIONAL-FINITE-FRAME-HT-EXACT-DENOMINATOR-v1`、S12 exact fixed sample、
+  `rho_j`、global aliases、all-size `T_D5` cutoff／ties、
+  `A_aj/N_HT/D_exact/M_HT`、stratum／identity bootstrap與no-clipping semantics。
+- Learned `M_HT`必須strictly高於Formocast-factorized與same-entropy shuffled；
+  `oracle_gap_a=max(0,M_HT,oracle-M_HT,a)`是directional-index gap，不是probability gap。
+- Exact ridge model、feature boundary、cluster-held-out splits、per-primary-unit all-pass與
+  finite-frame point-direction claim都不變。本amendment沒有啟動S40/S41，也沒有result、
+  report、effective checkpoint lock或edge。
