@@ -82,6 +82,33 @@ authority:
     S11_implementation_authorized: false
     scientific_substitution_or_downgrade_authorized: false
 
+postseal_contract_preserving_amendment_1:
+  authority: user_prelabel_ordinary_contract_preserving_repairs_auto_authorized_and_Main_instruction_to_reconcile_Plan_B_with_the_applicable_planning_contract
+  trigger:
+    artifact: agent_run/260803-ductile-factorized-guidance-s10r4-relational-selector-binding-06/audits/plan-b-adversarial.md
+    raw_sha256: 81cbb0fc7e8837a3b142cdd46afa65fa62ca196f32c7eacca34feb0f9ac1f7e9
+    verdict: CHANGES_REQUIRED
+    finding_count: 3
+  initial_contract_seal:
+    commit_oid: dad1e5c853b90079cee3e40b51c734520c6b6d5a
+    parent_oid: dcbb13f3a2b3d06d206486920222ae8bf2a24057
+    tree_oid: 4ac18261082721f4ef47c08e79bd386818ffc92f
+    raw_sha256: 7d4b26b155ba67ca5050529f1319555b97c00c9445aaeb1d1de39d3adbc29e4b
+    git_blob_oid: 0c8365c8905efdc4184639c1492de4c20aaa5945
+  initial_Plan_B_noncredit_history:
+    candidate: {path: agent_run/260803-ductile-factorized-guidance-s10r4-relational-selector-binding-06/plans/plan-b.md, raw_sha256: ccc066882dd388b3bfab57f21e95fe6fba6fa2d640dc2cb0189b63c6eef8d36c, size_bytes: 17860}
+    premature_freeze: {path: agent_run/260803-ductile-factorized-guidance-s10r4-relational-selector-binding-06/plans/plan-b.freeze.json, raw_sha256: fa0378721c8e0025ffcc34138623cce8ec0e763d2865746ba0ae3859e6a1947e, size_bytes: 1454}
+    audit: {path: agent_run/260803-ductile-factorized-guidance-s10r4-relational-selector-binding-06/audits/plan-b-adversarial.md, raw_sha256: 81cbb0fc7e8837a3b142cdd46afa65fa62ca196f32c7eacca34feb0f9ac1f7e9, verdict: CHANGES_REQUIRED, finding_count: 3}
+    immutable: true
+    effective_Plan_B_audit_or_freeze_credit: 0
+  amendment_scope_exact:
+    - add_an_append_only_contiguous_immutable_Plan_B_candidate_then_audit_then_freeze_revision_lifecycle
+    - add_an_append_only_immutable_contract_snapshot_revision_for_the_amended_committed_and_postaudited_contract
+    - correct_only_the_Plan_B_design_raw_identity_and_omitted_resource_oracle_fields_in_the_next_candidate
+    - align_required_order_with_the_applicable_Main_authored_planning_contract
+  scientific_hypothesis_source_workload_selector_threshold_outcome_claim_edge_or_formal_order_change: false
+  Plan_A_implementation_lock_formal_evidence_outcome_or_terminalization_before_amendment_commit_and_postcommit_audits_PASS: forbidden
+
 workflow_authority:
   exact_records:
     - path: AGENTS.md
@@ -1849,8 +1876,9 @@ canonical_outcomes:
 required_order:
   - authority_design_parent_S11_review_commit_and_postcommit_PASS
   - standalone_contract_two_precommit_audits_exact_commit_and_two_postcommit_audits
-  - Main_authors_and_freezes_Plan_B
+  - Main_authors_immutable_Plan_B_candidate
   - adversarial_Plan_B_contract_authority_audit_PASS
+  - Main_records_separate_immutable_Plan_B_freeze_only_after_audit_PASS
   - Main_authors_Plan_A
   - existing_implementer_receives_Plan_A_only
   - offline_implementation_tests_and_two_independent_closure_projections
@@ -1865,14 +1893,26 @@ required_order:
 planning_contract:
   Plan_B:
     author: Main
-    path: agent_run/260803-ductile-factorized-guidance-s10r4-relational-selector-binding-06/plans/plan-b.md
-    freeze_record_path: agent_run/260803-ductile-factorized-guidance-s10r4-relational-selector-binding-06/plans/plan-b.freeze.json
+    initial_noncredit_candidate_path: agent_run/260803-ductile-factorized-guidance-s10r4-relational-selector-binding-06/plans/plan-b.md
+    initial_noncredit_freeze_record_path: agent_run/260803-ductile-factorized-guidance-s10r4-relational-selector-binding-06/plans/plan-b.freeze.json
+    initial_candidate_raw_sha256: ccc066882dd388b3bfab57f21e95fe6fba6fa2d640dc2cb0189b63c6eef8d36c
+    initial_audit_verdict: CHANGES_REQUIRED
+    initial_finding_count: 3
+    candidate_revision_prefix: agent_run/260803-ductile-factorized-guidance-s10r4-relational-selector-binding-06/plans/revisions
+    effective_contract_snapshot_selection: highest_contiguous_contract_snapshot_revision_whose_candidate_directory_hash_equals_the_final_committed_postaudited_contract_raw_sha256_and_whose_identity_record_binds_the_exact_commit_blob_parent_tree_size_and_hash
+    next_revision_ordinal: 2
+    candidate_path_selection: revision_<contiguous_positive_integer>_then_candidate_<exact_Plan_B_raw_sha256>_then_plan-b.md
+    freeze_path_selection: same_revision_and_candidate_directory_then_plan-b.freeze.json
+    effective_Plan_B_selection: highest_contiguous_revision_whose_exact_candidate_has_same_revision_adversarial_PASS_zero_findings_then_a_separately_created_freeze_record_binding_candidate_contract_and_audit_hashes
     must_precede_Plan_A: true
     must_cover_every_acceptance_criterion_and_outcome_branch: true
     audit_role: /root/s10r4_adversarial_auditor
     initial_audit_path: agent_run/260803-ductile-factorized-guidance-s10r4-relational-selector-binding-06/audits/plan-b-adversarial.md
     repair_revision_prefix: agent_run/260803-ductile-factorized-guidance-s10r4-relational-selector-binding-06/audits/revisions/plan-b
-    effective_audit_selection: fixed_initial_if_PASS_otherwise_highest_contiguous_revision_for_the_exact_final_Plan_B_candidate_and_same_adversarial_role
+    lifecycle_order_exact: create_candidate_then_adversarial_audit_then_if_and_only_if_PASS_zero_findings_create_freeze_record_then_Plan_A
+    candidate_and_freeze_each_create_once_immutable: true
+    CHANGES_REQUIRED_candidate_and_any_premature_freeze_remain_immutable_noncredit_history: true
+    effective_audit_selection: highest_contiguous_revision_for_the_exact_effective_Plan_B_candidate_and_same_adversarial_role
     effective_audit_verdict_required: PASS
     effective_findings_count_required: 0
   Plan_A:
@@ -2026,6 +2066,14 @@ execution_artifact_whitelist:
       grammar: "^revision-([1-9][0-9]*)/candidate-([0-9a-f]{64})/(verifier-verdict.md|verifier-verdict.json|closeout-ack.json)$"
       value_sources: [same_single_fresh_terminal_verifier, contiguous_unbounded_revision_ordinal, exact_candidate_raw_sha256]
       maximum_cardinality: no_numeric_cap_subject_only_to_declared_hard_resource_or_safety_pause
+    - path: agent_run/260803-ductile-factorized-guidance-s10r4-relational-selector-binding-06/plans/revisions
+      grammar: "^revision-([1-9][0-9]*)/candidate-([0-9a-f]{64})/(plan-b.md|plan-b.freeze.json)$"
+      value_sources: [Main_authored_Plan_B_only, contiguous_unbounded_revision_ordinal, exact_Plan_B_raw_sha256, candidate_then_post_PASS_freeze_lifecycle]
+      maximum_cardinality: no_numeric_cap_subject_only_to_declared_hard_resource_or_safety_pause
+    - path: agent_run/260803-ductile-factorized-guidance-s10r4-relational-selector-binding-06/contract/revisions
+      grammar: "^revision-([1-9][0-9]*)/candidate-([0-9a-f]{64})/(frozen-contract.yaml|frozen-contract-identity.json)$"
+      value_sources: [Main_exact_snapshot_only, contiguous_unbounded_revision_ordinal, exact_committed_postaudited_contract_raw_sha256]
+      maximum_cardinality: no_numeric_cap_subject_only_to_declared_hard_resource_or_safety_pause
     - path: agent_run/260803-ductile-factorized-guidance-s10r4-relational-selector-binding-06/artifacts/prelabel-build
       grammar: "^[A-Za-z0-9._+/-]+$"
       value_sources: [pinned_source_materialization_and_native_build]
@@ -2132,7 +2180,7 @@ execution_artifact_whitelist:
       gate_map_revision_relation: each_replacement_requires_previous_and_new_raw_sha256_plus_exact_eligible_edge_delta_and_utc_in_gate_map_revisions_jsonl
       tranche_state_revision_relation: each_replacement_requires_previous_and_new_raw_sha256_plus_live_and_committed_projection_transition_and_utc_in_tranche_state_revisions_jsonl
       adjudication_and_subagents_append_relation: every_iteration_or_role_start_appends_one_complete_record_without_rewriting_prior_bytes
-      revisioned_audit_and_verifier_histories:
+      revisioned_audit_plan_and_verifier_histories:
         path_selection: exact_stage_then_contiguous_positive_revision_then_exact_candidate_raw_sha256_then_exact_role_then_closed_filename
         creation: every_revision_path_and_file_lstat_ENOENT_then_atomic_create_once_and_immutable
         ordinal: begins_at_1_for_a_stage_without_a_fixed_initial_artifact_or_at_2_after_the_fixed_initial_artifact_and_has_no_numeric_stop
@@ -2141,6 +2189,10 @@ execution_artifact_whitelist:
         findings_relation: CHANGES_REQUIRED_preserves_the_document_and_triggers_same_role_resume_on_the_next_contiguous_revision_after_a_contract_preserving_repair
         effective_PASS: highest_contiguous_revision_for_the_exact_stage_and_final_candidate_must_be_PASS_with_zero_findings_and_all_earlier_attempts_remain_immutable_noncredit_history
         uncapped_repair: no_numeric_iteration_limit_and_only_declared_hard_resource_feasibility_or_safety_pause_may_interrupt
+        Plan_B_candidate_lifecycle: Main_atomically_creates_exact_candidate_path_first_then_the_same_existing_adversarial_role_creates_the_same_revision_candidate_hash_audit_and_only_PASS_with_zero_findings_authorizes_Main_to_create_the_exact_same_directory_freeze_record
+        Plan_B_freeze_binding: freeze_record_repeats_exact_candidate_contract_and_effective_audit_paths_raw_hashes_sizes_roles_verdict_and_finding_count_and_is_forbidden_before_effective_audit_PASS
+        Plan_B_CHANGES_REQUIRED_history: candidate_audit_and_any_premature_initial_freeze_are_immutable_supply_zero_effective_credit_and_next_repair_uses_the_next_contiguous_revision_without_numeric_stop
+        contract_snapshot_revision_lifecycle: after_each_contract_amendment_exact_commit_and_effective_postcommit_audits_PASS_Main_creates_the_next_contiguous_candidate_hash_directory_with_byte_identical_frozen_contract_then_its_identity_record_and_neither_file_may_change
       tests: [reject_cross_role_write, reject_immutable_rewrite, reject_append_prefix_change, reject_snapshot_replacement_without_matching_prior_new_hash_ledger_event, reject_Main_authored_closeout_ACK, reject_Main_authored_terminal_postcommit_audit]
     overwrite_or_cross_role_write: forbidden
   provenance_ledger:
@@ -2318,6 +2370,14 @@ resources:
     bind_any_notifications_or_hard_pause_evidence: true
 
 contract_review:
+  amendment_1:
+    reason: reconcile_create_once_Plan_B_repair_and_freeze_order_with_the_applicable_planning_contract_after_initial_CHANGES_REQUIRED
+    scope: workflow_identity_resource_oracle_and_revision_lifecycle_only_no_scientific_change
+    precommit_revision_ordinal: 4
+    postcommit_revision_ordinal: 2
+    same_reviewer_b_and_adversarial_roles_required: true
+    exact_one_path_commit_required: true
+    initial_contract_commit_remains_immutable_history: true
   precommit:
     candidate_must_be_identical_for_both_reviews: true
     reviewer_b_replacement_for_quarantined_reviewer_a_audit:
@@ -2333,7 +2393,7 @@ contract_review:
       initial_candidate_raw_sha256: 4a6cc14d052da0770de11948a3f5df450f9a7160d7af36cca55a6bf9d762ac5f
       initial_verdict: CHANGES_REQUIRED
     revision_history_prefix: agent_run/260803-ductile-factorized-guidance-s10r4-relational-selector-binding-06/audits/revisions/contract-precommit
-    next_revision_ordinal: 2
+    next_revision_ordinal: 4
     effective_audit_selection: highest_contiguous_revision_for_each_exact_role_whose_candidate_directory_and_document_hash_equal_the_final_contract_raw_SHA256
     required_effective_verdicts: [PASS, PASS]
     required_effective_findings_counts: [0, 0]
@@ -2350,7 +2410,7 @@ contract_review:
       task_id: /root/s10r4_adversarial_auditor
       artifact: agent_run/260803-ductile-factorized-guidance-s10r4-relational-selector-binding-06/audits/contract-postcommit-adversarial.md
     revision_history_prefix: agent_run/260803-ductile-factorized-guidance-s10r4-relational-selector-binding-06/audits/revisions/contract-postcommit
-    effective_audit_selection: fixed_initial_artifact_if_PASS_otherwise_highest_contiguous_revision_for_the_exact_committed_contract_candidate_and_role
+    effective_audit_selection: fixed_initial_artifact_only_when_it_binds_the_final_committed_contract_candidate_otherwise_highest_contiguous_revision_for_the_exact_final_committed_contract_candidate_and_role
     required_effective_verdicts: [PASS, PASS]
     required_effective_findings_counts: [0, 0]
 
