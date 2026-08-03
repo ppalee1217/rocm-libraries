@@ -6,6 +6,14 @@
 >
 > **Current lifecycle：**以[active checkpoint index](ductile-origami-warmstart/README.md)與[experiment plan](ductile-origami-warmstart-experiment-plan.md)為準；本charter不重複維護易變的checkpoint current state。
 >
+> **2026-08-03 authority amendment：**
+> [`S1-REBASELINE-20260803`](ductile-origami-warmstart/s10r4-retirement-s11-rebaseline-authority.md)
+> 已退役未啟動的S10R4/B01–B07；沒有S10R4/S11 experiment、result、report、lock或
+> fabricated edge。S11以虛線administrative prerequisite進入future design/contract
+> workflow，`incoming_scientific_edge=null`；唯一future scientific edge是S11自己的
+> `S1_GUIDANCE_LOCKED -> S12`。繁中白話說明見
+> [change guide](ductile-origami-warmstart/s10r4-to-s11-experiment-plan-change-guide.md)。
+>
 > **檔名說明：**`surrogate-dse-plan.md` 是為維持既有連結而保留的歷史檔名。Stage 1–3不訓練 self-trained surrogate；主要模型是 **Formocast**。Learned residual只有 Stage 4 trigger與data gate同時通過才啟動。
 >
 > **執行規格：**所有sample counts、公式、門檻、seeds、artifacts與Stage 1–4 stop rules只以[ductile-origami-warmstart-experiment-plan.md](ductile-origami-warmstart-experiment-plan.md)為準。若兩份文件衝突，本charter決定研究scope／claim，experiment plan決定數值與checkpoint DAG。
@@ -524,7 +532,7 @@ Independent reproduction與Plan-A-blind fresh verifier通過；exact-path closur
 post-commit audit完成後，S10R3為`CHECKPOINT_COMPLETE`。本結果不改寫S10／S10R2，
 不建立positive gate record，也不啟動S11或授權push。
 
-### 1.23 A47 S10R4 exact-frame operational entry recovery
+### 1.23 Historical/superseded A47 S10R4 exact-frame operational entry recovery
 
 2026-08-02，使用者要求先釐清normal workflow是否會把Ductile-validator accepted
 configs交給KernelWriter，以及S10R3同一config為何穩定codegen失敗。Code trace確認：
@@ -555,7 +563,7 @@ Fresh Reviewer A `/root/pipeline_rebaseline_reviewer_a`與Reviewer B
 這是post-observation但pre-S10R4-outcome的prospective sibling design。它不修改本charter
 north star、Stage 1–4 claim ladder或S10R3歷史結果，不授權push。
 
-### 1.24 A48 S10R4 binding-02 execution recovery authority
+### 1.24 Historical/superseded A48 S10R4 binding-02 execution recovery authority
 
 2026-08-02，S10R4 binding-01的第一個formal census child在進入Ductile、Tensile或
 KernelWriter前即fail closed。Direct evidence證明parent依frozen design在child root啟動
@@ -581,7 +589,7 @@ top-level formal stage。兩者都是execution harness／lineage缺陷，不是s
 estimand或claim ladder。它是historical A48 projection，後由A50/A51 supersede；沒有形成
 positive edge。
 
-### 1.25 A51 S10R4 binding-04 resolver-effective dual-lineage authority
+### 1.25 Historical/superseded A51 S10R4 binding-04 resolver-effective dual-lineage authority
 
 Binding-02曾完成effective lock與`LOCKED_READY`，但第一個Census-A child在backend
 factory留下partial後fail closed；它已退休為
@@ -623,7 +631,7 @@ A51當時只允許binding-04 post-audited `S10R4:S1_ENTRY_GO_EXACT_FRAME`啟動S
 A51不改本charter north star或Stage 1–4
 claim ladder，也不授權push。
 
-### 1.26 S10R4 binding-06 clean provenance-successor authority
+### 1.26 Historical/superseded S10R4 binding-06 clean provenance-successor authority
 
 Binding-04在effective lock與任何formal row前，由source-closure audit發現一個新的
 non-scientific defect：`KernelWriter.getTensorParameters`的literal
@@ -663,6 +671,32 @@ formal result或outgoing edge，且提供zero B06 gate credit。
 ladder或S11 science，也不授權push或S11 implementation。
 
 ---
+
+### 1.27 S10R4 retirement／S11 support-aware rebaseline
+
+2026-08-03，兩位independent reviewers完成兩輪cross-examination與一輪evidence-backed
+final，均`AGREE`且無material dissent；使用者核准R3 authority amendment：
+
+- S10R4固定為`retired_unstarted / superseded / cancelled / BLOCKED / not_evaluated /
+  lock absent / report null / edge null / gate credit 0`；B01–B06只作immutable historical
+  provenance，B07 dirty draft禁止作authority/evidence。
+- S11現為`approved / not_started / DESIGN_APPROVED / not_evaluated / lock absent`，只有
+  administrative `S1-REBASELINE-20260803`，沒有incoming scientific edge。
+- Future S11 fresh建立`Fraw/Fexec/Fscore`：raw accepted occurrence、resolver+normal
+  KernelWriter+compile executable occurrence、complete finite native Formocast occurrence。
+  Execution attrition不叫Formocast missingness。
+- Gene改用trusted set`T_g`；`p1=0.20*p0+0.80*q`，untrusted value仍保留
+  `0.20*p0>0`。Shrinkage`alpha=32`、4,096/8,192、128/256、entropy/model tests與label
+  firewall不變。
+- S12從`Uexec` exactly 256 identities無replacement建立D5，分10個`Uscore` deciles與
+  一個executable-unscored stratum；完整`Fraw` alias mass是primary prior denominator。
+- S30 time/resource只作Layer-C planning；S40只有trigger+full data ready才instantiate；
+  S41 claim限finite held-out frame內observed point-direction。S13/S20/S31 science不變。
+- Current governance採[artifact policy](experiment-artifact-governance.md)的Layer A/B/C：
+  authority/design經commit由B seal為A；resource/routing/repair是Layer C且不能改science。
+
+本節supersede §1.23–§1.26 中仍把S10R4 positive當active dependency、仍使用舊population
+名稱或whole-gene fail-closed的normative implication；它們保留為歷史，不得啟動S11。
 
 ## 2. 研究問題與假設
 
@@ -887,14 +921,20 @@ flowchart TD
 
 ### 6.4 Stage 4 — Conditional learned residual
 
-只在以下條件同時成立時啟動：
+S40只有legal trigger與full data readiness同時成立時才instantiate。條件是：
 
 - Formocast predictor failure；
 - cross-fitted oracle穩定支持 factorized main effects；
 - existing／shuffled controls顯示仍有可學增量；
-- 已有至少三個合格 clusters，且能在五日 cap內取得一個 prospective sealed fourth cluster。
+- 完整data floor：4個independent clusters、每cluster至少256 unique configs與2 sizes、
+  total至少1,024 configs／2,048 config-size labels；已有3個qualified clusters時最多新增
+  一個prospectively sealed fourth cluster。
 
-預設只做 cluster-held-out ranking／factorization，不跑 actual GA。若不足四 clusters，直接記 `FT-SURROGATE-DATA-INSUFFICIENT`。
+預設只做 cluster-held-out ranking／factorization，不跑 actual GA。無trigger時
+`not_activated`；trigger但data incomplete時
+`data_pending / not_activated / not_evaluated`，不建立S40 report/decision/lock或scientific
+negative。`FT-SURROGATE-DATA-INSUFFICIENT`只作operational readiness provenance；有新的
+prelabel-qualified data時才重查。五日只作Layer-C planning telemetry。
 
 任何 stage失敗都停止該 branch；只有明確的 oracle-positive predictor failure可轉 Stage 4。不得靠降低門檻、改 genes或重調 weights重用同一 judgment pool。
 
@@ -982,11 +1022,14 @@ Stage 3凍結 procedure在兩個預註冊 clusters均重現 short-horizon direct
 
 ### `FT-SURROGATE-DATA-INSUFFICIENT`
 
-Stage 4少於四個合格 independent clusters，或 prospective fourth cluster無法在 cap內取得。
+Stage 4尚未具備四個合格 independent clusters或完整data floor的operational readiness
+provenance。它對應`data_pending / not_activated / not_evaluated`，不是learned-surrogate
+scientific negative；只有新prelabel-qualified data出現時才重查。
 
 ### `FT-SURROGATE-NO-GAIN`
 
-Nested cluster-held-out learned residual未穩定優於 Formocast／shuffled，或未縮小與 oracle的差距。
+在frozen finite held-out frame中，nested cluster-held-out learned residual的required
+observed point-direction comparison未strictly勝 Formocast／shuffled，或未縮小oracle gap。
 
 ### `FT-INCONCLUSIVE`
 
@@ -1065,8 +1108,9 @@ Noise、support、coverage、importance ESS、unique configs 或兩-regime evide
 - fixed MT 還是 MTDU、DepthU 是否自由；
 - dtype/layout 與可共用同一 search space 的 sizes；
 - Formocast mapping coverage、score ties 與 throughput；
-- `F_valid(raw)`在cap內經`F_effective -> F_codegen`後的unique stable operational catalog
-  大小、resolver collisions與raw multiplicity concentration；
+- Future S11 `Fraw`經resolver／normal KernelWriter generation／pinned compile形成
+  `Fexec/Uexec`後的identity數量、execution yield、resolver collisions與raw multiplicity；
+  以及`Fexec`經native Formocast形成`Fscore/Uscore`的occurrence-mass coverage；
 - gfx942 slot、measurement noise 與可用 GPU-hours；
 - branch proxy 是否能只改 weights、不改 candidate space；
 - Stage 2十代完整 panel的實際 evaluation／GPU成本；
@@ -1092,12 +1136,13 @@ S00 -> S10 [terminal negative; edge=null]
                                                      |
                                                      +-- terminal inconclusive; edge=null --> S10R3
                                                                                               |
-                                                                                              +-- terminal negative; sealed frame --> S10R4
-                                                                                                                              |
-                                                                                                                              +-- S1_ENTRY_GO_EXACT_FRAME --> S11
+                                                                                              +-- terminal negative; edge=null --> S1-REBASELINE-20260803
+
+S10R4 [retired_unstarted; not_evaluated; edge=null] -- administrative only --> S1-REBASELINE-20260803
+S1-REBASELINE-20260803 -. administrative prerequisite; not scientific .-> S11
 
 S11 -> S12 -> S13 -> S20 -> S30 -> S31
-  [not activated until post-audited S10R4 qualified edge]
+  [S11 future scientific edge begins only at S11:S1_GUIDANCE_LOCKED]
                                   \
                                    +---- conditional ------> S40 -> S41
 
@@ -1110,12 +1155,10 @@ record，不是S10R2 parent或evidence source；A32固定它為
 S10R2已terminalize為inconclusive/null；它對S10R3只提供immutable terminal
 provenance，不提供formal evidence或scientific edge。S10R3現已terminalize為
 `CHECKPOINT_COMPLETE / negative / S1_ENTRY_BLOCKED / FT-BLOCKED-MAPPING /
-edge=null`，因此沒有啟動S11。A47新增S10R4；A48 binding-02與A50 binding-03均已
-退休為immutable non-scientific provenance。A51核准的binding-04 dual-lineage
-science保留，但B04 execution已因prelock relational-selector closure gap superseded。
-Current B06為`DESIGN_APPROVED / not_started / not_evaluated / edge=null`、
-binding-06 lock absent，只有binding-06 post-audited
-`S10R4:S1_ENTRY_GO_EXACT_FRAME`可啟動S11。
+edge=null`。A47–B06的S10R4 records已由`S1-REBASELINE-20260803`退役為immutable
+non-scientific provenance；B07未被接納。S10R4沒有report、lock、result或edge。S11只由
+虛線administrative prerequisite進入future design/contract workflow，沒有scientific
+predecessor edge。
 
 M00–M09移入`ductile-origami-warmstart/legacy/`，只保留歷史正文：
 
@@ -1160,12 +1203,15 @@ M00–M09移入`ductile-origami-warmstart/legacy/`，只保留歷史正文：
   [S10R3 Stage 1 bounded-cover entry report](ductile-origami-warmstart/reports/staged/s10r3-stage1-bounded-cover-entry-report.md)。
   它記錄sealed G3 execution的
   `negative / S1_ENTRY_BLOCKED / FT-BLOCKED-MAPPING / edge=null`，不啟動S11。
-- S40 data insufficiency是formal scientific negative，寫入`reports/staged/s40-stage4-activation-report.md`；不建立data-insufficiency blocker memo。
+- S40未有trigger時`not_activated`；trigger但data incomplete時
+  `data_pending / not_activated / not_evaluated`。兩者均無S40 report/decision/lock；
+  `FT-SURROGATE-DATA-INSUFFICIENT`只作operational readiness provenance。
 - `skipped_by_gate`／`not_activated`由上游report與closeout記錄，不建立自己的report或commit。
 - Internal positive scientific gate使用compact durable record並在同tranche繼續；
   internal terminal negative／inconclusive產生planned report；final gate report整合
-  prior records。Tranches固定為historical S10R2、S10R3，active standalone
-  `T-S10R4-B06 / CU-S10R4`，以及future S11+S12+S13、S20、S30+S31、S40+S41。
+  prior records。Tranches固定為historical S10R2、S10R3、retired S10R4，current
+  `T-AUTH-S1-REBASELINE-20260803 / CU-AUTH-S1-REBASELINE-20260803`，以及future
+  S11+S12+S13、S20、S30+S31、S40+S41。
 - Positive、negative與inconclusive在evidence integrity完整時都需durable outcome
   closure、parent update、`CLOSEOUT_ACK`、isolated commit與post-commit audit。
 - Technical`PASS`只是`VERIFIED_PENDING_CLOSEOUT`；完成全部closeout後才是`CHECKPOINT_COMPLETE`。
@@ -1194,10 +1240,8 @@ post-audited positive才啟動S11。A46.5 G3 successor已完成fresh固定512-ch
 `C_greedy=K=19`與兩次可重現required mapping failure，最終closeout為
 `negative / S1_ENTRY_BLOCKED / FT-BLOCKED-MAPPING / edge=null`。因此S11仍是
 `not_activated`，後續不得把G2 diagnostics或G3合法未到達的後段工作補升為edge。
-A47已核准S10R4 exact-frame sibling；A51進一步核准binding-04 resolver-effective
-dual-lineage science，但其execution現已immutable prelock superseded，不能產生qualified
-evidence。Binding-05另因preimplementation provenance-chain failure immutable
-superseded。Current binding-06 authority保留該science，且只有B06能在
-完整sealed 114-occurrence raw frame上依fresh contract與lock產生qualified evidence；
-它不能借用S10R3 decision或binding-02/03/04/05 formal artifacts或diagnostics補升結果。
-本authority不授權push。
+A47–B06的S10R4 authority/design trail已由`S1-REBASELINE-20260803`退役；B07未被接納。
+它們保持immutable historical provenance但提供zero S11 credit。S11現在可進future
+design/contract workflow，仍沒有effective lock、evidence、result或report；只有S11自己
+post-audited的`S1_GUIDANCE_LOCKED`才可形成通往S12的scientific edge。本authority不授權
+push或任何experiment execution。

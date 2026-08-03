@@ -21,10 +21,18 @@
 
 ## Codex skill location
 
-- Repository-scoped Codex skill adapters live under `.agents/skills/`.
-- Each adapter reads the matching canonical workflow under `.cursor/skills/`
-  and documents only the runtime-specific mappings needed by Codex.
-- When adding, removing, or renaming a Cursor skill, update its Codex adapter
-  in the same task.
-- When a canonical skill description changes, keep the adapter's `name` and
-  `description` in sync; canonical body-only changes require no duplication.
+- Repository-scoped Codex skills live under `.agents/skills/`.
+- `.cursor/skills/` remains the canonical workflow source. Each matching
+  `.agents/skills/` directory is a complete, standalone Codex-native port:
+  it contains the full workflow and every required reference, script, and
+  asset instead of pointing back to the Cursor `SKILL.md`.
+- Codex-only runtime mappings belong in a short `Codex runtime mappings`
+  section delimited by `BEGIN/END CODEX RUNTIME MAPPINGS` comments inside the
+  migrated `.agents` skill. They may translate model names, input prompts,
+  subagent calls, resume behavior, or Cursor/editor terminology, but must not
+  change workflow authority, sequencing, evidence, or completion semantics.
+- When adding, removing, renaming, or changing a Cursor skill, migrate the
+  corresponding `.agents` skill and all bundled resources in the same task.
+- Keep each migrated skill's `name` and `description` exactly synchronized
+  with the canonical Cursor frontmatter, and verify that no `.agents` skill
+  depends on reading a `.cursor/.../SKILL.md`.

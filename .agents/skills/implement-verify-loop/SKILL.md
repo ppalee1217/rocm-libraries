@@ -2,7 +2,8 @@
 name: implement-verify-loop
 description: >-
   Executes risk-tiered engineering and experiment work from an approved design
-  using Main-authored transient implementation and goal-oracle plans, a durable
+  using milestone-level artifact governance, Main-authored transient implementation
+  and goal-oracle plans, a durable
   machine-readable frozen contract, reviewer-governed uncapped repair, and independent
   verification. Preserves hard scientific gates while allowing compatible
   gates to share an execution tranche and terminal closeout. Use for
@@ -39,6 +40,26 @@ Main agent 是 orchestrator：解析 authoritative bundle、凍結風險與 outc
 保護 baseline、親自準備 Plan-A 與 Plan-B、管理有界角色與資源，並保存可追溯裁決與
 證據。Main agent 不得把兩份 plan 委派給 planner subagent，也不得親自實作 source change。
 
+## Required artifact-governance policy
+
+At every new experiment, checkpoint, successor, generation, execution tranche, or closure
+unit, completely read `study_docs/research/experiment-artifact-governance.md` and record its
+commit/hash in the baseline. Classify every artifact before outcome-revealing work:
+
+- a **sealed scientific milestone** is strict Layer A and changes only through an authorized
+  amendment/version/successor;
+- a **pre-seal candidate** is Layer B and may receive traceable revisions or deterministic
+  rebuilds before labels;
+- **operational bookkeeping** is Layer C and may use a canonical operational correction while
+  preserving the original published bytes.
+
+An operational correction can never change formal inputs/evidence, sample inclusion, execution
+order, measurement, outcome, claim, or edge. A more specific effective contract remains
+controlling when it freezes a stricter scientific, safety, or compliance lifecycle. Ordinary
+bookkeeping defects do not automatically poison a binding. Use the policy's proportionate threat
+model; do not build same-account hostile-process or OS-security machinery unless the approved
+design, external compliance, or direct evidence requires it.
+
 Verifier `PASS` 只代表 technical verification 通過並進入
 `VERIFIED_PENDING_CLOSEOUT`。正式 report、parent update、`CLOSEOUT_ACK`、
 授權範圍內的 terminal commit 與 post-commit audit 都完成後，closure unit 才是
@@ -50,7 +71,7 @@ Verifier `PASS` 只代表 technical verification 通過並進入
 - `scientific_gate` 是預註冊 outcome、claim 或 authority decision 的硬邊；不得合併、
   重排或用共享 closeout 繞過。
 - `execution_tranche` 是可共享 Main planning context、environment/setup、run root 與
-  repair ledger 的一段相容工作。每個 scientific gate 仍有自己的 Plan-A、frozen
+  repair history 的一段相容工作。每個 scientific gate 仍有自己的 Plan-A、frozen
   Plan-B、fresh implementer 與 fresh verifier；只有同一 gate 的 repair 才 resume 原角色。
 - `closure_unit` 是一個或多個相容 adjacent gates 的 terminal evidence/report/parent
   update/staging/commit 單位。它不改變 gate order，也不把多個 outcome 混成一個。
@@ -90,6 +111,11 @@ renaming、replacement 或 fresh thread 都不能重設 tier、repair count 或 
 - `live_run_state`：working tree、正在執行／待驗證 run、partial artifacts 與即時資源狀態。
 - `committed_projection_state`：最後已 commit 的 contract、lock、parent projection 與
   terminal state；不可把 partial live result 回填成 committed fact。
+
+依 artifact policy 分開維護 Layer A 的 sealed identity、Layer B 的 selected candidate
+revision/hash，以及 Layer C 的 original events、corrections 與 deterministic effective
+projection。不得把 Layer C 的 serialization 或 metadata failure 升級成 Layer A identity
+failure，除非 direct evidence 證明它改變或無法重現 formal science。
 
 ## Model and independence policy
 
@@ -187,7 +213,9 @@ prior roles，不得藉此重設或規避 thread cap：
   的最小、可逆、非破壞性方案。若沒有這種方案，才依實際性質轉入 experiment-design、
   missing-authority 或 safety gate；不得假造 unified conclusion。
 - Ordinary deterministic fix 不需為了形式而啟動雙 reviewer。Operational reviewers
-  不取代 fresh verifier。Repair count 只作 append-only provenance；新 thread、
+  不取代 fresh verifier。Repair count 與 finding/repair/verdict history 只作 traceable
+  provenance；已發布錯誤保留原 bytes 並使用 operational correction，不要求塞進單一
+  immutable ledger。新 thread、
   generation 或 successor 不得刪除歷史，但累計數字不形成 stop 或 approval gate。
 
 ## 實驗範圍外的 external workspace drift
@@ -203,10 +231,13 @@ equality 當成實驗 gate。只有 direct evidence 同時證明下列條件，�
 - drift 不影響 dependency resolution、reproducibility、evidence、claim 或 closeout；
 - 繼續工作不需要 restore、delete、quarantine、overwrite 或其他 path mutation。
 
-符合時保留原 baseline 作歷史證據，append successor observation，記錄 exact path、
+符合時保留原 baseline 作歷史證據，並 record 一筆新的 traceable successor
+observation，記錄 exact path、
 known prior state、current `lstat`/Git/index state、`UNKNOWN_EXTERNAL` attribution、
 boundary check 與 exact-commit path proof；通知使用者後直接繼續，通知不是 approval
 gate。不得更動該 path，也不得把 disappearance 解讀成 owner 已授權刪除。
+只有 direct evidence 證明舊 observation 在當時就記錯，才使用 operational
+correction；實際之後發生的 drift 不得改寫成 correction。
 
 若存在 scope overlap、current-workflow attribution、index/commit collision、
 evidence/reproducibility impact、qualification 不完整，或必須更動該 path 才能繼續，
@@ -221,7 +252,7 @@ experiment-relevant protected state 一致，不要求 unrelated external paths 
 2. Hard scientific edges 永遠不軟化：dependent gate 只有在 upstream outcome 已依
    frozen contract verified 後才可進入。
 3. 相容 adjacent gates 可共享 Main planning context、environment/setup、run root、
-   repair ledger，並在一個 terminal closeout 完成；每個 gate 仍保留獨立 Plan-A、
+   repair history，並在一個 terminal closeout 完成；每個 gate 仍保留獨立 Plan-A、
    frozen Plan-B、fresh implementer、fresh verifier、contract criterion、outcome、
    evidence lineage 與 verdict。
 4. Independent label-blind preparations 可平行，前提是 write、artifact、index、run root、
@@ -281,7 +312,9 @@ closure/
 
 1. 由`$ARGUMENTS`與authoritative bundle解析唯一parent plan、gate design與ID；
    不可發明spec、report或blocker path。
-2. 讀latest committed repo rule、本skill、parent/design、相關code/tests，記錄revision/hash；
+2. 讀latest committed repo rule、本skill、
+   `study_docs/research/experiment-artifact-governance.md`、parent/design、相關code/tests，
+   記錄revision/hash；
    有locked conflict先traceable alignment。
 3. 解析 scientific gate DAG、tranche/closure mapping、acceptance/oracle、
    evidence/claim boundary、status/outcome vocabulary、report/blocker target與
@@ -295,6 +328,9 @@ closure/
      例如 implementation whitelist 中授權的 deliverables、formal report、parent
      checkpoint-specific hunk 及明確授權的 durable amendment/artifact；不得包含只屬於
      execution artifact whitelist 的 transient paths。
+   同時逐項分類為 Layer A sealed scientific milestone、Layer B pre-seal candidate 或
+   Layer C operational bookkeeping；凍結 B→A seal transition、Layer-C projection rule 與
+   correction path。Layer 分類不能只由目錄或副檔名推定。
 5. 在 outcome labels 前分類並凍結 R0-R3 tier；R2/R3 預約 adversarial auditor。
 6. 確認 scoped authority。只有既有明確 authority 涵蓋時，才可在 terminal closure
    對 exact delivery paths 做 isolated commit；push、PR、credentials、external write、
@@ -331,7 +367,8 @@ closure/
 11. 從 approved design 擷取 durable machine-readable frozen contract，至少包含 gate
     ID/tier、labels、criteria、outcome/edge matrix、evidence/measurement/claim boundary、
     fixtures、lineage、implementation/execution-artifact/delivery whitelists、authority、
-    repair ledger／reviewer policy、resource planning targets、
+    artifact-layer registry、B→A seal transition、Layer-C projection/correction rule、
+    proportionate threat model、repair history／reviewer policy、resource planning targets、
     任何explicit hard resource boundary、downgrade gate與lock identity。人工與機器
     表示必須可追溯；不一致時停止。
 12. R2/R3 由 adversarial oracle/authority auditor 在 labels 前檢查 contract 完整性、
@@ -341,7 +378,8 @@ closure/
     與新 generation/amendment，不得覆寫舊 contract。
 14. 保留所有 unrelated user changes與已通過 upstream changes；不可 reset、checkout、
     stash、覆蓋或順手整理。Baseline 是歷史 observation；符合
-    `external_unrelated_drift` 的後續變動用 append-only successor observation 保存，
+    `external_unrelated_drift` 的後續變動用新的 traceable successor observation 保存；
+    只有舊 observation 當時就記錯時才使用 operational correction，
     不覆寫 baseline，也不把全域 equality 當 gate。
 15. 每進入新 tranche 或 baseline drift 時重做 relevant capture；共享 tranche 不代表
     可沿用 stale evidence。
@@ -426,12 +464,12 @@ Implementer 回覆後，Main agent：
      automatic 執行 deterministic exact quarantine 與 post-audit，不需 dual reviewers，
      再重做本 Step。
    - 符合[experiment-scoped external drift](references/authority-gates.md)者，不更動該
-     path；append successor observation、通知使用者並以 experiment-scoped audit
+     path；record 新的 traceable successor observation、通知使用者並以 experiment-scoped audit
      繼續本 Step。
    - 其他情況立即向使用者呈現delta；不可單方面revert、delete、stash、覆蓋或擴張whitelist。
 4. 若 implementer 自己已知未完成，不啟動假驗證；先在 scope 內 resume implementer 補齊，或誠實升級。
 5. `BLOCKED_PLAN_GAP` 時由 Main agent 先查明 evidence；只有能在 unchanged frozen
-   contract 內決定時才建立有 revision/hash ledger 的新 Plan-A 並 resume implementer。
+   contract 內決定時才建立有 traceable revision/hash history 的新 Plan-A 並 resume implementer。
    若會改 contract、Plan-B 或 scientific design，改走既有 design/R3 authority gate。
    Plan gap 本身永遠不算 verifier repair round；resume 後若 verifier 產生 finding，
    只有該完整 implement→verify cycle 才追加一筆 repair provenance。同一 Plan-A gap 連續兩次
@@ -524,7 +562,9 @@ Main agent 每輪將以下內容追加到 `adjudication.md`：
 
 Repair round 是一個 verifier finding 被送修、實作回應並重新驗證的完整 cycle：
 
-- R0、R1、R2、R3 的 repair rounds 全數追加記錄，但沒有 numeric maximum；repair
+- R0、R1、R2、R3 的 repair rounds 全數以 traceable history 記錄，但不要求單一
+  append-only ledger，也沒有 numeric maximum；published operational error 依 policy
+  保留原 bytes 並另寫 correction；pre-seal candidate 可建立新 revision。Repair
   count 不得成為 stop、approval、success 或 completion gate。
 - Responsible verifier／auditor 已確認且只有一個 contract-preserving 修復時直接執行；
   多個 consequential 方向或 authority 分類歧義由兩位 operational reviewers 裁決。
@@ -667,6 +707,8 @@ Outcome/document matrix：
 
 在判斷是否需要human review或處理任何whitelist外mutation前，完整讀取並套用
 [authority gates, experiment-scoped drift, and `/data1/perlee` workspace recovery](references/authority-gates.md)。
+同時以 `study_docs/research/experiment-artifact-governance.md` 判斷 artifact layer、
+correction eligibility、successor trigger 與 existing stricter-contract precedence。
 該reference保存原有human gates，並記錄repository owner已授權的
 experiment-scoped external drift 與窄範圍 current-run artifact recovery；不得只讀
 本節摘要後擴張其scope。
@@ -677,9 +719,79 @@ experiment-scoped external drift 與窄範圍 current-run artifact recovery；�
 
 Formal report 同時服務第一次閱讀的工程師與需要重現證據的稽核者。證據完整不等於把 execution ledger 當成主敘事；先建立可理解的主線，再保留完整稽核細節：
 
+#### Reader-facing terminology and dataflow contract
+
+這份 clarity contract 不只管 formal report；在本 workflow 產生的 general chat Q&A、
+report、guide、review、plan 與 experiment explanation 都適用：
+
+- 中央且非簡單的 term 第一次出現時，必須解釋它指哪個 object、role/purpose、
+  inputs/outputs 或 contents、位於 current flow 哪裡、讀者為何需要在意、以及一個
+  concrete example；有常見混淆時再給 non-example。只寫 3-6 字 gloss、只展開 acronym，
+  或改用另一個 jargon 都不算 definition。Simple term 可以保持簡短。
+- Acronym 第一次出現時展開；`R2`、`PASS`、`W7` 等 status/ID 必須另用文字說明意義。
+- 使用 `10 configs × 3 sizes = 30 rows` 之類 compact notation 前，先定義 `config`、
+  `size`、`row`，給一個 concrete pairing，並說明它們是 independent units 還是同條件
+  repetitions；repetition count 另列。
+- Central formula 必須定義每個 symbol、unit、higher/lower 哪個較好、constant 的來源，
+  並給一個 worked numerical example。
+- 對 `mandatory atom`、`fresh witness`、`conditional target`、`valid support` 或任何
+  set/classification，說明 membership rule、誰在何時 create/select、哪個 downstream
+  actor 如何 consume，以及 membership **不能**支持哪個 conclusion。
+- Dataflow 一律寫成 **actor -> action -> input -> output -> next consumer**。明說資訊由誰
+  produce，下一階段用它做哪個 lookup、decision、validation 或 transformation；不可停在
+  「used downstream」。
+- 若使用者說看不懂，回到更簡單的 mental model/analogy 再逐步重建；不可只換句話重複
+  同一批 terms。
+- 分開標示 planned behavior、live observation 與 committed result；同時分開 technical
+  `PASS` 與 positive/negative/inconclusive scientific outcome。
+- 當 central terms 多到 inline definitions 會打斷主線時，formal report 必須在 metrics
+  之前放一小節讀者導向的「名詞與資料流」。Audit appendix 只有在 main explanation 已
+  self-contained 且通過下方 audit 後，才可以維持 technical-only 寫法。
+
+**Anti-pattern：**
+
+```text
+10 configs × 3 sizes = 30 rows。Fresh witness 覆蓋 mandatory atom，供 downstream 使用。
+```
+
+這段沒有定義計數單位、independence/repetition boundary、classification rule、producer、
+consumer、exact use 或不支持的結論。
+
+**Good count example：**
+
+```text
+Config 是一組完整的待比較設定；例如 C03 用 256 個 GPU threads 計算
+128-by-128 output block。Size 是一組輸入形狀；例如 S02 將 1024-by-512 matrix
+與 512-by-1024 matrix 相乘。Row 是一個 config-size pairing 的一筆結果；
+例如 R08 記錄 C03 在 S02 的結果。
+所以 10 configs × 3 distinct sizes 形成 30 個獨立指定的 pairings，不是同一條件
+重複 30 次；每個 pairing 內的 timing repetitions 另外計數。
+```
+
+**Good classification/dataflow example：**
+
+```text
+以下是 toy protocol，不是 project term 的預設定義：design author 在結果可見前，
+把 mandatory atom A 放入 frozen required set。Runner 讀取 A 的 evidence rule，
+並在 freeze 後產生 observation W7。只有 W7 未被用來選 A 且符合該 rule 時，
+W7 才是 A 的 fresh witness。Run 結束後，verifier 只有在該 rule 通過時才把
+W7 classify 為 valid support；claim evaluator 再把 A 計為有合格 evidence。
+這只支持 A，不證明整體 hypothesis。Design author 也在結果可見前預先宣告
+conditional target T；scheduler consume A 的 verdict，只在 A 通過後啟用 T。
+啟用不代表 T 已通過。
+```
+
+Reader-facing self-audit：
+
+- [ ] 第一次閱讀者能對每個 central term 回答 what、why、how、example、downstream
+      consumer/exact use，以及 not-implied conclusion。
+- [ ] 沒有 unexplained acronym、status ID、set membership 或 compact count notation。
+- [ ] Central formula 的 symbols、units、direction、constant sources 與 worked example 完整。
+- [ ] Main explanation 本身 self-contained；technical appendix 不是用來補救主文缺少的解釋。
+
 - 報告開頭先用繁體中文白話回答五件事：這一關要驗什麼、實際看到什麼、為什麼得到這個判決、證據能與不能支持什麼，以及下一個合法 checkpoint 是什麼。
 - 第一個畫面內用表格或短清單分開 technical verification、scientific outcome、checkpoint state、criterion、failure ID 與 outgoing edge。Technical `PASS` 和 scientific positive／negative 不得混為同一件事。
-- 有三個以上步驟的流程使用精簡 Mermaid flowchart 或編號流程。每個 project-specific／domain term 第一次出現時先給一句白話定義，再使用精確術語。
+- 有三個以上步驟的流程使用精簡 Mermaid flowchart 或編號流程。
 - 主文依「問題 → 方法 → 結果 → 原因 → 限制 → 下一步」組織，不依 agent、command 或 repair 發生時間寫成流水帳。Exact hashes、commands、working directories、exit codes、iterations、repairs、deviations 與 closeout ledger 放入同檔、具名的「稽核附錄」，不可刪除或只改成 transient link。
 - 中文與 English、數字、inline code 之間使用半形空格。Identifier、path、hash、command、machine output 與 fenced code block 內部維持原始 bytes，不套用文字間距。
 - Prose 不為了固定欄寬在詞組或 inline code 中間硬斷行。每個實體行保留完整句意；主題改變時用空行，enumeration 改用一點一義的 bullet、nested list 或 table。

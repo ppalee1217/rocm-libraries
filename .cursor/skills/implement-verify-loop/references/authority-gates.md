@@ -2,9 +2,29 @@
 
 ## Contents
 
+- [Artifact-governance boundary](#artifact-governance-boundary)
 - [General human-review boundary](#general-human-review-boundary)
 - [Experiment-scoped external workspace drift](#experiment-scoped-external-workspace-drift)
 - [`/data1/perlee` current-run artifact recovery](#data1perlee-current-run-artifact-recovery-standing-authority)
+
+## Artifact-governance boundary
+
+Completely read `study_docs/research/experiment-artifact-governance.md` at each new
+experiment, checkpoint, successor, generation, execution tranche, or closure unit. Record
+the policy identity and classify artifacts by what they control or prove:
+
+- Layer A sealed scientific milestones remain immutable and require an authorized
+  amendment/version/successor for change.
+- Layer B pre-seal candidates may be revised, replaced, or deterministically rebuilt before
+  labels; seal exactly one complete revision by content identity.
+- Layer C operational bookkeeping may be corrected through the policy's canonical correction
+  event and deterministic projection while original published bytes remain available.
+
+A Layer-C correction cannot change formal inputs/evidence, sample inclusion, execution order,
+measurement, outcome, claim, or edge. Existing effective designs and contracts remain
+controlling wherever they explicitly freeze a stricter scientific, safety, compliance, or
+hard lifecycle invariant. Use the policy's proportionate threat model: same-account hostile
+process and OS-security defenses are not universal experiment requirements.
 
 ## General human-review boundary
 
@@ -30,8 +50,10 @@ Use risk-tiered, contract-first governance:
   uniquely compelled by the frozen contract and direct evidence; otherwise
   route the issue to its experiment-design, missing-authority, or safety gate.
 - Do not use a planner, auditor, verifier, or consensus to invent authority.
-- Every R0-R3 gate keeps an append-only repair ledger without a numeric
-  stop/approval cap. Two rounds without material progress trigger operational
+- Every R0-R3 gate keeps traceable finding/repair/verdict history without a
+  numeric stop/approval cap. Published Layer-C errors retain original bytes and
+  use operational corrections; Layer-B repair may create a new candidate revision.
+  No single immutable repair ledger is required. Two rounds without material progress trigger operational
   adjudication instead of termination. A responsible verifier/auditor finding
   with one contract-preserving correction, or two operational reviewers'
   agreement that such a repair is required, authorizes Main to continue
@@ -109,10 +131,13 @@ mutation keeps the existing human/destructive authority gate.
 ### Record without rewriting history
 
 - Keep the original baseline observation immutable as historical evidence.
-- Append a successor observation with the exact lexical path; prior state and
+- Record a traceable successor observation or, for a bad published Layer-C event,
+  an operational correction with the exact lexical path; prior state and
   hash when known; current `lstat`, Git, index, and ignore state; observation
   time; `UNKNOWN_EXTERNAL` attribution; all boundary checks; and exact-commit
   path proof.
+- A real later drift always uses the successor observation. Use a correction only when
+  direct evidence proves the earlier observation was already wrong when recorded.
 - Record the classification and non-action in `adjudication.md` and any
   relevant gate/tranche state. Notify the user, but do not wait for approval.
 - Do not restore, delete, quarantine, stage, commit, or otherwise touch the

@@ -3,9 +3,9 @@ checkpoint_id: S11
 title: Stage 1 model-only factorization 與 guidance lock
 stage: 1
 design_status: approved
-execution_status: gated
+execution_status: not_started
 checkpoint_state: DESIGN_APPROVED
-scientific_outcome: not_activated
+scientific_outcome: not_evaluated
 lock_state: absent
 risk_tier: R2
 governance_baseline: b0561d2c9216a58a9d71b8e839c47efaa51f9c00
@@ -14,11 +14,12 @@ execution_tranche: T-S1-MECHANISM
 closure_unit: CU-S1-MECHANISM
 hypothesis_id: S11-H1
 dependencies:
-  - checkpoint_id: S10R4
-    required_edge: S1_ENTRY_GO_EXACT_FRAME
+  - authority_id: S1-REBASELINE-20260803
+    relation: administrative_prerequisite
+    required_state: approved
+incoming_scientific_edge: null
 entry_criteria:
-  - S00_EVIDENCE_READY
-  - post_audited_S10R4_S1_ENTRY_GO_EXACT_FRAME
+  - approved_S1_REBASELINE_20260803_administrative_prerequisite
 criterion_refs:
   - S1_GUIDANCE_LOCKED
 failure_ids:
@@ -59,51 +60,58 @@ consensus_status: approved_two_reviewer_agree
 
 ## 1. 白話目標
 
-在完全label-blind的條件下，建立保留raw occurrence multiplicity的
-`F_valid(raw) -> F_effective -> F_codegen` frame、effective-state catalog、Formocast
-scores、residual-gene factorization、weights與same-entropy shuffle，通過
-candidate-order／probability round-trip後鎖死。這一步只建立guidance，不能偷看real
-GFLOPS，也不能把resolver normalized-away的raw value當成可控制的guidance witness。
+S11 要在完全 label-blind 的條件下，fresh 建立三層 population：validator accepted 的
+raw occurrences `Fraw`、完成 resolver／normal KernelWriter generation／pinned compile 的
+executable occurrences `Fexec`，以及全部 locked sizes 都有 finite native Formocast
+output 的 `Fscore`。它再用 trusted values 建 residual-gene guidance、weights 與
+same-entropy shuffle，通過 candidate-order／probability round-trip 後鎖定。
+
+這一步只建立 guidance，不能偷看 real GFLOPS，也不能把 normalized-away、collision-
+confounded、context-dependent、execution-attrited 或 score-attrited raw value 當成 trusted
+guidance witness。本 design 已由
+[S1 rebaseline authority](s10r4-retirement-s11-rebaseline-authority.md) prospectively amended；
+下方 2026-07/08 舊 dependency records 只是 historical provenance。
 
 ## 2. Hypothesis 與 falsification
 
-**S11-H1：**在S10R4以相同actual YAML／source pins建立resolver-effective exact-frame
-operational entry boundary後，Formocast能對至少一個在frozen raw→effective relation下
-完整eligible的residual gene產生符合parent model-only criteria的穩定prior，並可無損
-轉成與`SearchSpace.map`完全對齊的weights與shuffled control。
+**S11-H1：**依 `S1-REBASELINE-20260803` 的 fresh S11 population 與 trusted-value
+contract，Formocast 能對至少一個 `|T_g|>=2` 且通過 frozen model-only criteria 的
+residual gene 產生穩定 prior，並可無損轉成與 `SearchSpace.map` 完全對齊的 weights 與
+shuffled control。這是 future hypothesis，不是本 authority closure 的結果。
 
 反證或inconclusive：
 
-- 無eligible／guidable residual gene，或global lambda退化；
+- 無 eligible／guidable residual gene、`|T_g|<2`，或 global lambda 退化；
 - mapping、coverage、support、sensitivity或stability未過；
 - occurrence multiplicity在dedup後遺失；
 - probability／cost round-trip、candidate order或weight sign錯誤；
 - existing group／weight被修改；
-- behavior-changing resolver overwrite、context dependence或collision-confounding仍被
-  當成raw-value guidance evidence；
+- behavior-changing resolver overwrite、context dependence、collision-confounding、
+  execution attrition 或 score attrition 仍被當成 trusted raw-value guidance evidence；
 - 任何real score、oracle output或outcome-derived feature參與gene／weight選擇。
 
 ## 3. Dependencies、entry 與 outgoing edge
 
-S11需要S00 foundation、immutable S10 terminal provenance、S10R1的A32
-`cancelled / not_evaluated / edge=null` tombstone、A33 identity-only retirement
-record、S10R2的immutable
-`CHECKPOINT_COMPLETE / inconclusive / FT-INCONCLUSIVE / edge=null` provenance、
-S10R3的immutable negative/null closeout，以及S10R4的positive formal closeout／
-isolated commit／post-commit audit。S10、S10R1、S10R2與S10R3都沒有outgoing edge；
-只有post-audited `S10R4:S1_ENTRY_GO_EXACT_FRAME`能啟動S11。S10R4 negative／
-inconclusive／`CHANGES_REQUIRED`或未完成都保持S11`not_activated`，且本dependency amendment
-沒有proxy／reduced-mode edge。S10R1任何artifact，以及S10R2 accepted rows、
-support states、targets、cover、seeds、mapping／GPU／noise／decision都禁止作S11
-formal evidence。
+S11 的 `incoming_scientific_edge=null`。唯一 entry authority 是 user-approved
+administrative prerequisite `S1-REBASELINE-20260803`；這條虛線關係不是 empirical
+S10R3/S10R4 success edge。S00–S10R3 completed history保持 immutable；S10R4/B01–B07
+已依 amendment 退役且沒有 outcome/report/edge。S10R3/S10R4 rows、support states、
+seeds、mapping、GPU、noise、decisions、diagnostics 與 dirty B07 bytes 對 S11 trust、
+support、score、guidance 或 gate credit 全為零。
 
-唯一outgoing edge：
+S11 現在只取得 future planning authority：仍需自己的 machine-readable contract、
+Plan-B、Plan-A、fresh implementation、effective lock 與 prelabel audit。本次 amendment
+沒有建立 S11 evidence、lock、result 或 report，也沒有 proxy／reduced-mode edge。
+
+唯一**未來** outgoing scientific edge：
 
 ```text
-S1_GUIDANCE_LOCKED -> S12
+S11:S1_GUIDANCE_LOCKED -> S12
 ```
 
-無guidable gene、mapping failure、label leakage或model-only stability不足都不會解鎖S12。
+它只有在 S11 自己的 contract、lock、完整 evidence、fresh verification、terminal commit
+與 post-audit 都成立後才存在。無 guidable gene、mapping failure、label leakage、
+model-only stability不足或 `|Uexec|<256` 都不會解鎖 S12。
 
 ### 3.1 Gate／tranche／closure governance
 
@@ -129,10 +137,10 @@ S1_GUIDANCE_LOCKED -> S12
 
 允許：
 
-- `pi_nominal`／`pi_valid` occurrence collection與multiplicity-preserving catalog；
-- layered raw/resolver-effective/codegen resolution、stable operational catalog、Formocast
-  scoring與coverage/tie audit；
-- conditional top-up、shrinkage marginals、gene decisions與global lambda；
+- `pi_nominal`／`Fraw` occurrence collection與multiplicity-preserving catalog；
+- `Fraw -> Fexec -> Fscore`：resolver、normal non-proxy KernelWriter generation、pinned
+  compile、stable `Uexec` catalog、native Formocast scoring與coverage/tie audit；
+- conditional top-up、trusted-set `T_g`、shrinkage marginals、gene decisions與global lambda；
 - probability→hook-cost conversion、candidate-order parity與round-trip tests；
 - same-entropy non-identity shuffle；
 - guidance lock與sealed-label attestation。
@@ -153,25 +161,18 @@ Future lock：
 
 `protocol/v1/locks/s11-stage1-model-only-factorization-lock.json`
 
-它綁定S10 immutable terminal provenance、S10R1 A32 cancellation、S10R2 immutable
-inconclusive/null provenance、S10R3 immutable negative/null closeout，以及terminal
-post-audited positive S10R4 binding-06 closure、binding-06 relational-selector
-contract／schema／effective-lock identities與positive gate record；另綁定frozen
-YAML／space／groups／weights／sizes／support-aware valid mapping、study mode、
-Formocast／validity revisions、parent constants、randomness bundles、
-label-seal evidence、Plan-B、exact whitelists與report target。Binding-04 layered
-identity／resolver semantics只可作immutable historical non-scientific provenance；
-任何需要的layered semantics都必須由committed B06 authority／contract重新
-materialize，B04 formal artifacts不得取得S11 evidence或criterion credit。S10R4的
-exact-K corpus只作mapping／conformance entry fixture；不得假設它是十筆，也不得
-替代S11自己的fresh population。S11仍須建立自己的multiplicity-preserving raw
-occurrence frame及fresh raw→effective→codegen projection，且不得從S10R2 outcome
-artifacts建立它。
+它綁定 approved administrative `S1-REBASELINE-20260803`、S00–S10R3 immutable
+history identities與 S10R4 retirement／zero-credit matrix；另綁定 frozen YAML／space／
+groups／weights／sizes、pinned sampler／`valid_fn`／resolver／normal KernelWriter／
+compiler／native Formocast revisions、parent constants、fresh S11 randomness bundles、
+label-seal evidence、Plan-B、exact whitelists與report target。B01–B06只能作 historical
+provenance，B07 是 forbidden input；任何 S10R3/S10R4 empirical row都不得取得 S11
+criterion credit。S11 必須由 fresh S11 seeds 自己建立 `Fraw/Fexec/Fscore`。
 
 Outputs至少包括：
 
-- raw valid occurrence frame、resolver-effective/codegen catalog、alias collision與
-  multiplicity-preserving lineage；
+- raw `Fraw` occurrence frame、executable `Fexec/Uexec` catalog、scoreable
+  `Fscore/Uscore` catalog、alias collision與multiplicity-preserving lineage；
 - model scores、coverage、ties與conditional top-ups；
 - eligible/guided gene decision與marginals；
 - Formocast residual weights；
@@ -181,32 +182,50 @@ Outputs至少包括：
 
 ## 6. Controls 與 measurement boundary
 
-- `pi_nominal`、`F_valid(raw)`、`F_effective`、`F_codegen`與operational Gen0 sampler
-  明確分離；
-- duplicate occurrences保留；
-- S11使用fresh/disjoint seeds建立完整multiplicity-preserving `F_valid(raw)`，經與
-  S10R4相同的pinned resolver形成`F_effective`，再經normal error-tolerant
-  KernelWriter filter形成`F_codegen`；
-- resolver collision或codegen reject不刪除raw occurrence mass；每個effective/codegen
-  state保留所有raw aliases及multiplicity；codegen rejects仍在完整`F_valid(raw)`
-  occurrence-mass coverage分母，只對`F_codegen` survivors做mapping與Formocast
-  scoring；whole-config Formocast coverage仍以完整`F_valid(raw)` occurrence mass計算且
-  須`>=95%`；
-- mapping與operational feature只能消費frozen effective semantics。Raw value只有在沒有
-  behavior-changing overwrite且relation可確定時才有guidance evidence；normalized-away、
-  context-dependent或collision-confounded value無raw-value credit，並依既有whole-gene
-  fail-closed rule使該gene不eligible；
-- model catalog及D5 sampling unit是unique stable operational identity，不是raw hash；每個
-  identity保存全部raw aliases與multiplicity。Alternative-prior weights先在raw alias層按
-  `pi_nominal,a/pi_nominal,0`計算，再按multiplicity聚合；不得以representative raw config
-  取代alias-weighted sum；
-- conditional top-up只進對應cell；
-- existing groups／weightsbyte-level或canonical parity；
-- shuffle保留每gene probability multiset與nominal entropy；
-- bootstrap／permutation使用prelocked model-only randomness；
-- real-label root不存在或由S00 seal證明不可讀。
+- `Fraw` 是 fresh validator-accepted raw occurrence multiset；duplicates保留，accepted後
+  不因 resolver/generation/compile/score failure 從 raw mass刪除。
+- `Fexec` 只含 unique complete resolver projection、normal non-proxy KernelWriter source、
+  pinned compile與 stable consumer-relevant operational identity 全部成功的 occurrences。
+  `Uexec` 是 deduplicated identities；dedup只節省工作，不改 occurrence mass。
+- `Fscore` 只含 `Fexec` 中每個 locked size 都有 finite native Formocast output 的
+  occurrences；`Uscore` 是 scoreable identities。Mapping failure、missing size、non-finite、
+  exception或partial留在 `Fexec` 的 executable-unscored population。
+- Execution yield 與 primary model coverage 分別是
+  `Y_exec=sum_{o in Fraw}I[o in Fexec]/|Fraw|` 與
+  `C_score_occ=sum_{o in Fexec}I[o in Fscore]/|Fexec|`。Required score coverage
+  `C_score_occ>=0.95`；codegen/compile rejects不屬此 coverage denominator，而留在
+  `Y_exec` 與 S12 `Fraw` prior-mass denominator。
+- S11 使用 fresh/disjoint S11 seeds；S10R3/S10R4 empirical rows 不得取得任何 trust、
+  support、score、guidance或gate credit。
+- Raw value 只有 fresh support `>=128` conditional `Fraw` occurrences、至少一個
+  `Fexec` occurrence、unique value-preserving relation、`C_score_occ(value)>=0.95` 與完整
+  model-only statistics全成立才 trusted。At cap unresolved、normalized-away、context-
+  dependent、collision-confounded、execution/score attrited 都是 untrusted，不是 absent。
+- `T_g` 是 trusted set；`|T_g|>=2` 且 unchanged sensitivity、stability、entropy、
+  round-trip、order與label firewall全過，gene才 guided。Untrusted values不再讓完整 trusted
+  values整個失去eligibility。
+- `mu_gv=(sum_i b_i+32*global_mean_g)/(n_gv+32)`；
+  `q_g(v)=exp(lambda*(mu_gv-min_{u in T_g}mu_gu))/Z` 只在 `T_g` 正規化；
+  `p1_g(v)=0.20*p0_g(v)+0.80*q_g(v)`。Untrusted value精確保留
+  `0.20*p0_g(v)>0`，沒有 guided upweighting。
+- Global schedule是4,096 accepted `Fraw` first boundary與8,192 hard cap；4,096時兩個
+  prelocked halves必須對 `T_g`、guided genes、best/worst/direction、lambda與guidance hash
+  全一致，否則繼續。Conditional schedule每 activated value `>=128`、cap 256，且不pool
+  global frame。Cap後 unresolved保持untrusted。
+- Fixed model tests不變：`S_g>=0.05`、2,000 permutations、2,000 bootstraps、95% half-width
+  `<=0.025`、recurrence `>=0.90`（`[0.80,0.90)` borderline）、2/3 size direction、
+  coverage `>=0.95`、lambda grid 0..8 step 0.25與 entropy `>=0.80`。
+- Model catalog及future D5 sampling unit是 `Uexec` unique stable operational identity，不是
+  raw hash。每identity保存aliases/multiplicity；alternative weights在raw alias層計算。
+- Conditional top-up只進對應cell；existing groups／weights保持byte-level或canonical
+  parity；bootstrap／permutation使用prelocked model-only randomness；real-label root不可讀。
+- Same-entropy shuffle把untrusted values固定在`0.20*p0`，只對 `T_g` 的 `q` 做prelocked
+  deterministic nonidentity permutation，保留完整`p1` multiset與nominal entropy。
 
-S11能說明model-only factorization是否可建立，不能說明real ranking、prior mass或actual Gen0效果。
+S11能說明model-only factorization是否可建立，不能說明real ranking、prior mass或actual
+Gen0效果。它必須在S12任何GFLOPS前證明future D5 frame從 `Uexec` fixed 256 identities
+without replacement建立，且每個 selected identity 先通過native/runtime、normal
+generate/compile、correctness與noise readiness；本 authority closure不執行這些工作。
 
 ## 7. Acceptance binding 與 stop matrix
 
@@ -217,7 +236,8 @@ S11能說明model-only factorization是否可建立，不能說明real ranking�
 | Guidance完整且label-blind鎖定 | positive closeout | S12 |
 | 無guidable gene／lambda退化 | negative formal closeout | 無 |
 | Support／stability不足 | negative或inconclusive formal closeout | 無 |
-| Mapping缺陷來自S10R4 authority | 停止並記failure；不得猜值 | 無 |
+| `|Uexec|<256` | `inconclusive / FT-INCONCLUSIVE / edge=null`；不得降門檻 | 無 |
+| Resolver/generation/compile/mapping缺陷 | 停止並記failure；不得猜值 | 無 |
 | Label leakage | evidence invalid；新lock／fresh pool後全量重跑 | 無 |
 | Proxy scope需要再縮減 | `blocked-awaiting-user-decision` | 無 |
 
@@ -240,6 +260,12 @@ record與claim boundary。若S13成為tranche final，S13 report整合本record�
 - Shared resolution：S11只能交付immutable model-only guidance；任何negative仍正式closeout但不建立下游Stage 1 outcome。
 - Reviewer A final：`AGREE`
 - Reviewer B final：`AGREE`
+
+> **Historical boundary：**以下 2026-07-26 至 2026-08-03 binding-06 dependency
+> amendments保留當時 authority trail，但凡仍要求 S10R4 positive edge、
+> `F_valid(raw) -> F_effective -> F_codegen` 舊名稱或 whole-gene fail-closed 的文字，
+> 均由本檔 active §§1–7 與最後的 `S1-REBASELINE-20260803` record supersede，不能再作
+> current entry／measurement authority。
 
 ### 2026-07-26 R12 dependency amendment
 
@@ -325,7 +351,7 @@ record與claim boundary。若S13成為tranche final，S13 report整合本record�
 - A38未改S11的scientific hypothesis、samples、seeds、thresholds、workloads、
   failure taxonomy、report path、internal edge或claim，也不授權push。
 
-### 2026-08-02 A47 S10R4 exact-frame dependency amendment
+### Historical/superseded 2026-08-02 A47 S10R4 exact-frame dependency amendment
 
 - S10R3已closeout為immutable
   `CHECKPOINT_COMPLETE / negative / S1_ENTRY_BLOCKED / FT-BLOCKED-MAPPING /
@@ -346,7 +372,7 @@ record與claim boundary。若S13成為tranche final，S13 report整合本record�
 - S11其餘model-only criteria、`alpha`、`epsilon`、lambda grid、weights、shuffle、
   label seal、`S1_GUIDANCE_LOCKED -> S12`、timebox與claim不變；不授權push。
 
-### 2026-08-02 A51 S10R4 binding-04 dual-lineage dependency amendment
+### Historical/superseded 2026-08-02 A51 S10R4 binding-04 dual-lineage dependency amendment
 
 - S10R4 binding-02曾完成effective lock與`LOCKED_READY`，但第一個formal child留下
   partial後fail closed，現為
@@ -375,7 +401,7 @@ record與claim boundary。若S13成為tranche final，S13 report整合本record�
   Formocast coverage `>=95%`、`alpha`、`epsilon`、lambda grid、weights、shuffle、label
   seal、`S1_GUIDANCE_LOCKED -> S12`、timebox與claim不變；不授權push。
 
-### 2026-08-03 S10R4 binding-06 provenance-successor dependency amendment
+### Historical/superseded 2026-08-03 S10R4 binding-06 provenance-successor dependency amendment
 
 - Binding-04在effective lock與formal rows前發現source-closure defect，固定為
   `superseded_prelock / cancelled / BLOCKED / CHANGES_REQUIRED / not_evaluated /
@@ -401,3 +427,19 @@ record與claim boundary。若S13成為tranche final，S13 report整合本record�
   Existing 4,096/8,192 occurrences、128/256 support、coverage、whole-gene fail-closed、
   model criteria、weights、shuffle、label seal、timebox、claim與S12 edge全部不變。
 - B06只更新dependency provenance；不授權S11 implementation、evidence、report、lock或push。
+
+### 2026-08-03 approved `S1-REBASELINE-20260803` amendment
+
+- Reviewer A `/root/full_research_design_audit_a` 與 Reviewer B
+  `/root/full_research_design_audit_b` 完成兩輪 cross-examination 與一輪
+  evidence-backed final，均 `AGREE`，沒有 material dissent；使用者核准 amendment。
+- S10R4/B01–B07 退役且 `not_evaluated / edge=null`。S11 entry 改為 administrative
+  prerequisite；`incoming_scientific_edge=null`，不補造 S10R4 success。
+- Exact active population 是 `Fraw/Fexec/Fscore`；normal resolver、KernelWriter generation
+  與 pinned compile 全在 Formocast 前決定 `Fexec`。Primary score coverage以 `Fexec`
+  occurrence mass為 denominator。
+- Whole-gene fail-closed 改為 trusted set `T_g`；untrusted value保持
+  `p1=0.20*p0`，shrinkage `alpha=32`，其餘 numeric criteria／schedule／label firewall不變。
+- S11現為 `approved / not_started / DESIGN_APPROVED / not_evaluated / lock absent`。
+  本 amendment 沒有執行 S11 evidence；唯一 future edge仍是
+  `S11:S1_GUIDANCE_LOCKED -> S12`。

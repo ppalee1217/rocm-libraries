@@ -52,11 +52,17 @@ consensus_status: approved_two_reviewer_agree
 
 ## 1. 白話目標
 
-用唯一預註冊的inclusion-weighted ridge residual correction，檢驗learned predictor能否在完整unseen cluster中，同時改善ranking、factorized prior mass與oracle gap。S41只做offline cluster-held-out analysis，不做model zoo、不用row split、不跑actual GA。
+用唯一預註冊的inclusion-weighted ridge residual correction，在frozen finite held-out
+frame內比較learned與Formocast的ranking、factorized prior mass與oracle gap之observed
+point direction。S41只做offline cluster-held-out analysis，不做model zoo、不用row split、
+不跑actual GA；即使positive，也不把point comparison擴張成stable／practical／general effect。
 
 ## 2. Hypothesis 與 falsification
 
-**S41-H1：**在每個parent-designated primary held-out unit上，learned residual predictor都strictly優於Formocast ranking，其factorized prior都strictly優於Formocast-factorized與same-entropy shuffled prior，且其oracle gap strictly更小。
+**S41-H1：**在每個parent-designated primary held-out unit的frozen finite frame中，
+learned residual predictor的observed ranking point value都strictly高於Formocast，
+其factorized prior-mass point value都strictly高於Formocast-factorized與same-entropy
+shuffled，且其observed oracle-gap point value strictly更小。
 
 反證或inconclusive：
 
@@ -75,7 +81,9 @@ committed closeout。Qualified cluster registry、prospective-test身分、split
 feature manifest schema與all model/evaluation rules必須在outer labels進入model
 pipeline前由effective lock綁定。
 
-S41沒有automatic outgoing edge。Positive完成Stage 4 offline predictor-substitution claim；actual GA需要另有第五個prospectively sealed cluster與fresh user/mentor gate，不屬本checkpoint。
+S41沒有automatic outgoing edge。Positive只支持frozen finite held-out frame內的observed
+point-direction comparison；actual GA需要另有第五個prospectively sealed cluster與fresh
+user/mentor gate，不屬本checkpoint。
 
 ### 3.1 Gate／tranche／closure governance
 
@@ -87,8 +95,8 @@ S41沒有automatic outgoing edge。Positive完成Stage 4 offline predictor-subst
   freeze durable machine-readable contract並seal effective lock。S40+S41既有
   wall-time、CPU/GPU、storage、throughput、repair與thread consumption跨fold、
   generation、successor與new root累計。
-- Stage 4 hard cap保持5工作日且不是完成承諾；不能以較弱split、較少cluster、
-  reduced grid或x-of-y替代。
+- 五工作日只作Layer-C planning telemetry；不能以較弱split、較少cluster、reduced grid
+  或x-of-y替代，也不能把time variance當scientific result。
 - Positive另seal compact record
   `protocol/v1/evidence/gate-records/s41-s4-learned-residual-positive.json`；positive、
   negative與inconclusive都由S41 final report整合S40 record與每個primary unit
@@ -172,6 +180,12 @@ Learned oracle gap必須strictly小於Formocast oracle gap。
 
 每個primary held-out unit都必須同時通過ranking、prior mass與oracle gap。Tie不算positive；required support或coverage缺失是inconclusive。
 
+這裡的 `strictly` 只比較預註冊 point values 的方向；沒有effect margin、uncertainty或
+prospective replication時，positive**不支持**practical effect、stability、statistical
+significance、population generalization、prospective replication、production readiness
+或actual-GA benefit。任何較強claim都需要future prospectively locked design，事前指定
+effect margins與uncertainty rules。
+
 不得自行加入effect margin、CI/significance requirement、x-of-y relaxation、oracle-gap ratio，或修改parent data floor、split、time cap與claim。
 
 ## 7. Maximum implementation 與 delivery boundary
@@ -229,6 +243,10 @@ Outputs：
 
 Report逐primary unit呈現feature/split lineage、lambda selection、all comparators、ranking、prior mass、support與oracle gap；secondary LOCO不得混入primary verdict。Positive、negative、inconclusive都照常closeout。
 
+Report的positive wording只能是「在frozen finite held-out frame中，observed point value
+方向符合strict comparison」；不得使用「general improvement」、「stable improvement」、
+「significant」、「practically better」、「production ready」或「改善actual GA」。
+
 它也必須整合
 `protocol/v1/evidence/gate-records/s40-s4-activate.json`與S41 machine decision；
 S40 positive不另建重複formal report。S41 positive另seal
@@ -243,3 +261,13 @@ S40 positive不另建重複formal report。S41 positive另seal
 - Shared resolution：prospective fourth cluster存在時它是唯一primary；否則所有LOCO units皆primary且all-pass。Tie不算positive，missing support為inconclusive。
 - Reviewer A final：`AGREE`
 - Reviewer B final：`AGREE`
+
+### 2026-08-03 finite-frame claim amendment
+
+- Exact model、residual target、ridge grid、unpenalized intercept、training-only preprocessing、
+  unknown bucket、cluster-held-out outer split、cluster-grouped inner selection、equal-cluster
+  MSE、larger-lambda tie-break、weights、strict per-primary-unit comparisons、tie handling與
+  no-GA boundary全部不變。
+- Positive claim縮為frozen finite held-out frame的observed point-direction comparison。
+  它不證明practical effect、stability、significance、population generalization、prospective
+  replication、production readiness或actual-GA benefit。

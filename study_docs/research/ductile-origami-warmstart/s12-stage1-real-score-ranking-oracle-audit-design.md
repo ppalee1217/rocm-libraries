@@ -67,7 +67,14 @@ consensus_status: approved_two_reviewer_agree
 
 ## 1. 白話目標
 
-在S11 guidance完全凍結後，才建立frozen D5 judgment pool並取得real scores。S12回答whole-config ranking是否有訊號、factorized prior是否把mass放到真實高品質區，以及失敗究竟在predictor、marginalization還是hook表達力。
+在 S11 guidance 完全凍結後，才從 `Uexec` 無 replacement 抽 exactly 256 個 unique
+executable identities，建立 frozen D5 judgment pool並取得 real scores。S12回答 whole-
+config ranking是否有訊號、factorized prior是否把完整 `Fraw` mass放到真實高品質區，
+以及失敗究竟在 predictor、marginalization 還是 hook 表達力。
+
+本 design 已由
+[S1 rebaseline authority](s10r4-retirement-s11-rebaseline-authority.md) prospectively amended；
+本 closure 沒有實作或產生 S12 evidence。
 
 ## 2. Hypothesis 與 falsification
 
@@ -154,12 +161,45 @@ Outputs：
 
 ## 6. Controls 與 measurement boundary
 
-- Unique config是analysis unit，同config的sizes/occurrences留在同一block/fold；
-- occurrence multiplicity、stratified inclusion probability與design weight完整保留；
-- unscored／failed rows不刪除；
+- D5 frame exactly 是從 `Uexec` sampled without replacement的256個 unique executable
+  identities；`|Uexec|<256` 時 upstream S11為 `inconclusive / FT-INCONCLUSIVE / edge=null`，
+  不得降門檻、以alias／size／repeat補數，也不得建立S12 evidence。
+- `Uscore` 依 `Fscore` occurrence mass形成10個 weighted deciles；`Uexec\Uscore` 是第11個
+  executable-unscored stratum。Existing largest-remainder rule保留，每個非空stratum至少1
+  identity，無replacement或label-driven expansion。
+- Unique executable identity是analysis unit；同identity的sizes、occurrences與raw aliases
+  留在同一block/fold。3 sizes形成同identity的repeated observations，不是3個independent
+  configs。
+- `Fraw`、`Fexec`、`Fscore` occurrence multiplicity、stratified inclusion probability與
+  design weight完整保留。Nonexecutable raw mass位於D5 measurement frame之外，但留在
+  primary raw denominator並取得零 top-decile numerator credit。
+- Executable-unscored selected identities接受真實measurement；若其real result落在`T`，
+  可以取得 numerator credit。Unscored／failed rows不刪除或replacement。
+- 在任何 GFLOPS label 前，每個 selected identity 必須通過 pinned native/runtime
+  conformance、normal generate/compile、correctness與noise readiness；failure依frozen
+  no-replacement outcome matrix處理。
 - metric ties使用真實midranks，sampling-only tie-break不進metric；
 - oracle只診斷main-effect ceiling，不參與S13 arm；
 - D5 measurements不得因outcome被replacement或擴充。
+
+Primary raw-denominator prior mass精確為：
+
+```text
+r_a(o) = pi_nominal,a(o) / pi_nominal,0(o)
+M_a(T) = [sum_{j in D5} ((sum_{o aliases j} r_a(o)) / rho_j)
+          * I[j in real_top_decile_T]]
+         / [sum_{o in Fraw} r_a(o)]
+```
+
+`o`是raw occurrence，`j`是selected `Uexec` identity，`rho_j`是其sampling inclusion
+probability，`T`是real top-decile set；`M_a(T)`越大表示arm把更多完整raw prior mass放入
+real top decile。不得用selected-only denominator或representative raw alias取代此公式。
+
+Preserved criteria不變：aggregate Spearman pass `>=0.25`、borderline `[0.20,0.25)`；
+top-decile lift pass `>=2.0`、borderline `[1.5,2.0)`；direction至少2/3 sizes；prior mass
+strictly勝 baseline與same-entropy shuffle；ESS `>=25`；planned real-measurement coverage
+`>=0.95`；correctness required；five-fold config-level oracle；existing bootstrap、
+permutation、tie與label-firewall rules。
 
 S12不能說明actual Gen0、H10 persistence或held-out replication。
 
@@ -196,3 +236,13 @@ S13 report整合S12 positive record，不另建重複positive report。Condition
 - Shared resolution：S12只有D5 PASS可進S13；S40只接收明確predictor-specific、oracle-positive failure。
 - Reviewer A final：`AGREE`
 - Reviewer B final：`AGREE`
+
+### 2026-08-03 approved `S1-REBASELINE-20260803` amendment
+
+- S12 sole dependency仍是 `S11:S1_GUIDANCE_LOCKED`；administrative rebaseline不能替代它。
+- D5 frame改明確綁定 exactly 256 `Uexec` identities、10個 `Uscore` deciles與1個
+  `Uexec\Uscore` stratum；no replacement、folds、thresholds與label firewall不變。
+- Primary prior mass denominator綁定 complete `Fraw` aliases。Nonexecutable raw mass零
+  numerator；executable-unscored selected identities經real measurement仍可取得credit。
+- 每個selected identity在GFLOPS前先通過native/runtime、normal generate/compile、
+  correctness與noise readiness。本 authority closure沒有執行或報告任何S12 evidence。

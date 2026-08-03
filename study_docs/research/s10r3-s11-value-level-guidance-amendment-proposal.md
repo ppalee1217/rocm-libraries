@@ -1,8 +1,8 @@
 ---
 document_type: experiment_change_proposal
 proposal_id: S10R3-S11-VALUE-LEVEL-GUIDANCE
-status: DEFERRED_BY_APPROVED_S10R4_EXACT_FRAME_DECISION
-authority_effect: historical_proposal_plus_decision_record
+status: SUPERSEDED_BY_APPROVED_S1_REBASELINE_20260803
+authority_effect: historical_rationale_and_rejected_alternatives_only
 affected_checkpoints:
   - S10R3
   - S10R4
@@ -14,11 +14,22 @@ created_date: 2026-08-01
 
 ## 0. 文件狀態
 
-本文件前半保留原始**非權威實驗變更草案**，後面的§11記錄2026-08-02正式
-design discussion結論。Value-level guidance本身仍未核准並已延後；核准的方向是新增
-exact-frame S10R4，authority見
-[S10R4 design](ductile-origami-warmstart/s10r4-stage1-exact-frame-operational-entry-design.md)。
-本文件不得單獨被runner、verifier或report當成execution authority。
+> **Authority effect：**本檔已被 approved `S1-REBASELINE-20260803` 取代，只保留
+> historical rationale、舊 alternatives 與 rejected-option provenance。它不是 active
+> design、runner、contract、lock、verifier 或 report authority，也不再讓 S10R4 決定
+> value-level policy。
+
+Current authority 是
+[S10R4 退役與 S11 rebaseline authority](ductile-origami-warmstart/s10r4-retirement-s11-rebaseline-authority.md)；
+第一次閱讀者請先看
+[繁中變更指南](ductile-origami-warmstart/s10r4-to-s11-experiment-plan-change-guide.md)。
+新 authority 採用 refined trusted-value policy：沿用既有 baseline mixture
+`epsilon=0.20` 與 shrinkage `alpha=32`，令
+`p1(v)=0.20*p0(v)+0.80*q(v)`。本歷史草案用來解釋公式的 mixture `alpha=0.5`
+**沒有被採用**；current policy 中 `alpha` 只表示 shrinkage 32，不是 mixture strength。
+
+本文件正文保留原始非權威草案與 2026-08-02 decision provenance。下文所有「建議」、
+「目前規則」與 deferred S10R4 wording 都是 superseded history，不能覆蓋上述新 authority。
 
 提出本草案的直接原因是：目前規則只要 residual gene 中任何一個 candidate value 沒有
 fresh valid witness，就禁止整個 gene 接受 S11 Formocast guidance。這個規則安全但粗糙，
@@ -39,8 +50,9 @@ Formocast 調整機率。
 - original YAML baseline/control 完整保持不變；
 - 所有 mixture、floor、cap 與 sensitivity 規則必須在新的 S11 outcome evidence 前鎖定。
 
-這個方案不是宣稱 `DepthU=1024` 不存在，也不是把它從 Ductile search space 刪掉；它只
-限制模型在證據不足時能對該 value 施加多大的影響。
+這個 superseded proposal 當時不是宣稱 `DepthU=1024` 不存在，也不是把它從 Ductile
+search space 刪掉；它只曾建議限制模型在證據不足時能施加的影響。Current refined rule
+請依新 authority 的 `T_g`、`p0/q/p1`、`epsilon=0.20` 與 shrinkage `alpha=32` 判讀。
 
 ## 2. 中央名詞與資料流
 
@@ -348,3 +360,23 @@ Reviewer A `/root/pipeline_rebaseline_reviewer_a`與Reviewer B
 §11只作decision provenance；數值、outcome matrix、artifact boundary與execution
 authority以S10R4 design、parent plan、durable contract及effective lock為準。沒有push
 授權。
+
+## 12. 2026-08-03 supersession record
+
+兩位 independent reviewers 經兩輪 cross-examination 與一輪 evidence-backed final
+均 `AGREE`，使用者隨後核准 `S1-REBASELINE-20260803`。因此：
+
+- 未啟動的 S10R4 與 B01–B07 依新 authority 退役；沒有 S10R4 outcome、report 或 edge。
+- S11 改由 administrative rebaseline 進入 future design／contract workflow，
+  `incoming_scientific_edge=null`。
+- Current policy 使用 fresh S11 `Fraw/Fexec/Fscore` evidence 與 trusted set `T_g`；
+  `p1(v)=0.20*p0(v)+0.80*q(v)`。
+- `epsilon=0.20` 是 baseline mixture；`alpha=32` 是 conditional-mean shrinkage。
+- 本草案 §4.2 的 illustrative mixture `alpha=0.5` 沒有被採用；所有需要 S10R4
+  選擇 value-level policy 的舊 implication 皆為 superseded history。
+- S10R3/S10R4 rows 對 S11 trust、support、score、guidance 或 gate credit 都是零。
+
+完整 current definitions 與不變 numeric tests 只見
+[new authority](ductile-origami-warmstart/s10r4-retirement-s11-rebaseline-authority.md)；
+[reader guide](ductile-origami-warmstart/s10r4-to-s11-experiment-plan-change-guide.md)
+提供非權威白話解釋。

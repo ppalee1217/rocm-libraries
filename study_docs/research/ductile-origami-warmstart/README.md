@@ -1,7 +1,19 @@
 # Ductile Factorized Guidance — Active Checkpoint Index
 
+> **2026-08-03 current projection：**
+> [`S1-REBASELINE-20260803`](s10r4-retirement-s11-rebaseline-authority.md) 已退役未啟動的
+> S10R4/B01–B07；沒有S10R4 report、lock、result或edge。S11現在是
+> `approved / not_started / DESIGN_APPROVED / not_evaluated / lock absent`，以虛線
+> administrative prerequisite進入future design/contract workflow，沒有incoming
+> scientific edge。唯一future edge是S11自己的`S1_GUIDANCE_LOCKED -> S12`。本次沒有
+> 執行S10R4/S11 evidence。第一次閱讀請看
+> [繁中變更指南](s10r4-to-s11-experiment-plan-change-guide.md)。下方B01–B06長歷史只作
+> immutable non-gating provenance；B07 dirty draft禁止作authority/evidence。
+>
 > **Active-state authority banner：**本研究目前是
-> `post_empirical / s10r4_design_approved`。S00是durable positive，
+> `post_empirical / s10r4_retired_unstarted / s11_rebaseline_approved /
+> no_s10r4_or_s11_evidence`。以下長段落保存歷史authority trail；current狀態只以本頁
+> current table/DAG與上方banner為準。S00是durable positive，
 > S10是durable `negative / S1_ENTRY_BLOCKED / edge=null`，兩者不變。User-authorized
 > A32已在safe boundary取消S10R1：operational
 > `cancelled / BLOCKED`、scientific `not_evaluated`、`edge=null`，沒有scientific
@@ -47,13 +59,14 @@
 > edge=null / lock=absent / lock_never_created=true`。Binding-05完整保留這個science，
 > 但其ignored ledger在implementation前發生canonical hash-chain failure，因此同樣固定為
 > `superseded_prelock / cancelled / BLOCKED / CHANGES_REQUIRED / not_evaluated /
-> edge=null / lock=absent / lock_never_created=true`，且提供zero gate credit。Current
-> user-approved authority是
+> edge=null / lock=absent / lock_never_created=true`，且提供zero gate credit。退役前最後一份
+> user-approved historical authority是
 > [binding-06 provenance recovery](s10r4-binding-06-provenance-recovery-authority.md)：
 > 它在fresh clean worktree/root中以exact one relational rule與兩份獨立whole-subtree closure
 > 關閉exact 89 dynamic accesses（68 direct＋21 `tP["mt"]` carrier consumers），要求
 > terminal unresolved exact 0，再允許任何formal row。
-> 目前`DESIGN_APPROVED / not_started / not_evaluated / edge=null`，binding-06 lock absent。
+> 它當時投影為`DESIGN_APPROVED / not_started / not_evaluated / edge=null`，binding-06 lock
+> absent；現在已由上方 rebaseline 退役。
 >
 > **唯一 active 導航入口：**本 README。`legacy/` 內的 M00–M09 仍是 dead-protocol archive，不能提供 schema、hash、lock、registry、criterion、fixture、test或 PASS evidence；S00 positive只支持CPU-only evidence foundation。
 >
@@ -71,13 +84,15 @@
 
 1. [Research charter](../surrogate-dse-plan.md)：scope、claim ladder、non-goals、failure taxonomy。
 2. [Experiment plan](../ductile-origami-warmstart-experiment-plan.md)：公式、samples、seeds、thresholds、data floors、splits、time caps、checkpoint DAG與acceptance IDs。
-3. 本頁索引的 checkpoint design：implementation handoff、maximum boundary、artifact/evidence binding。
-4. Durable machine-readable frozen contract與checkpoint effective lock：在evidence前把
+3. [S1 rebaseline authority](s10r4-retirement-s11-rebaseline-authority.md)：S10R4退役、
+   S11 populations／trusted-value policy與S30/S40/S41 prospective corrections。
+4. 本頁索引的 checkpoint design：implementation handoff、maximum boundary、artifact/evidence binding。
+5. Durable machine-readable frozen contract與checkpoint effective lock：在evidence前把
    committed authorities、criteria/matrix、resources、Plan-B、exact whitelists、
    inputs、fixtures與seeds綁成不可變執行實例。S10R3依A45先seal
    scientific/oracle contract，再於fresh label-blind implementation後seal exact
    effective execution lock；第二seal前`outcome_access=false`。
-5. Compact positive gate record或terminal formal report：只記verified evidence、
+6. Compact positive gate record或terminal formal report：只記verified evidence、
    outcome、edge與closeout，不得反向修改前四層。
 
 Execution governance另以commit
@@ -96,24 +111,26 @@ hypothesis、criterion、edge或timebox。
 | S10R1 | Cancelled nominal-boundary recovery diagnostics | `approved` | `cancelled` | `BLOCKED` | `not_evaluated` | `superseded` | none (A32 operational record only) |
 | S10R2 | Stage 1 support-aware entry recovery | `approved` | `completed` | `CHECKPOINT_COMPLETE` | `inconclusive` | `effective` | [report](reports/staged/s10r2-stage1-support-aware-entry-report.md) |
 | S10R3 | Stage 1 bounded-cover entry recovery | `approved` | `completed` | `CHECKPOINT_COMPLETE` | `negative` | `effective (S10R3-A46.5-G3)` | [report](reports/staged/s10r3-stage1-bounded-cover-entry-report.md) |
-| S10R4 | Stage 1 relational-selector exact-frame operational entry recovery | `approved` | `not_started` | `DESIGN_APPROVED` | `not_evaluated` | `binding-01/02/03/04/05 superseded; binding-06 absent` | `reports/staged/s10r4-stage1-relational-selector-entry-report.md` |
-| S11 | Stage 1 model-only factorization／guidance lock | `approved` | `gated` | `DESIGN_APPROVED` | `not_activated` | `absent` | `reports/staged/s11-stage1-model-only-factorization-report.md` |
+| S10R4 | Retired unstarted exact-frame recovery history | `superseded` | `cancelled` | `BLOCKED` | `not_evaluated` | `absent` | none；不得建立 |
+| S11 | Stage 1 model-only factorization／guidance lock | `approved` | `not_started` | `DESIGN_APPROVED` | `not_evaluated` | `absent` | absent；future planned path `reports/staged/s11-stage1-model-only-factorization-report.md` |
 | S12 | Stage 1 real-score／ranking／oracle audit | `approved` | `gated` | `DESIGN_APPROVED` | `not_evaluated` | `absent` | `reports/staged/s12-stage1-real-score-audit-report.md` |
 | S13 | Stage 1 actual Gen0 mechanism | `approved` | `gated` | `DESIGN_APPROVED` | `not_evaluated` | `absent` | `reports/gen0-factorization-mvp-report.md` |
 | S20 | Stage 2 fixed H10 persistence | `approved` | `gated` | `DESIGN_APPROVED` | `not_evaluated` | `absent` | `reports/short-horizon-persistence-report.md` |
 | S30 | Stage 3 held-out registry／procedure freeze | `approved` | `gated` | `DESIGN_APPROVED` | `not_evaluated` | `absent` | `reports/staged/s30-heldout-registry-freeze-report.md` |
 | S31 | Stage 3 two-cluster bounded replication | `approved` | `gated` | `DESIGN_APPROVED` | `not_evaluated` | `absent` | `reports/bounded-regime-replication-report.md` |
-| S40 | Stage 4 trigger／data-sufficiency gate | `approved` | `gated` | `DESIGN_APPROVED` | `not_evaluated` | `absent` | `reports/staged/s40-stage4-activation-report.md` |
+| S40 | Stage 4 activation（trigger+data ready才instantiate） | `approved` | `gated` | `DESIGN_APPROVED` | `not_activated` | `absent` | none until instantiated |
 | S41 | Stage 4 learned residual analysis | `approved` | `gated` | `DESIGN_APPROVED` | `not_evaluated` | `absent` | `reports/learned-residual-surrogate-report.md` |
 
 Designs：
 
+- [S1-REBASELINE-20260803 — S10R4 retirement / S11 rebaseline authority](s10r4-retirement-s11-rebaseline-authority.md)
+- [Standalone Traditional-Chinese change guide（explanation only）](s10r4-to-s11-experiment-plan-change-guide.md)
 - [S00 — Evidence contract、lineage 與 observability](s00-evidence-contract-lineage-observability-design.md)
 - [S10 — Stage 1 entry access／mapping gate](s10-stage1-entry-access-mapping-gate-design.md)
 - [S10R1 — Cancelled recovery diagnostic record](s10r1-stage1-valid-support-entry-recovery-design.md)
 - [S10R2 — Stage 1 support-aware entry recovery](s10r2-stage1-support-aware-entry-recovery-design.md)
 - [S10R3 — Stage 1 bounded-cover entry recovery](s10r3-stage1-bounded-cover-entry-recovery-design.md)
-- [S10R4 — Stage 1 exact-frame operational entry recovery](s10r4-stage1-exact-frame-operational-entry-design.md)
+- [S10R4 — retired historical exact-frame design](s10r4-stage1-exact-frame-operational-entry-design.md)
 - [S10R4 binding-02 — Execution recovery authority](s10r4-binding-02-execution-recovery-authority.md)
 - [S10R4 binding-03 — Census backend recovery authority](s10r4-binding-03-census-backend-recovery-authority.md)
 - [S10R4 binding-04 — Resolver-effective recovery authority](s10r4-binding-04-resolver-effective-recovery-authority.md)
@@ -140,7 +157,8 @@ flowchart TD
   s10r1["S10R1 Cancelled diagnostics"]
   s10r2["S10R2 Support-aware entry"]
   s10r3["S10R3 Bounded-cover entry"]
-  s10r4["S10R4 Exact-frame operational entry"]
+  s10r4["S10R4 Retired unstarted"]
+  auth["S1-REBASELINE-20260803\nadministrative authority"]
   s11["S11 Model-only factorization"]
   s12["S12 Real-score audit"]
   s13["S13 Actual Gen0"]
@@ -155,8 +173,9 @@ flowchart TD
   s10 -. "terminal provenance only; no scientific edge" .-> s10r2
   s10r1 -. "A32 status only; evidence reuse forbidden" .-> s10r2
   s10r2 -. "terminal inconclusive provenance; evidence reuse forbidden" .-> s10r3
-  s10r3 -. "terminal negative provenance + sealed frame only" .-> s10r4
-  s10r4 -->|"S1_ENTRY_GO_EXACT_FRAME"| s11
+  s10r3 -. "terminal negative provenance only" .-> auth
+  s10r4 -. "retired; zero gate credit" .-> auth
+  auth -. "administrative prerequisite; not scientific" .-> s11
   s11 -->|"S1_GUIDANCE_LOCKED"| s12
   s12 -->|"D5_PASS"| s13
   s13 -->|"D6_MECHANISM_POSITIVE"| s20
@@ -186,16 +205,14 @@ flowchart TD
   forbidden。S10R2已closeout為inconclusive/null。A38新增
   [S10R3](s10r3-stage1-bounded-cover-entry-recovery-design.md)；S10R2對它只提供
   immutable terminal provenance，不提供formal evidence。S10R3已closeout為
-  negative/null。A47新增[S10R4](s10r4-stage1-exact-frame-operational-entry-design.md)，
-  只窄重用S10R3完整sealed raw frame，不重用其selection/mapping/outcome。A51進一步
-  以fresh binding-04固定`F_valid(raw) -> F_effective -> F_codegen`的dual-lineage
-  measurement science，但B04 execution已immutable prelock superseded且不能產生
-  qualified evidence。Binding-05亦因preimplementation provenance-chain failure
-  immutable superseded。Current binding-06 clean successor保留該science，並是
-  S10R4唯一可產生新的qualified `S1_ENTRY_GO_EXACT_FRAME` evidence之來源。
+  negative/null。A47–B06的S10R4 trail現由`S1-REBASELINE-20260803`退役為immutable
+  historical provenance；B07未被接納。S10R4沒有report、lock、result或edge，不能再
+  產生`S1_ENTRY_GO_EXACT_FRAME`。S11只取得administrative future planning authority。
 - `S1_ENTRY_DEGRADED_PROXY`、two-size mode、H5 pilot、single-cluster pilot或任何縮減不會自動形成 outgoing edge；必須先停在 `blocked-awaiting-user-decision`。
 - S12／S31 只有 parent 明列的 predictor-specific、oracle-positive evidence可送入 S40。
-- S40 沒有合法 trigger時不執行，由上游 report記 `not_activated`；不替 S40 建假 report或commit。
+- S40沒有合法trigger時`not_activated`；trigger但data incomplete時
+  `data_pending / not_activated / not_evaluated`。兩者均不instantiate S40，也不建立
+  report、decision、lock或scientific negative；有新的prelabel-qualified data才重查。
 
 ## 4. 分離的狀態詞彙
 
@@ -208,6 +225,12 @@ flowchart TD
 `scientific_outcome` 只描述科學判讀：`not_evaluated | positive | negative | inconclusive | blocked | not_activated | skipped_by_gate`。
 
 `lock_state` 只描述 effective lock：`absent | effective | superseded`。
+
+Artifact governance另分三層：Layer A是commit/lock seal後會控制science的authority、inputs、
+evidence與decisions；Layer B是pre-seal candidates，可在labels前traceable revision；Layer C
+是resource、routing、command summary、repair與live-state bookkeeping，可依governance做
+deterministic correction，但不能改sample、measurement、outcome、claim或edge。普通resource
+accounting不是scientific criterion。
 
 這些欄位不可互相代用。Technical `PASS` 只會進入 `VERIFIED_PENDING_CLOSEOUT`；只有 formal report、parent hunk、`CLOSEOUT_ACK`、isolated commit與post-commit audit全過，才是 `CHECKPOINT_COMPLETE`。
 
@@ -225,7 +248,8 @@ report/update/staged audit/commit，但
 | --- | --- | --- | --- |
 | `T-S10R2` | S10R2=`R2` | S10R2 | `CU-S10R2` standalone |
 | `T-S10R3` | S10R3=`R3` | S10R3 | `CU-S10R3` standalone |
-| `T-S10R4-B06` | S10R4 binding-06=`R3`；binding-01/02/03/04/05 superseded non-scientific history | S10R4 | `CU-S10R4` standalone |
+| `T-S10R4-B06` | retired historical R3 lineage | none active | retired；no active closure |
+| `T-AUTH-S1-REBASELINE-20260803` | R3 authority amendment；no scientific experiment | authority gate only | `CU-AUTH-S1-REBASELINE-20260803` |
 | `T-S1-MECHANISM` | S11/S12=`R2`, S13=`R1` | S11 → S12 → S13 | `CU-S1-MECHANISM` |
 | `T-S20` | S20=`R1` | S20 | `CU-S20` standalone |
 | `T-S3-REPLICATION` | S30=`R2`, S31=`R1` | S30 → S31 | `CU-S3-REPLICATION` |
@@ -273,11 +297,11 @@ completion；`skipped_by_gate`／`not_activated`不建立假report。
   [S10R3 Stage 1 bounded-cover entry report](reports/staged/s10r3-stage1-bounded-cover-entry-report.md)。
   它記錄sealed G3 formal execution的
   `negative / S1_ENTRY_BLOCKED / FT-BLOCKED-MAPPING / edge=null`，不建立positive edge。
-- S10R4 positive、negative或inconclusive的唯一formal report是
-  `reports/staged/s10r4-stage1-relational-selector-entry-report.md`；在正式outcome前不得建立
-  placeholder。Operational blocker只可寫
-  `protocol/v1/evidence/s10r4-operational-blocker.json`，不是scientific completion。
-- S40 data insufficiency是科學 negative，寫入 S40 formal report；不使用 data-insufficiency blocker memo。
+- S10R4已retired unstarted；沒有formal report、operational blocker、lock、result或edge，
+  不得建立其placeholder。
+- S40未instantiated時沒有formal report。No-trigger是`not_activated`；trigger但data
+  incomplete是`data_pending / not_activated / not_evaluated`，只保留operational readiness
+  provenance，不是scientific negative。
 - Outcome evidence已開始後，即使中途失敗，也不得退回 blocker memo來避開 formal negative／inconclusive report。
 - S11／S12／S30／S40 internal positive使用各design指定compact gate record；若
   internal terminal negative／inconclusive，使用各自planned report；S13／S31／S41
@@ -610,7 +634,7 @@ completion；`skipped_by_gate`／`not_activated`不建立假report。
   S10R3 committed projection為`CHECKPOINT_COMPLETE`，S11維持`not_activated`，沒有
   positive gate record或push。
 
-### 6.16 2026-08-02 A47 S10R4 exact-frame authority
+### 6.16 Historical/superseded 2026-08-02 A47 S10R4 exact-frame authority
 
 - Fresh reviewers `/root/pipeline_rebaseline_reviewer_a`與
   `/root/pipeline_rebaseline_reviewer_b`完成兩輪cross-examination及一輪
@@ -636,7 +660,7 @@ completion；`skipped_by_gate`／`not_activated`不建立假report。
   `T-S10R4-B02 / CU-S10R4`，binding-01 retired且binding-02 lock absent；該historical
   projection後由A50/A51 supersede。沒有push授權。
 
-### 6.17 2026-08-02 A51 S10R4 binding-04 dual-lineage authority
+### 6.17 Historical/superseded 2026-08-02 A51 S10R4 binding-04 dual-lineage authority
 
 - Binding-02在effective lock及`LOCKED_READY`後的第一個formal child證明singleton使用
   `Backend.Name: Exhaustive`會在backend factory拒絕，留下partial且沒有到達normal
@@ -672,14 +696,28 @@ completion；`skipped_by_gate`／`not_activated`不建立假report。
 - Binding-04在prelock source closure因derived `ProblemType.Index{tensorIdx}` relation未關閉
   而固定為`superseded_prelock / CHANGES_REQUIRED / not_evaluated / edge=null /
   lock=absent`。Binding-05保留該science，但在implementation前因ignored ledger
-  canonical hash-chain failure固定為相同non-scientific null-edge狀態。Current binding-06
-  是R3 standalone `T-S10R4-B06 / CU-S10R4`；目前
+  canonical hash-chain failure固定為相同non-scientific null-edge狀態。退役前的historical
+  binding-06是R3 standalone `T-S10R4-B06 / CU-S10R4`；當時投影為
   `DESIGN_APPROVED / not_started / not_evaluated / edge=null`，fresh contract與lock absent。
 - B06以exact one relational rule與兩份independently authored exact-89-node closure要求
   unresolved exact 0。Committed machine contract須在Plan-B/Plan-A前凍結exact
   implementation、execution-artifact與delivery lists。S10R4 cumulative role cap exact 9：
   historical 7、clean successor Main第8、唯一剩餘slot保留fresh terminal verifier；其他
   工作resume既有implementer/auditor/reviewers。
+
+### 6.18 2026-08-03 S10R4 retirement／S11 rebaseline
+
+- R3 authority：[S1-REBASELINE-20260803](s10r4-retirement-s11-rebaseline-authority.md)。
+  Two reviewers完成兩輪cross-examination與一輪final後`AGREE/AGREE`；使用者核准。
+- S10R4/B01–B07依exact retirement matrix退出active navigation。B01–B06是immutable
+  non-gating history；B07 dirty draft未被接納且禁止作input。No S10R4 report/lock/result/edge。
+- S11是future independent scientific gate：先由administrative rebaseline進design/contract
+  workflow，再用fresh S11 seeds建立`Fraw/Fexec/Fscore`與trusted-value guidance。它沒有
+  incoming scientific edge；唯一future edge是`S11:S1_GUIDANCE_LOCKED -> S12`。
+- S12 D5固定256 `Uexec` identities、10+1 strata與complete `Fraw` denominator；S30
+  resource是Layer-C；S40採activation-before-instantiation；S41限finite-frame point claim。
+- [Standalone guide](s10r4-to-s11-experiment-plan-change-guide.md)只作繁中說明，不是
+  runner/contract authority。本amendment沒有執行experiment或授權push。
 
 ## 7. Downgrade review gate
 
