@@ -15,21 +15,31 @@ plan to a planner subagent, and it must not implement the source change itself.
 
 Use this order:
 
-1. Resolve the authoritative bundle, risk tier, gate/edge, whitelists, evidence boundary,
+1. Read `study_docs/research/experiment-artifact-governance.md`; resolve the authoritative
+   bundle, risk tier, gate/edge, whitelists, evidence boundary,
    durable frozen contract, lock identity, and scoped authority.
-2. Seal the durable contract and lock through the mechanism approved by the design.
-3. Main agent writes `plan_b.md` from only the authoritative bundle and sealed contract.
-4. Check Plan-B parity. R0/R1 use a Main-agent check; R2/R3 also require the existing
+2. Classify each artifact as Layer A sealed scientific milestone, Layer B pre-seal
+   candidate, or Layer C operational bookkeeping. Freeze the exact B→A seal transition,
+   Layer-C projection/correction rule, and any stricter contract-specific lifecycle.
+3. Seal the selected complete contract and lock candidate through the mechanism approved
+   by the design.
+4. Main agent writes `plan_b.md` from only the authoritative bundle and sealed contract.
+5. Check Plan-B parity. R0/R1 use a Main-agent check; R2/R3 also require the existing
    fresh adversarial oracle/authority auditor. The auditor reviews but never authors.
-5. Record the Plan-B SHA-256 and `FROZEN` state before writing Plan-A.
-6. Main agent performs the read-only code, test, configuration, environment, and artifact
+6. Record the selected Plan-B revision, SHA-256, parity evidence, and workflow `FROZEN`
+   state in the baseline/adjudication before writing Plan-A. This does not mutate the sealed
+   scientific contract or silently promote Plan-B storage bytes into Layer A.
+7. Main agent performs the read-only code, test, configuration, environment, and artifact
    inspection needed to remove discoverable uncertainty.
-7. Main agent writes `plan_a.md`, checks it against the frozen contract and Plan-B, and
+8. Main agent writes `plan_a.md`, checks it against the frozen contract and Plan-B, and
    records its initial revision hash.
-8. Start the fresh implementer only after both plan gates pass.
+9. Start the fresh implementer only after both plan gates pass.
 
 Both plans are transient execution artifacts. Neither can create authority, amend the
 durable frozen contract, replace its machine-readable criteria, or weaken a hard edge.
+Plan-B's frozen verifier view does not make its storage format a Layer-A scientific identity;
+its selected hash and parity binding are what the baseline/adjudication records. Preserve superseded plan
+revisions as traceable Layer-B history without creating scientific successors for ordinary edits.
 
 ## Plan-B: frozen goal/oracle plan
 
@@ -92,9 +102,12 @@ For every field below, provide the exact value or write `N/A` with a reason.
 - Gate ID, tranche/closure mapping, risk tier, plan revision, frozen-contract/lock hashes,
   verified upstream edges, and prohibited downstream edges.
 - Exact implementation whitelist, execution artifact whitelist, delivery whitelist, and
-  protected user changes. Classify protected state as experiment-relevant or external unrelated;
+  protected user changes. Include an exact artifact-layer registry, B→A seal mechanism,
+  Layer-C correction/projection paths, and the approved proportionate threat model. Classify
+  protected state as experiment-relevant or external unrelated;
   for the latter, state that the workflow must not mutate it and that later qualifying drift is
-  handled by an append-only successor observation rather than global equality.
+  handled by a new traceable successor observation rather than global equality. Use an
+  operational correction only if the earlier published observation was wrong when recorded.
 - Files to create or modify.
 - For every file: symbols, anchors, current behavior, intended behavior, exact edit
   direction, interfaces, data flow, and existing utilities or patterns to reuse.
@@ -119,7 +132,8 @@ For every field below, provide the exact value or write `N/A` with a reason.
   metric, comparability checks, and acceptance linkage.
 - Raw, intermediate, and final artifact paths; expected formats/schemas; file-count or run-ID
   completeness checks; hashes; raw-to-summary cross-checks; and confirmation that every
-  write target is inside the execution artifact whitelist.
+  write target is inside the execution artifact whitelist. State which artifacts remain Layer B,
+  which transition into Layer A, and which Layer-C records may be projected after correction.
 - Expected observable results that establish command or pipeline correctness without
   revealing or fabricating an empirical outcome.
 - Failure handling, retry/rerun rules, stop conditions, safe pause points, and the boundary
@@ -168,17 +182,25 @@ must make no speculative change and return `BLOCKED_PLAN_GAP` with the observed 
 itself. A later verifier finding consumes a round only after a complete implement→verify
 cycle. Two consecutive Plan-A gap/resume cycles without material progress trigger the
 existing non-design operational adjudication before another resume. All completed cycles
-remain append-only provenance, but their accumulated count never blocks a reviewer-supported,
+remain traceable provenance. A published bad Layer-C event retains its original bytes and uses
+the canonical correction path; a pre-seal candidate may receive a new revision. Accumulated
+repair count never blocks a reviewer-supported,
 contract-preserving repair and never resets any thread/resource budget.
 
 ## Revision and visibility rules
 
 - Main agent is the only Plan-A/Plan-B author.
-- Plan-B is frozen before Plan-A is written. Change it only through the existing
-  contract/design amendment and R3 authority path; never overwrite historical frozen bytes.
+- Plan-B is workflow-frozen before Plan-A is written. While outcome-revealing work has not
+  started, a typo, serialization, or parity repair may create a new Layer-B revision, rerun
+  parity, and freeze the new exact hash without a scientific successor. Invalidate and rebuild
+  any dependent Plan-A; replace every role that consumed an invalidated plan before resuming.
+  Never overwrite prior revisions. Once outcome-revealing work has started, or when the frozen
+  scientific contract changes or Plan-B identity was explicitly sealed as Layer A, use the
+  applicable experiment-design/amendment/R3 authority gate.
 - Main agent may revise Plan-A within the unchanged frozen contract. Record revision number,
   previous/new hash, trigger, changed instructions, direct evidence, and why the revision is
-  not label-dependent selection or a contract change.
+  not label-dependent selection or a contract change. This is a Layer-B revision, not a
+  scientific successor.
 - A bounded-spike selection already authorized by Plan-A does not require a Plan-A rewrite.
 - Findings that require different implementation instructions must be reflected in a new
   Main-authored Plan-A revision before resuming the implementer.

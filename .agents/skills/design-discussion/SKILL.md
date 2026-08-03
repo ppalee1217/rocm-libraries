@@ -45,6 +45,8 @@ recommendation 或 preserved dissent 整理成 human decision packet。Experimen
 - Protocol、control、fixture、acceptance、threshold 或 stopping rule ambiguity。
 - Measurement quantity/boundary、claim scope、lineage、selection 或 comparability ambiguity。
 - Authority、destructive operation、post-label amendment 或 immutable lock ambiguity。
+- Artifact-layer 或 checkpoint migration ambiguity，但僅在選擇可能改變
+  measurement、claim、lineage、stopping rule、hard lifecycle invariant 或 evidence boundary 時。
 - Negative/counterintuitive result 暴露多個會改 gate/claim 的合理 interpretation。
 
 不要使用：
@@ -55,6 +57,8 @@ recommendation 或 preserved dissent 整理成 human decision packet。Experimen
 - 純粹屬於使用者偏好的選擇。
 - 普通 in-scope repair、deterministic disposable artifact recovery、resource waiting、
   或不影響 protocol/claim/authority 的 implementation choice。
+- 已由 `study_docs/research/experiment-artifact-governance.md` 唯一分類的 Layer-B
+  candidate revision 或 Layer-C operational correction。
 
 ## Step 0：界定問題與目標文件
 
@@ -65,6 +69,9 @@ recommendation 或 preserved dissent 整理成 human decision packet。Experimen
    - 當前情境中唯一可合理判定的對應文件。
 3. 若沒有唯一目標，使用 `AskQuestion` 請使用者選擇；不可自行發明路徑。
 4. 先讀目標文件與適用的 repo 規則，確認應更新的章節、格式與語言。
+   若問題涉及 experiment artifact、seal、successor 或 migration，必須完整讀取
+   `study_docs/research/experiment-artifact-governance.md`，先區分 Layer A/B/C、
+   existing stricter-contract precedence 與 proportionate threat model。
 5. 若問題的 scope、成功條件或不可接受結果仍會實質改變設計，也先詢問使用者。
 6. 若由`implement-verify-loop`處理active checkpoint的unexpected issue，target先使用該
    checkpoint的`adjudication.md`；不得為plan-preserving repair改寫locked design。
@@ -172,6 +179,9 @@ Main agent 是透明 relay，不得把自己的偏好偽裝成另一方意見。
   升級。
 - Ordinary in-scope repair、fresh rerun、原 plan 已定義的 negative branch、或把
   brittle test harness修成正確表達同一 acceptance，都不是自動 human gate。
+- Pre-seal candidate 修訂、普通 bookkeeping correction 與 deterministic projection 若不改變
+  formal science，不是 design decision。但若要把新 policy 套用到已核准的
+  stricter hard lifecycle invariant，仍必須把 exact migration amendment 交給使用者決定。
 - 這個consensus不能擴張frozen delivery whitelist或scoped commit authority，也不能
   授予push、credentials、external-system write、dependency install、container
   mutation或其他尚未取得的platform authority。

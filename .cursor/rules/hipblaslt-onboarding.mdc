@@ -140,6 +140,31 @@ main explanation fails this audit, a technical appendix or glossary does not rep
 
 ## Experiment execution, conclusion, and downgrade discipline
 
+### Use milestone-level artifact governance
+
+- At the start of every new experiment, checkpoint, successor, generation, execution tranche,
+  or closure unit, completely read and apply
+  `study_docs/research/experiment-artifact-governance.md`; record its commit/hash in the
+  execution baseline. This policy is a required governance input, not optional background.
+- Classify artifacts before outcome-revealing work as a sealed scientific milestone,
+  pre-seal candidate, or operational bookkeeping. Strict post-seal immutability applies to
+  scientific milestones. Pre-seal candidates may be revisioned and rebuilt before labels.
+  Published bookkeeping mistakes keep their original bytes and use a traceable operational
+  correction with deterministic replay.
+- Never use an operational correction to change a contract, lock, formal input/evidence,
+  sample inclusion, execution order, measurement, decision, claim, or edge. Those changes use
+  the applicable amendment/successor and experiment-design authority gate.
+- Do not reopen or poison a binding solely for a non-scientific serialization, timestamp,
+  resource-telemetry, agent-routing, command-summary, live-state, cache, or pre-seal candidate
+  error when direct evidence proves science, replay, and claim are unchanged.
+- A more specific effective contract or approved design that freezes stricter scientific,
+  safety, or compliance semantics remains controlling. The general policy never silently
+  weakens an existing sealed lifecycle.
+- Use the policy's proportionate threat model by default. Do not expand ordinary provenance
+  helpers into same-account hostile-process, inode/procfd, signal, or dumpability security
+  frameworks unless an approved design, external compliance rule, or direct evidence explicitly
+  requires that boundary.
+
 ### Wait for complete evidence
 
 - Do not write a final experiment report, finalize interpretation, or mark an implementation
@@ -184,7 +209,7 @@ main explanation fails this audit, a technical appendix or glossary does not rep
 - Keep three units separate:
   - A `scientific_gate` is a hard preregistered outcome/claim/authority edge.
   - An `execution_tranche` may share Main-agent planning context, environment/setup, run root, and
-    repair ledger; each gate retains its own plans, fresh implementer, and fresh verifier.
+    repair history; each gate retains its own plans, fresh implementer, and fresh verifier.
   - A `closure_unit` may give compatible adjacent gates one terminal report/update/staged audit
     and commit without weakening any scientific edge.
 - Dependent outcome work waits for the upstream gate's verified frozen edge, not necessarily its
@@ -194,8 +219,11 @@ main explanation fails this audit, a technical appendix or glossary does not rep
 - Track `live_run_state` separately from `committed_projection_state`. Partial artifacts and
   working-tree progress belong only to live state; committed projection changes only after the
   durable closeout commit and post-commit audit.
-- Track repair rounds as append-only provenance for every R0-R3 gate, but never use the
-  accumulated count as a stop, approval, or completion gate. Reaching two consecutive rounds
+- Track repair rounds as traceable provenance for every R0-R3 gate, but do not require all
+  operational bytes to share one immutable append-only ledger. Published errors retain their
+  original bytes and use the policy's correction semantics; unpublished pre-seal candidates may
+  be revisioned. Never use the accumulated count as a stop, approval, or completion gate.
+  Reaching two consecutive rounds
   without material progress triggers the non-design dual-agent adjudication below before another
   repair; it does not by itself terminate the overall goal. When the applicable verifier/auditor
   or two operational reviewers agree that a non-destructive, contract/authority-preserving
@@ -340,11 +368,15 @@ main explanation fails this audit, a technical appendix or glossary does not rep
   commit; no current-workflow command touched it; it cannot affect reproducibility, dependency
   resolution, evidence, claim, or closeout; and continuing requires no mutation of that path.
 - For qualifying `external_unrelated_drift`, preserve the original baseline as historical
-  evidence, append a successor observation with exact path, prior state when known, current
+  evidence and record a new traceable successor observation with exact path, prior state when
+  known, current
   `lstat`/Git/index state, attribution as `UNKNOWN_EXTERNAL`, boundary checks, and exact-commit
   path proof, notify the user, and continue. Notification is not an approval gate. Do not restore,
   delete, quarantine, stage, commit, or otherwise act on the unrelated path, and never interpret
   its disappearance as the owner's permission to remove data.
+  Use an operational correction only when direct evidence proves the earlier published
+  observation was already wrong when recorded; a real later drift is never rewritten as a
+  correction.
 - Workspace and post-commit audits are experiment-scoped: verify exact staged/committed paths,
   current-workflow writes, and experiment-relevant protected state. Global equality of unrelated
   workspace paths is not a PASS condition.
