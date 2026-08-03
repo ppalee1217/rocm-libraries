@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rocm.docs.invalid/schemas/s11-factorization.schema.json",
+  "title": "S11 ordered-base-plus-r2 factorization contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "document_kind", "schema_version", "checkpoint_id", "status", "risk_tier",
+    "scientific_gate", "positive_criterion", "sole_positive_edge",
+    "formal_evidence_authorized", "selected_contract_sha256", "execution_tranche",
+    "closure_unit", "initial_state", "current_edge", "lifecycle", "base_commit",
+    "design_consensus", "authority_bindings", "governance", "input", "source_pins",
+    "toolchain_bindings", "implementation_bindings", "seed", "schedule", "registry",
+    "native_scoring", "populations", "qualification", "trust", "statistics", "guidance",
+    "fixed_frame_analysis", "outcomes", "firewall", "no_reuse", "write_boundaries",
+    "formal_commands", "formal_outcome_paths", "branch_delivery", "verification_protocol",
+    "fallback_prohibitions"
+  ],
+  "properties": {
+    "document_kind": {"const": "s11_factorization_contract"},
+    "schema_version": {"const": 1},
+    "checkpoint_id": {"const": "S11"},
+    "status": {"const": "frozen_preimplementation"},
+    "risk_tier": {"const": "R2"},
+    "scientific_gate": {"const": "S11"},
+    "positive_criterion": {"const": "S1_GUIDANCE_LOCKED"},
+    "sole_positive_edge": {"const": "S12"},
+    "formal_evidence_authorized": {"const": "only_by_future_effective_lock"},
+    "selected_contract_sha256": {"const": "self_excluded_raw_file_sha256_bound_by_preimplementation_lock"},
+    "execution_tranche": {"const": "T-S1-MECHANISM"},
+    "closure_unit": {"const": "CU-S1-MECHANISM"},
+    "initial_state": {"type": "object"},
+    "current_edge": {"type": "null"},
+    "lifecycle": {"type": "object"},
+    "base_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "design_consensus": {"type": "object"},
+    "authority_bindings": {"type": "array", "minItems": 1, "uniqueItems": true},
+    "governance": {"type": "object"},
+    "input": {"type": "object"},
+    "source_pins": {"type": "object"},
+    "toolchain_bindings": {"type": "object"},
+    "implementation_bindings": {"type": "array", "minItems": 19, "maxItems": 19, "uniqueItems": true},
+    "seed": {"type": "object"},
+    "schedule": {"$ref": "#/$defs/schedule"},
+    "registry": {"type": "object"},
+    "native_scoring": {"type": "object"},
+    "populations": {"type": "object"},
+    "qualification": {"type": "object"},
+    "trust": {"type": "object"},
+    "statistics": {"type": "object"},
+    "guidance": {"type": "object"},
+    "fixed_frame_analysis": {"type": "object"},
+    "outcomes": {"type": "object"},
+    "firewall": {"type": "object"},
+    "no_reuse": {"type": "object"},
+    "write_boundaries": {"$ref": "#/$defs/writeBoundaries"},
+    "formal_commands": {
+      "const": ["global-discovery", "conditional-discovery", "qualify", "score", "analyze", "decide", "reproduce"]
+    },
+    "formal_outcome_paths": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/safePath"}},
+    "branch_delivery": {"type": "object"},
+    "verification_protocol": {"type": "object"},
+    "fallback_prohibitions": {"type": "object"}
+  },
+  "$defs": {
+    "safePath": {"type": "string", "minLength": 1, "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"},
+    "globalSchedule": {
+      "type": "object", "additionalProperties": false,
+      "required": ["stream_id", "diagnostic_prefix_accepted", "canonical_prefix_accepted", "complete_chunks", "complete_nominal_draws", "target_stop", "early_stop", "extension", "later_accepts_after_canonical_prefix"],
+      "properties": {
+        "stream_id": {"const": "global"}, "diagnostic_prefix_accepted": {"const": 4096},
+        "canonical_prefix_accepted": {"const": 8192}, "complete_chunks": {"const": 65536},
+        "complete_nominal_draws": {"const": 33554432}, "target_stop": {"const": "forbidden"},
+        "early_stop": {"const": "forbidden"}, "extension": {"const": "forbidden"},
+        "later_accepts_after_canonical_prefix": {"const": "append_only_zero_credit_diagnostic"}
+      }
+    },
+    "conditionalSchedule": {
+      "type": "object", "additionalProperties": false,
+      "required": ["diagnostic_prefix_accepted", "canonical_prefix_accepted", "complete_chunks_per_activated_value", "complete_nominal_draws_per_activated_value", "target_stop", "early_stop", "extension", "later_accepts_after_canonical_prefix"],
+      "properties": {
+        "diagnostic_prefix_accepted": {"const": 128}, "canonical_prefix_accepted": {"const": 256},
+        "complete_chunks_per_activated_value": {"const": 512}, "complete_nominal_draws_per_activated_value": {"const": 262144},
+        "target_stop": {"const": "forbidden"}, "early_stop": {"const": "forbidden"},
+        "extension": {"const": "forbidden"},
+        "later_accepts_after_canonical_prefix": {"const": "append_only_zero_credit_diagnostic"}
+      }
+    },
+    "schedule": {
+      "type": "object", "additionalProperties": false,
+      "required": ["chunk_nominal_draws", "canonical_first_n_prefix_only", "global", "conditional", "boundary_overshoot_credit", "zero_credit_rows_keep_nominal_and_acceptance_ledger_fields", "zero_credit_rows_forbidden_from", "cap_extension", "resource_forecasts"],
+      "properties": {
+        "chunk_nominal_draws": {"const": 512}, "canonical_first_n_prefix_only": {"const": true},
+        "global": {"$ref": "#/$defs/globalSchedule"}, "conditional": {"$ref": "#/$defs/conditionalSchedule"},
+        "boundary_overshoot_credit": {"const": 0}, "zero_credit_rows_keep_nominal_and_acceptance_ledger_fields": {"const": true},
+        "zero_credit_rows_forbidden_from": {"type": "array", "uniqueItems": true}, "cap_extension": {"const": "forbidden"},
+        "resource_forecasts": {"type": "object"}
+      }
+    },
+    "writeBoundaries": {
+      "type": "object", "additionalProperties": false,
+      "required": ["ownership", "implementation_whitelist_exact", "execution_whitelist_exact", "delivery_whitelist_union_exact"],
+      "properties": {
+        "ownership": {"type": "object"},
+        "implementation_whitelist_exact": {"type": "array", "minItems": 19, "maxItems": 19, "uniqueItems": true, "items": {"$ref": "#/$defs/safePath"}},
+        "execution_whitelist_exact": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/safePath"}},
+        "delivery_whitelist_union_exact": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/safePath"}}
+      }
+    }
+  }
+}
