@@ -49,9 +49,12 @@
 > derived selector closure不足而固定為
 > `superseded_prelock / CHANGES_REQUIRED / not_evaluated / edge=null / lock=absent`。
 > Current是user-approved
-> [binding-05 authority](ductile-origami-warmstart/s10r4-binding-05-relational-selector-recovery-authority.md)
-> 與[relational-selector design](ductile-origami-warmstart/s10r4-stage1-relational-selector-operational-entry-design.md)：
-> `DESIGN_APPROVED / not_started / not_evaluated / edge=null`，binding-05 lock absent。
+> [binding-06 authority](ductile-origami-warmstart/s10r4-binding-06-provenance-recovery-authority.md)
+> 與[clean-successor design](ductile-origami-warmstart/s10r4-stage1-relational-selector-binding-06-clean-successor-design.md)：
+> `DESIGN_APPROVED / not_started / not_evaluated / edge=null`，binding-06 lock absent。
+> Binding-05因implementation前的ignored-ledger canonical hash-chain failure固定為
+> `superseded_prelock / cancelled / BLOCKED / CHANGES_REQUIRED / not_evaluated /
+> edge=null / lock=absent`，提供zero B06 gate credit。
 >
 > **Foundation provenance：**active `protocol/v1/`與S00 report是fresh foundation；退役M00內容仍不得作schema、hash、lock、registry、fixture、test或PASS evidence。S00只支持CPU-only evidence semantics，不是GPU／performance結果。
 >
@@ -100,7 +103,7 @@ orchestration／resource floor；它不能靜默修改上列scientific authority
 | S10R1 | Cancelled nominal-boundary recovery diagnostics | approved | cancelled | BLOCKED | not_evaluated | superseded | [design](ductile-origami-warmstart/s10r1-stage1-valid-support-entry-recovery-design.md) | none (A32 operational record only) |
 | S10R2 | Stage 1 support-aware entry recovery | approved | completed | CHECKPOINT_COMPLETE | inconclusive | effective | [design](ductile-origami-warmstart/s10r2-stage1-support-aware-entry-recovery-design.md) | [report](ductile-origami-warmstart/reports/staged/s10r2-stage1-support-aware-entry-report.md) |
 | S10R3 | Stage 1 bounded-cover entry recovery | approved | completed | CHECKPOINT_COMPLETE | negative | effective (`S10R3-A46.5-G3`) | [design](ductile-origami-warmstart/s10r3-stage1-bounded-cover-entry-recovery-design.md) | [report](ductile-origami-warmstart/reports/staged/s10r3-stage1-bounded-cover-entry-report.md) |
-| S10R4 | Stage 1 relational-selector exact-frame operational entry recovery | approved | not_started | DESIGN_APPROVED | not_evaluated | binding-01/02/03/04 superseded；binding-05 absent | [B05 authority](ductile-origami-warmstart/s10r4-binding-05-relational-selector-recovery-authority.md)／[active design](ductile-origami-warmstart/s10r4-stage1-relational-selector-operational-entry-design.md) | `reports/staged/s10r4-stage1-relational-selector-entry-report.md` |
+| S10R4 | Stage 1 relational-selector exact-frame operational entry recovery | approved | not_started | DESIGN_APPROVED | not_evaluated | binding-01/02/03/04/05 superseded；binding-06 absent | [B06 authority](ductile-origami-warmstart/s10r4-binding-06-provenance-recovery-authority.md)／[active design](ductile-origami-warmstart/s10r4-stage1-relational-selector-binding-06-clean-successor-design.md) | `reports/staged/s10r4-stage1-relational-selector-entry-report.md` |
 | S11 | Stage 1 model-only factorization／guidance lock | approved | gated | DESIGN_APPROVED | not_activated | absent | [design](ductile-origami-warmstart/s11-stage1-model-only-factorization-design.md) | `reports/staged/s11-stage1-model-only-factorization-report.md` |
 | S12 | Stage 1 D5 real-score／oracle audit | approved | gated | DESIGN_APPROVED | not_evaluated | absent | [design](ductile-origami-warmstart/s12-stage1-real-score-ranking-oracle-audit-design.md) | `reports/staged/s12-stage1-real-score-audit-report.md` |
 | S13 | Stage 1 actual Gen0 mechanism | approved | gated | DESIGN_APPROVED | not_evaluated | absent | [design](ductile-origami-warmstart/s13-stage1-actual-gen0-mechanism-design.md) | `reports/gen0-factorization-mvp-report.md` |
@@ -201,8 +204,8 @@ Checkpoint designs只能引用下列parent IDs，不得自行改門檻：
   `S10R4:S1_ENTRY_GO_EXACT_FRAME`可啟動S11。
 - `S1_ENTRY_DEGRADED_PROXY`：§2 entry gates通過，但只能使用exact-space GEKO branch proxy；另需user downgrade approval。
 - `S1_ENTRY_BLOCKED`：historical/general Stage-1 entry依§2.8 hard stop成立；S10R4
-  binding-04 science由current binding-05保留，而B04 execution已immutable prelock
-  superseded。Current B05只依B05 frozen outcome table形成，guess/drift/partial/unknown
+  binding-04 science由immutable B05 design/contract保留，而B04/B05 execution都已
+  immutable prelock superseded。Current B06只依B06 frozen outcome table形成，guess/drift/partial/unknown
   不得使用此criterion。
 - `S1_GUIDANCE_LOCKED`：§4–§5 model-only frame、gene decisions、weights、shuffle與hash在real labels前完成鎖定。
 - `S3_REGISTRY_PROCEDURE_LOCKED`：§16的兩primary slots、reserve、denominator、frozen procedure與完整budget均在任何Stage 3 score前鎖定。
@@ -235,7 +238,7 @@ partial working-tree evidence只能屬於前者。
 | --- | --- | --- |
 | `T-S10R2` | S10R2=`R2` | `CU-S10R2` standalone |
 | `T-S10R3` | S10R3=`R3` | `CU-S10R3` standalone |
-| `T-S10R4-B05` | S10R4 binding-05=`R3`；binding-01/02/03/04 superseded non-scientific diagnostics | `CU-S10R4` standalone |
+| `T-S10R4-B06` | S10R4 binding-06=`R3`；binding-01/02/03/04/05 superseded non-scientific history | `CU-S10R4` standalone |
 | `T-S1-MECHANISM` | S11=`R2` → S12=`R2` → S13=`R1` | `CU-S1-MECHANISM` |
 | `T-S20` | S20=`R1` | `CU-S20` standalone |
 | `T-S3-REPLICATION` | S30=`R2` → S31=`R1` | `CU-S3-REPLICATION` |
@@ -857,8 +860,9 @@ Positive、negative與inconclusive都要durable outcome closure。Operational
 - **Governance：**A47最初將S10R4設為R3 standalone `T-S10R4 / CU-S10R4`；A48當時的
   historical projection改為`T-S10R4-B02 / CU-S10R4`並保留binding-01 diagnostic。
   A50/A51已supersede該execution projection；B04又在prelock selector closure
-  `CHANGES_REQUIRED`後由B05 supersede。Current authority是
-  `T-S10R4-B05 / CU-S10R4`，依current `implement-verify-loop`先authority review、
+  `CHANGES_REQUIRED`後由B05 supersede，而B05在implementation前因ledger hash-chain
+  failure由B06 supersede。Current authority是
+  `T-S10R4-B06 / CU-S10R4`，依current `implement-verify-loop`先authority review、
   standalone contract雙audit、Plan-B、adversarial audit與Plan-A，再resume existing
   implementer、effective lock、formal evidence及唯一reserved fresh verifier。Repair count
   只作provenance；不授權push、S11 evidence、container lifecycle mutation或scientific
@@ -928,8 +932,9 @@ Positive、negative與inconclusive都要durable outcome closure。Operational
   partition、stable operational identities、`K=max(10,C_greedy)`且`10<=K<=20`、兩次
   exact `3K` mapping、9 correctness、63 noise、decision matrix、claim與唯一positive
   edge全部不變。
-- **Governance／roles：**current tranche為`T-S10R4-B05 / CU-S10R4`。先authority/design
-  A/B review+commit/postaudit，再standalone contract雙pre/post audit、Main Plan-B、auditor、
+- **Governance／roles：**current tranche為`T-S10R4-B06 / CU-S10R4`。先authority/design
+  Reviewer-B/adversarial identical-candidate review+commit/postaudit，再standalone contract
+  雙pre/post audit、Main Plan-B、auditor、
   Main Plan-A，最後resume existing implementer。Lineage cap exact 9：historical 7、clean
   Main第8、exactly one fresh terminal verifier第9。沒有push或S11 implementation授權。
 
@@ -1233,7 +1238,7 @@ S10R4 dependency prospectively取代。
 #### S10R4 relational-selector exact-frame operational overlay
 
 A47不重抽S10R3 schedule；其原始raw→codegen敘述是historical design layer。A51
-binding-04保留resolver-effective measurement science，但已prelock supersede。Current B05
+binding-04保留resolver-effective measurement science，但已prelock supersede。Current B06
 先以`problemtype_index_to_macrotile_v1`與兩份獨立whole-subtree closure（exact 89 dynamic
 accesses、unresolved exact 0）關閉pinned source selector，再逐child驗證完整sealed
 114-occurrence raw frame，對每個occurrence各做兩次
@@ -1245,8 +1250,8 @@ attrition保留在raw denominator。只有complete 228-child census後才依相�
 Historical A47 semantics見
 [original design](ductile-origami-warmstart/s10r4-stage1-exact-frame-operational-entry-design.md)；
 current完整identity、reuse prohibition、source closure、classification、outcome matrix與claim只以
-[B05 authority](ductile-origami-warmstart/s10r4-binding-05-relational-selector-recovery-authority.md)
-及[active B05 design](ductile-origami-warmstart/s10r4-stage1-relational-selector-operational-entry-design.md)
+[B06 authority](ductile-origami-warmstart/s10r4-binding-06-provenance-recovery-authority.md)
+及[B06 clean-successor design](ductile-origami-warmstart/s10r4-stage1-relational-selector-binding-06-clean-successor-design.md)
 為準。
 只有post-audited `S10R4:S1_ENTRY_GO_EXACT_FRAME`可啟動S11。
 
@@ -1336,8 +1341,8 @@ S10R2已依自己的outcome matrix完成closeout。S10R3的pre-evidence material
 operational failure是`BLOCKED`／decision packet；evidence-integrity完整的negative或
 inconclusive寫入S10R3 formal report。不得建立假裝執行過的MVP report。
 
-本§2.8 mapping-guess條目不覆蓋S10R4 binding-04或current binding-05。B04 execution
-已immutable prelock superseded；B05的required metadata猜測、
+本§2.8 mapping-guess條目不覆蓋S10R4 binding-04/05或current binding-06。B04/B05 execution
+已immutable prelock superseded；B06的required metadata猜測、
 sentinel/consumer/projection mismatch、A/B identity drift、partial或unknown只可為
 `CHANGES_REQUIRED / not_evaluated / edge=null`。只有同一prelocked allowlisted native
 mapping failure在exactly兩個complete attempts重現才是
@@ -1939,7 +1944,7 @@ median_quality_F / median_quality_G >= 1 / (1 + delta_noise)
 | 觀察 | 結果 ID |
 | --- | --- |
 | 無 GPU／YAML／artifact | `FT-BLOCKED-ACCESS` |
-| Historical/general gate的mapping需猜值或parity失敗（S10R4 B04/B05例外見表後） | `FT-BLOCKED-MAPPING` |
+| Historical/general gate的mapping需猜值或parity失敗（S10R4 B04/B05/B06例外見表後） | `FT-BLOCKED-MAPPING` |
 | Locked generate／compile／smoke／nonzero correctness可重現失敗 | `FT-BLOCKED-CORRECTNESS` |
 | Whole ranking gate失敗 | `FT-MODEL-RANK` |
 | Whole rank好、model marginal差、oracle好 | `FT-MODEL-MARGINAL` |
@@ -1951,8 +1956,8 @@ median_quality_F / median_quality_G >= 1 / (1 + delta_noise)
 | Gen0好但後續未知 | `FT-WASHOUT-UNTESTED` |
 | Noise／support／ESS／coverage不足 | `FT-INCONCLUSIVE` |
 
-此表是跨階段摘要，不取代checkpoint-specific frozen decision table。S10R4 B04
-execution已immutable prelock superseded；對current B05，「Mapping需猜值或parity失敗」
+此表是跨階段摘要，不取代checkpoint-specific frozen decision table。S10R4 B04與B05
+execution均已immutable prelock superseded；對current B06，「Mapping需猜值或parity失敗」
 列必須重讀為`CHANGES_REQUIRED / not_evaluated / edge=null`；只有exact same prelocked
 allowlisted native failure在exactly兩個complete attempts重現才使用
 `FT-BLOCKED-MAPPING`。
@@ -2203,19 +2208,19 @@ S10R4 current state：
 - [x] A51 binding-04 resolver-effective dual-lineage authority approved
 - [x] Binding-04 source closure failed prelock; immutable
   `superseded_prelock / CHANGES_REQUIRED / not_evaluated / edge=null / lock=absent`
-- [x] Binding-05 clean relational-selector authority user-approved, pending exact review/commit
-- [ ] B05 authority/design identical-prompt A/B precommit review、commit與postcommit audit
-- [ ] Durable B05 machine-readable contract／雙pre/post audit／Plan-B／adversarial pre-label audit
-- [ ] B05 implementation、offline tests、independent 89-node closure parity及effective lock
+- [x] Binding-05 clean relational-selector authority permanently superseded prelock with zero B06 credit
+- [ ] B06 authority/design identical-candidate Reviewer-B/adversarial precommit review、commit與postcommit audit
+- [ ] Durable B06 machine-readable contract／雙pre/post audit／Plan-B／adversarial pre-label audit
+- [ ] B06 implementation、offline tests、independent 89-node closure parity及effective lock
 - [ ] Two complete 114-config normal-workflow codegen census passes
 - [ ] Resolver-effective partition／operational-atom bounded exact-K selection
 - [ ] Fresh mapping A/B與native conformance
 - [ ] 9 correctness cells與63 noise cells
 - [ ] Fresh verification、terminal closeout與post-commit audit
 
-S10R4目前是`DESIGN_APPROVED / not_started / not_evaluated / edge=null`；binding-01/02/03/04
-都是immutable superseded non-scientific diagnostics，binding-05 lock absent。上列未勾選
-項目不是outcome。S11只接受binding-05完成、fresh verification與post-audit後的checkpoint-scoped
+S10R4目前是`DESIGN_APPROVED / not_started / not_evaluated / edge=null`；binding-01/02/03/04/05
+都是immutable superseded non-scientific history，binding-06 lock absent。上列未勾選
+項目不是outcome。S11只接受binding-06完成、fresh verification與post-audit後的checkpoint-scoped
 `S10R4:S1_ENTRY_GO_EXACT_FRAME` qualified edge。
 
 ---
@@ -2745,7 +2750,7 @@ Report：
 ### 20.4 Gate record與closure integration
 
 - Historical `S10R2`、historical terminal `S10R3`、active
-  `T-S10R4-B05 / CU-S10R4`與future `T-S20 / CU-S20`各是standalone
+  `T-S10R4-B06 / CU-S10R4`與future `T-S20 / CU-S20`各是standalone
   tranche／closure。
 - `S11+S12+S13`、`S30+S31`、`S40+S41`各共享一個execution tranche與closure
   unit，但每個scientific gate及edge保持獨立。
