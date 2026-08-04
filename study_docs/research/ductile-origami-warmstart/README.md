@@ -137,6 +137,7 @@ Designs：
 - [Standalone Traditional-Chinese change guide（explanation only）](s10r4-to-s11-experiment-plan-change-guide.md)
 - [S11-S12-FIXED-FRAME-20260803 — fixed-frame measurement authority](s11-s12-fixed-frame-measurement-amendment.md)
 - [Fixed-frame Traditional-Chinese change guide（explanation only）](s11-s12-fixed-frame-measurement-change-guide.md)
+- [白話導讀 hub 與 qa/ 主題檔（explanation only，非 authority／gate evidence）](../ductile-origami-warmstart-experiment-guide.md)
 - [S00 — Evidence contract、lineage 與 observability](s00-evidence-contract-lineage-observability-design.md)
 - [S10 — Stage 1 entry access／mapping gate](s10-stage1-entry-access-mapping-gate-design.md)
 - [S10R2 — Stage 1 support-aware entry recovery](s10r2-stage1-support-aware-entry-recovery-design.md)
