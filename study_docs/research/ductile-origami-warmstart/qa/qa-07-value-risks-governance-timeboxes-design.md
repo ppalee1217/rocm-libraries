@@ -127,7 +127,9 @@ artifact preservation無法完成、optional stopping、evidence integrity或exp
 scientific resource boundary時才safe-pause。Day count本身不能判negative／inconclusive、
 形成edge或授權縮H10／arms／seeds／two-cluster denominator。
 
-S10R2 prospective numeric caps目前鎖定為：
+下列是 **S10R2 專屬的歷史 numeric caps**（2026-07-29 era），只作歷史紀錄，**不是**目前
+S10R3／S11 path 的預算；current 資源邊界以 [experiment plan](../../ductile-origami-warmstart-experiment-plan.md)
+與 [active checkpoint index](../README.md) 為準（例如 S10R3 的 caps 與下列不同）：
 
 - wall：11,827 秒；
 - CPU：62,396 秒；
@@ -135,7 +137,5 @@ S10R2 prospective numeric caps目前鎖定為：
 - transient storage：2 GiB；
 - safety factor：2.0。
 
-若首 1% reforecast 顯示 projected cost 超過鎖定邊界，必須 safe pause，不能縮 workload救回。
-
----
-
+（當時規則）若首 1% reforecast 顯示 projected cost 超過鎖定邊界，必須 safe pause，不能縮
+workload 救回。

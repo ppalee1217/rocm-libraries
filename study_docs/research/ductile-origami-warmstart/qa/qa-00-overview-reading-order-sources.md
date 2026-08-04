@@ -76,23 +76,30 @@ Ductile Gen0 initial population
   - 正式狀態是 `CHECKPOINT_COMPLETE / inconclusive / FT-INCONCLUSIVE / edge=null`。
   - 沒有啟動 S11。
   - S10R2 outcome artifacts 不得改作 S10R3 或 S11 formal evidence。
+- **S10R3：negative**（2026-08-01 A46.5-G3 closeout）
+  - bounded-cover support-aware entry，`K = max(10, C_greedy)`、`K <= 20`；先確認 Ductile 實際
+    接受哪些 candidate values，再用最多 20 個 fresh configs 覆蓋 mandatory witnessed atoms。
+  - 正式狀態是 `CHECKPOINT_COMPLETE / negative / S1_ENTRY_BLOCKED / FT-BLOCKED-MAPPING / edge=null`。
+  - **它沒有、也不會產生 `S1_ENTRY_GO`**；只證明該 sealed frame 下 mapping 不能通過，不證明
+    Formocast 沒效。
+- **S10R4：retired unstarted**（2026-08-03 `S1-REBASELINE-20260803`）
+  - S10R4 與 B01–B07 全部退役，`not_evaluated / edge=null`，沒有 report／lock。
 
-### 目前 active 的入口設計
+### 目前的 active checkpoint：S11（administrative 進場、已 sealed LOCKED_READY）
 
-- **S10R3**
-  - 延續 support-aware entry，但改用 bounded deterministic exact-K corpus。
-  - `K = max(10, C_greedy)`，且 `K <= 20`。
-  - 先確認 Ductile 實際接受哪些 candidate values，再用最多 20 個 fresh configs 覆蓋 mandatory witnessed atoms。
-  - 只有 post-audited `S10R3:S1_ENTRY_GO` 可以啟動 S11。
+- 五次 Stage-1 entry 嘗試（S10、S10R1、S10R2、S10R3、S10R4）都沒有產生 scientific GO edge。
+- 2026-08-03 起改由 **administrative prerequisite `S1-REBASELINE-20260803` 讓 S11 重基線進場**，
+  `incoming_scientific_edge=null`——**S11 不再依賴任何 S10R3 的 `S1_ENTRY_GO`**。
+- 2026-08-04 S11 已完成 effective lock 封印，狀態為 **`LOCKED_READY`**，正式 evidence run
+  進行中（見 [qa-03](qa-03-s11-factorization-and-metric-design.md) 的 current sealed 機制）。
 
 ### 目前還沒有的科學結果
 
-截至 2026-08-01 本次補充所查到的 committed projection：
-
-- S10R3 尚未有 committed terminal scientific outcome。
-- S11 仍需等待 post-audited `S10R3:S1_ENTRY_GO`。
-- 本文件中的 live observations 不得冒充 committed result。
-- S11–S41 尚未因 S10R3 取得新的正式下游 edge。
+- S11 雖已 `LOCKED_READY` 並在跑 evidence，但**尚無** S11/S12 committed result、formal report 或
+  outgoing edge；唯一未來 scientific edge 是 S11 自己完整驗證後的 `S1_GUIDANCE_LOCKED -> S12`。
+- S12–S41 仍 gated，尚無新的正式下游 edge。
+- 本文件中的 live observations 不得冒充 committed result；per-checkpoint 即時狀態以
+  [active checkpoint index](../README.md)、formal artifacts 與 Git history 為準。
 
 ---
 
@@ -109,10 +116,15 @@ S10R1 舊 recovery                            已取消，不提供科學 edge
 S10R2 support-aware entry                    已完成 inconclusive，edge=null
   ⋮ historical only
 
-S10R3 bounded-cover support-aware entry      active entry checkpoint
-  │ S1_ENTRY_GO
+S10R3 bounded-cover support-aware entry      已完成 negative，edge=null
+  ⋮ historical only（沒有 S1_ENTRY_GO）
+
+S10R4 exact-frame entry                      retired unstarted，not_evaluated
+  ⋮ historical only
+
+（administrative）S1-REBASELINE-20260803       incoming_scientific_edge=null
   ↓
-S11  model-only factorization / guidance lock
+S11  model-only factorization / guidance lock   已 sealed LOCKED_READY，evidence run 進行中
   │ S1_GUIDANCE_LOCKED
   ↓
 S12  real-score ranking / prior-mass / oracle audit

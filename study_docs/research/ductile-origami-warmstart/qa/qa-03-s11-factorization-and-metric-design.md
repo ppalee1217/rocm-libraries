@@ -273,6 +273,3 @@ w_g(v) = -log(p_g(v)) / weight_beta
 ```
 
 經 Ductile 自己的 weight→probability conversion 後，必須 round-trip 回原本的 probability。
-
----
-
