@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
-# Enter the `perlee` dev container with the agent runtime (Claude Code + Cursor
-# agent) installed INSIDE the container, running as the host uid (perlee) with
-# auto-approve enabled. host config dirs are mounted for auth reuse; agent
-# settings/state stay isolated under /src/.agentconf so host agents are unaffected.
+# Enter the `perlee` dev container with the agent runtime (Claude Code as the
+# orchestrator, plus Codex and Cursor agent) installed INSIDE the container,
+# running as the host uid (perlee) with auto-approve enabled. Host config dirs
+# (.claude.json, .cursor, .codex) are mounted for auth reuse; agent settings/state
+# stay isolated under /src/.agentconf so host agents are unaffected.
 #
 # Idempotent: running it just drops you into the container.
 #   - container already running -> attach immediately (no rebuild).
@@ -49,6 +50,7 @@ case "${state}" in
                 -v /data1/perlee:/src \
                 -v /home/perlee/.claude.json:/home/perlee/.claude.json \
                 -v /home/perlee/.cursor:/home/perlee/.cursor \
+                -v /home/perlee/.codex:/home/perlee/.codex \
                 --name "${NAME}" \
                 "$IMAGE"
     provision=1

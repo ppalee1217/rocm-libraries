@@ -285,6 +285,27 @@ Hyndman–Fan Type 7的`n=2,000` P95是
 fail。另要求size direction 2/3、lambda grid 0..8 step0.25、entropy`>=0.80`、
 round-trip／order／firewall與same-entropy shuffle。
 
+依decision-loss simulation的`OPTION_C_GATE_FLIP`結論，逐gene的alpha=0
+`alpha0_decision_flip`現為guided eligibility gate：會flip的otherwise-guided gene不得供應
+positive edge；原有`bias_diagnostics.alpha0_projection.reported_only=true`報告語義不變，正式
+machine-contract binding留待後續r3步驟。
+
+> **2026-08-04 `S11-DIRECTION-METRICFRAME-20260804` 修正（user-approved）：**下段「全部
+> 欄位都必須 exact 相同」是 superseded 字面條文。兩個固定 4,096 halves 為 **disjoint**
+> global occurrence samples，逐位相等於 half-specific 數值 cells 與 float-probability hash
+> 結構上不可達，會逼出 `FT-INCONCLUSIVE`。current 判準：(1) 同一 half 以相同 sealed inputs
+> replay 時要求 byte-exact deterministic reconstruction；(2) 兩 disjoint halves 之間只對
+> 一個預先列舉的 **categorical decision projection** 要求 exact 相同——trust states／reason
+> codes、`T_g`、guided-gene states／reason codes、best／worst identities、per-size
+> directions、每項 model-test pass／fail、own／familywise pass、離散 positive global
+> lambda、shuffle mapping；(3) half-specific `Dexec_gv/Dscore_gv/n_gv/Cscore_occ_gv/mu_gv`
+> 與 float guidance probabilities 視為 reported numeric drift，不 gate；(4) authoritative
+> guidance hash 只對 terminal full 8,192-occurrence bundle 計算一次，任何 cross-half hash
+> 只 hash 上述 categorical projection；(5) §7 row-4 half-stability 取決於該 categorical
+> projection 失敗，而非 numeric drift。不新增 tolerance、不放寬任何 scientific threshold。
+> 詳見 [fixed-frame amendment §6.4](s11-s12-fixed-frame-measurement-amendment.md) 同名修正
+> 與 parent plan `S11-DIRECTION-METRICFRAME-20260804` amendment。
+
 兩個fixed 4,096 halves必須exact重建並比較完整semantic tuple：每value的`Dexec_gv`、
 `Dscore_gv`、`n_gv`、`Cscore_occ_gv`與`mu_gv`；trust states／reasons、`T_g`、guided
 states／reasons；按actual-YAML candidate order作best／worst tie-break後的best／worst；
@@ -315,7 +336,7 @@ terminal precedence；只有所有較早rows已證明false，才可到達較晚r
 | 1 | 任一prelabel／label-firewall leakage | evidence invalid／`not_evaluated`；新lock／fresh seeds後draw-0全量重跑 | 無 |
 | 2 | Harness／schema／order／round-trip、partial／discordant qualification、association／identity或其他qualification／evidence-integrity failure | `CHANGES_REQUIRED / not_evaluated`；不得猜值 | 無 |
 | 3 | 兩次complete attempts重現exact allowlisted no-guess native impossibility且需new authority | `FT-BLOCKED-MAPPING`；`empty-v1`下不可到達 | 無 |
-| 4 | Material stochastic support／coverage／precision／recurrence／half-stability shortage、global cap少於8,192 accepts或`|Uexec_global|<256`可能改變no-guidance結論 | `inconclusive / FT-INCONCLUSIVE / edge=null`；不得降門檻 | 無 |
+| 4 | Material stochastic support／coverage／precision／recurrence／half-stability shortage（含OPTION_C alpha=0 shrinkage-robustness shortage：所有otherwise-guided genes皆decision-flip、沒有alpha0-robust guided gene）、global cap少於8,192 accepts或`|Uexec_global|<256`可能改變no-guidance結論 | `inconclusive / FT-INCONCLUSIVE / edge=null`；不得降門檻；不得誤投positive或no-guidance | 無 |
 | 5 | 至少一個stable gene有`|T_g|>=2`且全部fixed／familywise／coverage／entropy／round-trip／shuffle／firewall／replay／fresh-verification gates通過，`|Uexec_global|>=256`且global lambda positive | positive closeout | S12 |
 | 6 | Complete bounded family有deterministic terminal evidence，沒有gene通過effect／permutation／direction／entropy，或lambda為0 | complete bounded no-guidance negative formal closeout | 無 |
 

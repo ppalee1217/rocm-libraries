@@ -106,7 +106,7 @@ basis：S10R1已在safe boundary停止，operational state為
 `not_evaluated`、edge是`null`，且不是`CHECKPOINT_COMPLETE`。A33進一步把S10R1
 retention改為immutable lifecycle／identity tombstone；約34 GB bulk tree與19個
 untracked old-code paths依
-[retirement manifest](retirements/s10r1-diagnostic-retirement.json)退休。其
+[retirement manifest](archive/retirements/s10r1-diagnostic-retirement.json)退休。其
 non-discovery不是scientific inconclusive，任何artifact都禁止成為S10R2 gate
 evidence，且retired bytes不得恢復到active workspace。
 

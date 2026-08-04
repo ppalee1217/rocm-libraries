@@ -21,6 +21,7 @@ class GovernanceError(ValueError):
 
 PROJECTION_RULE = "operational-last-correction-wins-v1"
 REGISTRY_SCHEMA_VERSION = "sealed-layer-c-registry-v1"
+TRANSITION_REGISTRY_SCHEMA_VERSION = "sealed-transition-registry-v1"
 RFC3339_UTC = re.compile(
     r"^(?P<second>\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})(?:\.(?P<fraction>\d+))?Z$"
 )
@@ -285,6 +286,56 @@ def _parse_layer_c_registry(
     return parsed
 
 
+def _parse_transition_registry(
+    registry_raw: bytes,
+    expected_registry_sha256: str,
+) -> tuple[frozenset[str], dict[str, str], dict[str, str]]:
+    """Validate the sealed authority and scientific-scope registry."""
+
+    if not re.fullmatch(r"[0-9a-f]{64}", expected_registry_sha256):
+        raise GovernanceError("sealed transition registry hash is malformed")
+    if raw_sha256(registry_raw) != expected_registry_sha256:
+        raise GovernanceError("sealed transition registry identity differs")
+    registry = strict_json_loads(registry_raw)
+    if canonical_json_bytes(registry) != registry_raw:
+        raise GovernanceError("sealed transition registry is not canonical JSON")
+    _exact_keys(
+        registry,
+        {
+            "event_type",
+            "schema_version",
+            "approved_authorities",
+            "payload_scope_by_pointer",
+            "artifact_scope_by_id",
+        },
+        "sealed transition registry",
+    )
+    if registry["event_type"] != "sealed_transition_registry":
+        raise GovernanceError("transition registry event type differs")
+    if registry["schema_version"] != TRANSITION_REGISTRY_SCHEMA_VERSION:
+        raise GovernanceError("transition registry schema version differs")
+    approved_authorities = _nonempty_field_set(
+        registry["approved_authorities"], "approved_authorities"
+    )
+
+    payload_scopes = registry["payload_scope_by_pointer"]
+    if not isinstance(payload_scopes, dict):
+        raise GovernanceError("payload_scope_by_pointer must be an object")
+    _pointer_set(list(payload_scopes), "payload_scope_by_pointer")
+    for pointer, scope in payload_scopes.items():
+        if _nonempty_string(scope, f"payload scope for {pointer!r}") not in SUCCESSOR_CHANGE_FIELDS:
+            raise GovernanceError("payload registry contains a non-scientific scope")
+
+    artifact_scopes = registry["artifact_scope_by_id"]
+    if not isinstance(artifact_scopes, dict):
+        raise GovernanceError("artifact_scope_by_id must be an object")
+    for artifact_id, scope in artifact_scopes.items():
+        _nonempty_string(artifact_id, "artifact_scope_by_id key")
+        if _nonempty_string(scope, f"artifact scope for {artifact_id!r}") not in SUCCESSOR_CHANGE_FIELDS:
+            raise GovernanceError("artifact registry contains a non-scientific scope")
+    return approved_authorities, payload_scopes, artifact_scopes
+
+
 def _match_layer_c_rule(
     key: tuple[str, str],
     rules: list[
@@ -422,7 +473,8 @@ def project_operational_records(
             pointer
             for pointer in payload_pointers
             if pointer not in original_leaves
-            or corrected_leaves[pointer] != original_leaves[pointer]
+            or canonical_json_bytes(corrected_leaves[pointer])
+            != canonical_json_bytes(original_leaves[pointer])
         }
         if not changed_pointers <= correctable_pointers:
             raise GovernanceError("correction changes an immutable Layer-C leaf")
@@ -497,7 +549,56 @@ def select_seal_candidate(
     return value
 
 
-def _validate_sealed_shape(value: dict[str, Any]) -> tuple[str, frozenset[str]]:
+def _safe_repo_relative_path(value: Any) -> str:
+    path = _nonempty_string(value, "artifact path")
+    if (
+        path.startswith("/")
+        or "\\" in path
+        or any(segment in {"", ".", ".."} for segment in path.split("/"))
+        or any(ord(character) < 32 or ord(character) == 127 for character in path)
+    ):
+        raise GovernanceError("artifact path must be a safe repo-relative path")
+    return path
+
+
+def _artifact_inventory(
+    value: Any,
+) -> tuple[tuple[dict[str, str], ...], dict[str, dict[str, str]]]:
+    if not isinstance(value, list) or not value:
+        raise GovernanceError("artifact_inventory must be a nonempty ordered array")
+    records: list[dict[str, str]] = []
+    by_id: dict[str, dict[str, str]] = {}
+    paths: set[str] = set()
+    for record in value:
+        if not isinstance(record, dict):
+            raise GovernanceError("artifact inventory record must be an object")
+        _exact_keys(
+            record,
+            {"artifact_id", "path", "sha256"},
+            "artifact inventory record",
+        )
+        artifact_id = _nonempty_string(record["artifact_id"], "artifact_id")
+        path = _safe_repo_relative_path(record["path"])
+        digest = _nonempty_string(record["sha256"], "artifact sha256")
+        if not re.fullmatch(r"[0-9a-f]{64}", digest):
+            raise GovernanceError("artifact sha256 must be lowercase 64-hex")
+        if artifact_id in by_id:
+            raise GovernanceError("artifact inventory contains duplicate artifact IDs")
+        if path in paths:
+            raise GovernanceError("artifact inventory contains duplicate paths")
+        normalized = {"artifact_id": artifact_id, "path": path, "sha256": digest}
+        records.append(normalized)
+        by_id[artifact_id] = normalized
+        paths.add(path)
+    artifact_ids = [record["artifact_id"] for record in records]
+    if artifact_ids != sorted(artifact_ids, key=lambda item: item.encode("utf-8")):
+        raise GovernanceError("artifact inventory is not ordered by artifact_id UTF-8 bytes")
+    return tuple(records), by_id
+
+
+def _validate_sealed_shape(
+    value: dict[str, Any],
+) -> tuple[str, tuple[dict[str, str], ...], dict[str, dict[str, str]]]:
     event_type = value.get("event_type")
     if event_type == "sealed_scientific_milestone":
         _exact_keys(
@@ -558,26 +659,36 @@ def _validate_sealed_shape(value: dict[str, Any]) -> tuple[str, frozenset[str]]:
     if value["artifact_layer"] != "sealed_scientific_milestone":
         raise GovernanceError("sealed artifact is not Layer A")
     milestone_id = _nonempty_string(value["milestone_id"], "milestone_id")
-    artifact_inventory = _nonempty_field_set(
-        value["artifact_inventory"], "artifact_inventory"
-    )
+    artifact_inventory, inventory_by_id = _artifact_inventory(value["artifact_inventory"])
     if not isinstance(value["payload"], dict):
         raise GovernanceError("sealed payload must be an object")
-    return milestone_id, artifact_inventory
+    return milestone_id, artifact_inventory, inventory_by_id
 
 
-def validate_sealed_transition(predecessor_raw: bytes, successor_raw: bytes) -> dict[str, Any]:
-    """Reject in-place Layer-A edits and validate one chainable transition."""
+def validate_sealed_transition(
+    predecessor_raw: bytes,
+    successor_raw: bytes,
+    transition_registry_raw: bytes,
+    expected_transition_registry_sha256: str,
+) -> dict[str, Any]:
+    """Validate one registry-authorized, scope-complete Layer-A transition."""
 
+    approved_authorities, payload_scopes, artifact_scopes = _parse_transition_registry(
+        transition_registry_raw, expected_transition_registry_sha256
+    )
     predecessor = strict_json_loads(predecessor_raw)
     successor = strict_json_loads(successor_raw)
-    predecessor_id, predecessor_inventory = _validate_sealed_shape(predecessor)
+    predecessor_id, _predecessor_inventory, predecessor_by_id = _validate_sealed_shape(
+        predecessor
+    )
     if successor.get("event_type") not in {
         "scientific_amendment",
         "scientific_successor",
     }:
         raise GovernanceError("sealed milestone requires amendment or successor")
-    successor_id, _successor_inventory = _validate_sealed_shape(successor)
+    successor_id, _successor_inventory, successor_by_id = _validate_sealed_shape(
+        successor
+    )
     if successor_id == predecessor_id:
         raise GovernanceError("sealed milestone cannot be overwritten in place")
     if successor["predecessor"] != {
@@ -585,9 +696,71 @@ def validate_sealed_transition(predecessor_raw: bytes, successor_raw: bytes) -> 
         "raw_sha256": raw_sha256(predecessor_raw),
     }:
         raise GovernanceError("predecessor identity differs")
+    if successor["authority"] not in approved_authorities:
+        raise GovernanceError("successor authority is not approved by the transition registry")
+
+    predecessor_leaves = _payload_leaves(predecessor["payload"])
+    successor_leaves = _payload_leaves(successor["payload"])
+    observed_pointers = set(predecessor_leaves) | set(successor_leaves)
+    unknown_pointers = observed_pointers - set(payload_scopes)
+    if unknown_pointers:
+        raise GovernanceError(
+            f"transition registry does not classify payload pointers: {sorted(unknown_pointers)}"
+        )
+    observed_artifact_ids = set(predecessor_by_id) | set(successor_by_id)
+    unknown_artifact_ids = observed_artifact_ids - set(artifact_scopes)
+    if unknown_artifact_ids:
+        raise GovernanceError(
+            f"transition registry does not classify artifact IDs: {sorted(unknown_artifact_ids)}"
+        )
+
+    for artifact_id in set(predecessor_by_id) & set(successor_by_id):
+        if canonical_json_bytes(predecessor_by_id[artifact_id]) != canonical_json_bytes(
+            successor_by_id[artifact_id]
+        ):
+            raise GovernanceError(
+                "an artifact ID cannot be reused with a changed path or hash"
+            )
+
     reuse_boundary = successor["evidence_reuse_boundary"]
-    if set(reuse_boundary) != predecessor_inventory:
+    if set(reuse_boundary) != set(predecessor_by_id):
         raise GovernanceError("evidence reuse boundary does not classify every artifact")
+    for artifact_id, classification in reuse_boundary.items():
+        if classification == "reusable_formal_input":
+            if artifact_id not in successor_by_id:
+                raise GovernanceError("reusable formal input is absent from successor")
+            if canonical_json_bytes(predecessor_by_id[artifact_id]) != canonical_json_bytes(
+                successor_by_id[artifact_id]
+            ):
+                raise GovernanceError("reusable formal input differs in successor")
+        elif artifact_id in successor_by_id:
+            raise GovernanceError(
+                "diagnostic-only or forbidden predecessor artifact remains in successor"
+            )
+
+    actual_changed_scopes: set[str] = set()
+    for pointer in observed_pointers:
+        if (
+            pointer not in predecessor_leaves
+            or pointer not in successor_leaves
+            or canonical_json_bytes(predecessor_leaves[pointer])
+            != canonical_json_bytes(successor_leaves[pointer])
+        ):
+            actual_changed_scopes.add(payload_scopes[pointer])
+    for artifact_id in observed_artifact_ids:
+        if (
+            artifact_id not in predecessor_by_id
+            or artifact_id not in successor_by_id
+            or canonical_json_bytes(predecessor_by_id[artifact_id])
+            != canonical_json_bytes(successor_by_id[artifact_id])
+        ):
+            actual_changed_scopes.add(artifact_scopes[artifact_id])
+    if not actual_changed_scopes:
+        raise GovernanceError("sealed transition has no actual scientific change")
+    if set(successor["affected_scope"]) != actual_changed_scopes:
+        raise GovernanceError(
+            "affected_scope differs from registry-derived actual scientific scopes"
+        )
     return successor
 
 

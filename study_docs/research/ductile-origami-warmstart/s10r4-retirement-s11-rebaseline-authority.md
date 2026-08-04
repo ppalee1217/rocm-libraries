@@ -31,7 +31,7 @@ created_date: 2026-08-03
 | --- | --- | --- | --- | --- | --- | --- |
 | S00 | `CHECKPOINT_COMPLETE` | `positive` | `S00_EVIDENCE_READY` | `S00_EVIDENCE_READY -> S10` | [decision](protocol/v1/evidence/s00-decision-successor-001.json) | [report](reports/staged/s00-foundation-verification-report.md) |
 | S10 | `CHECKPOINT_COMPLETE` | `negative` | `S1_ENTRY_BLOCKED / FT-BLOCKED-MAPPING` | `null` | [decision](protocol/v1/evidence/s10-decision.json) | [report](reports/staged/s10-stage1-entry-gate-report.md) |
-| S10R1 | `BLOCKED`；execution `cancelled`；lock `superseded` | `not_evaluated` | A32 operational cancellation | `null` | [historical design/tombstone](s10r1-stage1-valid-support-entry-recovery-design.md) | none |
+| S10R1 | `BLOCKED`；execution `cancelled`；lock `superseded` | `not_evaluated` | A32 operational cancellation | `null` | [historical design/tombstone](archive/s10r1-stage1-valid-support-entry-recovery-design.md) | none |
 | S10R2 | `CHECKPOINT_COMPLETE` | `inconclusive` | `FT-INCONCLUSIVE` | `null` | [decision](protocol/v1/evidence/s10r2-decision.json) | [report](reports/staged/s10r2-stage1-support-aware-entry-report.md) |
 | S10R3 | `CHECKPOINT_COMPLETE` | `negative` | `S1_ENTRY_BLOCKED / FT-BLOCKED-MAPPING` | `null` | [decision](protocol/v1/evidence/s10r3-decision.json) | [report](reports/staged/s10r3-stage1-bounded-cover-entry-report.md) |
 
@@ -300,6 +300,6 @@ Positive 只支持 frozen finite held-out frame 內實際觀察到的 point-dire
 2. [Experiment parent plan](../ductile-origami-warmstart-experiment-plan.md) — numeric criteria／DAG；
 3. 本 authority 與 amended checkpoint designs — 本次 exact prospective change；
 4. 未來 durable machine-readable contract／effective lock — exact S11 execution instance；
-5. [Reader guide](s10r4-to-s11-experiment-plan-change-guide.md) 與 [historical proposal](../s10r3-s11-value-level-guidance-amendment-proposal.md) — explanation/history only。
+5. [Reader guide](s10r4-to-s11-experiment-plan-change-guide.md) 與 [historical proposal](archive/s10r3-s11-value-level-guidance-amendment-proposal.md) — explanation/history only。
 
 下一個合法動作不是執行 S11 evidence，而是針對 S11 建立新的 `design-discussion`／authoritative design、durable contract、Plan-B、Plan-A、fresh implementation、effective lock 與 prelabel audit。沒有這些步驟，就沒有 `S11:S1_GUIDANCE_LOCKED -> S12`。

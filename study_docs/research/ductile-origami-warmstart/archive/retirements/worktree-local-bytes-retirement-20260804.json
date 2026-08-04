@@ -1,0 +1,34 @@
+{
+  "manifest_id": "worktree-local-bytes-retirement-20260804",
+  "policy": "hash-only identity record of local-only (uncommitted/ignored) bytes before git worktree remove; all 5 non-primary worktrees consolidated; branches/history preserved in shared object db; B07 bytes are FORBIDDEN input (identity recorded, never imported as evidence)",
+  "state": "authorized_pending_removal",
+  "primary_checkout": "/data1/perlee/rocm-libraries @ users/perlee/s11-integration",
+  "worktrees_removed": ["experiment-artifact-governance","s10r4-b05-clean","s10r4-b06-clean","s10r4-b07-clean","s11-rebaseline"],
+  "s11_active_run_relocated": {"from":"rocm-libraries-s11-rebaseline/agent_run/260803-ductile-factorized-guidance-s11","to":"rocm-libraries/agent_run/260803-ductile-factorized-guidance-s11","bytes":342000000,"note":"moved intact via same-fs rename before worktree removal; ignored bytes, not in git"},
+  "local_only_bytes": [
+    {"worktree":"s10r4-b06-clean","path":"protocol/v1/s10r4/relational_selector.py","kind":"untracked_diagnostic","sha256":"5f9df9fa665d7f7c0bbbb101e696f0bab3ce307a43635968b94abf0849ad4c62","bytes":48539}
+    ,
+    {"worktree":"s10r4-b07-clean","path":"ductile-origami-warmstart-experiment-plan.md","kind":"FORBIDDEN_dirty_modified","sha256":"3a8cec67f30396916a5828483f58a414fc3d7bdbfe8daec4b20709855ac79877","bytes":143134}
+    ,
+    {"worktree":"s10r4-b07-clean","path":"ductile-origami-warmstart/README.md","kind":"FORBIDDEN_dirty_modified","sha256":"b9d5e5041db6b5bdf7ad9640ca3f0fa23360a72621dc9e11fdf1d2ac4415d0a4","bytes":52484}
+    ,
+    {"worktree":"s10r4-b07-clean","path":"ductile-origami-warmstart/s11-stage1-model-only-factorization-design.md","kind":"FORBIDDEN_dirty_modified","sha256":"209c97d48afd38f4aea49772c484529e325746f6030ed38226c53c8b6a146057","bytes":24120}
+    ,
+    {"worktree":"s10r4-b07-clean","path":"surrogate-dse-plan.md","kind":"FORBIDDEN_dirty_modified","sha256":"17611ef9d7cb3a4fd1d4de20fda96bb9ea4add870e6474c7e074c906601f061f","bytes":73631}
+    ,
+    {"worktree":"s10r4-b07-clean","path":"ductile-origami-warmstart/s10r4-binding-07-provenance-recovery-authority.md","kind":"FORBIDDEN_untracked_draft","sha256":"e00c1ed06d6be834b574e38988d713b042e5b2ddfb93e5da96d0d4c4e38d024c","bytes":24837}
+    ,
+    {"worktree":"s10r4-b07-clean","path":"ductile-origami-warmstart/s10r4-stage1-relational-selector-binding-07-clean-successor-design.md","kind":"FORBIDDEN_untracked_draft","sha256":"f5c206e4567298d4eae1352982f4201655fbb89f2564f3c3cbeaccd329e7ccf9","bytes":7712}
+  ],
+  "run_logs_removed_with_worktree": [
+    {"worktree":"s10r4-b05-clean","run_root":"260802-ductile-factorized-guidance-s10r4-relational-selector-binding-05","struct_digest_sha256":"6089b34f55585161e8921d41577bc2bdd91f41f5da7d3b07bd97da8fc1b8e044","bytes":1019214}
+    ,
+    {"worktree":"s10r4-b06-clean","run_root":"260803-ductile-factorized-guidance-s10r4-relational-selector-binding-06","struct_digest_sha256":"891df2994db06a2a8d84e06fe7109f6f51e9261f0866ce32e0b6659a46a174fd","bytes":1631554}
+    ,
+    {"worktree":"s10r4-b07-clean","run_root":"260803-ductile-factorized-guidance-s10r4-relational-selector-binding-07","struct_digest_sha256":"bd264211569288a7a80c27b499ca010cf7696dd14bcd6023b52113b57789ad3a","bytes":3676455}
+    ,
+    {"worktree":"s11-rebaseline","run_root":"260803-ductile-factorized-guidance-s10r4-relational-selector-binding-07","struct_digest_sha256":"eb7766eb737795fe59f4dce310452cd69f65b4763ceeca7e81033c75d1155981","bytes":236879}
+    ,
+    {"worktree":"s11-rebaseline","run_root":"260804-experiment-artifact-governance-closeout","struct_digest_sha256":"39b978c0e274ff4635b4ce4886648120ef4122111ed1978a6011e4d1b5f0223c","bytes":55221}
+  ]
+}

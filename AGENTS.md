@@ -1,38 +1,46 @@
-# Codex Repository Guidance
+# Codex / Agent Repository Guidance
+
+## Role
+
+In this repository Claude Code is the main orchestrator and Codex normally runs as a
+**subagent** it drives (via `.mcp.json`): a Codex thread does short, bounded implementation
+or verification turns, while every GPU/ROCm, docker, network, or long-running command is
+executed by the orchestrator and fed back into the Codex thread.
 
 ## Repository-wide general rule
 
-- Before doing repository work, read
-  [`.cursor/rules/hipblaslt-onboarding.mdc`](.cursor/rules/hipblaslt-onboarding.mdc)
-  completely.
-- Ignore that file's Cursor-only YAML frontmatter (`description` and
-  `alwaysApply`), and apply its Markdown body as repository-wide guidance.
-- Treat references to Cursor as references to the current Codex session when
-  they describe the active agent or editor behavior.
-- Keep the source file canonical. Do not duplicate its full contents here.
+- The canonical repository-wide rules live in [`CLAUDE.md`](CLAUDE.md). Read it completely
+  and apply its Markdown body as repository-wide guidance, regardless of which agent runtime
+  you are in.
+- Treat `CLAUDE.md` and this `AGENTS.md` as carrying the same substantive rules. If they ever
+  diverge, `CLAUDE.md` is authoritative for the general rules.
+- Key rules to apply (see `CLAUDE.md` for full text): the readability rules and reader-facing
+  clarity contract; GEKO/Ductile source-branch authority; experiment execution and reporting
+  discipline (including the light GPU pre-run freeze); metric selection and comparability;
+  conclusion discipline; the GPU/ROCm `perlee`-container execution rule; the code reference
+  rule; and scope control.
 
 ## Instruction layering
 
-- Also follow any more specific `AGENTS.md` found between the repository root
-  and the current working directory.
-- In particular, work under `projects/hipblaslt/` and
-  `projects/hipblaslt/tensilelite/` must follow their existing nested
-  `AGENTS.md` files.
+- Also follow any more specific `AGENTS.md` found between the repository root and the current
+  working directory.
+- In particular, work under `projects/hipblaslt/` and `projects/hipblaslt/tensilelite/` must
+  follow their existing nested `AGENTS.md` files. Do not modify those official files.
 
-## Codex skill location
+## Skills
 
-- Repository-scoped Codex skills live under `.agents/skills/`.
-- `.cursor/skills/` remains the canonical workflow source. Each matching
-  `.agents/skills/` directory is a complete, standalone Codex-native port:
-  it contains the full workflow and every required reference, script, and
-  asset instead of pointing back to the Cursor `SKILL.md`.
-- Codex-only runtime mappings belong in a short `Codex runtime mappings`
-  section delimited by `BEGIN/END CODEX RUNTIME MAPPINGS` comments inside the
-  migrated `.agents` skill. They may translate model names, input prompts,
-  subagent calls, resume behavior, or Cursor/editor terminology, but must not
-  change workflow authority, sequencing, evidence, or completion semantics.
-- When adding, removing, renaming, or changing a Cursor skill, migrate the
-  corresponding `.agents` skill and all bundled resources in the same task.
-- Keep each migrated skill's `name` and `description` exactly synchronized
-  with the canonical Cursor frontmatter, and verify that no `.agents` skill
-  depends on reading a `.cursor/.../SKILL.md`.
+- The canonical skills are under `.claude/skills/`. Codex subagents apply the matching copies
+  under `.codex/skills/` for report writing, code-change verification, and script work:
+  - `experiment-report-writing`
+  - `code-change-verification`
+  - `script-development`
+- The orchestration skills `implement-verify-loop` and `design-discussion` are driven by the
+  Claude orchestrator, which tells each Codex subagent which `.codex` skill to apply and where
+  to write its artifacts.
+
+## Legacy
+
+- The `.cursor/` and `.agents/` directories are retained as legacy from the previous
+  Cursor / Codex-orchestrator workflow. They are no longer the canonical source and need not be
+  kept in sync with `.claude/` or `.codex/`. Do not route work through them or edit them as part
+  of normal work.

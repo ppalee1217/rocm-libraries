@@ -49,16 +49,16 @@
 > S10R4；它對S10R3完整sealed 114-config frame執行normal codegen census，不重開draws
 > 或改寫S10R3。A47核准當時S10R4為`DESIGN_APPROVED / not_started / not_evaluated / edge=null`；
 > 只有post-audited `S10R4:S1_ENTRY_GO_EXACT_FRAME`可啟動S11。A48核准的
-> [binding-02](s10r4-binding-02-execution-recovery-authority.md)曾完成seal與
+> [binding-02](archive/s10r4-binding-02-execution-recovery-authority.md)曾完成seal與
 > `LOCKED_READY`，但第一個Census-A child留下partial後fail closed，現為
 > `cancelled / BLOCKED / not_evaluated / edge=null / lock=superseded`。A50核准的
-> [binding-03](s10r4-binding-03-census-backend-recovery-authority.md)則在prelock
+> [binding-03](archive/s10r4-binding-03-census-backend-recovery-authority.md)則在prelock
 > diagnostic發現新的workflow-boundary缺陷，現為
 > `binding_status=superseded_prelock / execution_status=cancelled /
 > checkpoint_state=BLOCKED / criterion_status=CHANGES_REQUIRED /
 > scientific_outcome=not_evaluated / edge=null / lock_state=absent /
 > lock_never_created=true`。兩者都沒有scientific formal outcome。A51曾核准
-> [binding-04 dual-lineage recovery](s10r4-binding-04-resolver-effective-recovery-authority.md)：
+> [binding-04 dual-lineage recovery](archive/s10r4-binding-04-resolver-effective-recovery-authority.md)：
 > 它固定raw occurrence denominator，另將resolver-effective semantics綁成normal
 > KernelWriter workflow實際消費的operational measurement boundary。其prelock source
 > closure後來發現`MacroTile{ti}`的`ti`來自`ProblemType.Index{tensorIdx}`，不能只證明
@@ -69,7 +69,7 @@
 > `superseded_prelock / cancelled / BLOCKED / CHANGES_REQUIRED / not_evaluated /
 > edge=null / lock=absent / lock_never_created=true`，且提供zero gate credit。退役前最後一份
 > user-approved historical authority是
-> [binding-06 provenance recovery](s10r4-binding-06-provenance-recovery-authority.md)：
+> [binding-06 provenance recovery](archive/s10r4-binding-06-provenance-recovery-authority.md)：
 > 它在fresh clean worktree/root中以exact one relational rule與兩份獨立whole-subtree closure
 > 關閉exact 89 dynamic accesses（68 direct＋21 `tP["mt"]` carrier consumers），要求
 > terminal unresolved exact 0，再允許任何formal row。
@@ -139,18 +139,8 @@ Designs：
 - [Fixed-frame Traditional-Chinese change guide（explanation only）](s11-s12-fixed-frame-measurement-change-guide.md)
 - [S00 — Evidence contract、lineage 與 observability](s00-evidence-contract-lineage-observability-design.md)
 - [S10 — Stage 1 entry access／mapping gate](s10-stage1-entry-access-mapping-gate-design.md)
-- [S10R1 — Cancelled recovery diagnostic record](s10r1-stage1-valid-support-entry-recovery-design.md)
 - [S10R2 — Stage 1 support-aware entry recovery](s10r2-stage1-support-aware-entry-recovery-design.md)
 - [S10R3 — Stage 1 bounded-cover entry recovery](s10r3-stage1-bounded-cover-entry-recovery-design.md)
-- [S10R4 — retired historical exact-frame design](s10r4-stage1-exact-frame-operational-entry-design.md)
-- [S10R4 binding-02 — Execution recovery authority](s10r4-binding-02-execution-recovery-authority.md)
-- [S10R4 binding-03 — Census backend recovery authority](s10r4-binding-03-census-backend-recovery-authority.md)
-- [S10R4 binding-04 — Resolver-effective recovery authority](s10r4-binding-04-resolver-effective-recovery-authority.md)
-- [S10R4 binding-04 — Resolver-effective operational entry design](s10r4-stage1-resolver-effective-operational-entry-design.md)
-- [S10R4 binding-05 — Relational-selector recovery authority](s10r4-binding-05-relational-selector-recovery-authority.md)
-- [S10R4 binding-05 — Relational-selector operational entry design](s10r4-stage1-relational-selector-operational-entry-design.md)
-- [S10R4 binding-06 — Provenance-recovery authority](s10r4-binding-06-provenance-recovery-authority.md)
-- [S10R4 binding-06 — Clean successor design](s10r4-stage1-relational-selector-binding-06-clean-successor-design.md)
 - [S11 — Stage 1 model-only factorization](s11-stage1-model-only-factorization-design.md)
 - [S12 — Stage 1 real-score audit](s12-stage1-real-score-ranking-oracle-audit-design.md)
 - [S13 — Stage 1 actual Gen0](s13-stage1-actual-gen0-mechanism-design.md)
@@ -159,6 +149,25 @@ Designs：
 - [S31 — Stage 3 bounded replication](s31-stage3-bounded-replication-design.md)
 - [S40 — Stage 4 activation gate](s40-stage4-surrogate-activation-gate-design.md)
 - [S41 — Stage 4 learned residual](s41-stage4-learned-residual-analysis-design.md)
+
+### Historical / Archived（retired；不作 active navigation 或 gate evidence）
+
+以下為已取消（S10R1）或已退役（S10R4／B02–B06）的歷史設計，以及 dead-protocol `legacy/`
+M00–M09。它們保留為 immutable provenance，已移入 `archive/`，不得作 active gate、schema、
+lock、fixture 或 evidence。current S11 rebaseline authority 見上方 `s10r4-retirement-...` 與
+`s10r4-to-s11-...` change guide（兩者仍是 current authority，未 archive）。
+
+- [S10R1 — Cancelled recovery tombstone](archive/s10r1-stage1-valid-support-entry-recovery-design.md)
+- [S10R4 — retired historical exact-frame design](archive/s10r4-stage1-exact-frame-operational-entry-design.md)
+- [S10R4 binding-02 — Execution recovery authority](archive/s10r4-binding-02-execution-recovery-authority.md)
+- [S10R4 binding-03 — Census backend recovery authority](archive/s10r4-binding-03-census-backend-recovery-authority.md)
+- [S10R4 binding-04 — Resolver-effective recovery authority](archive/s10r4-binding-04-resolver-effective-recovery-authority.md)
+- [S10R4 binding-04 — Resolver-effective operational entry design](archive/s10r4-stage1-resolver-effective-operational-entry-design.md)
+- [S10R4 binding-05 — Relational-selector recovery authority](archive/s10r4-binding-05-relational-selector-recovery-authority.md)
+- [S10R4 binding-05 — Relational-selector operational entry design](archive/s10r4-stage1-relational-selector-operational-entry-design.md)
+- [S10R4 binding-06 — Provenance-recovery authority](archive/s10r4-binding-06-provenance-recovery-authority.md)
+- [S10R4 binding-06 — Clean successor design](archive/s10r4-stage1-relational-selector-binding-06-clean-successor-design.md)
+- [Legacy M00–M09（dead-protocol archive）](archive/legacy/)
 
 ### Current S11／S12 fixed-frame summary
 
@@ -279,11 +288,11 @@ flowchart TD
   [blocker memo](reports/gen0-factorization-blocker-memo.md)只保留為historical
   recovery evidence。
 - R12曾核准S10R1；A32後續在quiescent safe boundary取消該execution。
-  [S10R1 record](s10r1-stage1-valid-support-entry-recovery-design.md)固定為
+  [S10R1 record](archive/s10r1-stage1-valid-support-entry-recovery-design.md)固定為
   `cancelled / BLOCKED / not_evaluated / edge=null`，不建立report或completion；
   stochastic non-discovery不是scientific inconclusive或absence proof。A33只把
   physical artifacts改為identity-only retention；tombstone與
-  [retirement manifest](retirements/s10r1-diagnostic-retirement.json)保留lineage。
+  [retirement manifest](archive/retirements/s10r1-diagnostic-retirement.json)保留lineage。
 - 新[S10R2 design](s10r2-stage1-support-aware-entry-recovery-design.md)是sibling，不是
   S10R1 successor。S00 readiness、S10 terminal provenance與A32 status只作
   administrative prerequisites；虛線不是scientific edge，且S10R1 evidence reuse
@@ -420,7 +429,7 @@ completion；`skipped_by_gate`／`not_activated`不建立假report。
   final candidate後均`AGREE`：S10R1約34 GB ignored tree與19個untracked old-code
   paths沒有合法S10R2／S11 consumer，應由compact identity tombstone取代。
 - 第一階段先commit
-  [retirement manifest](retirements/s10r1-diagnostic-retirement.json)的
+  [retirement manifest](archive/retirements/s10r1-diagnostic-retirement.json)的
   `authorized_pending_cleanup`與本authority；第二階段只按exact allowlist清理並將
   manifest更新為`retired_post_audited`。不使用broad cleanup，也不碰S00／S10、
   actual YAML、source objects、S10R2+ authority或unrelated worktree changes。
@@ -861,15 +870,15 @@ S00開始前仍需另行取得ordinary baseline commit授權，把本次intentio
 
 `legacy/`保留M00–M09歷史正文，但所有active-looking metadata都已改成`historical_*`。Successor只表示主題關聯，不表示artifact、criterion、schema、lock、hash、registry、test或outcome migration。
 
-- [M00](legacy/m00-study-contract-observability-design.md)
-- [M01](legacy/m01-step0-integration-gate-design.md)
-- [M02](legacy/m02-guidance-plumbing-design.md)
-- [M03](legacy/m03-exp0a-cold-headroom-design.md)
-- [M04](legacy/m04-exp0b-widening-gate-design.md)
-- [M05](legacy/m05-expc-ranking-oracle-design.md)
-- [M06](legacy/m06-exp1-injection-b-design.md)
-- [M07](legacy/m07-exp2-a-safe-b-factorial-design.md)
-- [M08](legacy/m08-exp3-multishape-design.md)
-- [M09](legacy/m09-overall-confirmation-design.md)
+- [M00](archive/legacy/m00-study-contract-observability-design.md)
+- [M01](archive/legacy/m01-step0-integration-gate-design.md)
+- [M02](archive/legacy/m02-guidance-plumbing-design.md)
+- [M03](archive/legacy/m03-exp0a-cold-headroom-design.md)
+- [M04](archive/legacy/m04-exp0b-widening-gate-design.md)
+- [M05](archive/legacy/m05-expc-ranking-oracle-design.md)
+- [M06](archive/legacy/m06-exp1-injection-b-design.md)
+- [M07](archive/legacy/m07-exp2-a-safe-b-factorial-design.md)
+- [M08](archive/legacy/m08-exp3-multishape-design.md)
+- [M09](archive/legacy/m09-overall-confirmation-design.md)
 
 任何從legacy URL進入的讀者都必須返回本README，再由active checkpoint index取得權威。

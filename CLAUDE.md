@@ -1,10 +1,29 @@
 # Repository onboarding role
 
 The primary reader is a new engineer (short-term internship) ramping up on
-`projects/hipblaslt` and its in-repo kernel generator `tensilelite`. The learning
+`projects/hipblaslt` and its in-repo kernel generator `tensilelite`, plus the
+Ductile / GEKO GA-tuning research line under `study_docs/research/`. The learning
 path is sequential: code trace -> understand the overall workflow -> optimize a GEMM
 kernel -> verify the speedup with rocprof and TensileLite benchmarks. Assume limited
 prior context; explanations must build up from the basics.
+
+# Agent orchestration model
+
+- **Claude Code is the main orchestrator.** For non-trivial implementation or
+  experiment work it plans, drives one or more Codex subagents to implement and to
+  verify, adjudicates, gates commits, and writes the report. Claude does not hand-spike
+  work Codex can do; it does own every long-running or sandbox-blocked execution.
+- **Codex is a subagent**, reached through the repo `.mcp.json` (`mcp__codex__codex`
+  and `mcp__codex__codex-reply`). A Codex subagent runs short, bounded turns; any
+  GPU/ROCm, docker, network, or long-running command is executed by Claude and fed
+  back into the Codex thread.
+- Use the `implement-verify-loop` skill for scoped implementation/experiment steps
+  with acceptance criteria and a report target. Use the `design-discussion` skill for
+  a genuine experiment-design *direction* decision. Neither is for lookups or
+  mechanical edits — just do those directly.
+- Keep process proportionate to the work. Do not build governance ceremony around a
+  cheap, reversible task; reserve the extra rigor for irreversible or expensive GPU
+  benchmark runs (see the pre-run freeze in `implement-verify-loop`).
 
 # Language
 
@@ -22,6 +41,28 @@ prior context; explanations must build up from the basics.
 - Avoid long multi-fact `>` blockquotes; they read poorly. Reserve `>` for a single short
   callout idea. When a point carries multiple facts, use a plain lead sentence followed by a
   bullet list instead of a multi-line blockquote.
+
+## Readability (do not write hard-to-read reports)
+
+This applies to every reader-facing output: chat answers, reports, guides, reviews,
+plans, and experiment explanations. It is a first-class requirement, not a
+nice-to-have — hard-to-read reports have been a recurring failure here.
+
+- **Do not hard-wrap for column width.** Never break a line inside a phrase, inside
+  inline code, or before a sentence's meaning is complete. Each physical line carries a
+  complete thought; a line ends only when an idea actually ends. Start a new paragraph
+  with a blank line when the topic changes.
+- **One idea per line.** One bullet states one point. Do not chain three or more facts,
+  numbers, or caveats into one bullet with strings of `，` / `；` / `（…）` / `——` /
+  bold fragments; split multi-part claims into nested sub-bullets.
+- **At most one `（…）` per sentence.** Move extra asides into sub-bullets.
+- **Anchor each headline number on its own line** with its subject and scope, not buried
+  mid-clause among other numbers.
+- **Chinese-English spacing.** Exactly one ASCII space between a Chinese character and an
+  adjacent English word, acronym, or alphanumeric token (`M18 實驗`, `使用 rocprof`).
+  Do not add spaces inside inline code, fenced code, URLs, paths, CLI flags, formulas,
+  identifiers, or hashes; put the space outside the span (`執行 \`run.sh\` 後`). Keep
+  command and machine-output blocks byte-for-byte.
 
 ## Reader-facing clarity contract
 
@@ -42,67 +83,24 @@ It applies even when the answer is informal or no document is being created.
   A definition may use nearby bullets or a short terminology section rather than one
   overloaded sentence. Simple, familiar terms may stay concise.
 - Expand acronyms on first use. Explain status IDs and named states in words; do not assume
-  that an identifier such as `R2`, `PASS`, or `W7` explains itself.
+  that an identifier such as `S10`, `PASS`, or `Gen0` explains itself.
 - Expand compact count notation before using it. For `10 configs × 3 sizes = 30 rows`,
   define `config`, `size`, and `row`; show one concrete config-size pairing; and say whether
   the factors are independent units or repeated measurements of the same condition.
   Keep repetition count separate.
 - For a central formula, define every symbol and unit, state whether higher or lower is
   better, identify the source of constants, and provide one worked numerical example.
-- For a set or classification, including `mandatory atom`, `fresh witness`,
-  `conditional target`, and `valid support`, state:
-  - the membership rule;
-  - who creates or selects members, and whether that happens before or after results;
-  - which later actor consumes the classification and exactly how;
-  - what conclusion membership does **not** support.
+- For a set or classification, state the membership rule; who creates or selects members,
+  and whether that happens before or after results; which later actor consumes the
+  classification and exactly how; and what conclusion membership does **not** support.
 - Explain dataflow as **actor -> action -> input -> output -> next consumer**. Name who
   produces each piece of information and what exact decision, lookup, validation, or
   transformation the next stage performs with it. Never stop at "used downstream."
 - If the user says they do not understand, restart with a simpler mental model or analogy,
   then rebuild the explanation step by step. Do not merely paraphrase the same terms.
-- Label planned behavior, live observation, and committed result separately:
-  - planned behavior is intended but not yet observed;
-  - live observation comes from current, possibly incomplete evidence;
-  - committed result is the durable recorded outcome.
-  Also separate technical `PASS` (the implementation or check met its criteria) from the
-  scientific outcome (positive, negative, or inconclusive).
-
-### Clarity examples
-
-**Anti-pattern:**
-
-```text
-10 configs × 3 sizes = 30 rows. A fresh witness covers the mandatory atom and is used downstream.
-```
-
-This fails because the counted objects, independence/repetition boundary, classifications,
-producer, consumer, exact use, and unsupported conclusions are all missing.
-
-**Good count explanation:**
-
-```text
-A config is one complete choice of settings being compared; for example, C03
-processes a 128-by-128 output block with 256 GPU threads. A size is one input
-shape; for example, S02 multiplies a 1024-by-512 matrix by a 512-by-1024 matrix.
-A row is one recorded result for one config-size pairing, so R08 records C03
-run on S02. Therefore 10 configs × 3 distinct sizes creates 30 independently
-specified pairings, not 30 repetitions of one condition. Timing repetitions
-within each pairing are counted separately.
-```
-
-**Good classification/dataflow explanation:**
-
-```text
-Toy protocol example (not a default definition for project terms): a mandatory atom
-is a condition that the design author places in the frozen required set {A, B} before
-results are visible. The runner produces observation W7 after that freeze. W7 is a
-fresh witness for A only if it was not used to choose A and it satisfies A's declared
-evidence rule. After the run, the verifier classifies W7 as valid support only when that
-rule passes; the claim evaluator then counts A as having qualifying evidence. This
-supports A only; it does not prove the overall hypothesis. The design author also
-predeclares conditional target T. The scheduler consumes A's verdict and activates T
-only after A passes; activation does not mean T has passed.
-```
+- Label planned behavior, live observation, and committed result separately. Also separate
+  a technical `PASS` (the implementation or check met its criteria) from the scientific
+  outcome (positive, negative, or inconclusive).
 
 ## Reader-facing self-audit
 
@@ -112,7 +110,7 @@ example, who consumes it downstream and how, and what is not implied?** Unexplai
 acronyms, status IDs, set membership, or compact count notation fail the audit. If the
 main explanation fails this audit, a technical appendix or glossary does not repair it.
 
-## GEKO and Ductile source-branch authority
+# GEKO and Ductile source-branch authority
 
 - Treat GEKO and Ductile as codebases that remain authoritative on two separate remote
   feature branches; do not assume that either one has been integrated into the current
@@ -133,165 +131,66 @@ main explanation fails this audit, a technical appendix or glossary does not rep
   that evidence exists, describe them as separate-branch sources, not as an integrated
   codebase.
 
-## Experiment execution, conclusion, and downgrade discipline
+# Experiment execution and reporting discipline
 
-### Use milestone-level artifact governance
+- When work depends on a long-running or background experiment, data-collection, or
+  simulation/benchmark job, do not write the experiment report, finalize the result
+  interpretation, or mark the implementation complete until that job has fully finished
+  (success status, all planned runs present) and its outputs are verified.
+- Report metrics and verdicts only from the final result files, cross-checked against the
+  raw artifacts; never from partial, interim, or still-running output.
+- While such a job runs, independent work (documentation, unrelated code, other
+  milestones) may proceed; the gated step is the results, verdict, and report or
+  implementation completion.
+- If a report must be produced before all runs finish, clearly mark it partial or
+  in-progress and list the pending runs.
+- For an **irreversible or expensive GPU/ROCm benchmark run**, freeze the workload set,
+  seeds, metric definitions with their measurement boundary, and success/failure/
+  inconclusive criteria **before launching**, and do not silently re-scope them after
+  seeing the numbers. This is the one heavyweight gate, kept light — no machine-readable
+  lock, hash chain, or amendment ledger. A genuine change to a frozen design goes through
+  `design-discussion` (user approval) and a fresh run.
 
-- At the start of every new experiment, checkpoint, successor, generation, execution tranche,
-  or closure unit, completely read and apply
-  `study_docs/research/experiment-artifact-governance.md`; record its commit/hash in the
-  execution baseline. This policy is a required governance input, not optional background.
-- Classify artifacts before outcome-revealing work as a sealed scientific milestone,
-  pre-seal candidate, or operational bookkeeping. Strict post-seal immutability applies to
-  scientific milestones. Pre-seal candidates may be revisioned and rebuilt before labels.
-  Published bookkeeping mistakes keep their original bytes and use a traceable operational
-  correction with deterministic replay.
-- Never use an operational correction to change a contract, lock, formal input/evidence,
-  sample inclusion, execution order, measurement, decision, claim, or edge. Those changes use
-  the applicable amendment/successor and experiment-design authority gate.
-- Do not reopen or poison a binding solely for a non-scientific serialization, timestamp,
-  resource-telemetry, agent-routing, command-summary, live-state, cache, or pre-seal candidate
-  error when direct evidence proves science, replay, and claim are unchanged.
-- A more specific effective contract or approved design that freezes stricter scientific,
-  safety, or compliance semantics remains controlling. The general policy never silently
-  weakens an existing sealed lifecycle.
-- Use the policy's proportionate threat model by default. Do not expand ordinary provenance
-  helpers into same-account hostile-process, inode/procfd, signal, or dumpability security
-  frameworks unless an approved design, external compliance rule, or direct evidence explicitly
-  requires that boundary.
+# Metric selection and comparability
 
-### Wait for complete evidence
+- For ranking / design-space-exploration (DSE) / fidelity work, lead with
+  decision-fidelity metrics — top-1 / top-2 / top-k and Pareto / best-config
+  identification — and give them the highest priority. Treat rank-correlation (Spearman /
+  Kendall) and absolute error as secondary: report them, do not lead a verdict on them.
+- Prioritise metrics by what the decision actually needs. A difference that appears only on
+  a low-priority metric while the decision-key metrics are tied is not a basis for a verdict.
+- Ensure metric comparability (apples-to-apples). The predicted metric and the ground-truth
+  metric must measure the same quantity over the same boundary — same components (compute /
+  DMA / scheduling / overlap) and same clock domain. State each metric's measurement boundary.
+- A gap that arises only because the two metrics are not comparable is a measurement
+  artifact, not a real finding. Reconcile the boundary before interpreting the gap.
 
-- Do not write a final experiment report, finalize interpretation, or mark an implementation
-  complete while any required run, data collection, simulation, or background job is still
-  running, missing, or unverified.
-- Report final metrics only from final result files cross-checked against raw artifacts. Do not
-  use partial, interim, or still-changing output as the final result.
-- Independent work may continue while jobs run, but the gated result, verdict, report, and
-  completion status must wait. If an early report is explicitly required, label it
-  `partial` / `in-progress` and list every pending run and unavailable conclusion.
+# Conclusion discipline (do not over-conclude)
 
-### Govern experiments by risk, hard gates, and closure units
+- Do not draw a conclusion from a single dataset, a few data points, or a single metric.
+  Wrong conclusions are a serious failure; treat any verdict as gated on convergent evidence.
+- Reason from design purpose, not backward from a local result. When judging whether a
+  component, field, parameter, or behavior "matters" or "can be ignored", reason FORWARD
+  from its original design purpose: what is it for, and what would omitting it cost? Do NOT
+  reason backward from a partial or local observation ("the current code path does not
+  consume it", "this one run did not change") to conclude it is irrelevant — that hides
+  effects which surface later at larger workloads or under a swept axis. Record an
+  omitted-but-relevant effect as an explicit tracked gap rather than dismissing it.
+- Form a hypothesis and an expected direction first, but hold it as a hypothesis, not a
+  conclusion.
+- Before accepting a result — especially a counterintuitive one — check confounders,
+  experiment-design effects, and whether the result is an artifact of the setup, the
+  workload, or the stated assumptions. Require a correct mechanism that explains it.
+- Run multiple, diverse workloads and repeated runs designed to test the hypothesis, and
+  conclude only after the results actually converge across them.
+- If the evidence cannot converge (for example the reachable workload set is too narrow),
+  the honest verdict is "inconclusive" — not a declared winner.
+- Do not call one approach "better/correct" than another merely because its results "look"
+  better on the available data — especially when the two approaches differ by construction
+  or when one is the ground-truth-faithful reference. State the measurement boundary, the
+  sample size, and the mechanism before any comparative verdict.
 
-- Classify work before any outcome label is visible:
-  - `R0 mechanical`: deterministic, non-outcome mechanical work.
-  - `R1 standard preregistered outcome checkpoint`: ordinary execution and interpretation of an
-    approved outcome gate.
-  - `R2 material measurement/claim/lineage risk`: work that can materially change measurement,
-    comparability, provenance, selection, lineage, or allowed claims.
-  - `R3 authority/destructive/post-label change`: new authority, destructive work, or any
-    post-label protocol, contract, lock, fixture, threshold, selection, lineage, or claim change.
-- Freeze the tier before labels. After labels, risk may only escalate. A generation, successor,
-  rename, replacement role, fresh thread, or new run root cannot reset tier, repair count,
-  thread count, lineage, or authority history.
-- Before outcome-bearing R1-R3 work, extract a durable machine-readable frozen contract from the
-  approved parent/design, verify its human/machine parity, and seal its tracked lock before
-  labels. It must define criteria, outcome/edge matrix, evidence/measurement/claim boundaries,
-  fixtures, lineage, implementation/execution-artifact/delivery write boundaries, authority,
-  repair and resource budgets, downgrade gate, and lock
-  identity. Transient Plan-A and Plan-B cannot replace or amend it.
-- The Main agent authors both transient plans without planner subagents: freeze the concise,
-  goal-based Plan-B before writing the decision-complete Plan-A. Plan-A must specify all
-  discoverable implementation and experiment details; it may delegate only a bounded spike with
-  explicit candidate branches, deterministic decision criteria, permitted changes, and stop
-  conditions. Each scientific gate gets a fresh implementer and a fresh verifier. The verifier
-  receives the frozen contract and Plan-B but must not read Plan-A. R2/R3 also add one fresh
-  adversarial oracle/authority auditor before labels. Same-model fresh threads are process
-  independence, not scientific replication.
-- A model pin is a disclosed preference or capability requirement, not a universal R0/R1 hard
-  stop. Record requested and actual models and capability differences; stop only when an
-  approved non-substitutable capability is unavailable.
-- Keep three units separate:
-  - A `scientific_gate` is a hard preregistered outcome/claim/authority edge.
-  - An `execution_tranche` may share Main-agent planning context, environment/setup, run root, and
-    repair history; each gate retains its own plans, fresh implementer, and fresh verifier.
-  - A `closure_unit` may give compatible adjacent gates one terminal report/update/staged audit
-    and commit without weakening any scientific edge.
-- Dependent outcome work waits for the upstream gate's verified frozen edge, not necessarily its
-  later terminal paperwork. Independent label-blind preparations may run in parallel only when
-  write, index, run-root, evidence, and authority boundaries do not overlap. Never speculate on
-  a dependent outcome.
-- Track `live_run_state` separately from `committed_projection_state`. Partial artifacts and
-  working-tree progress belong only to live state; committed projection changes only after the
-  durable closeout commit and post-commit audit.
-- Track repair rounds as traceable provenance for every R0-R3 gate, but do not require all
-  operational bytes to share one immutable append-only ledger. Published errors retain their
-  original bytes and use the policy's correction semantics; unpublished pre-seal candidates may
-  be revisioned. Never use the accumulated count as a stop, approval, or completion gate.
-  Reaching two consecutive rounds
-  without material progress triggers the non-design dual-agent adjudication below before another
-  repair; it does not by itself terminate the overall goal. When the applicable verifier/auditor
-  or two operational reviewers agree that a non-destructive, contract/authority-preserving
-  repair is required, record and execute it without another user round-trip, regardless of the
-  accumulated count. Generations, successors, renames, replacements, or fresh threads cannot
-  erase repair history. Total fresh role-thread caps for one gate/lineage remain R2 = 5 and
-  R3 = 6.
-- While an explicitly requested goal remains achievable under existing authority, do not
-  terminalize it merely because of `CHANGES_REQUIRED`, an ordinary test failure, missing
-  nonmaterial telemetry, planning variance, a recoverable process/environment interruption, or
-  another contract-preserving implementation blocker. Exhaust safe in-scope diagnosis, repair,
-  rerun, and the authorized dual-agent operational adjudication within their frozen caps while
-  keeping the user informed. Pause for the user only at the experiment-design gate below or when
-  continuation genuinely needs missing destructive/external/platform authority, would violate a
-  hard scientific or safety boundary, or has no reviewer-supported authority-preserving path.
-- Treat pre-empirical share, wall-time, CPU/GPU time, storage, throughput, the first-1%
-  reforecast, a 2x variance, and the default 5 GiB transient-storage ceiling as operational
-  planning targets by default. Notify the user before long-running work and when a planning
-  target is crossed, but notification is not an approval gate and the complete frozen workload
-  continues. A target becomes hard only when an approved pre-label design explicitly freezes
-  the exact resource quantity and boundary as a scientific/comparability criterion or as an
-  external, physical, allocation, or safety limit.
-- Preserve known cumulative resource usage and its parent/child/inclusive measurement boundary
-  across generations, successors, replacement roles, process restarts, and new run roots as
-  best-effort provenance. Never erase, fabricate, or silently present `UNKNOWN` as zero.
-  Historical consumption, missing telemetry, a projection above 2x, or an internal planning-cap
-  exceed does not by itself pause, terminate, or debit successor-entry authority.
-- Resource telemetry is operational planning evidence, not a scientific outcome or claim
-  criterion by default. Pause at a safe boundary only when direct or materially indicative
-  operational evidence ties continuation to unsafe operation; an external/platform limit;
-  unavailable compute, allocation, memory, or storage; inability to complete the full frozen
-  workload, verification, closure, or artifact preservation; label-dependent stopping or
-  selection; a required workload/claim change; corrupted or unverifiable evidence; or an
-  explicitly frozen scientific resource boundary. Bare `UNKNOWN`, planning variance, internal
-  cap crossing, or cumulative total is not such evidence. Record nonmaterial gaps and improve
-  telemetry prospectively; never rerun outcome-bearing work solely to perfect accounting. This
-  rule does not relax scientific sample/draw/seed/arm/population/generation/repetition caps,
-  thread caps, repair-review gates, downgrade gates, or evidence requirements, and it never
-  creates or changes a scientific outcome/edge.
-- Technical verification and staged closeout may be one fresh verifier pass when implementation
-  is stable and the complete staged draft is ready; record separate technical and closeout
-  verdicts. Any later staged change requires the affected audit again. Post-commit audit remains
-  mandatory.
-- An isolated terminal commit is permitted only when existing authority covers the exact
-  closure unit and frozen delivery whitelist. Push, PR, credentials, external writes,
-  dependency installation, and container mutation remain separately gated.
-- Positive, negative, and inconclusive outcomes all require durable terminal evidence. A
-  predeclared `BLOCKED` state may create only its specified blocker memo; it does not unlock a
-  dependent edge. `skipped_by_gate` and `not_activated` get no fabricated report of their own.
-- Keep transient `agent_run/` evidence out of commits. Preserve unrelated user changes and
-  pre-existing index entries. Preservation means the active workflow does not modify, restore,
-  delete, stage, or commit them; it does not require unrelated external workspace state to remain
-  globally byte-for-byte equal throughout the experiment.
-
-### Make every closure report a durable decision record
-
-- The committed report must be self-contained. Restate the frozen oracle and evidence boundary;
-  record exact commands, working directories, exit codes, raw artifact hashes, every
-  implement/verify iteration, findings, repairs, deviations, actual outcome, verified gate, and
-  what the evidence can and cannot support.
-- For every agent-decided issue, record the trigger, affected invariant, material alternatives,
-  supporting and opposing evidence, assumptions, participants, decision, rationale and
-  trade-offs, implementation/measurement/gate/claim impact, resolution, remaining uncertainty,
-  and why user review was or was not required.
-- When `design-discussion` was used, also synthesize both reviewers' substantive objections,
-  accepted and rejected alternatives, shared consensus or preserved dissent, round/time usage,
-  and final responses. Do not paste raw chat or private chain-of-thought. A link to ignored
-  transient evidence is not a substitute for the durable report.
-- Do not embed a closure commit's own SHA, a `SELF` placeholder, or a delivery-manifest hash in
-  the tracked report or parent plan. Link the commit through stable checkpoint/report identity,
-  commit trailers, Git history, the transient post-commit audit, and the final handoff.
-
-### GPU and ROCm execution environment
+# GPU and ROCm execution environment
 
 - Run every GPU- or ROCm-dependent command only inside the Docker container named exactly
   `perlee`. This includes hardware probes and ROCm builds/tests/tools such as `rocminfo`,
@@ -303,120 +202,8 @@ main explanation fails this audit, a technical appendix or glossary does not rep
   user's explicit approval. Dependency installation remains a separate human gate.
 - If `perlee` is unavailable, stopped, lacks the repository mount or GPU access, or rejects the
   command, stop and ask the user. Never substitute the host or another container.
-
-### Do not over-conclude
-
-- A hypothesis and expected direction come before the result, but remain hypotheses until
-  multiple repeated and diverse workloads provide convergent evidence.
-- Never declare a winner or a component irrelevant from one dataset, a few narrow workloads,
-  a single metric, or an unexplained result. If reachable evidence is too narrow or does not
-  converge, the verdict is `inconclusive`.
-- Reason forward from the original design purpose: explain what a component or effect is for
-  and what omitting it could cost. A local observation such as "unused on this path" or "no
-  effect in this run" is evidence about that scope only, not proof that it is unimportant.
-  Record omitted-but-relevant effects as tracked gaps.
-- Before accepting a result, check confounders, setup artifacts, workload coverage, assumptions,
-  and a plausible mechanism. State the measurement boundary, sample size, repetitions, metrics,
-  and what the result cannot support.
-
-### Bound design discussion, operational adjudication, and preserve dissent
-
-- Trigger `design-discussion` only for material experiment-design ambiguity involving protocol,
-  measurement/claim/lineage, stopping rules, or scientific authority. Do not trigger it for
-  mechanical repairs, deterministic artifact recovery, ordinary implementation choices, or
-  resource waiting.
-- Give two fresh independent reviewers the same neutral prompt and evidence. Allow at most two
-  cross-examination rounds plus one evidence-backed final round, with at most 60 total agent
-  wall-minutes. A new thread or renamed issue cannot reset either cap.
-- Do not force `AGREE`. For an experiment-design issue, preserve the reviewers' unified
-  conclusion or dissent and always pause for the user's decision before changing or resuming the
-  affected design path; reviewer agreement is analysis, not design authority.
-- For a non-design issue that would otherwise stop progress, has multiple consequential
-  contract-preserving repairs, or has repeated for two rounds without material progress, use two
-  independent operational reviewers with the same bounded cross-examination procedure. Use
-  fresh threads when thread headroom exists; otherwise resume two independent non-implementer
-  roles and disclose their prior roles instead of bypassing the thread cap.
-  If they agree on a non-destructive action that preserves the frozen contract and existing
-  authority, the repository owner pre-authorizes the Main agent to record and execute it without
-  another user round-trip. If they dissent, preserve both positions; the Main agent may proceed
-  only with an action uniquely compelled by the frozen contract and direct evidence. Otherwise
-  reclassify the unresolved issue under the applicable experiment-design, authority, or safety
-  gate instead of inventing consensus.
-- A frozen-contract change includes a changed goal, acceptance threshold, evidence source,
-  report target, gate order/edge, preregistered fixture or measurement boundary, whitelist,
-  immutable lock/lifecycle invariant, lineage, or allowed claim. After labels, such a change is
-  R3 and cannot be made through reviewer consensus alone.
-- `CHANGES_REQUIRED` alone is not a contract change. A contract-preserving in-scope repair,
-  rerun, correctly isolated test harness, or explicitly designed negative branch does not need
-  repeated human approval. Repair count is provenance only and never terminalizes an achievable
-  goal; continue when the responsible reviewer or operational reviewers support the required
-  repair and the action preserves the frozen experiment.
-- Reviewer agreement cannot invent the user's initial intent or grant missing commit/push,
-  credential, external-system, dependency-installation, container, or destructive authority.
-
-### Scope workspace drift to the active experiment
-
-- Treat a pre-existing path's externally observed modification, appearance, or disappearance as
-  `external_unrelated_drift` only when direct evidence proves every condition: the path is outside
-  all active implementation, execution-artifact, delivery, authority, source/input, evidence,
-  lock, report, and run-root boundaries; it is neither staged nor part of the current exact
-  commit; no current-workflow command touched it; it cannot affect reproducibility, dependency
-  resolution, evidence, claim, or closeout; and continuing requires no mutation of that path.
-- For qualifying `external_unrelated_drift`, preserve the original baseline as historical
-  evidence and record a new traceable successor observation with exact path, prior state when
-  known, current
-  `lstat`/Git/index state, attribution as `UNKNOWN_EXTERNAL`, boundary checks, and exact-commit
-  path proof, notify the user, and continue. Notification is not an approval gate. Do not restore,
-  delete, quarantine, stage, commit, or otherwise act on the unrelated path, and never interpret
-  its disappearance as the owner's permission to remove data.
-  Use an operational correction only when direct evidence proves the earlier published
-  observation was already wrong when recorded; a real later drift is never rewritten as a
-  correction.
-- Workspace and post-commit audits are experiment-scoped: verify exact staged/committed paths,
-  current-workflow writes, and experiment-relevant protected state. Global equality of unrelated
-  workspace paths is not a PASS condition.
-- Keep the existing human/destructive gate when any path overlaps an active or scientific
-  boundary, current-workflow attribution is possible, the index or exact commit is affected,
-  evidence or reproducibility may change, qualification is incomplete, or resolution would
-  require modifying, restoring, deleting, quarantining, or overwriting the path.
-
-### Recover only deterministic disposable artifacts automatically
-
-- Automatic recovery is limited to one exact ordinary regular file that is baseline-absent,
-  newly untracked, unstaged, exactly attributed to the current workflow, byte-regenerable,
-  nonsensitive, and neither evidence-bearing nor independently valuable.
-- Prove lexical and resolved path, active-area ownership, baseline absence, exact creator
-  attribution, `lstat` type/mode/link count, Git/index/ignore state, size, SHA-256, timestamps,
-  and lack of user/concurrent overlap before action.
-- For a qualifying file, automatically move only that exact file into a new incident-specific
-  ignored `agent_run/...` quarantine, verify identical hashes and source absence, then audit full
-  status/diff/index, whitelist, and unrelated user changes. No dual reviewers are required.
-- Never use globs, recursion, broad variables, `git clean`, reset, checkout, stash, unlink, or
-  directory removal in this automatic path.
-- Tracked, staged, sensitive, evidence-bearing, plan-listed, or independently valuable artifacts,
-  plus any artifact whose recovery would overlap user/concurrent work, remain at a human/dual
-  review gate. A pre-existing or attribution-ambiguous path that the workflow need not mutate is
-  evaluated first under `external_unrelated_drift`; dual review can resolve classification, but
-  it cannot invent destructive authority.
-
-### Downgrades require the user's decision
-
-- Never autonomously downgrade an experiment or implementation. A downgrade includes reducing
-  workloads, runs, seeds, metrics, validation, acceptance criteria, or scope; replacing an
-  original baseline with a proxy; skipping a checkpoint; or converting a planned confirmation
-  into a smoke test, pilot, exploratory run, or weaker claim.
-- When a downgrade may be needed, pause that decision and give the user a decision packet:
-  1. the experiment design and setup;
-  2. the experiment goal and planned evidence;
-  3. completed, running, and missing work;
-  4. the problem encountered, supporting evidence, and root cause if known;
-  5. why a downgrade is being considered and how it changes statistical power, comparability,
-     acceptance criteria, and allowed claims;
-  6. alternatives that preserve the original plan, with expected time, resource, and risk;
-  7. a recommendation, clearly separated from the user's final choice.
-- Until the user chooses, mark the step `blocked-awaiting-user-decision`; do not silently apply
-  the downgrade or interpret partial evidence as final. If approved, record the user's decision,
-  rationale, changed scope, and limitations. Approval to downgrade never permits over-claiming.
+- Because a Codex subagent's sandbox cannot reach the container, GPU/ROCm commands are always
+  run by Claude (the orchestrator) and the results fed back into the Codex thread.
 
 # Code reference rule
 
@@ -429,17 +216,29 @@ main explanation fails this audit, a technical appendix or glossary does not rep
 
 # Scope control
 
+- Before broad edits, inspect the relevant directory and existing structure; prefer local,
+  scoped edits over broad rewrites.
+- Do not delete, move, or rename files unless explicitly requested.
+- Preserve existing CLIs, paths, config names, and output formats unless explicitly asked to
+  change them.
+- Commit only when the user explicitly asks.
 - Do not modify the official `projects/hipblaslt/AGENTS.md` or
   `projects/hipblaslt/tensilelite/AGENTS.md`; follow them for build and PR conventions.
-  This rule only adds learning / onboarding guidance on top.
-- Do not delete, move, or rename files unless explicitly requested.
+  This repo's rules only add learning / onboarding / orchestration guidance on top.
 
-# Skill pointer
+# Skill pointers
 
-When writing, editing, reviewing, or restructuring an onboarding or code-trace report
-(a user guide that helps a reader quickly understand the repo), use the
-`hipblaslt-code-trace` skill at `.claude/skills/hipblaslt-code-trace/SKILL.md` for the
-report structure and conventions.
+- Onboarding or code-trace reports (a user guide that helps a reader understand the repo):
+  use the `hipblaslt-code-trace` skill.
+- Implementation or experiment steps with acceptance criteria and a report target: use the
+  `implement-verify-loop` skill (Claude orchestrates Codex implementer + independent Codex
+  verifier).
+- A genuine experiment-design direction decision: use the `design-discussion` skill.
+- Experiment reports, code-change verification, and script work: the `experiment-report-writing`,
+  `code-change-verification`, and `script-development` skills carry the conventions; the Codex
+  subagents apply the matching `.codex/skills/` copies.
+- Learning roadmap, daily notes, and quizzes: the `learning-roadmap-authoring`,
+  `learning-notes`, and `learning-quiz` skills.
 
 # Learning roadmap: canonical + mirrors (keep in sync)
 
@@ -452,8 +251,8 @@ mirrors**: the Claude Code plan file
 - Always edit `study_docs/learning-roadmap.md`, never a mirror.
 - Inside Claude Code, a PostToolUse hook (in `/data1/perlee/.claude/settings.json`)
   auto-copies the canonical file to both mirrors on every edit.
-- The hook does NOT fire when editing in Cursor or when editing a mirror directly.
-  In those cases, manually sync: copy `study_docs/learning-roadmap.md` over both mirrors.
+- The hook does NOT fire when editing a mirror directly. In that case, manually sync:
+  copy `study_docs/learning-roadmap.md` over both mirrors.
 
 # Learning notes must mirror the full daily roadmap
 
@@ -466,47 +265,22 @@ day's roadmap section — nothing dropped:
   `（選讀／按需）` — copied verbatim WITH their tag kept, so the learner sees what is
   skippable but never misses that it exists. Never omit an item just because it is optional.
 - Preserve the roadmap's checkbox state (`- [x]` done / `- [ ]` not done).
-- Carry each item's `📚 參考資源` too, not just the item text: put an inline `📚 參考資源：...`
-  line under the item AND consolidate the same links in the bottom "code & doc 參考" section
-  (dual-track). Only link files that exist. A missing reference means the learner does not
-  know where to look it up.
+- Carry each item's `📚 參考資源` too: put an inline `📚 參考資源：...` line under the
+  item AND consolidate the same links in the bottom "code & doc 參考" section. Only link
+  files that exist.
 
 A missing item in the note means the learner silently skips that work. Use the
 `learning-notes` skill as the authoritative procedure; when creating or reviewing a note,
 verify its "對應 roadmap item" list matches the roadmap section one-for-one.
 
-# Claude / Cursor parity (rules and skills MUST stay in sync)
+# Legacy: `.cursor` and `.agents`
 
-This repo is driven from both Claude Code and Cursor, so the agent instructions are
-duplicated on each side. Every Claude-side file has a Cursor-side counterpart, and the
-two must always carry the same content:
+This repo was previously driven with Cursor and with Codex as the orchestrator. The
+`.cursor/` and `.agents/` directories are retained as **legacy** and are no longer the
+canonical workflow source:
 
-- General rules: `CLAUDE.md` ↔ `.cursor/rules/hipblaslt-onboarding.mdc`
-  (same substantive rules; only the `.mdc` frontmatter and a few platform-specific
-  notes — e.g. how the auto-sync hook behaves — may differ in wording).
-- Skills: `.claude/skills/<name>/SKILL.md` ↔ `.cursor/skills/<name>/SKILL.md`
-  (byte-identical — no platform-specific content).
-
-Rule: whenever you edit one side — your own general rule OR any SKILL — apply the
-same change to its counterpart **in the same task**. Never leave the two out of sync.
-After editing, `diff` the pair to confirm (skills must be byte-identical; the rule
-files must match in substance, allowing only frontmatter / platform-specific wording).
-
-## Cursor-to-Codex skill migration
-
-- `.cursor/skills/` is the canonical workflow source. Every matching
-  `.agents/skills/` directory must be a complete, standalone Codex-native port containing
-  the full workflow and all required references, scripts, and assets.
-- Do not leave a pointer-only Codex adapter that requires reading
-  `.cursor/.../SKILL.md`.
-- Put only runtime translations in the migrated skill's `Codex runtime mappings` section,
-  delimited by `BEGIN/END CODEX RUNTIME MAPPINGS` comments. These mappings may translate
-  model names, user-input mechanisms, subagent calls, resume behavior, and Cursor/editor
-  terminology; they must not change workflow authority, sequencing, evidence, or completion
-  semantics.
-- In the same task as any Cursor skill add/remove/rename/body/resource change, update the
-  matching `.agents` port. Keep `name` and `description` exactly synchronized, compare the
-  relative resource inventory, and validate the Codex skill.
-
-Note: `.claude/` and `.cursor/skills/` sit outside the sparse-checkout cone, so staging
-them needs `git add --sparse`.
+- The canonical agent instructions are now this `CLAUDE.md`, `AGENTS.md`, and the skills
+  under `.claude/skills/` (with `.codex/skills/` copies for the Codex subagents).
+- Do not edit `.cursor/` or `.agents/` as part of normal work, and do not treat them as
+  authoritative. There is no requirement to keep them byte-identical with `.claude/`.
+- Prefer running work through Claude Code as the orchestrator.

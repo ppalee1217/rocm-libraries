@@ -50,7 +50,7 @@ fi
 # the wrapper exec itself (infinite loop).
 CLAUDE_BIN="$(npm prefix -g)/bin/claude"
 
-echo "==> [4/7] install Cursor agent CLI if missing"
+echo "==> [4/8] install Cursor agent CLI if missing"
 # Check the real install path, NOT `command -v` — our /usr/local/bin wrapper
 # would otherwise short-circuit this and skip the install.
 CURSOR_BIN="${PERLEE_HOME}/.local/bin/cursor-agent"
@@ -60,7 +60,17 @@ if [ ! -e "${CURSOR_BIN}" ]; then
     echo "    WARN: cursor-agent install failed; continue (Claude still set up)"
 fi
 
-echo "==> [5/7] write auto-approve wrappers to /usr/local/bin (container-only)"
+echo "==> [5/8] install Codex CLI if missing"
+# Claude Code drives Codex as an MCP subagent (repo .mcp.json runs `codex mcp-server`),
+# so codex must be on PATH inside the container. Installed as an npm global, matching
+# the host (@openai/codex). Codex auth (~/.codex) is bind-mounted by run.sh so the
+# host login is reused; no separate auth step here.
+if ! npm ls -g --depth=0 @openai/codex >/dev/null 2>&1; then
+  npm install -g @openai/codex
+fi
+echo "    codex $("$(npm prefix -g)/bin/codex" --version 2>/dev/null || echo '(version unknown)')"
+
+echo "==> [6/8] write auto-approve wrappers to /usr/local/bin (container-only)"
 # Both wrappers guard against being run as root: the auto-approve flags
 # (--dangerously-skip-permissions / --force) are refused under root, so instead
 # of the cryptic upstream error we print how to re-enter as perlee.
@@ -90,7 +100,7 @@ exec "${CURSOR_BIN}" --force --approve-mcps "\$@"
 EOF
 chmod 755 /usr/local/bin/cursor-agent
 
-echo "==> [6/7] isolated Claude config dir at ${CONF_DIR}"
+echo "==> [7/8] isolated Claude config dir at ${CONF_DIR}"
 mkdir -p "${CONF_DIR}"
 # model: Claude-Opus-4.8 is the newest model the AMD gateway offers (1M context).
 # Claude Code prints a false "Opus 4 retired" warning because it prefix-matches the
@@ -108,7 +118,7 @@ cat > "${CONF_DIR}/settings.json" <<'EOF'
 EOF
 chown -R "${PERLEE_UID}:${PERLEE_GID}" /src/.agentconf
 
-echo "==> [7/7] container-only profile (PATH + CLAUDE_CONFIG_DIR)"
+echo "==> [8/8] container-only profile (PATH + CLAUDE_CONFIG_DIR)"
 # Lives in /etc (not the bind-mounted home), so host is unaffected.
 cat > /etc/profile.d/agent.sh <<EOF
 export CLAUDE_CONFIG_DIR=${CONF_DIR}

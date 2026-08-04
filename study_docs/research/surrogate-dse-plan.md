@@ -173,7 +173,7 @@ authority／orchestration，不改scientific gates。
   對S10R2／S11沒有合法consumer，且明文禁止作gate evidence；
 - current S10R1文件壓縮為取消tombstone，A30–A32、source／YAML／L0／selection
   identities、resource known／unknown與清理稽核由
-  [retirement manifest](ductile-origami-warmstart/retirements/s10r1-diagnostic-retirement.json)
+  [retirement manifest](ductile-origami-warmstart/archive/retirements/s10r1-diagnostic-retirement.json)
   保存；完整舊protocol只留在Git history；
 - physical bytes可依exact allowlist退休；immutable的是lifecycle、outcome、edge與
   digest-level lineage，不是bulk copies；
@@ -551,7 +551,7 @@ validator acceptance與operational codegen survival是兩個不同證據層級�
 Fresh Reviewer A `/root/pipeline_rebaseline_reviewer_a`與Reviewer B
 `/root/pipeline_rebaseline_reviewer_b`使用相同current bytes/direct evidence獨立分析，
 完成兩輪cross-examination及一輪evidence-backed final，均`AGREE`。使用者選擇並核准
-[S10R4 exact-frame design](ductile-origami-warmstart/s10r4-stage1-exact-frame-operational-entry-design.md)：
+[S10R4 exact-frame design](ductile-origami-warmstart/archive/s10r4-stage1-exact-frame-operational-entry-design.md)：
 
 - S10R3 negative/null完全immutable；S10R4不redraw、不resume conditional streams；
 - 只窄重用S10R3完整sealed 114-config discovery frame，不重用其K=19 selection、
@@ -581,7 +581,7 @@ top-level formal stage。兩者都是execution harness／lineage缺陷，不是s
 
 兩位獨立reviewers完成交叉詰問並一致拒絕改寫舊commit或以少數path overlay假裝原lock
 仍有效。使用者核准
-[binding-02 recovery authority](ductile-origami-warmstart/s10r4-binding-02-execution-recovery-authority.md)：
+[binding-02 recovery authority](ductile-origami-warmstart/archive/s10r4-binding-02-execution-recovery-authority.md)：
 
 - binding-01的commit、lock、ledgers、Plan與partial原地保留為immutable diagnostic，
   `scientific_outcome=not_evaluated / edge=null`；
@@ -612,8 +612,8 @@ lock_state=absent / lock_never_created=true`。
 
 兩位fresh reviewers以相同evidence完成一輪cross-examination與一輪evidence-backed
 final並均`AGREE`；使用者核准
-[binding-04 authority](ductile-origami-warmstart/s10r4-binding-04-resolver-effective-recovery-authority.md)
-與[active design](ductile-origami-warmstart/s10r4-stage1-resolver-effective-operational-entry-design.md)：
+[binding-04 authority](ductile-origami-warmstart/archive/s10r4-binding-04-resolver-effective-recovery-authority.md)
+與[active design](ductile-origami-warmstart/archive/s10r4-stage1-resolver-effective-operational-entry-design.md)：
 
 - exact 114 raw occurrences／hashes及multiplicity仍是immutable sampling population與
   denominator；resolver collision或codegen attrition不刪除raw mass；
@@ -656,8 +656,8 @@ edge=null / lock=absent / lock_never_created=true`。B05沒有tracked implementa
 formal result或outgoing edge，且提供zero B06 gate credit。
 
 使用者核准
-[binding-06 authority](ductile-origami-warmstart/s10r4-binding-06-provenance-recovery-authority.md)
-與[B06 clean-successor design](ductile-origami-warmstart/s10r4-stage1-relational-selector-binding-06-clean-successor-design.md)：
+[binding-06 authority](ductile-origami-warmstart/archive/s10r4-binding-06-provenance-recovery-authority.md)
+與[B06 clean-successor design](ductile-origami-warmstart/archive/s10r4-stage1-relational-selector-binding-06-clean-successor-design.md)：
 
 - 在fresh worktree/root中禁止讀取或重用B02-B05 formal/run-root artifacts；B05 design與
   contract只作byte-immutable preserved-science input，沒有B06 criterion credit；
@@ -1204,16 +1204,16 @@ authority，不是outcome或scientific edge。
 
 M00–M09移入`ductile-origami-warmstart/legacy/`，只保留歷史正文：
 
-- [M00](ductile-origami-warmstart/legacy/m00-study-contract-observability-design.md)
-- [M01](ductile-origami-warmstart/legacy/m01-step0-integration-gate-design.md)
-- [M02](ductile-origami-warmstart/legacy/m02-guidance-plumbing-design.md)
-- [M03](ductile-origami-warmstart/legacy/m03-exp0a-cold-headroom-design.md)
-- [M04](ductile-origami-warmstart/legacy/m04-exp0b-widening-gate-design.md)
-- [M05](ductile-origami-warmstart/legacy/m05-expc-ranking-oracle-design.md)
-- [M06](ductile-origami-warmstart/legacy/m06-exp1-injection-b-design.md)
-- [M07](ductile-origami-warmstart/legacy/m07-exp2-a-safe-b-factorial-design.md)
-- [M08](ductile-origami-warmstart/legacy/m08-exp3-multishape-design.md)
-- [M09](ductile-origami-warmstart/legacy/m09-overall-confirmation-design.md)
+- [M00](ductile-origami-warmstart/archive/legacy/m00-study-contract-observability-design.md)
+- [M01](ductile-origami-warmstart/archive/legacy/m01-step0-integration-gate-design.md)
+- [M02](ductile-origami-warmstart/archive/legacy/m02-guidance-plumbing-design.md)
+- [M03](ductile-origami-warmstart/archive/legacy/m03-exp0a-cold-headroom-design.md)
+- [M04](ductile-origami-warmstart/archive/legacy/m04-exp0b-widening-gate-design.md)
+- [M05](ductile-origami-warmstart/archive/legacy/m05-expc-ranking-oracle-design.md)
+- [M06](ductile-origami-warmstart/archive/legacy/m06-exp1-injection-b-design.md)
+- [M07](ductile-origami-warmstart/archive/legacy/m07-exp2-a-safe-b-factorial-design.md)
+- [M08](ductile-origami-warmstart/archive/legacy/m08-exp3-multishape-design.md)
+- [M09](ductile-origami-warmstart/archive/legacy/m09-overall-confirmation-design.md)
 
 它們統一是`design_authority:none / lifecycle:legacy / do_not_execute`。Successor只表示主題關聯，不表示artifact、criterion、schema、hash、lock、registry、fixture、test或outcome migration。
 

@@ -2180,7 +2180,7 @@ S11 接著在這個已驗收的橋上建立自己的 occurrence frame、factoriz
 DepthU 仍不能接受 guidance。這會浪費已有資訊，甚至讓 S11 沒有 guidable gene。
 
 因此這輪討論另建立了非權威草案
-[value-level bounded guidance amendment proposal](s10r3-s11-value-level-guidance-amendment-proposal.md)。
+[value-level bounded guidance amendment proposal](ductile-origami-warmstart/archive/s10r3-s11-value-level-guidance-amendment-proposal.md)。
 它目前是 `DRAFT_PENDING_DESIGN_DISCUSSION`，不修改正在執行的 S10R3 或 approved S11。
 
 #### Q23：為什麼不直接把這類 value 的機率 hardcode 成很低或零？
@@ -2251,7 +2251,7 @@ floor。但它會改變 S11 eligibility、sampling distribution與 scientific es
 4. [active checkpoint index](ductile-origami-warmstart/README.md)；
 5. [S10R2 historical design](ductile-origami-warmstart/s10r2-stage1-support-aware-entry-recovery-design.md)；
 6. [S10R3 active design](ductile-origami-warmstart/s10r3-stage1-bounded-cover-entry-recovery-design.md)；
-7. [Value-level guidance proposal](s10r3-s11-value-level-guidance-amendment-proposal.md)；
+7. [Value-level guidance proposal](ductile-origami-warmstart/archive/s10r3-s11-value-level-guidance-amendment-proposal.md)；
 8. [S11 design](ductile-origami-warmstart/s11-stage1-model-only-factorization-design.md)；
 9. [S12 design](ductile-origami-warmstart/s12-stage1-real-score-ranking-oracle-audit-design.md)；
 10. [S13 design](ductile-origami-warmstart/s13-stage1-actual-gen0-mechanism-design.md)；
@@ -2282,7 +2282,7 @@ floor。但它會改變 S11 eligibility、sampling distribution與 scientific es
 - [S10 formal report](ductile-origami-warmstart/reports/staged/s10-stage1-entry-gate-report.md)
 - [S10R2 historical design](ductile-origami-warmstart/s10r2-stage1-support-aware-entry-recovery-design.md)
 - [S10R3 active design](ductile-origami-warmstart/s10r3-stage1-bounded-cover-entry-recovery-design.md)
-- [Value-level bounded guidance proposal](s10r3-s11-value-level-guidance-amendment-proposal.md)
+- [Value-level bounded guidance proposal](ductile-origami-warmstart/archive/s10r3-s11-value-level-guidance-amendment-proposal.md)
 - [S11 design](ductile-origami-warmstart/s11-stage1-model-only-factorization-design.md)
 - [S12 design](ductile-origami-warmstart/s12-stage1-real-score-ranking-oracle-audit-design.md)
 - [S13 design](ductile-origami-warmstart/s13-stage1-actual-gen0-mechanism-design.md)

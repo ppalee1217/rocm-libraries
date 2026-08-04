@@ -141,7 +141,7 @@ Successor 不是重複嘗試到得到想要的答案，而是每次發現 harnes
 ## 8. 下一步：S10R1 是獨立 recovery
 
 S10 本身已完成為 negative checkpoint，outgoing edge 永遠是 `null`。
-Post-closeout 分析後，研究另外核准 [S10R1 valid-support recovery 設計](../../s10r1-stage1-valid-support-entry-recovery-design.md)。
+Post-closeout 分析後，研究另外核准 [S10R1 valid-support recovery 設計](../../archive/s10r1-stage1-valid-support-entry-recovery-design.md)。
 S10R1 使用獨立 checkpoint、lock、evidence、report 與 closeout：
 
 - 它可以引用 S10 的 terminal provenance。

@@ -75,6 +75,19 @@ Layer-A immutability prevents outcome-dependent manipulation, evidence
 replacement, cherry-picking, and silent claim changes.  It is the hard
 boundary this policy preserves.
 
+The reference Layer-A helper consumes a pre-existing canonical transition
+registry whose exact raw SHA-256 binds three closed mappings: approved
+authority IDs, scientific scopes for every observed payload JSON pointer, and
+scientific scopes for every observed artifact ID.  It derives the actual
+changed scopes from exact canonical JSON leaf bytes and exact artifact
+identity records, then requires the successor's declared `affected_scope` to
+match.  Artifact inventories are ordered records containing an ID, safe
+repository-relative path, and content hash; reusable formal inputs must retain
+that exact record, while diagnostic-only and forbidden predecessor artifacts
+must be absent.  This helper is a reference safeguard, not a seal mechanism or
+an authority source: each checkpoint's effective contract, seal, and verifier
+may impose stricter scientific or compliance rules and remain controlling.
+
 ### B. Pre-seal candidates
 
 Layer B contains artifacts that are not yet effective:

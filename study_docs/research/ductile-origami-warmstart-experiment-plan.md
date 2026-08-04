@@ -12,6 +12,14 @@
 > edge 是 S11 自己完整 locked/verified/committed/post-audited 後的
 > `S11:S1_GUIDANCE_LOCKED -> S12`。這次沒有執行 S10R4 或 S11 evidence。白話說明見
 > [變更指南](ductile-origami-warmstart/s10r4-to-s11-experiment-plan-change-guide.md)。
+>
+> **2026-08-04 current authority：**user-approved `S11-DIRECTION-METRICFRAME-20260804`
+> （見本頁下方同名 amendment）確認 S11 以 administrative prerequisite 進場為正當、不建
+> S10R5，並把 §6.4 fixed-half stability 由「全部欄位 exact 相同」修正為只對列舉的
+> categorical decision projection 要求 exact（數值 drift 只報告、不 gate），另要求 lock 前
+> materialize workload envelope 並以 branch-stop＋`BLOCKED` escalation 控 churn。只改 design
+> 文字與治理措辭，未動任何 scientific threshold、sample、seed、claim、edge，也未執行 S11
+> evidence 或建立 lock。§6.4 實作與 workload materialization 仍待 future S11 contract/lock。
 > 本頁後續所有舊 S10R4 positive dependency、`F_valid/F_effective/F_codegen` 與
 > whole-gene fail-closed wording，若未明寫 current，均是 historical/superseded trail。
 >
@@ -55,15 +63,15 @@
 > 現為`execution_status=cancelled / checkpoint_state=BLOCKED /
 > criterion_status=CHANGES_REQUIRED / scientific_outcome=not_evaluated / edge=null /
 > lock_state=absent`。A51曾核准
-> [binding-04 dual-lineage authority](ductile-origami-warmstart/s10r4-binding-04-resolver-effective-recovery-authority.md)
-> 與[resolver-effective design](ductile-origami-warmstart/s10r4-stage1-resolver-effective-operational-entry-design.md)：
+> [binding-04 dual-lineage authority](ductile-origami-warmstart/archive/s10r4-binding-04-resolver-effective-recovery-authority.md)
+> 與[resolver-effective design](ductile-origami-warmstart/archive/s10r4-stage1-resolver-effective-operational-entry-design.md)：
 > 固定114 raw occurrence denominator，並在剩餘row evidence前prelock
 > `F_valid(raw) -> F_effective -> F_codegen` measurement。B04在lock/formal row前因
 > derived selector closure不足而固定為
 > `superseded_prelock / CHANGES_REQUIRED / not_evaluated / edge=null / lock=absent`。
 > 退役前最後一份user-approved historical authority是
-> [binding-06 authority](ductile-origami-warmstart/s10r4-binding-06-provenance-recovery-authority.md)
-> 與[clean-successor design](ductile-origami-warmstart/s10r4-stage1-relational-selector-binding-06-clean-successor-design.md)：
+> [binding-06 authority](ductile-origami-warmstart/archive/s10r4-binding-06-provenance-recovery-authority.md)
+> 與[clean-successor design](ductile-origami-warmstart/archive/s10r4-stage1-relational-selector-binding-06-clean-successor-design.md)：
 > 它當時投影為`DESIGN_APPROVED / not_started / not_evaluated / edge=null`，binding-06
 > lock absent；現在已由上方 rebaseline 退役。
 > Binding-05因implementation前的ignored-ledger canonical hash-chain failure固定為
@@ -116,7 +124,7 @@ orchestration／resource floor；它不能靜默修改上列scientific authority
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | S00 | Evidence contract／lineage／observability foundation | approved | completed | CHECKPOINT_COMPLETE | positive | effective (`successor-001`) | [design](ductile-origami-warmstart/s00-evidence-contract-lineage-observability-design.md) | [report](ductile-origami-warmstart/reports/staged/s00-foundation-verification-report.md) |
 | S10 | Stage 1 access／artifact／mapping／noise gate | approved | completed | CHECKPOINT_COMPLETE | negative | effective (`successor-003`) | [design](ductile-origami-warmstart/s10-stage1-entry-access-mapping-gate-design.md) | [report](ductile-origami-warmstart/reports/staged/s10-stage1-entry-gate-report.md) |
-| S10R1 | Cancelled nominal-boundary recovery diagnostics | approved | cancelled | BLOCKED | not_evaluated | superseded | [design](ductile-origami-warmstart/s10r1-stage1-valid-support-entry-recovery-design.md) | none (A32 operational record only) |
+| S10R1 | Cancelled nominal-boundary recovery diagnostics | approved | cancelled | BLOCKED | not_evaluated | superseded | [design](ductile-origami-warmstart/archive/s10r1-stage1-valid-support-entry-recovery-design.md) | none (A32 operational record only) |
 | S10R2 | Stage 1 support-aware entry recovery | approved | completed | CHECKPOINT_COMPLETE | inconclusive | effective | [design](ductile-origami-warmstart/s10r2-stage1-support-aware-entry-recovery-design.md) | [report](ductile-origami-warmstart/reports/staged/s10r2-stage1-support-aware-entry-report.md) |
 | S10R3 | Stage 1 bounded-cover entry recovery | approved | completed | CHECKPOINT_COMPLETE | negative | effective (`S10R3-A46.5-G3`) | [design](ductile-origami-warmstart/s10r3-stage1-bounded-cover-entry-recovery-design.md) | [report](ductile-origami-warmstart/reports/staged/s10r3-stage1-bounded-cover-entry-report.md) |
 | S10R4 | Retired unstarted exact-frame recovery history | superseded | cancelled | BLOCKED | not_evaluated | absent；B01–B06 historical，B07 not admitted | [retirement authority](ductile-origami-warmstart/s10r4-retirement-s11-rebaseline-authority.md) | none；不得建立 |
@@ -357,7 +365,7 @@ Positive、negative與inconclusive都要durable outcome closure。Operational
   release冒充budget reset，也不應為非authority duplicates支付34 GB逐檔hash成本。
 - **Retention decision：**採identity-only retirement。Current S10R1 design只保留
   cancellation tombstone；完整superseded protocol留在Git history。新的
-  [retirement manifest](ductile-origami-warmstart/retirements/s10r1-diagnostic-retirement.json)
+  [retirement manifest](ductile-origami-warmstart/archive/retirements/s10r1-diagnostic-retirement.json)
   保存A30–A32、source／YAML／L0／selection identities、pre-cleanup inventory、
   19-path digests、resource known／`UNKNOWN`、exact allowlist與post-audit。
 - **Two-phase cleanup：**第一個exact-path authority commit固定
@@ -1002,6 +1010,396 @@ Positive、negative與inconclusive都要durable outcome closure。Operational
   [fixed-frame amendment](ductile-origami-warmstart/s11-s12-fixed-frame-measurement-amendment.md)
   及[change guide](ductile-origami-warmstart/s11-s12-fixed-frame-measurement-change-guide.md)。
 
+### 2026-08-04 `S11-DIRECTION-METRICFRAME-20260804` amendment（user-approved）
+
+> **狀態：user-approved prospective amendment。**2026-08-04 使用者核准本 packet 的三項
+> 建議（Layer 1 administrative 進場、§6.4 categorical-projection 修正、workload/​churn
+> 治理），scope 限 S11 §6.4＋其 mirrored S11-design 文字＋parent §2.8/DAG harmonization，
+> **不**重開 S12/S13 scientific criteria、不改任何 scientific threshold、sample、seed、
+> claim 或 edge。S11 仍維持 `approved / not_started / DESIGN_APPROVED / not_evaluated /
+> lock absent`：本 amendment 只修正 design 文字與治理措辭，**未**執行 S11 evidence、未建
+> effective lock／result／report／edge，也不授權 push。原始為
+> `PENDING_HUMAN_DECISION` 的雙 reviewer packet 內容原樣保留於下，作 decision provenance。
+
+- **Trigger／scope：**使用者要求重估目前實驗方向與最新進度，尤其是進行中的 active
+  checkpoint。焦點兩層：(1) S11 進場正當性；(2) 全研究方向是否需修正。寫回 target 為本
+  parent plan（使用者指定）。此討論不涉及執行實作。
+- **程序：**依 `design-discussion` skill。兩位 fresh independent reviewers 以相同初始
+  prompt 各自首輪分析、一輪 cross-examination（含 orchestrator 查核的 §6.4 verbatim
+  evidence）、一輪 evidence-backed final。總 agent wall-time 約 26 分鐘（起
+  `2026-08-04T07:01Z`、迄 `07:27Z`），在 60 分鐘 cap 內；cross-examination 未超過兩輪，
+  final 一輪。
+- **Reviewer model／process independence：**兩位 reviewers 均為 `gpt-5.6-sol`（reasoning
+  effort `xhigh`，`service_tier=fast`），經 Claude orchestrator 透過 codex MCP bridge
+  (`mcp__codex__codex` / `codex-reply`) 各開一條 fresh thread 驅動：Reviewer A thread
+  `019fcb98-4b73-7bc2-8bb5-ee007473cdfb`、Reviewer B thread
+  `019fcb9e-3f7b-79a1-97e3-2e620c522477`。符合 skill 揭露之 model preference，無 silent
+  downgrade。Same-model fresh threads 屬 process independence，非 scientific replication。
+- **收斂結果：**`AGREE / AGREE`，無 material dissent。
+
+#### Layer 1 — S11 進場正當性：建議 PROCEED（administrative prerequisite）
+
+- 以 administrative prerequisite `S1-REBASELINE-20260803`、`incoming_scientific_edge=null`
+  進入 S11 在科學上正當：S11 是 fresh、independent、falsifiable 的 model-only checkpoint；
+  prerequisite 是 authority 而非 evidence，絕不得被描述成 recovered／inherited 的 empirical
+  GO edge。
+- **不**建立 S10R5、不復活 S10R4、不重用前序 empirical rows、不捏造 Stage-1 GO edge。五次
+  進場嘗試（S10 negative、S10R1 cancelled、S10R2 inconclusive、S10R3 negative、S10R4
+  retired-unstarted）顯示的是舊進場機制的 **operational fragility**，不是 Formocast
+  factorization 假設失敗；沒有一次產生 `FT-MODEL-*`／heuristic-saturation／entropy-only／
+  Gen0 結果，故都不是 factorization test。
+- 舊 GO edge 沒有留下無法被量到的 indispensable 命題：S11 fresh 建立 raw acceptance、
+  resolver／codegen／compile qualification、stable operational identity 與 Formocast
+  scoreability；S12 在任何 GFLOPS label 前建立 native／runtime conformance、correctness、
+  noise readiness、full-raw transport 與 real ranking；S13 才測 actual Gen0。
+- **一項 documentary 前置動作（lock 前）：**harmonize 仍保留的 parent §2.8 D1–D2
+  hard-stop 措辭與目前 administrative-entry DAG，使 GPU／correctness／noise readiness 的
+  位置（S12 prelabel）不再歧義。屬 user-approved design／authority harmonization，不是
+  empirical relaxation，也不是重新推導 entry condition。
+
+#### Layer 2 — 方向：保留假設與順序；需一項 pre-evidence §6.4 修正
+
+- 收斂後的核心假設（whole-config Formocast physics score → 對現未加權 residual genes 的
+  incremental per-gene guidance，保留既有 YAML groups／weights，以 baseline＋shuffle
+  controls 區分 physics direction 與 entropy concentration）值得**一次**修正後的 bounded
+  Stage-1 嘗試。GEKO 既有 problem-dependent Gen0 heuristics 與 Formocast whole-config
+  pre-screening 使 novelty 變窄，但都未回答 factorization 問題。保留
+  S11→S12→S13→S20→S30/S31 順序與 claim ladder。
+- **§6.4「Fixed-half semantic stability」是 genuine design defect（category a），非單純
+  documentation ambiguity。**Orchestrator 已 verbatim 查核
+  [fixed-frame amendment §§5.2, 6.4](ductile-origami-warmstart/s11-s12-fixed-frame-measurement-amendment.md)：
+  兩個固定 4,096 halves 是 **disjoint** global occurrence samples（只共用 sealed
+  conditional corpus），而 §6.4 要求包含 half-specific 數值 cells（`Dexec_gv`、
+  `Dscore_gv`、`n_gv`、`Cscore_occ_gv`、`mu_gv`）、float guidance probabilities 及
+  canonical guidance hash 在內的「全部欄位都必須 exact 相同」，緊接一句卻是「Numeric drift
+  只報告、不另加 threshold」。字面讀法下 positive route 一般不可達，§7 row-4
+  `FT-INCONCLUSIVE / edge=null` 幾乎被強制觸發。需 user-approved、pre-evidence 修正。
+- **最小修正（不新增 tolerance、不放寬任何 scientific threshold、label-blind、須使用者
+  核准）：**
+  1. 同一 half 以相同 sealed inputs replay 時，要求 byte-exact deterministic reconstruction。
+  2. 兩個 **disjoint** halves 之間，只對一個預先宣告、逐項列舉的 **categorical decision
+     projection** 要求 exact 相同：trust states／reason codes、`T_g`、guided-gene
+     states／reason codes、best／worst identities、per-size directions、每項 model-test
+     pass／fail、own／familywise pass、離散 positive global lambda、shuffle mapping。
+  3. half-specific `Dexec_gv/Dscore_gv/n_gv/Cscore_occ_gv/mu_gv` 與 float guidance
+     probabilities 視為 reported numeric drift（與「numeric drift 只報告」一致），不 gate。
+  4. authoritative guidance hash 只對 terminal full 8,192-occurrence bundle 計算一次
+     （integrity）；若保留 cross-half hash，只能 hash 上述列舉 categorical projection，
+     絕不 hash half-specific floats 或 occurrence multisets。
+  5. §7 row-4 half-stability 改為取決於該 categorical projection 失敗，而非 ordinary
+     numeric drift。
+- **lock 前 materialize workload envelope：**在 seal effective S11 lock 前，先具體化實際
+  activated-value family 與 maximum draw／qualification／compile／score／storage／runtime
+  envelope，並確認每個 terminal branch 可達。2.63-billion-nominal-draw 只是條件式
+  feasibility 情境（假設 family 與 S10R3 的 10,024 atoms 相當），**不是**目前 workload，也
+  **不是** go／no-go threshold。若完整 workload 不可行，任何 activation／inclusion／
+  sampling／stopping 變更都是另一個 user-approved design decision；resource 不足是
+  operational evidence，永不作 Formocast negative。
+- **停止規則：**修正後的 S11 若在 frozen matrix 下 terminal negative 或 inconclusive，即
+  **停止此 factorization intervention branch**，不預設再建 recovery sibling。未解的
+  engineering blockage 維持 `BLOCKED / not_evaluated` 並回報使用者裁示，不得轉為 scientific
+  negative。（依 §5.3，兩次 matching complete ordinary rejection 是 execution attrition，
+  只有 partial／discordant／association-lost／guessed evidence 才 `CHANGES_REQUIRED`；目前
+  A46 已移除 numeric repair cap，故防止 open-ended churn 的控制是 two-reviewer escalation
+  ＋本 branch-stop rule，而非會把 engineering inability 誤標為 science 的 time／repair-count
+  sunset。）
+
+#### 兩項次要 scope／value 差異的收斂（已納入 unified 建議）
+
+- **修正 scope：**narrowly 修改 S11 §6.4 ＋其 mirrored S11-design acceptance 文字 ＋
+  parent D1–D2/DAG harmonization，**不**重開 S12/S13 scientific criteria。（調和 Reviewer A
+  的「narrow correction」與 Reviewer B 的「單一 R3 amendment 只 harmonize authority、不重新
+  推導 criteria」。）
+- **Churn 控制：**branch-stop ＋ `BLOCKED/not_evaluated` 升級使用者裁示，**非** numeric
+  time／repair sunset。（Reviewer B 的「finite sunset」被讀為「停止本 branch／不建新
+  sibling」，兩方接受。）
+
+#### Acceptance／falsification（維持現行設計，未改動）
+
+- Positive（`S1_GUIDANCE_LOCKED -> S12`）：至少一個 stable gene `|T_g|>=2` 通過全部
+  fixed／familywise／coverage／entropy／round-trip／shuffle／firewall／replay／
+  fresh-verification gates，`|Uexec_global|>=256`，positive global lambda；只支持
+  survivor-frame label-blind guidance。
+- Inconclusive（`FT-INCONCLUSIVE / edge=null`）：material support／coverage／precision／
+  recurrence／（修正後）half-stability／catalog shortage 或 `|Uexec_global|<256`。
+- Negative：complete bounded family 無 gene 通過 effect／permutation／direction／entropy，
+  或 lambda 0。
+- 維持不變：`alpha=32`、`epsilon=0.20`、lambda grid 0..8 step 0.25、entropy `>=0.80`、
+  `S_g>=0.05`、2,000 permutations／bootstraps、half-width `<=0.025`、recurrence `>=0.90`、
+  2/3 size direction、coverage `>=0.95`、8,192 global frame、128/256 conditional schedule、
+  label firewall、S12 fixed-256／no-replacement／full-`Fraw`-denominator、S13/S20/S31
+  criteria。
+
+#### Reviewers 的實質反對、採納／捨棄、round／time 用量
+
+- Reviewer A 最強論點：§6.4 conflate deterministic reproducibility 與 statistical
+  stability。最弱論點：把「finite operational sunset」寫成 numeric stop 有將 engineering
+  inability 誤作 science 之虞（Reviewer B 提出後 A 於 round 1 修正為 escalation）。
+- Reviewer B 最強論點：§6.4 multiset 定義下 disjoint halves 的 exact equality 結構上不可
+  達。最弱論點：初版把「ordinary attrition」也視為可能致 `CHANGES_REQUIRED` churn，經 A
+  指出 §5.3 區分後收斂。
+- 採納：administrative null-edge 進場；不建 entry sibling；§6.4 categorical-projection
+  修正；lock 前 materialize workload；branch-stop＋escalation；保留全部其他 thresholds 與
+  claim ladder。
+- 捨棄：捏造 GO edge、重用舊 rows／B07、把五次進場失敗當 factorization negative、把 resource
+  不足當 scientific negative、numeric time／repair sunset、重開 S12/S13 criteria。
+- Round／time：initial 各一輪、cross-examination 一輪、evidence-backed final 一輪；約 26
+  agent wall-minutes（<60 cap）。Final：`AGREE / AGREE`。
+
+#### Residual uncertainty／evidence boundary（非阻擋）
+
+- 實際 activated-value family、acceptance rates、`|Uexec|`、execution yield、score
+  coverage、compile／Formocast throughput、gfx942 availability 全未觀察。
+- fresh S11 sampling 是否重蹈 S10R3 的 KernelWriter failure modes 未知。
+- 無 S11/S12 empirical evidence，feasibility 與 factorization signal 皆不可推論。
+- 文件用語「contract」不一致（change guide 稱 S11 無 contract；governance change report 提及
+  committed S11 contract／prelock authority）— lock 前應釐清。
+- Charter 記載可能存在未揭露的 core-team 重疊 prototypes，屬 open dependency。
+
+#### 使用者決定（2026-08-04：三項均核准）
+
+1. **核准** Layer 1：維持 administrative null-edge 進場、不建 S10R5，並授權 parent §2.8
+   D1–D2 與 DAG 的 documentary harmonization。
+2. **核准** §6.4（及 mirrored S11-design 文字）的 categorical-projection 最小修正，scope
+   限 S11＋parent 措辭、不重開 S12/S13 criteria。
+3. **核准** lock 前 materialize workload envelope，以及 branch-stop＋`BLOCKED` escalation
+   的 churn 控制（不採 numeric sunset）。
+
+本核准僅授權上述 design 文字／治理措辭修正與其 ordinary documentation commit；**不**授權
+執行 S11 evidence、建立 effective lock／result／report／edge，也**不**授權 push。§6.4 的
+實際 categorical-projection 實作與 workload materialization 仍須在 future S11
+contract／lock workflow 中完成並由 fresh verification 驗證。使用者另指示接續就 metric
+設計（factorization-metric validity 與 additivity/reconstruction/rank 輔助 metric）進行
+第二場 `design-discussion`。
+
+### 2026-08-04 `S11-METRIC-BIAS-20260804` amendment（user-approved 2026-08-04）
+
+> **狀態：user-approved prospective amendment。**本 packet 整合**兩場** `design-discussion`
+> (第二場 factorization metric 效度／輔助 metric,VALIDITY 線;第三場 `mu_gv` 作為 estimator
+> 的**系統性 bias**,BIAS 線)。2026-08-04 使用者**核准整包**:四族 label-blind validity
+> 診斷 ＋ 六項 bias 措施(均 mandatory-compute、大多 non-gating、claim-wording-bound),寫入
+> governing design,作為 future S11 r3 contract／effective lock 的一部分。**shrinkage
+> decision-flip gate(原 preserved dissent)的裁決:使用者選擇「先做 decision-loss
+> simulation」**——即在 gate 定案前,先以 prospective、label-blind 的 decision-loss simulation
+> (比較 alpha=0 vs alpha=32 的 ordering error)決定 alpha=0 decision-flip 是否 gate;在
+> simulation 結果產生前,alpha=0 sensitivity 為 mandatory-compute＋report,且**不**得逕自採
+> option (b) 或 (c)。此核准只授權將上述 approved scope 寫回 design 文字並納入 r3 contract／
+> workload 準備;**不**授權執行 outcome-bearing evidence、seal effective lock、commit closeout
+> 或 push——那些仍須經 r3 contract、effective lock、fresh implementer/verifier 的
+> implement-verify-loop 完成。S11 維持 `approved / not_started / DESIGN_APPROVED /
+> not_evaluated / lock absent`。VALIDITY 線兩方 `AGREE / AGREE`;BIAS 線 6/7 項
+> `AGREE / AGREE`,shrinkage gate 一項循使用者「decision-loss simulation first」裁決
+> (見下方 §BIAS)。
+
+- **Trigger／scope：**使用者提問「factorization 作為 metric 是否合理、需不需要輔助 metric
+  而非單以 factorization score 為準」。焦點:S11 以 per-gene **marginal** `mu_gv`(rank-based
+  benefit 的邊際均值)建立 guidance,是否足以回答 factorization 研究問題,還是需要
+  additivity/reconstruction/confounding/rank 層面的輔助 metric。寫回 target 為本 parent
+  plan。此討論不涉及執行實作。
+- **程序／model：**兩位 fresh independent reviewers,均 `gpt-5.6-sol`(effort `xhigh`,
+  `service_tier=fast`),經 Claude orchestrator 透過 codex MCP bridge 各開 fresh thread
+  (Reviewer A `019fcbb9-5e7e-71f0-8de1-a123a6b288eb`、Reviewer B
+  `019fcbc0-5bad-79b1-b77a-a73ddfcbaa06`)。initial 各一輪、cross-examination 一輪(附
+  orchestrator 查核的 charter §0/RQ2/§8.1/§8.5 evidence)、evidence-backed final 一輪。總
+  agent wall-time 約 22 分鐘(`08:03Z` 迄,<60 cap)。Final:`AGREE / AGREE`,無 material
+  dissent。Same-model fresh threads 屬 process independence,非 scientific replication。
+
+#### 查核到的事實(兩位 reviewer ＋ orchestrator,均對照 repo)
+
+- **目前設計不存在任何 additivity／interaction／score-reconstruction 診斷。**same-entropy
+  shuffle 只保 entropy 與 p1 機率 multiset;§6.4「reconstruction」是 byte-exact 重播完整性;
+  D6 arms G/F/S 是**下游** Gen0 outcome test;S12 oracle 用**真實** labels。沒有一個在檢驗
+  「把 emitted per-gene prior 重組後能否還原 whole-config Formocast 排序」。
+- 因此現行 S11 metric 建立的是**穩定的邊際關聯**(`mu_gv`、`S_g` ＋ permutation null、
+  bootstrap、half-stability),**不是** faithful additive factorization。
+- `mu_gv` 是 frozen baseline sampling＋validity/executability/scoreability 過程下的
+  survivor-frame **conditional association**,**非** causal 或 distribution-independent gene
+  effect。density-ratio `r_a` 目前只在 S12 `M_HT` transport,不在 S11 `mu_gv`。
+- charter:§8.1 使 S11 **positive** claim 保持狹義(directional、survivor-frame、label-blind
+  guidance,超越 existing guidance＋shuffle);RQ2 以**真實** prior mass(下游 S12)定義
+  factorization retention;§8.5 **要求** negative 必須 localize 到層次
+  (marginal-loss／epistasis-exceeds-hook／entropy-only),且「模型沒用」不是合格結論。
+
+#### 統一建議 — 新增一組 prospective、label-blind、共用診斷 package;**不新增 gate**
+
+**單一分歧的裁決:**factorization-faithfulness／reconstruction 診斷為
+**mandatory-compute ＋ mandatory-interpret(滿足 §8.5 negative-layer localization)＋
+claim-wording-bound**,但對 `S1_GUIDANCE_LOCKED` edge **NON-GATING**。理由:§8.1 以
+directional survivor-frame utility 授權 positive claim(故不應只因 Formocast variation 含
+interaction/protected-group 結構就 block 一個下游有用的 prior);而 §8.5＋「模型沒用不合格」
+使該診斷成為解讀任何 negative 的必要條件。所有**既有** S11/S12/D6 thresholds、stopping、
+lineage、edges **不變**。不建 full interaction/Sobol model。label firewall 保持
+(Formocast latency 允許;real GFLOPS/D5/oracle output 禁止)。
+
+Reviewer A 由初版「hard gate」移動到此 non-gating 立場;Reviewer B 初版即在此立場。兩方唯一
+殘留的技術差異(絕對 log-prob vs 增量 density tilt)以**增量 density tilt** 解決
+(相對 baseline G,protected-group mass 相消)。
+
+共用 cross-fit/reweighting pipeline(在一個 fixed 4,096 half＋sealed conditional corpus
+上 train、在對半 evaluate、雙向;per-fold refit 的 block-bootstrap;報 ESS)產生四族診斷,
+**全部 reported/interpreted、皆不 gating**:
+
+1. **Additive-rank faithfulness:**`A_h(o)=sum_g [mu_{h,g,Xg(o)} - center_{h,g}]`
+   (center 為 prelocked baseline-survivor-weighted);報 held-out occurrence-weighted
+   Spearman(A_h, benefit) 雙向。低保真 → 現行邊際表述無法還原排序,支持 §8.5 定位到
+   factorization/additive 層;但不證明量化 interaction share(post-validity genes 相依)。
+2. **Emitted-prior reconstruction:**用**增量 density tilt** `d_F,h=log[pi_F,h/pi_G]`、
+   `d_S,h=log[pi_S,h/pi_G]`;及 self-normalized held-out benefit
+   `V_a,h = sum_test r_a,h(o)b(o) / sum_test r_a,h(o)`(`r_a,h=pi_nominal,a,h/pi_nominal,G`)。
+   報 `V_F-V_G`、`V_F-V_S`、per-half ESS、block-bootstrap 區間。NON-GATING。無 prior emit
+   時標 N/A,以 A_h ＋既有邊際證據 localize。
+3. **Arm-sensitivity of marginals:**`theta^(a)_gv = sum_{Dscore_gv} r_{a,-g}(o)b(o) /
+   sum_{Dscore_gv} r_{a,-g}(o)`,對**其他** genes 由 baseline reweight 到 arm a、只在
+   **observed** survivor contexts(不造 counterfactual invalid config)。報 cell ESS ＋
+   value ordering／best-worst 是否隨 G/F/S 改變。Reported-only。`mu_gv` 仍為 primary
+   estimand,明標 non-causal。
+4. **Per-size predicted-latency margin:**同 pipeline 報 per-size Formocast log-latency
+   contrasts `E_G[logL_s]-E_F[logL_s]`、`E_S[logL_s]-E_F[logL_s]` 及 latency ratios。明標
+   為 Formocast **model** margin、terminal-frame-relative、非 real speedup、不跨 frame 可比。
+
+#### Claim-wording binding(取代 A 原本的 hard gate)
+
+- 高保真 → 可寫「directionally faithful survivor-frame recombination」。
+- 保真弱但下游成功 → 只可寫「downstream-useful Formocast-derived marginal policy」,**不可**寫
+  「faithful additive decomposition」。
+- 負向研究中保真弱 → 依 §8.5 localize 到 marginal/factorization-faithfulness 層,措辭為
+  「marginal/factorization layer unresolved or failed」,**不可**寫「epistasis proven」
+  (S11 在 real-label oracle 前停止,物理 epistasis 歸因需 S12/oracle)。
+- adequate-ESS reconstruction failure **不**自動等於「no guidance」:它是 source-faithfulness
+  finding;若既有 S11 gates 通過,S12 仍以狹義措辭執行 RQ2 real-prior-mass test。
+
+#### 建議的 attachment points(prospective;需使用者核准;本 review 不授權)
+
+- parent plan §5(metric 定義)＋ §10(report fields);
+- S11 design §§6–8;
+- fixed-frame authority §6 ＋ machine-readable contract:綁定 cross-fit split、per-fold
+  refit、block-bootstrap、ESS、`A_h` centering rule 與 label-firewall 語意;
+- 須在 effective S11 lock 與(前一 2026-08-04 amendment 的)workload-envelope materialization
+  **之前** seal。
+
+#### Reviewers 的實質反對、採納／捨棄、round／time
+
+- Reviewer A 最強:cross-fitted emitted-prior benefit test 回答 `S_g` 無法回答的問題
+  (穩定邊際是否重組成能改善 held-out Formocast benefit 的 prior)。最弱(經 §8.1/RQ2 evidence
+  後自行撤回):把該 test 設為 hard gate,會 import 新的 significance-like stopping、且可能
+  block 一個下游有用但對總 variation 保真弱的 prior。
+- Reviewer B 最強:RQ2 以下游 real prior mass 定義 retention、§8.1 只許 survivor-frame
+  guidance,故 hard gate 強於 charter positive claim。最弱:初版 absolute log-prob 相關會被
+  protected-group mass 主導(經改用增量 tilt 解決)。
+- 採納:四族 label-blind 診斷、增量 density tilt、mandatory-compute＋interpret、
+  claim-wording binding、保留 `mu_gv` primary、不建 Sobol/interaction model、不新增 gate。
+- 捨棄:hard reconstruction gate、把 adequate-ESS 保真失敗自動判 no-guidance、把保真弱直接
+  寫成 epistasis、covariate-adjusted primary marginal、full variance decomposition、任何需
+  real label 的診斷。
+- Round／time:initial 各一輪、cross-examination 一輪、final 一輪;約 22 agent
+  wall-minutes(<60 cap)。Final:`AGREE / AGREE`。
+
+#### Residual uncertainty／evidence boundary(非阻擋)
+
+- 兩 halves 共用 sealed conditional corpus → 對 **global** occurrences held-out,但非
+  independent replication;須明載。
+- importance reweighting overlap 可能差 → ESS 須報為 non-estimable 而非直接判方向;
+  `epsilon=0.20` floor 給部分 overlap 但不保證 ESS。
+- 低 additive／emitted 保真**不能**唯一歸因 epistasis(protected-key dominance、survivor
+  conditioning、omitted genes 皆為替代解釋)。
+- predicted-latency margin 是 model output,非實測。
+- 實際 guided-gene 數、identity overlap、per-arm ESS、halves 是否留下足夠 variation 供穩定
+  rank correlation 皆未觀察;`A_h` centering rule 須 prelock。
+
+#### §BIAS — 第三場:`mu_gv` 作為 estimator 的系統性偏差(2026-08-04)
+
+> **這是 BIAS 線,與上方 VALIDITY 線(additivity/reconstruction)相鄰但不同。**BIAS 問的是
+> 「`mu_gv` 相對它應代表的量,有沒有系統性誤差,以致 guidance/decision/claim 被扭曲」。即使
+> 訊號完全可加(無 interaction 問題),`mu_gv` 仍可能有偏。
+
+- **程序／model：**兩位 fresh independent reviewers,均 `gpt-5.6-sol`(effort `xhigh`,
+  `service_tier=fast`),經 codex MCP bridge 各開 fresh thread(Reviewer A
+  `019fcbd9-2c48-7661-9668-3a14aa41fcc9`、Reviewer B
+  `019fcbe0-887a-7442-9ba5-37135dd02a5c`)。initial 各一輪、cross-examination 一輪(附
+  orchestrator 查核的 fixed-frame §6.2 shrinkage crux)、final 一輪。約 22 agent
+  wall-minutes(<60 cap)。結果:6/7 項 `AGREE / AGREE`;shrinkage decision-flip gate 一項
+  **preserved dissent**。
+
+- **查核到的核心事實(兩方＋orchestrator 對照 repo,已確認):**`mu_gv` **不是** causal gene
+  effect／raw-frame benefit／absolute latency／real performance 的無偏估計,而是
+  `alpha=32`-regularized、baseline-law、survivor-frame、Formocast-rank 的 **conditional
+  association**。關鍵 crux(fixed-frame §6.2):trust 需 `support_gv>=128`(conditional **raw**
+  accepts)但只需 `|Dexec_gv|>=1`,而 shrinkage 分母用 `n_gv=|Dscore_gv|`(**scoreable** count)
+  → 一個值可「trusted」卻 `n_gv` 低至 1,此時真實資料權重 `1/(1+32)≈0.03`,`mu_gv≈0.97*global
+  mean`,幾乎與其真實 benefit 無關。bootstrap/permutation/half-stability 全部重建 alpha=32
+  統計量 → 量化其變異/null,**不偵測其 bias**。active「32=25% of 128」理由屬 historical/
+  superseded 且對齊 raw support 而非 n_gv。
+
+- **統一建議(6 項 consensus,皆 prospective、label-blind、須使用者核准、皆不授權執行):**
+  1. **Survivorship/selection — reported, NON-gating。**加 per-value
+     `Y_exec_gv=|Dexec_gv|/|Draw_gv|` ＋ attrition-reason shares ＋與 guided/best-worst 的關聯。
+     differential survival 屬 survivor **target** 定義,非相對 Fscore estimand 的 estimator
+     bias;raw-frame 校正會改 estimand,屬 S12 transport。不加 yield gate。
+  2. **Confounding/omitted-variable — reported, NON-gating。**label-blind arm/context
+     sensitivity `theta^(a)_gv = sum r_{a,-g}(o)b(o) / sum r_{a,-g}(o)`,只在 **observed**
+     survivor contexts 對其他 gene reweight;報 cell ESS ＋ ordering change;overlap 差則
+     `not_estimable`;不造 counterfactual invalid config。不改 primary estimator;density ratio
+     仍限 S12 `M_HT`。
+  3. **Shrinkage(alpha=32)— MANDATORY alpha=0 sensitivity(compute＋report):**報 attenuation
+     `n/(n+32)`、unshrunk means、displacement、guided-status flips、best/worst flips。`alpha=32`
+     維持 primary;不加 alpha grid;不做 estimator 校正。**(gate 與否見下方 preserved dissent。)**
+  4. **Rank/mid-ECDF — acceptable(estimand choice),維持既有揭露。**midrank ties neutral;
+     conditional rows 查同一 terminal-global ECDF。措辭維持「terminal-frame-relative rank
+     benefit」。無新機制。
+  5. **Formocast model-error propagation — wording-only。**「Formocast-implied rank benefit」。
+     無 label-blind S11 統計可在缺 validated uncertainty model 下 bound 結構性預測誤差 vs real
+     performance;S12 為授權的 real-score audit。無 S11 gate。
+  6. **Estimand mismatch — wording-only。**明確聲明 `mu_gv` 為 regularized、baseline-law、
+     survivor-conditional、associative、**non-causal**;best/worst 指此 frozen frame 下 shrunken
+     Formocast-rank score 的 best/worst,非因果或實測。
+
+- **PRESERVED DISSENT — item 3 shrinkage decision-flip 的 gate 地位(需使用者裁決):**
+  - **共同點:**alpha=0 sensitivity 必 compute＋report;alpha=32 primary;無新 numeric
+    threshold;此爭點是 value/scope,非事實(兩方皆同意 repo 無法再解)。
+  - **Option (b)〔Reviewer A〕:**alpha=0 flip **只** reported＋claim-wording-bound,**不**改
+    registered edge 或 terminal matrix。理由:alpha=0 是**不同**且更高變異的 estimator(恰在
+    low-n_gv cells),兩 estimator 的 categorical 一致只保證「一致」非「正確」;是否 transport
+    交 S12。**Claim impact:**保留 power(low-support regularized guided decision 仍可鎖 S12),
+    但 positive claim 可能建立在會隨 shrinkage 翻轉的決策上,須靠 wording 承載 caveat。
+  - **Option (c)〔Reviewer B;orchestrator candidate〕:**alpha=0 **只在 decision-flip 時** gate
+    —若某 gene 的 guided status 或 best/worst 非 alpha=0-invariant,該 gene 不得供
+    `S1_GUIDANCE_LOCKED`;若無 alpha-robust positive gene,closeout 為 `FT-INCONCLUSIVE`
+    (併入既有 §7 row-4「material precision/recurrence/half-stability shortage」族)。非 flip
+    的 gene 不受影響;此為延伸既有 categorical-decision-invariance 邏輯,不加 numeric
+    threshold。**Claim impact:**較保守,保護 positive claim 不成為 shrinkage artifact,代價是
+    可能把真實 low-support 訊號轉為 inconclusive。
+  - **可能的實證解法(兩方同意,但需 prospective seal):**以 fresh-frame replication 或
+    justified benefit-surface 的 decision-loss simulation,比較 alpha=0 vs alpha=32 的 ordering
+    error,再定 gate。
+
+#### 使用者決定(2026-08-04)
+
+VALIDITY 線(第二場):
+
+1. **核准**新增**四族 label-blind 診斷 package**(additive-rank faithfulness、
+   emitted-prior reconstruction、arm-sensitivity、per-size predicted-latency margin),作為
+   **mandatory-compute＋interpret 但 NON-gating** 的 S11 診斷,並綁定 claim wording。
+2. **核准**採**增量 density tilt** 形式,保留 `mu_gv` 為 primary(non-causal 措辭)、不新增
+   任何 gate、不改任何既有 threshold/stopping/edge。
+3. **核准**其 attachment 到 parent §5/§10、S11 §§6–8、fixed-frame §6＋machine contract,並在
+   effective S11 lock 前 seal(於 r3 contract 中實作)。
+
+BIAS 線(第三場):
+
+4. **核准**上述 **6 項 consensus bias 措施**(survivorship reported、confounding
+   arm-sensitivity reported、shrinkage alpha=0 mandatory compute+report、rank 揭露、
+   Formocast-error wording、estimand wording),皆 prospective／label-blind。
+5. **shrinkage alpha=0 decision-flip gate:使用者選擇「先做 decision-loss simulation」。**
+   在 prospective、label-blind 的 decision-loss simulation(比較 alpha=0 vs alpha=32 的
+   ordering error)產出前,alpha=0 sensitivity 為 mandatory-compute＋report;gate 是否採
+   option (b) 或 (c) 由該 simulation 結果再定,不得逕自選定。此 simulation 屬 r3 contract／
+   workload 準備的一部分。
+
+本核准授權把上述 approved scope 寫回 governing design 並納入 future S11 r3 contract／
+workload-envelope／effective-lock 準備;**不**授權執行 outcome-bearing evidence、seal
+effective lock、closeout commit 或 push。effective lock 與 evidence 仍須經 r3 contract、
+Plan-B/Plan-A、fresh implementer、fresh verifier 的 implement-verify-loop 完成後才成立。
+
 ### Downgrade user gates
 
 `DEGRADED_PROXY`、two-size／reduced-regime、S2 H5 resource-bounded pilot、single-cluster Stage 3 pilot，以及任何減少workloads、runs、seeds、metrics、validation、acceptance或scope的方案，都必須先產生完整decision packet並停在`blocked-awaiting-user-decision`。Diagnostic partial run不能滿足checkpoint或解鎖下游。
@@ -1312,10 +1710,10 @@ attrition保留在raw denominator。只有complete 228-child census後才依相�
 `K=max(10,C_greedy)`, `K_max=20`，並fresh執行mapping/native/correctness/noise。
 
 Historical A47 semantics見
-[original design](ductile-origami-warmstart/s10r4-stage1-exact-frame-operational-entry-design.md)；
+[original design](ductile-origami-warmstart/archive/s10r4-stage1-exact-frame-operational-entry-design.md)；
 historical B06 identity、reuse prohibition、source closure、classification、outcome matrix與claim曾以
-[B06 authority](ductile-origami-warmstart/s10r4-binding-06-provenance-recovery-authority.md)
-及[B06 clean-successor design](ductile-origami-warmstart/s10r4-stage1-relational-selector-binding-06-clean-successor-design.md)
+[B06 authority](ductile-origami-warmstart/archive/s10r4-binding-06-provenance-recovery-authority.md)
+及[B06 clean-successor design](ductile-origami-warmstart/archive/s10r4-stage1-relational-selector-binding-06-clean-successor-design.md)
 為準。`S1-REBASELINE-20260803`現已退役整個S10R4 checkpoint；這些bytes只作
 historical provenance，不能啟動S11或產生qualified edge。
 
@@ -1390,6 +1788,17 @@ delta_noise = exp(P95({d_ar})) - 1
 - 不得判 existing-heuristic saturation。
 
 ### 2.8 D1–D2 hard stop
+
+> **2026-08-04 harmonization（`S11-DIRECTION-METRICFRAME-20260804`, user-approved）：**本
+> §2.8 D1–D2 hard stop 是 historical Stage-1 **entry-gate**（S10 系列）的 pre-empirical
+> access／artifact／mapping 條文。自 `S1-REBASELINE-20260803` 起，S11 以 administrative
+> prerequisite 進場、`incoming_scientific_edge=null`，其職責分工為：**S11** 只做 label-blind
+> 的 raw acceptance、resolver／codegen／compile qualification、stable operational identity
+> 與 Formocast scoreability；**gfx942 slot、smoke、correctness、noise readiness 與 real
+> ranking 移至 S12 prelabel（label 前）**才是 hard 條件；**S13** 才測 actual Gen0。因此下列
+> 「D2 前沒有已排定 gfx942 slot」「smoke／correctness 失敗」對 S11 entry **不**適用，而是
+> S12 prelabel gate；其餘 frozen YAML provenance、mapping-guess、candidate-order 與剩餘工時
+> 條目對 S11 仍適用。本 harmonization 只釐清職責位置，不新增或放寬任何 gate。
 
 任一成立即停止 empirical work：
 

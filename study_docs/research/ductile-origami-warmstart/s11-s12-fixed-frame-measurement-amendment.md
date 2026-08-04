@@ -252,6 +252,24 @@ Hyndman–Fan Type 7（HF7）對排序後 `x_(1)..x_(n)` 定義
 
 ### 6.4 Fixed-half semantic stability
 
+> **2026-08-04 `S11-DIRECTION-METRICFRAME-20260804` 修正（user-approved）：**下段「全部
+> 欄位都必須 exact 相同」是 superseded 字面條文。兩固定 4,096 halves 為 **disjoint**
+> global occurrence samples（只共用 sealed conditional corpus），因此逐位相等於 half-specific
+> 數值 cells（`Dexec_gv/Dscore_gv/n_gv/Cscore_occ_gv/mu_gv`）與 float-probability canonical
+> hash 結構上不可達，與緊接的「Numeric drift 只報告」矛盾，字面下會強制 §7 row-4
+> `FT-INCONCLUSIVE`。**Current 判準**：(1) 同一 half 以相同 sealed inputs replay 要求
+> byte-exact deterministic reconstruction；(2) 兩 disjoint halves 之間只對預先列舉的
+> **categorical decision projection** 要求 exact 相同——trust states／reason codes、`T_g`、
+> guided-gene states／reason codes、best／worst identities、per-size directions、每項
+> model-test pass／fail、own／familywise pass、離散 positive global lambda、shuffle
+> mapping；(3) half-specific `Dexec_gv/Dscore_gv/n_gv/Cscore_occ_gv/mu_gv` 與 float guidance
+> probabilities 視為 reported numeric drift、不 gate；(4) authoritative guidance hash 只對
+> terminal full 8,192-occurrence bundle 計算一次，任何 cross-half hash 只 hash 該 categorical
+> projection、絕不 hash half-specific floats 或 occurrence multisets；(5) §7 row-4
+> half-stability 取決於該 categorical projection 失敗。不新增 tolerance、不放寬任何
+> scientific threshold；deterministic integrity 與 statistical stability 分開稽核。實作與
+> fresh verification 仍待 future S11 contract／lock。
+
 兩個固定 4,096 halves共用sealed conditional corpus，但各自只用自己的global half重建
 reference。它們必須exact重建並比較完整semantic tuple：每value的`Dexec_gv`、
 `Dscore_gv`、`n_gv`、`Cscore_occ_gv`與`mu_gv`；trust states／reasons、`T_g`、guided

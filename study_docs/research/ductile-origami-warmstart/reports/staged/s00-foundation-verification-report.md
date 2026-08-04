@@ -137,7 +137,7 @@ C view 直接呼叫 historical outcome writer 會得到 `bound_hash_mismatch`，
 
 S00 的 positive closeout 只解除了 S10 的 dependency，沒有替 S10 預先建立 lock 或 outcome。
 S10 後來完成為 mapping-negative；詳情見 [S10 entry gate report](s10-stage1-entry-gate-report.md)。
-目前另有獨立的 [S10R1 valid-support recovery 設計](../../s10r1-stage1-valid-support-entry-recovery-design.md)，它不會追溯改寫 S00 或 S10 的歷史判決。
+目前另有獨立的 [S10R1 valid-support recovery 設計](../../archive/s10r1-stage1-valid-support-entry-recovery-design.md)，它不會追溯改寫 S00 或 S10 的歷史判決。
 
 ## 9. 術語速查
 

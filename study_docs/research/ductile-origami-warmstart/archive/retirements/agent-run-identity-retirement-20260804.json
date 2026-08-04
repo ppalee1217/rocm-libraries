@@ -1,0 +1,39 @@
+{
+  "manifest_id": "agent-run-identity-retirement-20260804",
+  "policy": "identity-only retirement per A33 precedent; bulk provenance bytes removed, scientific evidence preserved by committed reports+locks",
+  "state": "retired_post_audited",
+  "post_audit": "all retired_roots verified absent from /data1/perlee/rocm-libraries/agent_run (now empty); S00 + unreferenced small roots removed by perlee; the six root-owned roots (s10r2, s10r3-restart, s10r4-exact-frame, binding-02/03/04) removed by user via sudo; S11 active preformal run root preserved; disk 211G->256G free",
+  "worktree": "/data1/perlee/rocm-libraries",
+  "kept_active": ["rocm-libraries-s11-rebaseline/agent_run/260803-ductile-factorized-guidance-s11 (active S11 preformal, cited by S11 preimplementation lock)"],
+  "retired_roots": [
+    {"path": "agent_run/260724-ductile-factorized-guidance-s00", "files": 5377, "bytes": 6091210033, "struct_digest_sha256": "a517c289609b59f9edeb2830f23e65a4f7c532a96723530ac206aae679940f00"}
+    ,
+    {"path": "agent_run/260730-ductile-factorized-guidance-s10r3-restart", "files": 13510, "bytes": 7061383783, "struct_digest_sha256": "0b746d9109a6d32746bc35ec2e8951ccc520c96ec709408b6e606cea358b12cd"}
+    ,
+    {"path": "agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame", "files": 4587, "bytes": 6176984781, "struct_digest_sha256": "29c10fd3f4b406915d6c1f489741704af5b93bb0882d2ddcd200ce881adcef21"}
+    ,
+    {"path": "agent_run/260728-ductile-factorized-guidance-s10r2", "files": 4507, "bytes": 444408550, "struct_digest_sha256": "989be28ecdd83489e36bf4e6a6250ccfb4a60eb69b5205bed3f6cd0ce8385d53"}
+    ,
+    {"path": "agent_run/260802-ductile-factorized-guidance-s10r4-effective-frame-binding-04", "files": 283, "bytes": 147933290, "struct_digest_sha256": "613a0c7f1c394f13f0f21bccb53a4acd4beddc3a21a18bbc1d4132ecfd1432ed"}
+    ,
+    {"path": "agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame-binding-02", "files": 286, "bytes": 67440787, "struct_digest_sha256": "87e69e29d949b0a3421b0341d79b22085d48eefc5710d9c97461aa381cbc47fe"}
+    ,
+    {"path": "agent_run/260802-ductile-factorized-guidance-s10r4-exact-frame-binding-03", "files": 277, "bytes": 67487637, "struct_digest_sha256": "cdae4c63bb32a9cd75c9322839ff1afb2edeb5535fb9075c577c65a5e4742144"}
+    ,
+    {"path": "agent_run/260724-ductile-origami-warmstart-sequential", "files": 10915, "bytes": 76348669, "struct_digest_sha256": "1f632934e8d295b466b7f2909e79bfa78e607b02ab8989c8af757709f80c89d9"}
+    ,
+    {"path": "agent_run/260724-ductile-origami-warmstart-all", "files": 834, "bytes": 7804698, "struct_digest_sha256": "0e935e981235ab5af9f94008e3e26c04d7fac05c386462942577adc4ac71e8d3"}
+    ,
+    {"path": "agent_run/260725-ductile-factorized-guidance-s0-s2", "files": 357, "bytes": 12294067, "struct_digest_sha256": "d3b23013c542277f5812bcfa58f844dd104838ac6038deeab2b3fabb5756af63"}
+    ,
+    {"path": "agent_run/260724-ductile-factorized-guidance-s0-s2-v2", "files": 4, "bytes": 32279, "struct_digest_sha256": "4d83ac9f2d9b96c70fe1ce5921da2a40bf542682522ef79933ddd2f0dcd4a82b"}
+    ,
+    {"path": "agent_run/260729-ductile-factorized-guidance-s1-continuation", "files": 3, "bytes": 37274, "struct_digest_sha256": "624a7fdcf69d4a280e62c4120b754d883cddea64f30f136e71dfd8e6e8591b51"}
+    ,
+    {"path": "agent_run/260729-resource-accounting-priority", "files": 1, "bytes": 9084, "struct_digest_sha256": "87cc50194ae3d2090c1126a9bfad0e566e58207bad777d6d2e2469f149244e0f"}
+    ,
+    {"path": "agent_run/260804-s10-s11-handoff-externalization", "files": 12, "bytes": 51880, "struct_digest_sha256": "9827734759c35b8140e439728d51716de0dc683011d4a18fef82c2575a91dfe6"}
+    ,
+    {"path": "agent_run/260803-ductile-factorized-guidance-s10r4-relational-selector-binding-06", "files": 0, "bytes": 8192, "struct_digest_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}
+  ]
+}

@@ -128,43 +128,117 @@ def candidate(revision, status, payload):
     )
 
 
-def sealed(milestone_id="checkpoint-lock-v1", payload=None):
+def artifact_record(
+    artifact_id="formal_inputs",
+    path="study_docs/research/example/formal-inputs.json",
+    digest="1" * 64,
+):
+    return {"artifact_id": artifact_id, "path": path, "sha256": digest}
+
+
+def sealed(milestone_id="checkpoint-lock-v1", payload=None, artifact_inventory=None):
     return encoded(
         {
             "event_type": "sealed_scientific_milestone",
             "artifact_layer": "sealed_scientific_milestone",
             "milestone_id": milestone_id,
-            "artifact_inventory": ["formal_inputs", "old_measurements"],
+            "artifact_inventory": (
+                [artifact_record()] if artifact_inventory is None else artifact_inventory
+            ),
             "payload": payload or {"threshold": 0.5, "seeds": [1, 2]},
         }
     )
 
 
-def successor(predecessor, *, event_type="scientific_successor", milestone_id="checkpoint-lock-v2"):
+def successor(
+    predecessor,
+    *,
+    event_type="scientific_successor",
+    milestone_id="checkpoint-lock-v2",
+    payload=None,
+    artifact_inventory=None,
+    affected_scope=None,
+    evidence_reuse_boundary=None,
+):
     predecessor_value = governance.strict_json_loads(predecessor)
+    predecessor_inventory = predecessor_value["artifact_inventory"]
     return encoded(
         {
             "event_type": event_type,
             "artifact_layer": "sealed_scientific_milestone",
             "milestone_id": milestone_id,
-            "artifact_inventory": ["formal_inputs", "old_measurements"],
+            "artifact_inventory": (
+                predecessor_inventory
+                if artifact_inventory is None
+                else artifact_inventory
+            ),
             "predecessor": {
                 "milestone_id": predecessor_value["milestone_id"],
                 "raw_sha256": governance.raw_sha256(predecessor),
             },
             "reason": "replace a predeclared scientific boundary",
             "authority": "user-approved-amendment-A1",
-            "affected_scope": ["threshold"],
-            "evidence_reuse_boundary": {
-                artifact_id: (
-                    "reusable_formal_input"
-                    if artifact_id == "formal_inputs"
-                    else "diagnostic_only"
-                )
-                for artifact_id in predecessor_value["artifact_inventory"]
-            },
-            "payload": {"threshold": 0.4, "seeds": [1, 2]},
+            "affected_scope": ["threshold"] if affected_scope is None else affected_scope,
+            "evidence_reuse_boundary": (
+                {
+                    record["artifact_id"]: "reusable_formal_input"
+                    for record in predecessor_inventory
+                }
+                if evidence_reuse_boundary is None
+                else evidence_reuse_boundary
+            ),
+            "payload": (
+                {"threshold": 0.4, "seeds": [1, 2]}
+                if payload is None
+                else payload
+            ),
         }
+    )
+
+
+def transition_registry(
+    *,
+    approved_authorities=("user-approved-amendment-A1",),
+    payload_scope_by_pointer=None,
+    artifact_scope_by_id=None,
+):
+    raw = encoded(
+        {
+            "event_type": "sealed_transition_registry",
+            "schema_version": governance.TRANSITION_REGISTRY_SCHEMA_VERSION,
+            "approved_authorities": list(approved_authorities),
+            "payload_scope_by_pointer": (
+                {
+                    "/seeds/0": "seed",
+                    "/seeds/1": "seed",
+                    "/threshold": "threshold",
+                }
+                if payload_scope_by_pointer is None
+                else payload_scope_by_pointer
+            ),
+            "artifact_scope_by_id": (
+                {
+                    "formal_inputs": "source_or_input",
+                    "new_measurements": "formal_measurement",
+                    "old_measurements": "formal_measurement",
+                }
+                if artifact_scope_by_id is None
+                else artifact_scope_by_id
+            ),
+        }
+    )
+    return raw, governance.raw_sha256(raw)
+
+
+def validate_transition(predecessor, next_milestone, registry=None):
+    registry_raw, registry_sha256 = (
+        transition_registry() if registry is None else registry
+    )
+    return governance.validate_sealed_transition(
+        predecessor,
+        next_milestone,
+        registry_raw,
+        registry_sha256,
     )
 
 
@@ -382,6 +456,36 @@ def test_registry_not_self_label_controls_layer_c_and_scientific_fields():
     ]["input"] == "correct-label"
 
 
+def test_layer_c_leaf_comparison_preserves_exact_json_types():
+    for replacement in (True, 1.0):
+        original = operational({"immutable_count": 1, "status": "running"})
+        immutable_registry = layer_c_registry(
+            layer_c_rule(
+                payload_leaf_pointers=("/immutable_count", "/status"),
+                correctable_leaf_pointers=("/status",),
+            )
+        )
+        event = correction(
+            original,
+            timestamp="2026-08-03T12:00:00Z",
+            payload={"immutable_count": replacement, "status": "running"},
+        )
+        with raises(governance.GovernanceError, match="immutable Layer-C leaf"):
+            project([original], [event], immutable_registry)
+
+        correctable_registry = layer_c_registry(
+            layer_c_rule(
+                payload_leaf_pointers=("/immutable_count", "/status"),
+                correctable_leaf_pointers=("/immutable_count",),
+            )
+        )
+        projected_value = project([original], [event], correctable_registry)[
+            ("agent_run/example/command.json", "command-7")
+        ]["immutable_count"]
+        assert type(projected_value) is type(replacement)
+        assert projected_value == replacement
+
+
 def test_scientific_impact_cannot_use_operational_correction():
     original = operational()
     event = governance.strict_json_loads(
@@ -420,39 +524,248 @@ def test_partial_or_missing_candidate_cannot_be_sealed():
 
 def test_sealed_milestone_changes_only_through_linked_amendment_or_successor():
     predecessor = sealed()
-    accepted = governance.validate_sealed_transition(predecessor, successor(predecessor))
+    accepted = validate_transition(predecessor, successor(predecessor))
     assert accepted["event_type"] == "scientific_successor"
     second = successor(predecessor)
-    third = successor(second, milestone_id="checkpoint-lock-v3")
-    assert governance.validate_sealed_transition(second, third)["milestone_id"] == (
-        "checkpoint-lock-v3"
+    third = successor(
+        second,
+        milestone_id="checkpoint-lock-v3",
+        payload={"threshold": 0.3, "seeds": [1, 2]},
     )
+    assert validate_transition(second, third)["milestone_id"] == "checkpoint-lock-v3"
     direct_rewrite = sealed(payload={"threshold": 0.4, "seeds": [1, 2]})
     with raises(governance.GovernanceError, match="requires amendment or successor"):
-        governance.validate_sealed_transition(predecessor, direct_rewrite)
+        validate_transition(predecessor, direct_rewrite)
     same_identity = successor(predecessor, milestone_id="checkpoint-lock-v1")
     with raises(governance.GovernanceError, match="overwritten in place"):
-        governance.validate_sealed_transition(predecessor, same_identity)
+        validate_transition(predecessor, same_identity)
 
     missing_reason = governance.strict_json_loads(successor(predecessor))
     del missing_reason["reason"]
     with raises(governance.GovernanceError, match="keys differ"):
-        governance.validate_sealed_transition(predecessor, encoded(missing_reason))
+        validate_transition(predecessor, encoded(missing_reason))
+
+    malformed_link = governance.strict_json_loads(successor(predecessor))
+    malformed_link["predecessor"]["raw_sha256"] = "0" * 64
+    with raises(governance.GovernanceError, match="predecessor identity differs"):
+        validate_transition(predecessor, encoded(malformed_link))
 
     empty_authority = governance.strict_json_loads(successor(predecessor))
     empty_authority["authority"] = ""
     with raises(governance.GovernanceError, match="authority must be a nonempty string"):
-        governance.validate_sealed_transition(predecessor, encoded(empty_authority))
+        validate_transition(predecessor, encoded(empty_authority))
 
     incomplete_reuse = governance.strict_json_loads(successor(predecessor))
     del incomplete_reuse["evidence_reuse_boundary"]["formal_inputs"]
     with raises(governance.GovernanceError, match="classify every artifact"):
-        governance.validate_sealed_transition(predecessor, encoded(incomplete_reuse))
+        validate_transition(predecessor, encoded(incomplete_reuse))
 
     invalid_reuse = governance.strict_json_loads(successor(predecessor))
-    invalid_reuse["evidence_reuse_boundary"]["old_measurements"] = "reuse_everything"
+    invalid_reuse["evidence_reuse_boundary"]["formal_inputs"] = "reuse_everything"
     with raises(governance.GovernanceError, match="unknown classification"):
-        governance.validate_sealed_transition(predecessor, encoded(invalid_reuse))
+        validate_transition(predecessor, encoded(invalid_reuse))
+
+
+def test_transition_registry_identity_schema_keys_and_authority_are_closed():
+    predecessor = sealed()
+    next_milestone = successor(predecessor)
+    registry_raw, registry_hash = transition_registry()
+    with raises(governance.GovernanceError, match="identity differs"):
+        governance.validate_sealed_transition(
+            predecessor, next_milestone, registry_raw, "0" * 64
+        )
+    with raises(governance.GovernanceError, match="not canonical JSON"):
+        governance.validate_sealed_transition(
+            predecessor,
+            next_milestone,
+            registry_raw + b"\n",
+            governance.raw_sha256(registry_raw + b"\n"),
+        )
+
+    for field, replacement, error in (
+        ("schema_version", "sealed-transition-registry-v2", "schema version differs"),
+        ("event_type", "other_registry", "event type differs"),
+    ):
+        changed = governance.strict_json_loads(registry_raw)
+        changed[field] = replacement
+        changed_raw = encoded(changed)
+        with raises(governance.GovernanceError, match=error):
+            governance.validate_sealed_transition(
+                predecessor,
+                next_milestone,
+                changed_raw,
+                governance.raw_sha256(changed_raw),
+            )
+
+    extra = governance.strict_json_loads(registry_raw)
+    extra["unexpected"] = []
+    extra_raw = encoded(extra)
+    with raises(governance.GovernanceError, match="keys differ"):
+        governance.validate_sealed_transition(
+            predecessor, next_milestone, extra_raw, governance.raw_sha256(extra_raw)
+        )
+
+    duplicate_authorities = governance.strict_json_loads(registry_raw)
+    duplicate_authorities["approved_authorities"].append("user-approved-amendment-A1")
+    duplicate_raw = encoded(duplicate_authorities)
+    with raises(governance.GovernanceError, match="duplicates"):
+        governance.validate_sealed_transition(
+            predecessor,
+            next_milestone,
+            duplicate_raw,
+            governance.raw_sha256(duplicate_raw),
+        )
+
+    unapproved = governance.strict_json_loads(next_milestone)
+    unapproved["authority"] = "self-declared-authority"
+    with raises(governance.GovernanceError, match="not approved"):
+        validate_transition(predecessor, encoded(unapproved))
+
+
+def test_transition_registry_rejects_unknown_or_non_scientific_scope_entries():
+    predecessor = sealed()
+    next_milestone = successor(predecessor)
+    missing_pointer = transition_registry(
+        payload_scope_by_pointer={
+            "/seeds/0": "seed",
+            "/seeds/1": "seed",
+        }
+    )
+    with raises(governance.GovernanceError, match="does not classify payload pointers"):
+        validate_transition(predecessor, next_milestone, missing_pointer)
+
+    missing_artifact = transition_registry(artifact_scope_by_id={})
+    with raises(governance.GovernanceError, match="does not classify artifact IDs"):
+        validate_transition(predecessor, next_milestone, missing_artifact)
+
+    for registry in (
+        transition_registry(
+            payload_scope_by_pointer={
+                "/seeds/0": "seed",
+                "/seeds/1": "seed",
+                "/threshold": "timestamp",
+            }
+        ),
+        transition_registry(
+            artifact_scope_by_id={"formal_inputs": "resource_estimate"}
+        ),
+        transition_registry(
+            payload_scope_by_pointer={
+                "/seeds/0": "seed",
+                "/seeds/1": "seed",
+                "/threshold/~2": "threshold",
+            }
+        ),
+    ):
+        with raises(
+            governance.GovernanceError,
+            match="scope|noncanonical JSON pointer|invalid escape",
+        ):
+            validate_transition(predecessor, next_milestone, registry)
+
+
+def test_registry_derived_scope_must_match_every_actual_payload_change():
+    predecessor = sealed()
+    undeclared_seed = successor(
+        predecessor,
+        payload={"threshold": 0.4, "seeds": [9, 2]},
+    )
+    with raises(governance.GovernanceError, match="affected_scope differs"):
+        validate_transition(predecessor, undeclared_seed)
+
+    overdeclared = governance.strict_json_loads(successor(predecessor))
+    overdeclared["affected_scope"] = ["seed", "threshold"]
+    with raises(governance.GovernanceError, match="affected_scope differs"):
+        validate_transition(predecessor, encoded(overdeclared))
+
+    no_change = successor(
+        predecessor,
+        payload={"threshold": 0.5, "seeds": [1, 2]},
+    )
+    with raises(governance.GovernanceError, match="no actual scientific change"):
+        validate_transition(predecessor, no_change)
+
+
+def test_artifact_inventory_records_are_closed_unique_safe_and_ordered():
+    valid = artifact_record()
+    malformed_records = [
+        [],
+        ["formal_inputs"],
+        [{"artifact_id": "formal_inputs", "path": valid["path"]}],
+        [artifact_record(artifact_id="")],
+        [artifact_record(path="")],
+        [artifact_record(digest="A" * 64)],
+        [artifact_record(path="../formal-inputs.json")],
+        [valid, artifact_record("formal_inputs", "other.json", "2" * 64)],
+        [valid, artifact_record("other", valid["path"], "2" * 64)],
+        [artifact_record("zeta", "zeta.json"), artifact_record("alpha", "alpha.json")],
+    ]
+    for inventory in malformed_records:
+        predecessor = sealed(artifact_inventory=inventory)
+        with raises(
+            governance.GovernanceError,
+            match=(
+                "record|keys differ|must be a nonempty|lowercase|"
+                "safe repo-relative|duplicate|ordered"
+            ),
+        ):
+            validate_transition(predecessor, successor(sealed()))
+
+
+def test_evidence_reuse_boundary_enforces_exact_inventory_identity():
+    formal_inputs = artifact_record()
+    old_measurements = artifact_record(
+        "old_measurements",
+        "study_docs/research/example/old-measurements.json",
+        "2" * 64,
+    )
+    predecessor = sealed(artifact_inventory=[formal_inputs, old_measurements])
+
+    same_id_replacement = successor(
+        predecessor,
+        artifact_inventory=[
+            formal_inputs,
+            artifact_record(
+                "old_measurements",
+                "study_docs/research/example/replaced-measurements.json",
+                "3" * 64,
+            ),
+        ],
+    )
+    with raises(governance.GovernanceError, match="cannot be reused"):
+        validate_transition(predecessor, same_id_replacement)
+
+    reusable_absent = successor(
+        predecessor,
+        artifact_inventory=[formal_inputs],
+    )
+    with raises(governance.GovernanceError, match="reusable formal input is absent"):
+        validate_transition(predecessor, reusable_absent)
+
+    for classification in ("diagnostic_only", "forbidden_to_read"):
+        retained = successor(
+            predecessor,
+            evidence_reuse_boundary={
+                "formal_inputs": "reusable_formal_input",
+                "old_measurements": classification,
+            },
+        )
+        with raises(governance.GovernanceError, match="remains in successor"):
+            validate_transition(predecessor, retained)
+
+    removed = successor(
+        predecessor,
+        artifact_inventory=[formal_inputs],
+        affected_scope=["formal_measurement", "threshold"],
+        evidence_reuse_boundary={
+            "formal_inputs": "reusable_formal_input",
+            "old_measurements": "diagnostic_only",
+        },
+    )
+    assert validate_transition(predecessor, removed)["affected_scope"] == [
+        "formal_measurement",
+        "threshold",
+    ]
 
 
 def complete_change_flags(**overrides):
