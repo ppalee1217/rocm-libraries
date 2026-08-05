@@ -7,6 +7,139 @@
 > **2026-08-04 current status override：**S10R3 已 terminal negative；S10R4 已 retired／not evaluated；S11 已 sealed `LOCKED_READY`。沒有 S11/S12 result、effective checkpoint lock、report 或 edge；最新狀態仍須對照 active checkpoint index、formal artifacts 與 Git history。
 
 > **HISTORICAL：**本檔的 §7（S10R2 support-aware entry 設計）與 §21（S10R2 實作快照），以及 §23 內的 S10R3 專題問答，僅保留 historical explanation，**不是 current entry**。S10R2 以 inconclusive／edge null 結束；S10R3 為 terminal negative；current 入口與狀態以 active checkpoint index 為準。
+>
+> **導讀順序：**若你想先看「S10 → S10R1 → S10R2 → S10R3 → S10R4 → S11 rebaseline」整條版本更迭的地圖（每輪為什麼開、結果、卡在哪、下一輪修什麼、最後怎麼收），先讀新增的 §0；§7／§21／§23 是各輪的深入快照。
+
+---
+
+## 0. S10 → S10R4 版本更迭總覽（多輪入口實驗怎麼一路演進到 S11）
+
+這一節把「為什麼 entry gate 做了這麼多輪、每一輪結果是什麼、卡在哪、下一輪修了什麼、最後怎麼收」一次講清楚。事實來源是外部交接文件 `/data1/perlee/handoff/ductile-factorized-guidance-s10-to-s11-handoff.md`，並與 repo 內的 [S10R4→S11 變更指南](../s10r4-to-s11-experiment-plan-change-guide.md)、[S10R4 退役與 rebaseline 權威](../s10r4-retirement-s11-rebaseline-authority.md) 及各輪 report 交叉核對。下方 §7／§21／§23 是既有的深入快照，這一節只補「整條版本更迭的地圖」。
+
+### 0.1 先抓一個關鍵觀念：全部卡在「entry gate」
+
+**entry gate（入口資格審查）** 指的是「這個實驗能不能合法開始」的關卡，不是「warm-start 有沒有效」。要通過它，必須先證明四件事到位：actual YAML 可信、gfx942 GPU 可用、config→Formocast 的 mapping 可靠、correctness／noise 準備好。S10 到 S10R4 這一長串，**全都還停在這道門前**——沒有任何一輪跨進「真正評估 Formocast 有沒有用」的階段。
+
+為什麼一道入口要做這麼多輪？因為這條研究線奉行「先鎖規則、事後不能改」的紀律：一旦凍結了某輪的規則，就不准看到結果後回頭放寬讓自己過關。所以每次撞到一種新的牆，只能**開新一輪、用新規則重試，舊輪永久封存**。這串輪次不是重工，而是把「這個實驗能不能誠實開始」一層一層挖到底。
+
+先解釋幾個反覆出現的詞，後面不再重述：
+
+- **occurrence**：sampler 的一次 accepted draw（同一 config 抽到兩次算兩筆）。
+- **support 三態**：對某個候選值，`supported_witnessed`（至少被一個合法 config 用過）／`support_unobserved`（沒抽到，但沒被證明不可能）／`support_proven_absent`（被證明不可能）。核心紀律是「沒抽到 ≠ 不存在」。
+- **mandatory atom**：design 在看結果前就鎖定、mapping corpus 必須覆蓋的「某軸=某值」條件。
+- **Technical PASS vs scientific outcome**：前者是「流程有照凍結規則跑」，後者才是研究答案（positive／negative／inconclusive／not_evaluated）。兩者不同問題，可以同時「流程 PASS」卻「科學 negative」。
+
+### 0.2 committed history 一覽表
+
+下表只列已 commit 的歷史結果。`criterion／failure` 是那一輪實際判定的條件，`edge` 是 verified outcome 唯一能解鎖的下一個 checkpoint。
+
+| Checkpoint | Durable lifecycle | Scientific outcome | Criterion／failure | Outgoing edge |
+| --- | --- | --- | --- | --- |
+| S00 | `CHECKPOINT_COMPLETE` | positive | `S00_EVIDENCE_READY` | `S00_EVIDENCE_READY -> S10` |
+| S10 | `CHECKPOINT_COMPLETE` | negative | `S1_ENTRY_BLOCKED / FT-BLOCKED-MAPPING` | `null` |
+| S10R1 | `cancelled / BLOCKED / lock superseded` | not_evaluated | A32 safe-boundary cancellation | `null` |
+| S10R2 | `CHECKPOINT_COMPLETE` | inconclusive | `FT-INCONCLUSIVE` | `null` |
+| S10R3 | `CHECKPOINT_COMPLETE` | negative | `S1_ENTRY_BLOCKED / FT-BLOCKED-MAPPING` | `null` |
+| S10R4 | `retired_unstarted / cancelled / BLOCKED` | not_evaluated | no completed scientific gate | `null` |
+| S11 | `DESIGN_APPROVED / not_started / lock absent` | not_evaluated | 尚未執行 | future only：`S1_GUIDANCE_LOCKED -> S12` |
+
+整張表裡**只有 S00 有 outgoing scientific edge**（通往 S10）。S10 到 S10R4 都沒有通往 S11 的科學邊；S11 的進場靠的是行政 rebaseline，不是任何一輪的 positive（見 §0.5）。
+
+### 0.3 版本更迭時間軸
+
+```mermaid
+flowchart LR
+    s00["S00\n證據地基\npositive"]
+    s10["S10\n30-row mapping\nnegative：入口條件不成立"]
+    r1["S10R1\nnominal-boundary\ncancelled：抽樣無法證明不存在"]
+    r2["S10R2\nsupport-aware exact-ten\ninconclusive：需 18 > 10"]
+    r3["S10R3\nbounded K<=20\nnegative：kernel 資源溢位"]
+    r4["S10R4 B01-B07\nexact-frame census\nretired / not_evaluated"]
+    auth["S1-REBASELINE-20260803\nadministrative authority"]
+    s11["S11\nfresh Fraw->Fexec->Fscore\nnot_started"]
+
+    s00 -->|"S00_EVIDENCE_READY"| s10
+    s10 -. "凍結身分傳承" .-> r1
+    r1 -. "禁止重用其證據" .-> r2
+    r2 -. "只傳承 terminal provenance" .-> r3
+    r3 -. "只傳 sealed 114 raw frame" .-> r4
+    r4 -. "退役；zero gate credit" .-> auth
+    auth -. "行政 prerequisite（非科學 edge）" .-> s11
+    s11 -->|"future S1_GUIDANCE_LOCKED"| s12["S12\n未來 real-score audit"]
+```
+
+虛線代表 administrative／provenance 傳承，**不是** scientific success edge。
+
+### 0.4 逐輪：問什麼、做法、結果、根因、下一輪修什麼
+
+#### S10（原始入口）
+
+- 問什麼：actual YAML、source provenance、same-space sizes、GPU 可用性與 candidate mapping，是否足以建立可信入口。這不是 ranking 或 performance 實驗。
+- 結果：`negative / S1_ENTRY_BLOCKED / FT-BLOCKED-MAPPING / edge=null`。正式 mapping corpus 是 10 configs × 3 sizes = 30 rows，分佈為 3 accepted／27 typed rejection／0 unexpected exception／0 genuine Formocast rejection；兩個 locked anchors 都沒通過 mapping prerequisite。
+- 根因：**證據完整，但入口條件完整地 FAIL**——不是「資料不夠」，而是「資料夠了、入口就是不成立」。過程中還修過兩代 harness／schema 瑕疵：successor-001（缺 `.duplicate` 造成 3 rows harness exception，判為 harness defect 非科學拒絕）、successor-002（schema 誤收 9 種非法 document，`CHANGES_REQUIRED`）、successor-003（9/9 非法被拒後重跑，仍是同一 mapping-negative）——這證明 negative 不是 harness 意外。
+- 交棒：鎖定後續每輪都要綁的**凍結身分**——actual YAML 的 SHA-256 `faaa8d65…`、candidate order／groups／weights、三個 locked sizes、gfx942 選卡法（當時選到 visible card 0，`gfx942 / SPX / NPS1`）。
+
+#### S10R1（nominal-boundary recovery）
+
+- 問什麼：能不能把 YAML 的 first／last／sentinel 極端值全部強制塞進 exact-ten 覆蓋。
+- 結果：`cancelled / BLOCKED / not_evaluated / edge=null / lock superseded`——依 A32 在安全邊界取消，**不是** negative、也不是 inconclusive。
+- 根因：致命的量測設計謬誤。它的 conditional stream 對單一值用極高的隨機抽樣上限，`DepthU=1024` 在**逾百萬次** conditional draws 後仍無 accepted config；但這**只能說「這次沒觀察到」，永遠不能證明「這個值不存在」**。而且它把研究從「Formocast factorization 在 observed valid support 是否可行」偏移成「每個 YAML 極端值能不能被硬塞進十筆 corpus」，還伴隨巨量 CPU selection、ledger／chunks 與近似 O(n²) 的 reparsing 成本。
+- 下一輪修什麼：改用**三態 support classification** 從根本修掉「沒抽到就當不存在」的謬誤。約 34 GB 的 bulk 執行殘骸由 A33 精確退役、只留 identity tombstone（明文禁止當後續證據）。
+
+#### S10R2（support-aware exact-ten recovery）
+
+- 問什麼：在三態 support 分類 + 固定 discovery schedule 下，能不能形成「剛好 10 個 config」的 mapping corpus。
+- 做法核心：固定 512 draws/chunk、不 early stop／不延長／不 reseed；先 global 再機械啟用的 conditional streams。
+- 結果：`inconclusive / FT-INCONCLUSIVE / edge=null`。執行數字：448 chunks／229,376 draws；156 accepted＝156 distinct configs；155 `supported_witnessed` atoms／9,869 `support_unobserved`／0 `support_proven_absent`；90 witnessed mandatory atoms。
+- 根因：**凍結的規則本身不可行**。要覆蓋那 90 個 mandatory atoms，deterministic greedy set-cover 需要 **18** 個 config，但協定硬性只允許 exact-ten=10（不得第 11 筆、不得替換）。18 > 10，所以根本湊不出合法 corpus；mapping、native Formocast、GPU correctness、noise 全部依法未啟動。（27 個 residual gene 中 23 個完整 witnessed；`GlobalReadVectorWidthA/B`、`PrefetchGlobalRead`、`DepthU` 因至少一個 unobserved value 當時不具 whole-gene eligibility；`DepthU=1024` 仍是 unobserved。）另有一筆 resource-accounting 缺口（未記錄 wall gap `5363.47 s`、parent CPU `UNKNOWN`）被 A36 判為 non-blocking caveat。
+- 下一輪修什麼：把「剛好 10」放寬成 **bounded-K**（由 observed coverage 機械決定數量）。
+
+#### S10R3（bounded-cover recovery）
+
+- 問什麼：保留 support semantics 與固定 discovery，但改用 `K = max(10, C_greedy)`、上限 20，能否形成合法 corpus 並通過 mapping。
+- 結果：`negative / S1_ENTRY_BLOCKED / FT-BLOCKED-MAPPING / edge=null`。執行數字：512 chunks／262,144 draws；114 accepted／262,030 rejected（全部是 pinned `_validate_solution=false`）；205 `supported_witnessed`／9,819 `support_unobserved`／0 `support_proven_absent`；90 mandatory atoms；`C_greedy = K = 19`（≤20，**覆蓋這關過了**）。
+- 根因：問題被推進到**下一層**。deterministic selector 成功建出 19-config corpus，但 mapping Pass A 的第 6 個 required config（slot 5，hash `4ffcecf6…`）在兩次獨立 attempt 都得到**完全相同的 complete failure**：`KernelWriterAssembly_overflowedResources / error 5 / worker return 23 / processKernelSource -2`。凍結規則 A46.5 規定「同一 required config 連兩次相同 complete signature 就 terminalize mapping negative」（禁止第三次 retry、replacement、Pass B、GPU）。
+- 揭示的事實：**validator 接受的 config，不保證正常 KernelWriter 能產生資源合法的 kernel**。這正是 S10R4 想把兩者分開的動機。（`DepthU` 的 32／64／128 witnessed、256／512／1024 unobserved；actual YAML 與 baseline sampling 未改。）
+- 交棒：一個封存、可驗證的 **114-occurrence raw frame**，成為 S10R4 唯一被允許的輸入。
+
+#### S10R4（exact-frame operational recovery，B01–B07）
+
+- 問什麼：在 S10R3 那個 sealed 114-occurrence raw frame 上，對每個 occurrence 跑 resolver + 正常 KernelWriter + compile 的 census，再用「穩定通過的倖存解」建立 mapping／correctness／noise 入口。它不 redraw、不重用 S10R3 的 mapping 結果、也不把 validator acceptance 當 codegen success。
+- 結果：`retired_unstarted / superseded / cancelled / BLOCKED / not_evaluated / edge=null / gate credit 0`。**從頭到尾沒產出任何 report、lock 或 scientific result。**
+- 根因：六個 binding（B01–B06）**全都死在執行／血緣的工程層，從未完成 scientific measurement**（詳見 §0.5 的 matrix）；B07 只是未被接納的 dirty draft。
+- 為什麼退役：修復一直在 execution binding、source closure 與 provenance machinery 打轉，而不是產生新的 scientific data。與其硬逼一個永遠跑不完的 checkpoint「假裝成功」，不如把 S10R4／B01–B07 退出 active gate、讓 S11 重新設計 fresh 的 support-aware 實驗。**退役是行政決定，不是把 S10R4 補判成 negative 或 inconclusive。**
+
+### 0.5 S10R4 的 B01–B07 binding matrix
+
+「binding」是同一個 S10R4 checkpoint 的重啟子嘗試，每個修一個工程／血緣缺陷、科學問題不變。每一個都停在**科學量測開始之前**：
+
+| Binding | 直接問題 | 到達的邊界 | 最終行政狀態 |
+| --- | --- | --- | --- |
+| B01 | internal child 從 config cwd 啟動，但 top-level guard 錯誤要求所有命令在 repo root；另有 activation-absence lifecycle defect | 第一個 child 未進 Ductile／Tensile／KernelWriter | retired preterminal；`not_evaluated`；lock superseded |
+| B02 | singleton YAML 寫 `Backend.Name: Exhaustive`，factory 只有 `tensile`／`ductile`，在 `backend.run` 前 `ValueError: Unknown backend: exhaustive` | 曾 `LOCKED_READY`；第一個 child partial、無 `result.json` | cancelled／BLOCKED；`not_evaluated`；lock superseded |
+| B03 | 修成 `Exhaustive → Tensile` 後，prelock 診斷發現 raw declaration 與 resolver-effective state 不同 | 未到原始 write／KernelWriter／GPU | superseded prelock；`CHANGES_REQUIRED / not_evaluated`；lock never created |
+| B04 | dual-lineage schema 只證明 literal `tensorIdx`，沒閉合 `ProblemType.Index{tensorIdx} -> tP["idx"] -> MacroTile{ti}` 這條關係 | source closure、0 formal rows | superseded prelock；`CHANGES_REQUIRED / not_evaluated`；lock never created |
+| B05 | relational selector authority／contract／plans 完成，但 ignored ledger seq 54／55 的 stored hash 與 sorted-canonical 重算不符 | implementation 前、index 空 | superseded prelock；`CHANGES_REQUIRED / not_evaluated`；lock never created |
+| B06 | clean provenance successor 保存 B05 science、規劃 exact 89 dynamic accesses 閉包 | design／contract only，未執行 | retired unstarted；`not_evaluated`；lock never created |
+| B07 | 未提交的 dirty draft，沒有 committed authority | 未開始 | `not_admitted`；forbidden input；zero gate credit |
+
+B01–B06 只能當 immutable diagnostic／design provenance，**對 S11 的 trust／support／score／model／gate credit 全部為零**；B07 禁止當 authority 或 evidence。
+
+一個具體例子說明 B03 的「raw ≠ resolver-effective」：row-0 診斷發現 MI9 raw declaration 雖可由完整 derived MI fields 反推，但 `ScheduleGROverBarrier 1→0`、`StaggerU 16→0`、`StaggerUStride 256→0` 是**會改變行為的 resolution 改寫**。這不算 KernelWriter attrition，因為根本還沒走到 KernelWriter——它證明「你抽到的原始 config」和「codegen 實際收到的 effective solution」不是同一個東西。
+
+### 0.6 從這串輪次沉澱、帶進 S11 的兩個設計
+
+多輪撞牆不是白費，它逼出了兩個 S11 現在採用的關鍵設計：
+
+- **`Fraw → Fexec → Fscore` 三層分離**：把「合法 occurrence」「能編出 kernel 的」「拿得到 Formocast 分數的」嚴格分開。這樣 codegen／compile 失敗被算成 **execution attrition（執行流失）**，而**不會**被誤記成「Formocast 沒訊號（model missingness）」。這直接來自 S10R3／S10R4「validator acceptance ≠ codegen success」的教訓。（三層的完整機制見 [QA-03 §0.2](qa-03-s11-factorization-and-metric-design.md)。）
+- **trusted-value `T_g` guidance**：從舊的「whole-gene 全有或全無」（S10R2 時任一 value 不完整就凍結整個 gene）改成「只對可信的 value 引導」——一個不可信的 value 不再讓整個 gene 失去 guidance 資格，untrusted value 仍保留 `0.20·p0` 的 baseline mixture mass。
+
+### 0.7 收束：現在到底在哪
+
+- S10R4 是 **retired `not_evaluated`**——不是 negative、也不是 positive，沒有 report／lock／edge。
+- S11 的進場靠 `S1-REBASELINE-20260803` 這條**行政 prerequisite**（虛線、`incoming_scientific_edge=null`），它**不是** scientific success edge，也沒有偽造任何 S10R4 positive。
+- S11 目前是 `DESIGN_APPROVED / not_started / not_evaluated / lock absent`，唯一的未來科學邊是 `S11:S1_GUIDANCE_LOCKED -> S12`，只有 S11 自己完成 contract／lock／evidence／fresh verification／commit／post-audit 後才可能存在。
+- 一句話：到目前為止 **no experiment、no result、no fabricated edge**；整條 S10 系列回答的是「這個實驗能不能誠實開始」，而不是「Formocast warm-start 有沒有效」。
 
 ---
 

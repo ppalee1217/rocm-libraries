@@ -50,6 +50,24 @@
 - 多重 AND gate 導致高 false-negative；
 - Stage 4 四-cluster data floor短期內不可達。
 
+### 18.4 「factorization 丟失交互作用」是本質設計問題，還是可接受的侷限？
+
+§18.3 把「factorization 丟失交互作用」列為風險。一個很自然、也很重要的追問是：這代表整個研究方法**本質上壞掉、要打掉重做**，還是**有侷限但仍可能有幫助、可以繼續做**？結論是**後者（bounded limitation，可繼續做）**，但有一個關鍵前提。
+
+判斷「壞掉」與「受限」的分水嶺是一句話：**這個方法會不會「無聲地」給出錯結論、而你察覺不到？** 會的話是致命缺陷；若它能誠實把自己的天花板量出來、甚至產出「這方法在這裡沒用」的明確結論，就是受限但可用。這個研究屬於後者，五個理由：
+
+- **這個侷限就是研究問題本身**：核心問句是「whole-config 訊號 factorize 成 per-gene 後**還剩多少**、若不能訊號**消失在哪一層**」。交互作用被丟掉正是它要**量**的東西，不是它假裝沒有的東西。「訊號主要在交互作用裡、per-gene 幾乎沒用」是**合法的科學負結論**，不是實驗失敗。
+- **per-gene 是目標系統的硬約束**：Ductile 的 Gen0 hook 只吃 per-gene 機率（見 [QA-03 §0.11](qa-03-s11-factorization-and-metric-design.md)、[QA-06](qa-06-origami-formocast-ecosystem-design.md)）。在這個約束下，factorization 是把 whole-config 訊號塞進去的**唯一**途徑，所以這個問題本身值得問。
+- **交互作用不是永遠丟失，是被「延後」給 GA**：Gen0 只是起跑點，crossover／mutation／selection + 真實 benchmark 會在 Gen0 之後重新發現好搭配。S11 只需要給一個「比 uniform 好的暖啟動」。
+- **這個侷限是被「儀器化」的，不是被藏起來的**：§0.9 的 additivity/reconstruction 診斷專門量交互作用損失、shuffle 對照（F vs S）防 confounding 假象、S12 real-GFLOPS 驗真實效能。**方法自帶偵測自己失效的能力**——這正是「受限但誠實」與「壞掉」的根本差別。
+- **它是 mechanism study／MVP、claim boundary 很窄**：只宣稱「3 個 locked size、Formocast 下、frame 內」的機制驗證，不宣稱 production speedup，結論不會被過度外推。
+
+**關鍵前提（也是它唯一會滑向「該打掉」的情況）**：上述成立的前提是 diagnostics、shuffle control、S12 real-label 這三道防線被真正尊重、結果被誠實接受。它會變成「錯誤」只有一種情況——**無視** reconstruction 診斷報出的「訊號在交互作用裡」、或**跳過** shuffle／S12，硬把一個被 confounding 撐起來的 per-gene 偏好當「有效」拿去用。**危險不在方法，在於會不會忽略方法給出的警告。**
+
+**要誠實面對、但不改變結論的風險**：GEMM kernel 效能很可能是交互作用主導的。**若真如此，S11 大概率得到「per-gene main effect 很弱或不穩」的負結果**——但那是一個 finding、不是 methodological error，而且是**定位精準**的負結果（告訴你「訊號不在 per-gene 邊際、而在交互作用」，指向該轉往能表達搭配的 hook）。對 internship-scale 的 mechanism study，一個乾淨可解釋的負結果就是合格產出。
+
+> 一句話：這是**受限但誠實、且可證偽**的設計，不需打掉重做——它把「per-gene 抓不到搭配」這個真實風險，從「沒被檢查的假設」轉成「被儀器量測的結果」；可繼續做，但期望產出很可能是「定位到訊號在交互作用層」的負結論，前提是團隊願意接受負結論、不繞過 diagnostics／shuffle／S12。若要正式拍板「continue vs restart」這個實驗方向決策，依 repo 規範應走 `design-discussion`（雙 reviewer 交叉詰問）而非單方判斷。
+
 ---
 
 ## 19. 新版 Agent 治理
