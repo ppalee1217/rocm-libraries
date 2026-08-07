@@ -22,10 +22,11 @@ You are running the **BASELINE arm (Arm G = existing GEKO guidance)** of the Duc
 - It is **NOT** the sealed S14 baseline. The sealed baseline is re-run later under the effective lock on the origin side. Do **not** treat these numbers as final scientific evidence, and do **not** seal/commit anything into the study protocol.
 - Run **Arm G only** (existing GEKO guidance). Do **NOT** add Formocast/guided weights (Arm F) or any shuffle (Arm S) in this pass — this pass is label-blind baseline + timing.
 
-### CONFIRM-BEFORE-RUN (three parameters finalized on the origin side; re-confirm if unsure)
-- **P0 (initial population)** = **cap 64** (see §4; if you cannot force P0=64 without a code change, STOP and report — see §4/§6).
-- **formal seeds** = **3**.
+### Pins (user-authorized 2026-08-07; single-server — all runs on this box)
+- **P0 (initial population)** = **cap 512** (user-authorized 2026-08-07, updated from 64; see §4; force it to exactly 512 via the isolated engine edit and fail-closed verify actual P0=512).
+- **formal seeds** = **3** (3/3 joint). **Native Ductile early-stop KEPT** (do NOT set period=0); n_gen=30 is the MAX cap. Primary metric = final champion real-GFLOPS (+ median non-inferiority); search-trajectory AUC = secondary diagnostic on the common completed budget; **NO hard U_floor gate** (FT-EVALUATION-SUPPORT only if an arm cannot finish Gen0 / produce a champion).
 - **arms** = **G only** for this baseline pass (Arm S is irrelevant here).
+- **3-seed parallel**: run the 3 seeds on 3 distinct idle non-0 GPUs (record each UUID).
 
 ---
 
@@ -65,8 +66,8 @@ You are running the **BASELINE arm (Arm G = existing GEKO guidance)** of the Duc
 
 - **Arm G (baseline):** run the frozen config as-is = existing GEKO guidance = full `pi_nominal`. `group_0` (MatrixInstruction/WorkGroup group, 9,918 candidates) keeps its GEKO weights; the 29 ungrouped free genes stay uniform. **Do not inject any Formocast weights.**
 - **Config file:** `study_docs/research/ductile-origami-warmstart/protocol/v1/inputs/s10-generated.yaml`.
-- **P0 (initial population): cap = 64.** The constructor normally inflates the initial population to ~11,405 for this space; force it to exactly 64. Determine from `ductile/algorithm/ga.py` + `Tensile.py`/`defaults.yaml` whether this is settable via config or needs a small code change. **If P0=64 cannot be forced without a code change, STOP before Stage 3 and report** (tied to a pending origin-side decision; do not silently run at 11,405).
-- **n_gen = 30**, early-stop **disabled** (`period=0`; keep `tol` inactive).
+- **P0 (initial population): cap = 512** (user-authorized 2026-08-07, was 64). The constructor normally inflates the initial population to ~11,405 for this space; force it to exactly 512. Determine from `ductile/algorithm/ga.py` + `Tensile.py`/`defaults.yaml` whether this is settable via config or needs a small code change. **If P0=64 cannot be forced without a code change, STOP before Stage 3 and report** (tied to a pending origin-side decision; do not silently run at 11,405).
+- **n_gen = 30** (MAX cap). **Keep Ductile's native early-stop** (native period/tol/div_thr; may terminate before 30 gens) — do NOT set period=0 (2026-08-07 user-authorized: fidelity to unmodified Ductile).
 - **problem sizes = the 3 in the frozen config:** `(M,N,batch,K) = (8,8,1,128)`, `(256,256,1,1024)`, `(2304,1024,1,214336)`, gfx942 non-StreamK, single dtype/layout as in the YAML. Do not add/remove sizes.
 - **correctness:** set `NumElementsToValidate = 128` (frozen YAML currently has 0 → change to 128 for every formal candidate evaluation and every champion remeasurement). Record any correctness failure verbatim.
 - **benchmark measurement:** keep `NumWarmups = 321`, `EnqueuesPerSync = 321`.
@@ -82,7 +83,7 @@ You are running the **BASELINE arm (Arm G = existing GEKO guidance)** of the Duc
 - **Stage 0 — env/build/GPU/pins.** Deliver `env/pins.json`. Confirm `tensilelite-client` runs.
 - **Stage 1 — pipeline smoke + throughput microbench.** Run a *tiny* GA config (very small pop, 1–2 generations) end-to-end to prove GA→build→GPU→CSV works, and measure **seconds per candidate** (compile + 3-size benchmark). Deliver `stage1_throughput.json` with per-candidate seconds and a **projected full-run wall-time** for the Stage-3 spec. ← the timing estimate the origin session needs.
 - **Stage 2 — noise pilot.** Pick 3 fixed anchor configs; measure each on the 3 sizes, 7 repeats (3×3×7). Compute per-size `R_s` and `delta_noise = exp(P95(|log Q − median_r log Q|)) − 1`. Deliver `stage2_noise/`.
-- **Stage 3 — baseline Arm-G pilot.** For each of the 3 formal seeds: run the full GA (P0-cap=64, n_gen=30, 3 sizes). Record **per-generation best-so-far** trajectory (for AUC) and the final **champion**. Then **independently remeasure** the champion 7×/size. Deliver `stage3_baseline/seed_<s>/…`.
+- **Stage 3 — baseline Arm-G pilot.** For each of the 3 formal seeds (parallel, 3 distinct idle non-0 GPUs): run the full GA (P0-cap=512, n_gen=30, 3 sizes). Record **per-generation best-so-far** trajectory (for AUC) and the final **champion**. Then **independently remeasure** the champion 7×/size. Deliver `stage3_baseline/seed_<s>/…`.
 
 If any stage fails or a pin cannot be honored, STOP and report verbatim — do not improvise a substitute.
 
@@ -95,7 +96,7 @@ If any stage fails or a pin cannot be honored, STOP and report verbatim — do n
 - Do **NOT** reuse these baseline outcomes to change any future sealed pin (they inform timing/noise/pins capture only).
 - GPU: **never device index 0**; use an idle GPU; pin via `HIP_VISIBLE_DEVICES`; record UUID.
 - Keep everything **append-only**; never overwrite prior artifacts. Report failures with exact error text, exit codes, command.
-- If P0=64 needs a code change, report it — do not run at the constructor-inflated ~11,405 as if it were the intended baseline.
+- Force P0 to exactly 512 via the isolated engine edit; do not run at the constructor-inflated ~11,405 as if it were the intended baseline.
 
 ---
 
@@ -137,7 +138,7 @@ invoke rocisa && invoke build-client --gpu-targets gfx942
 
 export HIP_VISIBLE_DEVICES=<idle_nonzero_index>
 CONFIG="$REPO/study_docs/research/ductile-origami-warmstart/protocol/v1/inputs/s10-generated.yaml"
-# Apply S14 pins (P0-cap=64, n_gen=30, NumElementsToValidate=128, n_jobs=1, seed) —
+# Apply S14 pins (P0-cap=512, n_gen=30, NumElementsToValidate=128, n_jobs=1, seed) —
 # confirm the exact override path from Tensile.py/defaults.yaml first.
 python3 Tensile/bin/Tensile "$CONFIG" ./s14-baseline-out --device 0   # -d indexes within HIP_VISIBLE_DEVICES
 ```

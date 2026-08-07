@@ -82,7 +82,7 @@
             "properties": {
               "seed": {"type": "integer"},
               "generations_run": {"type": "integer"},
-              "u_floor_target": {"type": "integer", "description": "e.g. 960"},
+              "u_floor_target": {"type": "integer", "description": "advisory only — native early-stop kept, NO hard U_floor gate; report generations_run + early_stopped instead"},
               "u_floor_reached": {"type": "boolean"},
               "cumulative_complete_evals": {"type": "integer"},
               "champions": {

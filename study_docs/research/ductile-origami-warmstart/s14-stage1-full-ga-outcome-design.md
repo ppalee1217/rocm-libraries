@@ -61,7 +61,7 @@ S14 回答 re-scoped Stage-1 的核心問題:**「Gen0 的權重 bias 是否真�
 
 ## 2. Hypothesis 與 falsification
 
-**S14-H1（directional）：**在 frozen problem set 上的 fixed-30-generation Ductile GA（P0-capped=64 變體）中,GUIDED(F)臂選出的 champion 其真實 GPU 效能,以及 search-trajectory AUC,**方向性勝過** BASELINE(G)臂;同時 correctness、validity 與 sampler realization 不失守。
+**S14-H1（directional）：**在 frozen problem set 上的 fixed-30-generation Ductile GA（P0-capped=512 變體）中,GUIDED(F)臂選出的 champion 其真實 GPU 效能,以及 search-trajectory AUC,**方向性勝過** BASELINE(G)臂;同時 correctness、validity 與 sampler realization 不失守。
 
 註（reviewer 採納）：H1 是**單向**假設(F 優於 G)。一個可重現的**負** delta（F 穩定劣於 G）證明「權重有影響」但**不是** H1-positive,依 stop matrix 記為 `FT-HEURISTIC-SATURATION`/`FT-GEN0-MECHANISM`。
 
@@ -105,43 +105,45 @@ resolved `P0`;每臂 per-generation replay envelope 與 realization diagnostics;
 Controls：arms 完全依 parent §7.1;independent variable 僅 free-gene guidance weighting,其餘跨臂相同;same formal seed 跨 G/F,replay seeds 與 formal seeds 分離;**所有 proposals 於各世代 lock 後才 benchmark**;canonical config identity 不依 set iteration order;deduplicated measurement 按 multiplicity 回填;champion 真實 GPU 重測在同一組 frozen sizes、同一 GPU 時窗;`U_floor` 與 noise-derived `delta_noise` guardrail 於 label 前固定;BASELINE 可先跑但不得重定義任何已 seal 項目;oracle 不進 formal endpoint。
 
 ### 6.1 Frozen pins（user + reviewer 收斂,label 前 seal）
-- **P0（母體）**：configured `pop_size=64` 且**初始母體 capped=64**（不讓 constructor 自動膨脹到 ~11,405）。此 cap 由 `RESCOPE-STAGE1-OUTCOME-20260807` + 本設計授權;claim 明列為 **「P0-capped Ductile variant」**,非未改動之原生 Ductile。runner 必須 fail-closed 驗證實際 P0=64。
-- **世代**：`n_gen=30`、`period=0`（關閉 outcome-dependent early stop,使兩臂 budget 可比）;`tol=0.0008` 僅記錄為 inactive metadata。
+- **P0（母體）**：configured `pop_size=512` 且**初始母體 capped=512**（不讓 constructor 自動膨脹到 ~11,405）。此 cap 由 `RESCOPE-STAGE1-OUTCOME-20260807` + **2026-08-07 user-authorized P0 amendment（64→512）** 授權;claim 明列為 **「P0-capped=512 Ductile variant」**,非未改動之原生 Ductile。runner 必須 fail-closed 驗證實際 P0=512。
+- **世代**：`n_gen=30`（**最大上限**）,**保留 Ductile 原生早停**（native `period`/`tol`/`div_thr` 預設;low-diversity/收斂時可在 30 代前自然終止）—— 忠於未改動的 Ductile 行為,**不設 `period=0`**（2026-08-07 user-authorized:改回原生早停）。
 - **seeds**：**3 對 formal seed**（G/F 同 seed 配對）;replay seeds 與 formal 分離。
 - **arms**：正式跑 **G/F**;**Arm S 宣告為 optional-reserved**（可日後獨立補做,使用相同 seeds 並與 G/F champion 同時窗重測;現在宣告以避免 post-hoc;若不跑 S,`FT-ENTROPY-ONLY` 不適用且 claim 不含 physics-direction 歸因）;Arm U 省略。
 - **品質 reducer**：`Q(x) = max_s [ GFLOPS_s(x) / R_s ]`,`R_s` 為 prelocked noise-anchor panel 的 per-size 參考（承襲 S11 sealed `max_s`,但 per-size 正規化以免原始尺度亂比）;三 size 皆需。
 - **problem set**：3 個 size `(8,8,1,128)`、`(256,256,1,1024)`、`(2304,1024,1,214336)`,gfx942 non-StreamK,單一 dtype/layout（依 frozen size registry）。
 - **`delta_noise`**：執行 server 上 `3 anchors × 3 sizes × 7 repeats`,`delta_noise = exp(P95(|log Q − median_r log Q|)) − 1`,anchors/公式/上限先封、scalar 於 formal label 前封（不由 arm results 導出）。
-- **search-trajectory AUC**：`A = (1/U_floor) ∫_0^{U_floor} log Q(u) du`,`u` = post-Gen0 累積完成評估數,`Q(0)`=Gen0 best,逐世代右連續階梯,multiplicity-aware,無 within-batch 排序 credit。
-- **`U_floor`**：`960` post-Gen0 完成評估/臂/seed（CAP=64 分支）。任一 formal run 未達即 `FT-EVALUATION-SUPPORT`,不得事後下修。
-- **champion**：每臂/seed 取 max-`Q` 的候選,tie-break 用 canonical config hash 升序;**獨立重測 7×/size**,G/F 配對隨機序。
+- **champion（PRIMARY outcome）**：每臂/seed 取 max-`Q` 的候選,tie-break 用 canonical config hash 升序;**獨立重測 7×/size**,G/F 配對隨機序。**這是 S14 的主指標**——對原生早停免疫,直接回答「bias 是否影響最終結果」。
+- **search-trajectory AUC（次要診斷,非 gate）**：`A = (1/B*) ∫_0^{B*} log Q(u) du`,積分上限 `B*` = 該 seed 兩臂**共同完成的評估數** `min(evals_G, evals_F)`（因原生早停各臂預算可能不同）;`u`=post-Gen0 累積完成評估,`Q(0)`=Gen0 best,逐世代右連續階梯,multiplicity-aware。僅作方向性佐證,不作硬門檻。
+- **support floor（軟;取消硬 `U_floor` gate）**：每臂/seed 只要完成 Gen0 + 其原生終止歷程即為有效;**僅當某臂連 Gen0 都無法完成或產不出有效 champion 時**才記 `FT-EVALUATION-SUPPORT`（尊重原生早停,不再要求固定 U_floor 預算）。
 - **correctness**：每次 formal 評估與重測 `NumElementsToValidate=128`（預設 0 不足）。
 - **per-generation 配對 barrier**：protocol lock 先於任何 formal label;之後每世代:產生 G/F batch → 鎖該世代 → 去重該世代 G/F union → benchmark → multiplicity-aware join → 兩臂同步前進;**不得跨世代 cache**（backend `useCache=False`）。
 - **label firewall**：comparison lock 於**第一筆 BASELINE label 之前**封;prelock 跑的 baseline 只能算 pilot、封後重跑;counterbalanced 臂順序。
 - **hash 判定**：只對不變基底（base YAML、space、candidate order、GEKO `group_0` 權重、operators、bench config）要求兩臂一致;各臂需重現自己預期的 treatment/proposal hash;F−G 權重差 = 恰為 residual bundle。
-- **`n_jobs=1`**;same physical GPU UUID per G/F pair。
+- **`n_jobs=1`**;每個 seed 的 G/F 配對用同一實體 GPU UUID（pair-consistency）;**不同 seed 可分別 pin 到不同的閒置非-0 GPU 平行執行**（baseline pilot 僅 G 臂、無配對限制,允許 3-seed 平行;正式 G/F 時仍須每 seed 的 G 與 F 同卡）。
 
-S14 能回答 single-development-cluster 的「free-gene 權重 bias 是否影響最終 DSE 結果（P0-capped 變體）」;**不能**回答 H10 persistence（S20）、held-out replication（S31）、speedup 或 convergence 泛化。
+S14 能回答 single-development-cluster 的「free-gene 權重 bias 是否影響最終 DSE 結果（P0-capped=512 變體）」;**不能**回答 H10 persistence（S20）、held-out replication（S31）、speedup 或 convergence 泛化。
 
 ## 7. Acceptance binding 與 stop matrix
 
 唯一 positive criterion `S14_GUIDED_OUTCOME_POSITIVE`（directional,3 對 seed 全數 joint 滿足,無 significance test）:
 
-1. champion `Q_F*/Q_G* > 1 + delta_noise`,**3/3 seeds**;
-2. search-trajectory AUC `A_F − A_G > log(1 + delta_noise)`,**3/3 seeds**;
-3. final-population median 非劣 `median(Q_F)/median(Q_G) ≥ 1/(1+delta_noise)`,**3/3 seeds**;
-4. proposal-set/candidate/weight/space hashes 依 §6.1 hash 判定通過;replay envelope 無 systematic anomaly;無新 validity/correctness failure;cross-server pins 已 seal 且 preflight 通過。
+1. **（PRIMARY）** champion `Q_F*/Q_G* > 1 + delta_noise`,**3/3 seeds**;
+2. **（PRIMARY）** final-population median 非劣 `median(Q_F)/median(Q_G) ≥ 1/(1+delta_noise)`,**3/3 seeds**;
+3. **（次要診斷,非 PASS 硬條件）** search-trajectory AUC `A_F − A_G > log(1 + delta_noise)`（積分到共同預算 `B*`）作方向性佐證;
+4. proposal-set/candidate/weight/space hashes 依 §6.1 hash 判定通過;replay envelope 無 systematic anomaly;無新 validity/correctness failure;reproducibility pins 已 seal 且 preflight 通過。
+
+**PASS = 條件 1、2、4 全部 3/3 通過**（AUC 為佐證,不阻擋）。
 
 （若日後補跑 Arm S:另加「F 亦勝 S」方可歸因 physics-direction,否則 claim 限「F 勝 G」。）
 
 | 狀況 | outcome／failure | downstream |
 | --- | --- | --- |
-| 全部 4 條、3/3 通過 | `S14_GUIDED_OUTCOME_POSITIVE` | S20（SUSPENDED,不自動解鎖）|
+| 條件 1/2/4 全 3/3 通過（AUC 佐證）| `S14_GUIDED_OUTCOME_POSITIVE` | S20（SUSPENDED,不自動解鎖）|
 | Proposal/replay/order/hash mismatch | `FT-PLUMBING`；修復需 new lock/fresh proposals | 無 |
-| Realization 正常但最終 quality/AUC 無方向性增益 | `FT-GEN0-MECHANISM` | 無 |
+| Realization 正常但最終 champion quality 無方向性增益 | `FT-GEN0-MECHANISM` | 無 |
 | F 不勝 G(GEKO) | `FT-HEURISTIC-SATURATION` | 無 |
 | （若跑 S）F 不勝 same-entropy shuffle | `FT-ENTROPY-ONLY` | 無 |
-| 任一 formal run 未達 `U_floor` | `FT-EVALUATION-SUPPORT` | 無 |
+| 某臂連 Gen0／有效 champion 都產不出 | `FT-EVALUATION-SUPPORT` | 無 |
 | 執行 server 可重現 correctness 失敗 | `FT-BLOCKED-CORRECTNESS` | 無 |
 | Noise/support 不足 | `FT-INCONCLUSIVE` | 無 |
 | 想用額外 generations/seeds 或看結果後改參數救回 | downgrade/plan change,停止 review | 無 |
@@ -166,9 +168,10 @@ S14 能回答 single-development-cluster 的「free-gene 權重 bias 是否影�
   10. 新增 `FT-EVALUATION-SUPPORT`（charter 已定義）與 `FT-BLOCKED-CORRECTNESS`。
 - pins 一致建議（已採納）：`n_gen=30`/`period=0`;reducer `max_s[GFLOPS_s/R_s]` per-size 正規化;3 sizes 如 §6.1;`delta_noise` 3×3×7 pilot;AUC 定義如 §6.1。
 - 兩項 user-decided forks（reviewer 提供分支分析,使用者拍板）：
-  - **P0**：reviewer 均建議 CAP 以趕 deadline（REAL=11,405 兩週內幾乎不可行）。**使用者選 CAP=64**;claim 限「P0-capped 變體」,並授權 constructor-cap。
-  - **seed 數**：reviewer 一方 3/3、一方 5(4/5);**使用者選 3 seeds / 3-of-3 joint**（趕 deadline;判定較嚴但無容錯）。`U_floor=960`。
+  - **P0**：reviewer 均建議 CAP 以趕 deadline（REAL=11,405 兩週內幾乎不可行）。使用者初選 CAP=64;**2026-08-07 使用者本人授權將 P0 pin 更新為 CAP=512**（仍在 reviewer 分析過的 CAP 分支內,只是 cap 值不同;U_floor 按 15×P0 規則改為 7,680;claim 限「P0-capped=512 變體」）。若日後要對 512 這個值另做兩位 reviewer 複審可再啟動,惟使用者已授權以此進行。
+  - **seed 數**：reviewer 一方 3/3、一方 5(4/5);**使用者選 3 seeds / 3-of-3 joint**（趕 deadline;判定較嚴但無容錯）。3-seed 可平行（每 seed 各 pin 一張閒置非-0 GPU;每 seed 的 G/F 仍同卡）。
+  - **early-stop（2026-08-07 user-authorized）**：**保留 Ductile 原生早停**（不設 `period=0`）;`n_gen=30` 為最大上限;主指標改 **champion real-GFLOPS + median 非劣**（primary）,**search-trajectory AUC 降為次要診斷**（積分到兩臂共同預算）,**取消硬 `U_floor` gate**（僅某臂連 Gen0／champion 都產不出才 `FT-EVALUATION-SUPPORT`）。理由:忠於未改動的 Ductile,且 charter §8.6 禁 speedup 宣稱,故以固定-結果品質（champion）而非效率（AUC）當 headline。
   - **Arm S**：**使用者選先只做 G/F、S 宣告 optional-reserved**（日後可獨立補、不重跑 G/F）。
-- 未決/前置：seal 前必須通過 label-blind throughput + correctness + noise **preflight**（也產出真實 wall-time 估計與 `delta_noise`)。若 preflight 顯示 CAP=64 仍不可行,回 user decision。
+- 未決/前置：seal 前必須通過 label-blind throughput + correctness + noise **preflight**（也產出真實 wall-time 估計與 `delta_noise`)。若 preflight 顯示 CAP=512 仍不可行,回 user decision。
 - Reviewer A final：`AGREE`（conditional on 上述修正 + preflight before seal）
 - Reviewer B final：`AGREE`（conditional on 上述修正 + preflight before seal）

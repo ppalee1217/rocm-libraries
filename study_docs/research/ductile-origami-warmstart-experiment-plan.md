@@ -245,7 +245,7 @@ Checkpoint designs只能引用下列parent IDs，不得自行改門檻：
   immutable prelock superseded。退役前的B06若曾執行，也只能依B06 frozen outcome
   table形成，guess/drift/partial/unknown不得使用此criterion；現在B06未執行且已退役。
 - `S1_GUIDANCE_LOCKED`：§4–§5 model-only frame、gene decisions、weights、shuffle與hash在real labels前完成鎖定。
-- `S14_GUIDED_OUTCOME_POSITIVE`：`RESCOPE-STAGE1-OUTCOME-20260807` 新增。完整多世代 Ductile GA 中,GUIDED（GEKO+Formocast Gen0 bias）對 BASELINE（GEKO `pi_nominal`）在 champion real-GFLOPS 與 convergence AUC（到 prelocked `U_floor`）方向性勝出（各 ≥2/3 seeds、無 significance test）,median/final real-quality noise guardrail 通過,兩臂 proposal/candidate/weight/space hashes 一致,且 cross-server reproducibility pins 已 seal、preflight 通過。
+- `S14_GUIDED_OUTCOME_POSITIVE`：`RESCOPE-STAGE1-OUTCOME-20260807` 新增（P0 64→512、保留原生早停,均 2026-08-07 user-authorized）。Ductile GA（P0-capped=512、**保留原生早停**、`n_gen=30` 上限）中,GUIDED 對 BASELINE 在 **champion real-GFLOPS（primary）+ median 非劣** 方向性勝出（各 3/3 seeds、無 significance）;search-trajectory AUC（積分到兩臂共同預算）為次要診斷;兩臂 hashes 一致;reproducibility pins 已 seal、preflight 通過。取消硬 `U_floor`（僅某臂連 Gen0／champion 產不出才 `FT-EVALUATION-SUPPORT`）。
 - `S3_REGISTRY_PROCEDURE_LOCKED`：§16的兩primary slots、reserve、denominator、frozen procedure與完整budget均在任何Stage 3 score前鎖定。
 - `S4_TRIGGER_ELIGIBLE`：§18.1 predictor-specific failure成立，且§18.2禁止patterns均不存在。
 - `S4_DATA_GATE_PASS`：§18.3四-cluster data floor與prospective fourth-cluster規則通過。
@@ -1432,9 +1432,13 @@ Plan-B/Plan-A、fresh implementer、fresh verifier 的 implement-verify-loop 完
   `closure_unit=CU-S14-OUTCOME`、`hypothesis_id=S14-H1`、entry=`S1_GUIDANCE_LOCKED`。復用 §7
   arms（G=baseline、F=guided,S/U 為 optional secondary controls）、proposal-lock/dedup union
   （§7.3）、CPU replay envelope（§7.4）與 §2.6 noise guardrail。新 primary outcome：
-  champion real GFLOPS 與 quality-vs-complete-evaluations convergence AUC（到 prelocked
-  `U_floor`）。新 criterion `S14_GUIDED_OUTCOME_POSITIVE`（directional,2/3 seeds,無
-  significance）。Design 見 `ductile-origami-warmstart/s14-stage1-full-ga-outcome-design.md`。
+  champion real GFLOPS 與 quality-vs-complete-evaluations search-trajectory AUC（到 prelocked
+  `U_floor`）。新 criterion `S14_GUIDED_OUTCOME_POSITIVE`（directional,3/3 seeds,無
+  significance）。**2026-08-07 使用者本人授權(兩項):(1) P0 pin 64→512（仍在 CAP 分支內）;
+  (2) 保留 Ductile 原生早停(不設 period=0)、`n_gen=30` 為最大上限。連帶:主指標改 champion
+  real-GFLOPS + median 非劣,search-trajectory AUC 降次要(積分兩臂共同預算),取消硬 U_floor gate
+  (僅某臂連 Gen0／champion 產不出才 FT-EVALUATION-SUPPORT);claim 限「P0-capped=512 變體」;
+  3-seed 可平行(每 seed 各 pin 一張閒置非-0 GPU、G/F 仍每 seed 同卡)。** Design 見 `ductile-origami-warmstart/s14-stage1-full-ga-outcome-design.md`。
 - **S13 關係：**S13 Gen0-only mechanism design 保留 immutable;其 Gen0 realization/replay 折入
   S14 作 optional gen-0 diagnostic,非 hard gate。S13 execution SUSPENDED。
 - **S12 D5 gate 移除：**real GPU perf 改在 Ductile post-GA 實際 selection 上量測,不再需要
