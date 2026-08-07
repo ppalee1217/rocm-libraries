@@ -107,7 +107,7 @@ Controls：arms 完全依 parent §7.1;independent variable 僅 free-gene guidan
 ### 6.1 Frozen pins（user + reviewer 收斂,label 前 seal）
 - **P0（母體）**：configured `pop_size=512` 且**初始母體 capped=512**（不讓 constructor 自動膨脹到 ~11,405）。此 cap 由 `RESCOPE-STAGE1-OUTCOME-20260807` + **2026-08-07 user-authorized P0 amendment（64→512）** 授權;claim 明列為 **「P0-capped=512 Ductile variant」**,非未改動之原生 Ductile。runner 必須 fail-closed 驗證實際 P0=512。
 - **世代**：`n_gen=30`（**最大上限**）,**保留 Ductile 原生早停**（native `period`/`tol`/`div_thr` 預設;low-diversity/收斂時可在 30 代前自然終止）—— 忠於未改動的 Ductile 行為,**不設 `period=0`**（2026-08-07 user-authorized:改回原生早停）。
-- **seeds**：**3 對 formal seed**（G/F 同 seed 配對）;replay seeds 與 formal 分離。
+- **seeds**：**5 對 formal seed**（`14001–14005`;G/F 同 seed 配對）;replay seeds 與 formal 分離。（2026-08-07 user-authorized:3→5,配合 5 張閒置非-0 卡平行,wall-time 不變而更 robust。）
 - **arms**：正式跑 **G/F**;**Arm S 宣告為 optional-reserved**（可日後獨立補做,使用相同 seeds 並與 G/F champion 同時窗重測;現在宣告以避免 post-hoc;若不跑 S,`FT-ENTROPY-ONLY` 不適用且 claim 不含 physics-direction 歸因）;Arm U 省略。
 - **品質 reducer**：`Q(x) = max_s [ GFLOPS_s(x) / R_s ]`,`R_s` 為 prelocked noise-anchor panel 的 per-size 參考（承襲 S11 sealed `max_s`,但 per-size 正規化以免原始尺度亂比）;三 size 皆需。
 - **problem set**：3 個 size `(8,8,1,128)`、`(256,256,1,1024)`、`(2304,1024,1,214336)`,gfx942 non-StreamK,單一 dtype/layout（依 frozen size registry）。
@@ -119,26 +119,26 @@ Controls：arms 完全依 parent §7.1;independent variable 僅 free-gene guidan
 - **per-generation 配對 barrier**：protocol lock 先於任何 formal label;之後每世代:產生 G/F batch → 鎖該世代 → 去重該世代 G/F union → benchmark → multiplicity-aware join → 兩臂同步前進;**不得跨世代 cache**（backend `useCache=False`）。
 - **label firewall**：comparison lock 於**第一筆 BASELINE label 之前**封;prelock 跑的 baseline 只能算 pilot、封後重跑;counterbalanced 臂順序。
 - **hash 判定**：只對不變基底（base YAML、space、candidate order、GEKO `group_0` 權重、operators、bench config）要求兩臂一致;各臂需重現自己預期的 treatment/proposal hash;F−G 權重差 = 恰為 residual bundle。
-- **`n_jobs=1`**;每個 seed 的 G/F 配對用同一實體 GPU UUID（pair-consistency）;**不同 seed 可分別 pin 到不同的閒置非-0 GPU 平行執行**（baseline pilot 僅 G 臂、無配對限制,允許 3-seed 平行;正式 G/F 時仍須每 seed 的 G 與 F 同卡）。
+- **`n_jobs=1`**;每個 seed 的 G/F 配對用同一實體 GPU UUID（pair-consistency）;**不同 seed 可分別 pin 到不同的閒置非-0 GPU 平行執行**（baseline pilot 僅 G 臂、無配對限制,允許 5-seed 平行（5 張卡）;正式 G/F 時仍須每 seed 的 G 與 F 同卡）。
 
 S14 能回答 single-development-cluster 的「free-gene 權重 bias 是否影響最終 DSE 結果（P0-capped=512 變體）」;**不能**回答 H10 persistence（S20）、held-out replication（S31）、speedup 或 convergence 泛化。
 
 ## 7. Acceptance binding 與 stop matrix
 
-唯一 positive criterion `S14_GUIDED_OUTCOME_POSITIVE`（directional,3 對 seed 全數 joint 滿足,無 significance test）:
+唯一 positive criterion `S14_GUIDED_OUTCOME_POSITIVE`（directional,**5 對 seed 中至少 4 對** joint 滿足,無 significance test）:
 
-1. **（PRIMARY）** champion `Q_F*/Q_G* > 1 + delta_noise`,**3/3 seeds**;
-2. **（PRIMARY）** final-population median 非劣 `median(Q_F)/median(Q_G) ≥ 1/(1+delta_noise)`,**3/3 seeds**;
+1. **（PRIMARY）** champion `Q_F*/Q_G* > 1 + delta_noise`,**至少 4/5 seeds**;
+2. **（PRIMARY）** final-population median 非劣 `median(Q_F)/median(Q_G) ≥ 1/(1+delta_noise)`,**至少 4/5 seeds**;
 3. **（次要診斷,非 PASS 硬條件）** search-trajectory AUC `A_F − A_G > log(1 + delta_noise)`（積分到共同預算 `B*`）作方向性佐證;
 4. proposal-set/candidate/weight/space hashes 依 §6.1 hash 判定通過;replay envelope 無 systematic anomaly;無新 validity/correctness failure;reproducibility pins 已 seal 且 preflight 通過。
 
-**PASS = 條件 1、2、4 全部 3/3 通過**（AUC 為佐證,不阻擋）。
+**PASS = 條件 1、2、4 各至少 4/5 seeds 通過**（AUC 為佐證,不阻擋）。
 
 （若日後補跑 Arm S:另加「F 亦勝 S」方可歸因 physics-direction,否則 claim 限「F 勝 G」。）
 
 | 狀況 | outcome／failure | downstream |
 | --- | --- | --- |
-| 條件 1/2/4 全 3/3 通過（AUC 佐證）| `S14_GUIDED_OUTCOME_POSITIVE` | S20（SUSPENDED,不自動解鎖）|
+| 條件 1/2/4 各至少 4/5 通過（AUC 佐證）| `S14_GUIDED_OUTCOME_POSITIVE` | S20（SUSPENDED,不自動解鎖）|
 | Proposal/replay/order/hash mismatch | `FT-PLUMBING`；修復需 new lock/fresh proposals | 無 |
 | Realization 正常但最終 champion quality 無方向性增益 | `FT-GEN0-MECHANISM` | 無 |
 | F 不勝 G(GEKO) | `FT-HEURISTIC-SATURATION` | 無 |
@@ -169,7 +169,7 @@ S14 能回答 single-development-cluster 的「free-gene 權重 bias 是否影�
 - pins 一致建議（已採納）：`n_gen=30`/`period=0`;reducer `max_s[GFLOPS_s/R_s]` per-size 正規化;3 sizes 如 §6.1;`delta_noise` 3×3×7 pilot;AUC 定義如 §6.1。
 - 兩項 user-decided forks（reviewer 提供分支分析,使用者拍板）：
   - **P0**：reviewer 均建議 CAP 以趕 deadline（REAL=11,405 兩週內幾乎不可行）。使用者初選 CAP=64;**2026-08-07 使用者本人授權將 P0 pin 更新為 CAP=512**（仍在 reviewer 分析過的 CAP 分支內,只是 cap 值不同;claim 限「P0-capped=512 變體」）。**注:原先隨此設的 `U_floor=7,680` 已由下方 early-stop amendment 取消硬 gate(見下條),不再適用。** 若日後要對 512 另做兩位 reviewer 複審可再啟動,惟使用者已授權以此進行。
-  - **seed 數**：reviewer 一方 3/3、一方 5(4/5);**使用者選 3 seeds / 3-of-3 joint**（趕 deadline;判定較嚴但無容錯）。3-seed 可平行（每 seed 各 pin 一張閒置非-0 GPU;每 seed 的 G/F 仍同卡）。
+  - **seed 數**：reviewer 一方 3/3、一方 5(4/5);使用者初選 3/3,**2026-08-07 使用者本人授權改為 5 seeds / 4-of-5 joint**（因 5 張閒置非-0 卡可平行、wall-time 不變而更 robust;採 Reviewer B 的 5-seed precedent,容一顆 outlier）。5-seed 平行（每 seed 各 pin 一張閒置非-0 GPU;每 seed 的 G/F 仍同卡）。
   - **early-stop（2026-08-07 user-authorized）**：**保留 Ductile 原生早停**（不設 `period=0`）;`n_gen=30` 為最大上限;主指標改 **champion real-GFLOPS + median 非劣**（primary）,**search-trajectory AUC 降為次要診斷**（積分到兩臂共同預算）,**取消硬 `U_floor` gate**（僅某臂連 Gen0／champion 都產不出才 `FT-EVALUATION-SUPPORT`）。理由:忠於未改動的 Ductile,且 charter §8.6 禁 speedup 宣稱,故以固定-結果品質（champion）而非效率（AUC）當 headline。
   - **Arm S**：**使用者選先只做 G/F、S 宣告 optional-reserved**（日後可獨立補、不重跑 G/F）。
 - 未決/前置：seal 前必須通過 label-blind throughput + correctness + noise **preflight**（也產出真實 wall-time 估計與 `delta_noise`)。若 preflight 顯示 CAP=512 仍不可行,回 user decision。

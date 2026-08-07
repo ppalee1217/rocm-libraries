@@ -24,9 +24,9 @@ You are running the **BASELINE arm (Arm G = existing GEKO guidance)** of the Duc
 
 ### Pins (user-authorized 2026-08-07; single-server — all runs on this box)
 - **P0 (initial population)** = **cap 512** (user-authorized 2026-08-07, updated from 64; see §4; force it to exactly 512 via the isolated engine edit and fail-closed verify actual P0=512).
-- **formal seeds** = **3** (3/3 joint). **Native Ductile early-stop KEPT** (do NOT set period=0); n_gen=30 is the MAX cap. Primary metric = final champion real-GFLOPS (+ median non-inferiority); search-trajectory AUC = secondary diagnostic on the common completed budget; **NO hard U_floor gate** (FT-EVALUATION-SUPPORT only if an arm cannot finish Gen0 / produce a champion).
+- **formal seeds** = **5** (`14001`–`14005`; 4-of-5 joint). **Native Ductile early-stop KEPT** (do NOT set period=0); n_gen=30 is the MAX cap. Primary metric = final champion real-GFLOPS (+ median non-inferiority); search-trajectory AUC = secondary diagnostic on the common completed budget; **NO hard U_floor gate** (FT-EVALUATION-SUPPORT only if an arm cannot finish Gen0 / produce a champion).
 - **arms** = **G only** for this baseline pass (Arm S is irrelevant here).
-- **3-seed parallel**: run the 3 seeds on 3 distinct idle non-0 GPUs (record each UUID).
+- **5-seed parallel**: run the 5 seeds on 5 distinct idle non-0 GPUs (record each UUID). (5 clean cards available: idx 2,3,4,5,7; re-check live.)
 
 ---
 
@@ -72,7 +72,7 @@ You are running the **BASELINE arm (Arm G = existing GEKO guidance)** of the Duc
 - **correctness:** set `NumElementsToValidate = 128` (frozen YAML currently has 0 → change to 128 for every formal candidate evaluation and every champion remeasurement). Record any correctness failure verbatim.
 - **benchmark measurement:** keep `NumWarmups = 321`, `EnqueuesPerSync = 321`.
 - **`n_jobs = 1`** for the Ductile sampler (see `space.py` `os.cpu_count()` scaling) for cross-server reproducibility.
-- **seeds:** 3 formal GA seeds (use `14001, 14002, 14003` unless the origin session gives different values).
+- **seeds:** 5 formal GA seeds (`14001, 14002, 14003, 14004, 14005`), 4-of-5 joint decision rule.
 - **quality metric** (for trajectory/champion reporting): `Q(x) = max_s [ GFLOPS_s(x) / R_s ]`, `R_s` from Stage-2 noise pilot. Report raw per-size GFLOPS too.
 - **GPU:** pinned idle non-0 device via `HIP_VISIBLE_DEVICES`; record UUID.
 
@@ -83,7 +83,7 @@ You are running the **BASELINE arm (Arm G = existing GEKO guidance)** of the Duc
 - **Stage 0 — env/build/GPU/pins.** Deliver `env/pins.json`. Confirm `tensilelite-client` runs.
 - **Stage 1 — pipeline smoke + throughput microbench.** Run a *tiny* GA config (very small pop, 1–2 generations) end-to-end to prove GA→build→GPU→CSV works, and measure **seconds per candidate** (compile + 3-size benchmark). Deliver `stage1_throughput.json` with per-candidate seconds and a **projected full-run wall-time** for the Stage-3 spec. ← the timing estimate the origin session needs.
 - **Stage 2 — noise pilot.** Pick 3 fixed anchor configs; measure each on the 3 sizes, 7 repeats (3×3×7). Compute per-size `R_s` and `delta_noise = exp(P95(|log Q − median_r log Q|)) − 1`. Deliver `stage2_noise/`.
-- **Stage 3 — baseline Arm-G pilot.** For each of the 3 formal seeds (parallel, 3 distinct idle non-0 GPUs): run the full GA (P0-cap=512, n_gen=30, 3 sizes). Record **per-generation best-so-far** trajectory (for AUC) and the final **champion**. Then **independently remeasure** the champion 7×/size. Deliver `stage3_baseline/seed_<s>/…`.
+- **Stage 3 — baseline Arm-G pilot.** For each of the 5 formal seeds (parallel, 5 distinct idle non-0 GPUs): run the full GA (P0-cap=512, n_gen=30 max with native early-stop, 3 sizes). Record **per-generation best-so-far** trajectory (for AUC) and the final **champion**. Then **independently remeasure** the champion 7×/size. Deliver `stage3_baseline/seed_<s>/…`.
 
 If any stage fails or a pin cannot be honored, STOP and report verbatim — do not improvise a substitute.
 
@@ -121,6 +121,8 @@ s14-baseline-return-<server>-<YYYYMMDD>/
       run.log
     seed_14002/ …
     seed_14003/ …
+    seed_14004/ …
+    seed_14005/ …
   hashes.sha256            # sha256 of every file in this return dir
 ```
 
