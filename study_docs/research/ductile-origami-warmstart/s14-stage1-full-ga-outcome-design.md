@@ -78,7 +78,7 @@ S14 回答 re-scoped Stage-1 的核心問題:**「Gen0 的權重 bias 是否真�
 
 ## 4. Maximum implementation 與 delivery boundary
 
-允許：constructor `P0` 解析（**capped 至 64**,見 §6 pins）;fixed-30-generation GA 演化含 selection/crossover/mutation/survival;**per-generation 配對 proposal barrier**（見 §6）;BASELINE/GUIDED（及日後 optional S）formal proposal generation、canonical serialization 與 per-generation proposal lock;cross-arm/seed deduplicated benchmark union 與 multiplicity-aware join;post-GA champion 的獨立真實 GPU 重測;trajectory-AUC、champion real-GFLOPS delta、median guardrail、correctness、validity 與 diagnostics。
+允許：constructor `P0` 解析（**capped 至 512**,見 §6 pins）;fixed-30-generation GA 演化含 selection/crossover/mutation/survival;**per-generation 配對 proposal barrier**（見 §6）;BASELINE/GUIDED（及日後 optional S）formal proposal generation、canonical serialization 與 per-generation proposal lock;cross-arm/seed deduplicated benchmark union 與 multiplicity-aware join;post-GA champion 的獨立真實 GPU 重測;trajectory-AUC、champion real-GFLOPS delta、median guardrail、correctness、validity 與 diagnostics。
 
 禁止：修改 S11 guidance/arms 定義/seeds;看到 outcome 後改 `n_gen`/`P0`/metric/`U_floor`/guardrail;用 best 取代已定義 guardrail 或把少數 seeds 包裝成 significance;執行/建立任何 SUSPENDED 下游;使用 legacy M06/S10R* artifacts;cross-generation result cache。
 
@@ -168,7 +168,7 @@ S14 能回答 single-development-cluster 的「free-gene 權重 bias 是否影�
   10. 新增 `FT-EVALUATION-SUPPORT`（charter 已定義）與 `FT-BLOCKED-CORRECTNESS`。
 - pins 一致建議（已採納）：`n_gen=30`/`period=0`;reducer `max_s[GFLOPS_s/R_s]` per-size 正規化;3 sizes 如 §6.1;`delta_noise` 3×3×7 pilot;AUC 定義如 §6.1。
 - 兩項 user-decided forks（reviewer 提供分支分析,使用者拍板）：
-  - **P0**：reviewer 均建議 CAP 以趕 deadline（REAL=11,405 兩週內幾乎不可行）。使用者初選 CAP=64;**2026-08-07 使用者本人授權將 P0 pin 更新為 CAP=512**（仍在 reviewer 分析過的 CAP 分支內,只是 cap 值不同;U_floor 按 15×P0 規則改為 7,680;claim 限「P0-capped=512 變體」）。若日後要對 512 這個值另做兩位 reviewer 複審可再啟動,惟使用者已授權以此進行。
+  - **P0**：reviewer 均建議 CAP 以趕 deadline（REAL=11,405 兩週內幾乎不可行）。使用者初選 CAP=64;**2026-08-07 使用者本人授權將 P0 pin 更新為 CAP=512**（仍在 reviewer 分析過的 CAP 分支內,只是 cap 值不同;claim 限「P0-capped=512 變體」）。**注:原先隨此設的 `U_floor=7,680` 已由下方 early-stop amendment 取消硬 gate(見下條),不再適用。** 若日後要對 512 另做兩位 reviewer 複審可再啟動,惟使用者已授權以此進行。
   - **seed 數**：reviewer 一方 3/3、一方 5(4/5);**使用者選 3 seeds / 3-of-3 joint**（趕 deadline;判定較嚴但無容錯）。3-seed 可平行（每 seed 各 pin 一張閒置非-0 GPU;每 seed 的 G/F 仍同卡）。
   - **early-stop（2026-08-07 user-authorized）**：**保留 Ductile 原生早停**（不設 `period=0`）;`n_gen=30` 為最大上限;主指標改 **champion real-GFLOPS + median 非劣**（primary）,**search-trajectory AUC 降為次要診斷**（積分到兩臂共同預算）,**取消硬 `U_floor` gate**（僅某臂連 Gen0／champion 都產不出才 `FT-EVALUATION-SUPPORT`）。理由:忠於未改動的 Ductile,且 charter §8.6 禁 speedup 宣稱,故以固定-結果品質（champion）而非效率（AUC）當 headline。
   - **Arm S**：**使用者選先只做 G/F、S 宣告 optional-reserved**（日後可獨立補、不重跑 G/F）。
