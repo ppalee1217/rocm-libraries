@@ -70,7 +70,7 @@ You are running the **BASELINE arm (Arm G = existing GEKO guidance)** of the Duc
 - **n_gen = 30** (MAX cap). **Keep Ductile's native early-stop** (native period/tol/div_thr; may terminate before 30 gens) — do NOT set period=0 (2026-08-07 user-authorized: fidelity to unmodified Ductile).
 - **problem sizes = the 3 in the frozen config:** `(M,N,batch,K) = (8,8,1,128)`, `(256,256,1,1024)`, `(2304,1024,1,214336)`, gfx942 non-StreamK, single dtype/layout as in the YAML. Do not add/remove sizes.
 - **correctness:** set `NumElementsToValidate = 128` (frozen YAML currently has 0 → change to 128 for every formal candidate evaluation and every champion remeasurement). Record any correctness failure verbatim.
-- **benchmark measurement:** keep `NumWarmups = 321`, `EnqueuesPerSync = 321`.
+- **benchmark measurement:** keep `NumWarmups = 321`, `EnqueuesPerSync = 321`, and **`RotatingBufferSize = 4096` MB** (user-authorized 2026-08-07). Keep rotating buffers ON (realistic cold-cache GFLOPS); 4096 covers the largest size's ~1.4GB rotation; it is a cap so it only affects the large size (small sizes unchanged). Do NOT set 0 (that disables rotating → hot-cache inflation).
 - **`n_jobs = 1`** for the Ductile sampler (see `space.py` `os.cpu_count()` scaling) for cross-server reproducibility.
 - **seeds:** 5 formal GA seeds (`14001, 14002, 14003, 14004, 14005`), 4-of-5 joint decision rule.
 - **quality metric** (for trajectory/champion reporting): `Q(x) = max_s [ GFLOPS_s(x) / R_s ]`, `R_s` from Stage-2 noise pilot. Report raw per-size GFLOPS too.

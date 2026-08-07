@@ -116,6 +116,7 @@ Controls：arms 完全依 parent §7.1;independent variable 僅 free-gene guidan
 - **search-trajectory AUC（次要診斷,非 gate）**：`A = (1/B*) ∫_0^{B*} log Q(u) du`,積分上限 `B*` = 該 seed 兩臂**共同完成的評估數** `min(evals_G, evals_F)`（因原生早停各臂預算可能不同）;`u`=post-Gen0 累積完成評估,`Q(0)`=Gen0 best,逐世代右連續階梯,multiplicity-aware。僅作方向性佐證,不作硬門檻。
 - **support floor（軟;取消硬 `U_floor` gate）**：每臂/seed 只要完成 Gen0 + 其原生終止歷程即為有效;**僅當某臂連 Gen0 都無法完成或產不出有效 champion 時**才記 `FT-EVALUATION-SUPPORT`（尊重原生早停,不再要求固定 U_floor 預算）。
 - **correctness**：每次 formal 評估與重測 `NumElementsToValidate=128`（預設 0 不足）。
+- **benchmark measurement**：`NumWarmups=321`、`EnqueuesPerSync=321`、**`RotatingBufferSize=4096` MB**（2026-08-07 user-authorized）。維持 rotating buffer **開著**＝冷 cache 的真實 GFLOPS;4096 足以覆蓋大 size `(2304,1024,1,214336)` 需要的 ~1.4GB rotation。因這是 **cap**,**只影響大 size**（小 size 的 rotation 在舊值即完整實現、量測不變）;**不設 0**（0=關 rotating→hot-cache 灌水,尤其小 size)。
 - **per-generation 配對 barrier**：protocol lock 先於任何 formal label;之後每世代:產生 G/F batch → 鎖該世代 → 去重該世代 G/F union → benchmark → multiplicity-aware join → 兩臂同步前進;**不得跨世代 cache**（backend `useCache=False`）。
 - **label firewall**：comparison lock 於**第一筆 BASELINE label 之前**封;prelock 跑的 baseline 只能算 pilot、封後重跑;counterbalanced 臂順序。
 - **hash 判定**：只對不變基底（base YAML、space、candidate order、GEKO `group_0` 權重、operators、bench config）要求兩臂一致;各臂需重現自己預期的 treatment/proposal hash;F−G 權重差 = 恰為 residual bundle。
