@@ -53,9 +53,13 @@ forbidden_downstream_roots:
   - reports/staged/s40-stage4-activation-report.md
   - reports/learned-residual-surrogate-report.md
 consensus_status: approved_two_reviewer_agree
+suspension_state: suspended_pending_s14
+suspension_authority: RESCOPE-STAGE1-OUTCOME-20260807
 ---
 
 # S13 — Stage 1 actual Gen0 sampler mechanism
+
+> **2026-08-07 FROZEN pending S14：**本 design 依 user-approved `RESCOPE-STAGE1-OUTCOME-20260807` 保留為 immutable,execution SUSPENDED,pending Stage-1 S14 結果。S13 的 Gen0 realization/replay machinery 折入 S14 作 optional gen-0 diagnostic;S13 D6 不再是 S14 的前置。本 checkpoint 的 hypothesis、arms、thresholds、edges、failure taxonomy 全部不變、未刪除;恢復僅需 user decision 撤銷本 freeze。
 
 導航：[active checkpoint index](README.md)｜[experiment plan §7](../ductile-origami-warmstart-experiment-plan.md#7-d6-actual-gen0-endpoint)
 

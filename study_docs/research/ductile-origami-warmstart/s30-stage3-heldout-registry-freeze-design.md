@@ -48,9 +48,13 @@ forbidden_downstream_roots:
   - reports/staged/s40-stage4-activation-report.md
   - reports/learned-residual-surrogate-report.md
 consensus_status: approved_two_reviewer_agree
+suspension_state: suspended_pending_s14
+suspension_authority: RESCOPE-STAGE1-OUTCOME-20260807
 ---
 
 # S30 — Stage 3 held-out registry／procedure freeze
+
+> **2026-08-07 FROZEN pending S14：**本 design 依 user-approved `RESCOPE-STAGE1-OUTCOME-20260807` 保留為 immutable,execution SUSPENDED,pending Stage-1 S14（full-GA baseline-vs-guided real-GPU outcome）結果。本 checkpoint 的 hypothesis、arms、thresholds、edges、failure taxonomy 全部不變、未刪除;恢復僅需 user decision 撤銷本 freeze（移除本 banner 與 frontmatter 的 suspension_state／suspension_authority,並重啟其 DAG edge）。
 
 導航：[active checkpoint index](README.md)｜[experiment plan §16](../ductile-origami-warmstart-experiment-plan.md#16-stage-3-entryfreeze-與-clusters)
 

@@ -62,9 +62,13 @@ forbidden_downstream_roots:
   - reports/staged/s40-stage4-activation-report.md
   - reports/learned-residual-surrogate-report.md
 consensus_status: approved_two_reviewer_agree
+suspension_state: frozen_deferred_pending_s14
+suspension_authority: RESCOPE-STAGE1-OUTCOME-20260807
 ---
 
 # S12 — Stage 1 real-score ranking／prior-mass／oracle audit
+
+> **2026-08-07 FROZEN/DEFERRED pending S14：**本 design 依 user-approved `RESCOPE-STAGE1-OUTCOME-20260807` 保留為 immutable,execution FROZEN/DEFERRED。S12（pre-GA 256-identity D5 audit）的 `D5_PASS` **不再是任何下游 checkpoint 前的 hard gate**;真實 GPU 效能改在 Ductile post-GA 實際 selection（S14）上量測。本 checkpoint 的 hypothesis、estimator、thresholds、edges、failure taxonomy 全部不變、未刪除;恢復僅需 user decision 撤銷本 freeze。
 
 導航：[active checkpoint index](README.md)｜[experiment plan §6](../ductile-origami-warmstart-experiment-plan.md#6-d3d5-real-score-finite-frame-audit)
 

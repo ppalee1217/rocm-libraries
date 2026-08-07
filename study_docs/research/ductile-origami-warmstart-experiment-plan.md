@@ -23,6 +23,16 @@
 > 本頁後續所有舊 S10R4 positive dependency、`F_valid/F_effective/F_codegen` 與
 > whole-gene fail-closed wording，若未明寫 current，均是 historical/superseded trail。
 >
+> **2026-08-07 current authority：**user-approved `RESCOPE-STAGE1-OUTCOME-20260807`
+> （見本頁下方同名 amendment）新增 Stage-1 checkpoint **S14**（full Ductile GA,
+> BASELINE=existing GEKO guidance vs GUIDED=GEKO+Formocast Gen0 bias,post-GA real-GPU
+> outcome on selected champion kernel）。移除 S12 `D5_PASS` 作為下游 hard gate;S12
+> （pre-GA 256-identity D5 audit）FROZEN/DEFERRED,真實效能改在 Ductile post-GA 實際
+> selection 上量測。S20/S30/S31/S40/S41 design 保留 immutable,execution SUSPENDED,
+> pending S14 近期結果（可逆,撤銷僅需 user decision）。頂線 Stage-1 claim 縮為
+> single-cluster directional advantage,不宣稱 persistence/replication/speedup。本
+> amendment 只改 design 文字與治理,未執行任何 evidence/lock/report/edge,也不授權 push。
+>
 > **狀態：**`post_empirical / s10r4_retired_unstarted / s11_rebaseline_approved /
 > no_s10r4_or_s11_evidence`。以下長段落保留截至B06的歷史authority trail；current
 > projection只以上方2026-08-03 banner與本頁current table/DAG為準。S00是durable
@@ -153,6 +163,7 @@ flowchart TD
   s11["S11 Guidance lock"]
   s12["S12 D5 audit"]
   s13["S13 Actual Gen0"]
+  s14["S14 Full-GA baseline vs guided real-GPU outcome"]
   s20["S20 H10 persistence"]
   s30["S30 Registry / freeze"]
   s31["S31 Bounded replication"]
@@ -167,15 +178,18 @@ flowchart TD
   s10r3 -. "terminal negative provenance only" .-> auth
   s10r4 -. "retired; zero gate credit" .-> auth
   auth -. "administrative prerequisite; not scientific" .-> s11
-  s11 -->|"S1_GUIDANCE_LOCKED"| s12
-  s12 -->|"D5_PASS"| s13
-  s13 -->|"D6_MECHANISM_POSITIVE"| s20
-  s20 -->|"S2_DIRECTIONAL_PERSISTENCE_POSITIVE"| s30
-  s30 -->|"S3_REGISTRY_PROCEDURE_LOCKED"| s31
-  s12 -. "predictor failure + oracle positive" .-> s40
-  s31 -. "predictor heterogeneity + oracle positive" .-> s40
-  s40 -->|"S4_ACTIVATE"| s41
+  s11 -->|"S1_GUIDANCE_LOCKED"| s14
+  s11 -. "S1_GUIDANCE_LOCKED (S12 frozen; deferred — RESCOPE-20260807)" .-> s12
+  s12 -. "D5_PASS (frozen; deferred)" .-> s13
+  s13 -. "D6_MECHANISM_POSITIVE (execution suspended)" .-> s20
+  s20 -. "S2_DIRECTIONAL_PERSISTENCE_POSITIVE (suspended)" .-> s30
+  s30 -. "S3_REGISTRY_PROCEDURE_LOCKED (suspended)" .-> s31
+  s12 -. "predictor failure + oracle positive (suspended)" .-> s40
+  s31 -. "predictor heterogeneity + oracle positive (suspended)" .-> s40
+  s40 -. "S4_ACTIVATE (suspended)" .-> s41
 ```
+
+> **RESCOPE-STAGE1-OUTCOME-20260807（active projection）：**S11 之後的唯一 active Stage-1 future edge 現為 `S11:S1_GUIDANCE_LOCKED -> S14`（full-GA baseline-vs-guided real-GPU outcome）。S12（pre-GA 256-identity D5 audit）FROZEN/DEFERRED,其 `D5_PASS` 不再是任何下游 checkpoint 前的 hard gate;真實效能改在 Ductile post-GA 實際 selection 上量測。S13、S20、S30、S31、S40、S41 design 保留 immutable、execution SUSPENDED（上圖對應 edges 全部虛線標 suspended）。以上 freeze 可逆,撤銷僅需 user decision;詳見下方同名 amendment 與各 design 的 frozen banner。頂線 Stage-1 claim 縮為 single-cluster directional advantage,不宣稱 persistence/replication/speedup。
 
 S00的post-audited positive closeout已驗證`S00_EVIDENCE_READY -> S10`。S10已完成actual-guidance、live-unreserved H4與其frozen canonical mapping boundary，並以完整可重現的`FT-BLOCKED-MAPPING` negative branch形成`S1_ENTRY_BLOCKED`；沒有outgoing edge。Direct evidence、successor lineage、mapping stop與claim boundary見[S10 formal report](ductile-origami-warmstart/reports/staged/s10-stage1-entry-gate-report.md)；早期[blocker memo](ductile-origami-warmstart/reports/gen0-factorization-blocker-memo.md)只保留為historical recovery evidence。
 
@@ -208,6 +222,7 @@ Checkpoint designs只能引用下列parent IDs，不得自行改門檻：
 - `D5_BORDERLINE_INCONCLUSIVE`
 - `D5_FAIL`
 - `D6_MECHANISM_POSITIVE`
+- `S14_GUIDED_OUTCOME_POSITIVE`
 - `S2_DIRECTIONAL_PERSISTENCE_POSITIVE`
 - `S3_REGISTRY_PROCEDURE_LOCKED`
 - `S3_BOUNDED_REPLICATION_POSITIVE`
@@ -230,6 +245,7 @@ Checkpoint designs只能引用下列parent IDs，不得自行改門檻：
   immutable prelock superseded。退役前的B06若曾執行，也只能依B06 frozen outcome
   table形成，guess/drift/partial/unknown不得使用此criterion；現在B06未執行且已退役。
 - `S1_GUIDANCE_LOCKED`：§4–§5 model-only frame、gene decisions、weights、shuffle與hash在real labels前完成鎖定。
+- `S14_GUIDED_OUTCOME_POSITIVE`：`RESCOPE-STAGE1-OUTCOME-20260807` 新增。完整多世代 Ductile GA 中,GUIDED（GEKO+Formocast Gen0 bias）對 BASELINE（GEKO `pi_nominal`）在 champion real-GFLOPS 與 convergence AUC（到 prelocked `U_floor`）方向性勝出（各 ≥2/3 seeds、無 significance test）,median/final real-quality noise guardrail 通過,兩臂 proposal/candidate/weight/space hashes 一致,且 cross-server reproducibility pins 已 seal、preflight 通過。
 - `S3_REGISTRY_PROCEDURE_LOCKED`：§16的兩primary slots、reserve、denominator、frozen procedure與完整budget均在任何Stage 3 score前鎖定。
 - `S4_TRIGGER_ELIGIBLE`：§18.1 predictor-specific failure成立，且§18.2禁止patterns均不存在。
 - `S4_DATA_GATE_PASS`：§18.3四-cluster data floor與prospective fourth-cluster規則通過。
@@ -262,10 +278,11 @@ partial working-tree evidence只能屬於前者。
 | `T-S10R3` | S10R3=`R3` | `CU-S10R3` standalone |
 | `T-S10R4-B06` | retired；S10R4/B01–B07 historical non-scientific provenance | retired；no active closure |
 | `T-AUTH-S1-REBASELINE-20260803` | R3 prospective authority amendment；no scientific experiment | `CU-AUTH-S1-REBASELINE-20260803` |
-| `T-S1-MECHANISM` | S11=`R2` → S12=`R2` → S13=`R1` | `CU-S1-MECHANISM` |
-| `T-S20` | S20=`R1` | `CU-S20` standalone |
-| `T-S3-REPLICATION` | S30=`R2` → S31=`R1` | `CU-S3-REPLICATION` |
-| `T-S4-LEARNED-RESIDUAL` | S40=`R2` → S41=`R1` | `CU-S4-LEARNED-RESIDUAL` |
+| `T-S1-MECHANISM` | S11=`R2` active → S12=`R2`／S13=`R1` execution suspended (RESCOPE-STAGE1-OUTCOME-20260807) | `CU-S1-MECHANISM` |
+| `T-S14-OUTCOME` | S14=`R1` (RESCOPE-STAGE1-OUTCOME-20260807) | `CU-S14-OUTCOME` standalone |
+| `T-S20` | S20=`R1`；execution suspended (RESCOPE-STAGE1-OUTCOME-20260807) | `CU-S20` standalone |
+| `T-S3-REPLICATION` | S30=`R2` → S31=`R1`；execution suspended (RESCOPE-STAGE1-OUTCOME-20260807) | `CU-S3-REPLICATION` |
+| `T-S4-LEARNED-RESIDUAL` | S40=`R2` → S41=`R1`；execution suspended (RESCOPE-STAGE1-OUTCOME-20260807) | `CU-S4-LEARNED-RESIDUAL` |
 
 ### Future gate／tranche closeout contract
 
@@ -1400,6 +1417,52 @@ workload-envelope／effective-lock 準備;**不**授權執行 outcome-bearing ev
 effective lock、closeout commit 或 push。effective lock 與 evidence 仍須經 r3 contract、
 Plan-B/Plan-A、fresh implementer、fresh verifier 的 implement-verify-loop 完成後才成立。
 
+### 2026-08-07 `RESCOPE-STAGE1-OUTCOME-20260807` amendment（user-approved）
+
+> **狀態：user-approved re-scope（約兩週 deadline，與 manager 確認）。**本 amendment 只改
+> design／治理文字,未執行 experiment、未建 evidence／result／effective lock／report／edge,
+> 也不授權 push。新增 checkpoint S14 的 §9 兩位 reviewer design-consensus record 仍
+> `pending`,必須在任何 outcome-bearing 執行前完成。
+
+- **Trigger／scope：**S11 guidance lock（進行中）後,即時優先改為完整多世代 Ductile GA 兩臂
+  比較——BASELINE=existing GEKO guidance（`pi_nominal`,無新 Gen0/Formocast weights）vs
+  GUIDED=GEKO+Formocast Gen0 bias——再量測 SELECTED（champion）結果的真實 GPU 效能,檢驗
+  guided 最終結果是否勝 baseline。Core claim：Gen0 weight bias 確實影響 Ductile DSE 結果。
+- **新 checkpoint S14：**Stage-1 sibling,`risk_tier=R1`、`execution_tranche=T-S14-OUTCOME`、
+  `closure_unit=CU-S14-OUTCOME`、`hypothesis_id=S14-H1`、entry=`S1_GUIDANCE_LOCKED`。復用 §7
+  arms（G=baseline、F=guided,S/U 為 optional secondary controls）、proposal-lock/dedup union
+  （§7.3）、CPU replay envelope（§7.4）與 §2.6 noise guardrail。新 primary outcome：
+  champion real GFLOPS 與 quality-vs-complete-evaluations convergence AUC（到 prelocked
+  `U_floor`）。新 criterion `S14_GUIDED_OUTCOME_POSITIVE`（directional,2/3 seeds,無
+  significance）。Design 見 `ductile-origami-warmstart/s14-stage1-full-ga-outcome-design.md`。
+- **S13 關係：**S13 Gen0-only mechanism design 保留 immutable;其 Gen0 realization/replay 折入
+  S14 作 optional gen-0 diagnostic,非 hard gate。S13 execution SUSPENDED。
+- **S12 D5 gate 移除：**real GPU perf 改在 Ductile post-GA 實際 selection 上量測,不再需要
+  pre-GA 256-identity D5 audit。移除 `D5_PASS` 作為新 checkpoint 前的 hard gate;S12 design
+  保留 immutable,execution FROZEN/DEFERRED。原 `S12 --D5_PASS--> S13` edge 停用。
+- **Downstream freeze：**S20、S30、S31、S40、S41 design 全部 immutable、execution SUSPENDED,
+  pending S14 結果;不刪除、可逆（撤銷僅需 future dated amendment 移除各 design 的
+  `suspension_state`／`suspension_authority` 與 frozen banner,並重啟其 DAG edge）。
+- **DAG：**新 active future edge 為 `S11:S1_GUIDANCE_LOCKED -> S14`。`S11->S12`、`S12->S13`、
+  `S13->S20`、`S20->S30`、`S30->S31`、conditional `->S40`、`S40->S41` 全部標為 frozen/suspended
+  虛線,節點不刪。
+- **Cross-server 再現性：**S14 effective lock 額外綁定 toolchain（ROCm/HIP、hipBLASLt/tensilelite
+  SHA、amdclang）、GPU arch（gfx942 non-StreamK、device model/driver）、config hashes（YAML／
+  space／size-registry／Formocast weight bundle／GEKO guidance）、seeds（formal＋replay 分離）、
+  bench config,並在 GUIDED 臂第一筆 real label 前完成 cross-server conformance preflight。
+  GPU 選擇政策:量測時挑閒置 GPU、絕不用 device index 0,以 `HIP_VISIBLE_DEVICES` 綁定並記錄
+  device UUID/arch。
+- **Claim 縮減：**頂線 Stage-1 claim 縮為 single-cluster directional advantage;不宣稱
+  persistence／replication／speedup／production（charter §8.6）。charter claim ladder 8.2–8.4
+  對應 stages（persistence／bounded replication／held-out）標為 **deferred**,未刪除。
+- **Governance（right-sized pre-registration）：**S14 仍需在 GUIDED 臂第一筆 real label 前 seal
+  comparison protocol（arms、frozen problem set、seeds、metric、`U_floor`、`delta_noise`、GA
+  params、cross-server pins）於 effective lock;BASELINE 臂可先跑（定義 comparator）,但其結果
+  不得回頭重定義任一已 seal 項目。S14 design 以 study §9 兩位 reviewer AGREE record seal
+  （目前 pending）,不需完整 replication run。
+- Authority record 與 SUSPENDED 註記見 `s14-stage1-full-ga-outcome-design.md`、README active
+  index,以及 S12/S13/S20/S30/S31/S40/S41 各自 design 的 frozen banner。
+
 ### Downgrade user gates
 
 `DEGRADED_PROXY`、two-size／reduced-regime、S2 H5 resource-bounded pilot、single-cluster Stage 3 pilot，以及任何減少workloads、runs、seeds、metrics、validation、acceptance或scope的方案，都必須先產生完整decision packet並停在`blocked-awaiting-user-decision`。Diagnostic partial run不能滿足checkpoint或解鎖下游。
@@ -1462,6 +1525,8 @@ condition成立才safe-boundary pause，不縮samples／seeds／sizes／criteria
 - MI300X workload-level 泛化；
 - StreamK、跨架構；
 - learned residual surrogate是否能補 predictor failure；只有 Stage 4 data/trigger gate通過才研究。
+
+> **RESCOPE-STAGE1-OUTCOME-20260807 註：**「完整多世代 GA 中 GUIDED vs BASELINE 的最終 selected-kernel 真實效能與 convergence AUC 比較」現由新 checkpoint **S14**（single development cluster、directional）回答。tuning speedup、`n_gen>1` persistence 泛化（S20）、held-out replication（S31）、cross-arch／StreamK 仍在 Stage 1 之外且目前 SUSPENDED。
 
 ### 0.4 完成狀態
 
@@ -2512,6 +2577,8 @@ Oracle不進 required D6 arms。GPU有餘裕時才允許 outcome-informed、`dia
 ## 7. D6 actual Gen0 endpoint
 
 只有 `D5_PASS` 才執行。
+
+> **RESCOPE-STAGE1-OUTCOME-20260807 註：**本 §7 的 arms（U/G/F/S）、GA configuration、proposal lock／benchmark union、CPU replay envelope 與 median-quality noise guardrail,亦為新 checkpoint **S14**（full-GA baseline-vs-guided real-GPU outcome）的機制基礎。S14 以 BASELINE=Arm G、GUIDED=Arm F（S/U 為 optional secondary controls）,並 **不** 以 `D5_PASS` 為前置——依同名 amendment,S14 entry 僅需 `S1_GUIDANCE_LOCKED`,真實效能改在 post-GA champion selection 上量測。§7 本體（S13 D6 endpoint）內容不變,S13 仍為其原 `D5_PASS`-gated checkpoint（目前 execution SUSPENDED）。
 
 ### 7.1 Formal arms
 

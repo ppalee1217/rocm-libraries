@@ -18,6 +18,16 @@
 > 仍是`approved / not_started / DESIGN_APPROVED / not_evaluated / lock absent`。第一次閱讀
 > 請看[fixed-frame繁中變更指南](s11-s12-fixed-frame-measurement-change-guide.md)。
 >
+> **2026-08-07 current authority：**user-approved
+> [`RESCOPE-STAGE1-OUTCOME-20260807`](../ductile-origami-warmstart-experiment-plan.md)
+> 新增 Stage-1 checkpoint **S14**（full Ductile GA,BASELINE=existing GEKO guidance vs
+> GUIDED=GEKO+Formocast Gen0 bias,post-GA real-GPU outcome on selected champion）,唯一
+> active future edge 為 `S11:S1_GUIDANCE_LOCKED -> S14`。S12（pre-GA D5 audit）
+> FROZEN/DEFERRED,其 `D5_PASS` 不再是下游 hard gate。S13/S20/S30/S31/S40/S41 design
+> immutable、execution SUSPENDED,pending S14（可逆,撤銷僅需 user decision）。頂線 claim
+> 縮為 single-cluster directional advantage。S11 仍 `not_started`;本次沒有執行任何
+> evidence／lock／report／edge。Design 見 [S14](s14-stage1-full-ga-outcome-design.md)。
+>
 > **Active-state authority banner：**本研究目前是
 > `post_empirical / s10r4_retired_unstarted / s11_fixed_frame_approved /
 > no_s10r4_or_s11_evidence`。以下長段落保存歷史authority trail；current狀態只以本頁
@@ -123,13 +133,14 @@ hypothesis、criterion、edge或timebox。
 | S10R3 | Stage 1 bounded-cover entry recovery | `approved` | `completed` | `CHECKPOINT_COMPLETE` | `negative` | `effective (S10R3-A46.5-G3)` | [report](reports/staged/s10r3-stage1-bounded-cover-entry-report.md) |
 | S10R4 | Retired unstarted exact-frame recovery history | `superseded` | `cancelled` | `BLOCKED` | `not_evaluated` | `absent` | none；不得建立 |
 | S11 | Stage 1 model-only factorization／guidance lock | `approved` | `not_started` | `DESIGN_APPROVED` | `not_evaluated` | `absent` | absent；future planned path `reports/staged/s11-stage1-model-only-factorization-report.md` |
-| S12 | Stage 1 real-score／ranking／oracle audit | `approved` | `gated` | `DESIGN_APPROVED` | `not_evaluated` | `absent` | `reports/staged/s12-stage1-real-score-audit-report.md` |
-| S13 | Stage 1 actual Gen0 mechanism | `approved` | `gated` | `DESIGN_APPROVED` | `not_evaluated` | `absent` | `reports/gen0-factorization-mvp-report.md` |
-| S20 | Stage 2 fixed H10 persistence | `approved` | `gated` | `DESIGN_APPROVED` | `not_evaluated` | `absent` | `reports/short-horizon-persistence-report.md` |
-| S30 | Stage 3 held-out registry／procedure freeze | `approved` | `gated` | `DESIGN_APPROVED` | `not_evaluated` | `absent` | `reports/staged/s30-heldout-registry-freeze-report.md` |
-| S31 | Stage 3 two-cluster bounded replication | `approved` | `gated` | `DESIGN_APPROVED` | `not_evaluated` | `absent` | `reports/bounded-regime-replication-report.md` |
-| S40 | Stage 4 activation（trigger+data ready才instantiate） | `approved` | `gated` | `DESIGN_APPROVED` | `not_activated` | `absent` | none until instantiated |
-| S41 | Stage 4 learned residual analysis | `approved` | `gated` | `DESIGN_APPROVED` | `not_evaluated` | `absent` | `reports/learned-residual-surrogate-report.md` |
+| S12 | Stage 1 real-score／ranking／oracle audit（FROZEN/DEFERRED — RESCOPE-STAGE1-OUTCOME-20260807；`D5_PASS` 不再是下游 hard gate）| `approved` | `gated` | `DESIGN_APPROVED` | `not_evaluated` | `absent` | `reports/staged/s12-stage1-real-score-audit-report.md` |
+| S13 | Stage 1 actual Gen0 mechanism（execution SUSPENDED — RESCOPE-STAGE1-OUTCOME-20260807；Gen0 machinery folded into S14）| `approved` | `gated` | `DESIGN_APPROVED` | `not_evaluated` | `absent` | `reports/gen0-factorization-mvp-report.md` |
+| S14 | Stage 1 full-GA baseline-vs-guided real-GPU outcome（RESCOPE-STAGE1-OUTCOME-20260807；active,two-reviewer AGREE 2026-08-07;pins: P0-cap=64／3 seeds／G-F,S optional-reserved;pre-seal preflight required）| `approved` | `gated` | `DESIGN_APPROVED` | `not_evaluated` | `absent` | `reports/full-ga-baseline-vs-guided-outcome-report.md` |
+| S20 | Stage 2 fixed H10 persistence（execution SUSPENDED — RESCOPE-STAGE1-OUTCOME-20260807）| `approved` | `gated` | `DESIGN_APPROVED` | `not_evaluated` | `absent` | `reports/short-horizon-persistence-report.md` |
+| S30 | Stage 3 held-out registry／procedure freeze（execution SUSPENDED — RESCOPE-STAGE1-OUTCOME-20260807）| `approved` | `gated` | `DESIGN_APPROVED` | `not_evaluated` | `absent` | `reports/staged/s30-heldout-registry-freeze-report.md` |
+| S31 | Stage 3 two-cluster bounded replication（execution SUSPENDED — RESCOPE-STAGE1-OUTCOME-20260807）| `approved` | `gated` | `DESIGN_APPROVED` | `not_evaluated` | `absent` | `reports/bounded-regime-replication-report.md` |
+| S40 | Stage 4 activation（trigger+data ready才instantiate）（execution SUSPENDED — RESCOPE-STAGE1-OUTCOME-20260807）| `approved` | `gated` | `DESIGN_APPROVED` | `not_activated` | `absent` | none until instantiated |
+| S41 | Stage 4 learned residual analysis（execution SUSPENDED — RESCOPE-STAGE1-OUTCOME-20260807）| `approved` | `gated` | `DESIGN_APPROVED` | `not_evaluated` | `absent` | `reports/learned-residual-surrogate-report.md` |
 
 Designs：
 
@@ -145,6 +156,7 @@ Designs：
 - [S11 — Stage 1 model-only factorization](s11-stage1-model-only-factorization-design.md)
 - [S12 — Stage 1 real-score audit](s12-stage1-real-score-ranking-oracle-audit-design.md)
 - [S13 — Stage 1 actual Gen0](s13-stage1-actual-gen0-mechanism-design.md)
+- [S14 — Stage 1 full-GA baseline vs guided real-GPU outcome（RESCOPE-STAGE1-OUTCOME-20260807）](s14-stage1-full-ga-outcome-design.md)
 - [S20 — Stage 2 H10 persistence](s20-stage2-h10-persistence-design.md)
 - [S30 — Stage 3 registry freeze](s30-stage3-heldout-registry-freeze-design.md)
 - [S31 — Stage 3 bounded replication](s31-stage3-bounded-replication-design.md)
@@ -254,6 +266,7 @@ flowchart TD
   s11["S11 Model-only factorization"]
   s12["S12 Real-score audit"]
   s13["S13 Actual Gen0"]
+  s14["S14 Full-GA baseline vs guided real-GPU outcome"]
   s20["S20 H10 persistence"]
   s30["S30 Registry freeze"]
   s31["S31 Bounded replication"]
@@ -271,14 +284,15 @@ flowchart TD
   fixed -. "prospective measurement authority; not scientific" .-> s11
   fixed -. "estimator authority; no edge" .-> s12
   fixed -. "inherited comparator; no edge" .-> s41
-  s11 -->|"S1_GUIDANCE_LOCKED"| s12
-  s12 -->|"D5_PASS"| s13
-  s13 -->|"D6_MECHANISM_POSITIVE"| s20
-  s20 -->|"S2_DIRECTIONAL_PERSISTENCE_POSITIVE"| s30
-  s30 -->|"S3_REGISTRY_PROCEDURE_LOCKED"| s31
-  s12 -.->|"predictor-specific failure + oracle positive"| s40
-  s31 -.->|"predictor heterogeneity + oracle positive"| s40
-  s40 -->|"S4_ACTIVATE"| s41
+  s11 -->|"S1_GUIDANCE_LOCKED"| s14
+  s11 -. "S1_GUIDANCE_LOCKED (S12 frozen; deferred — RESCOPE-20260807)" .-> s12
+  s12 -. "D5_PASS (frozen; deferred)" .-> s13
+  s13 -. "D6_MECHANISM_POSITIVE (execution suspended)" .-> s20
+  s20 -. "S2_DIRECTIONAL_PERSISTENCE_POSITIVE (suspended)" .-> s30
+  s30 -. "S3_REGISTRY_PROCEDURE_LOCKED (suspended)" .-> s31
+  s12 -.->|"predictor-specific failure + oracle positive (suspended)"| s40
+  s31 -.->|"predictor heterogeneity + oracle positive (suspended)"| s40
+  s40 -. "S4_ACTIVATE (suspended)" .-> s41
 ```
 
 - S00的post-audited positive closeout已驗證`S00_EVIDENCE_READY -> S10`。S10已完成
@@ -348,10 +362,11 @@ report/update/staged audit/commit，但
 | `T-S10R4-B06` | retired historical R3 lineage | none active | retired；no active closure |
 | `T-AUTH-S1-REBASELINE-20260803` | R3 authority amendment；no scientific experiment | authority gate only | `CU-AUTH-S1-REBASELINE-20260803` |
 | `T-AUTH-S11-S12-20260803` | R3 prospective measurement amendment；no scientific experiment | authority gate only | `CU-AUTH-S11-S12-20260803` |
-| `T-S1-MECHANISM` | S11/S12=`R2`, S13=`R1` | S11 → S12 → S13 | `CU-S1-MECHANISM` |
-| `T-S20` | S20=`R1` | S20 | `CU-S20` standalone |
-| `T-S3-REPLICATION` | S30=`R2`, S31=`R1` | S30 → S31 | `CU-S3-REPLICATION` |
-| `T-S4-LEARNED-RESIDUAL` | S40=`R2`, S41=`R1` | S40 → S41 | `CU-S4-LEARNED-RESIDUAL` |
+| `T-S1-MECHANISM` | S11/S12=`R2`, S13=`R1` | S11 active → S12／S13 execution suspended (RESCOPE-STAGE1-OUTCOME-20260807) | `CU-S1-MECHANISM` |
+| `T-S14-OUTCOME` | S14=`R1` | S14 (RESCOPE-STAGE1-OUTCOME-20260807) | `CU-S14-OUTCOME` standalone |
+| `T-S20` | S20=`R1` | S20；execution suspended (RESCOPE-STAGE1-OUTCOME-20260807) | `CU-S20` standalone |
+| `T-S3-REPLICATION` | S30=`R2`, S31=`R1` | S30 → S31；execution suspended (RESCOPE-STAGE1-OUTCOME-20260807) | `CU-S3-REPLICATION` |
+| `T-S4-LEARNED-RESIDUAL` | S40=`R2`, S41=`R1` | S40 → S41；execution suspended (RESCOPE-STAGE1-OUTCOME-20260807) | `CU-S4-LEARNED-RESIDUAL` |
 
 每個tranche依序處理dependency-ready scientific gates：
 

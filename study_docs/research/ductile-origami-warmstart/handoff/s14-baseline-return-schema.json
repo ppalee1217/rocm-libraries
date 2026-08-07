@@ -1,0 +1,140 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "S14 baseline preflight+pilot return manifest",
+  "description": "manifest.json produced by the remote-server agent. All fields factual/numeric; no prose verdicts. Origin session ingests this to obtain wall-time, delta_noise, cross-server pins, and the baseline (Arm G) champion/trajectory. This is PILOT/timing data, NOT sealed S14 evidence.",
+  "type": "object",
+  "required": [
+    "experiment_id", "arm", "sealed", "server_id", "repo_commit", "run_started_utc", "run_finished_utc",
+    "pins_used", "gpu", "env_pins_path", "stage1_throughput", "stage2_noise", "stage3_baseline",
+    "failures", "artifact_paths", "manifest_sha256_inputs"
+  ],
+  "properties": {
+    "experiment_id": {"const": "s14-baseline-arm-g-preflight-pilot"},
+    "arm": {"const": "G"},
+    "sealed": {"const": false, "description": "always false; this is not sealed S14 evidence"},
+    "server_id": {"type": "string", "description": "hostname / identifier of the remote server"},
+    "repo_commit": {"type": "string", "description": "must be d939bdaa97c9cbcb39ea644cd6b9ba63d1d2798c"},
+    "run_started_utc": {"type": "string", "format": "date-time"},
+    "run_finished_utc": {"type": "string", "format": "date-time"},
+    "pins_used": {
+      "type": "object",
+      "required": ["P0", "P0_forced", "n_gen", "period", "num_elements_to_validate", "num_warmups", "enqueues_per_sync", "n_jobs", "seeds", "problem_sizes", "dtype_layout"],
+      "properties": {
+        "P0": {"type": "integer", "description": "actual initial population used"},
+        "P0_forced": {"type": "boolean", "description": "true if initial pop was forced to the cap (64); false if constructor-inflated"},
+        "P0_force_method": {"type": "string", "description": "config field / code change used to force P0, or 'none'"},
+        "n_gen": {"type": "integer"},
+        "period": {"type": "integer"},
+        "num_elements_to_validate": {"type": "integer", "description": "should be 128"},
+        "num_warmups": {"type": "integer"},
+        "enqueues_per_sync": {"type": "integer"},
+        "n_jobs": {"type": "integer", "description": "should be 1"},
+        "seeds": {"type": "array", "items": {"type": "integer"}},
+        "problem_sizes": {"type": "array", "items": {"type": "array", "items": {"type": "integer"}}, "description": "[[8,8,1,128],[256,256,1,1024],[2304,1024,1,214336]]"},
+        "dtype_layout": {"type": "string"}
+      }
+    },
+    "gpu": {
+      "type": "object",
+      "required": ["device_index", "uuid", "arch", "driver"],
+      "properties": {
+        "device_index": {"type": "integer", "description": "index within HIP_VISIBLE_DEVICES; underlying physical must be idle and NOT system index 0"},
+        "uuid": {"type": "string"},
+        "arch": {"const": "gfx942"},
+        "driver": {"type": "string"},
+        "firmware": {"type": "string"},
+        "pci_bdf": {"type": "string"}
+      }
+    },
+    "env_pins_path": {"type": "string", "description": "relative path to env/pins.json (full toolchain/OS/lib versions+hashes)"},
+    "stage1_throughput": {
+      "type": "object",
+      "required": ["seconds_per_candidate", "projected_full_run_minutes", "notes"],
+      "properties": {
+        "seconds_per_candidate": {"type": "number", "description": "mean end-to-end (generate+compile+3-size benchmark) seconds per candidate"},
+        "seconds_per_candidate_stdev": {"type": "number"},
+        "projected_full_run_minutes": {"type": "number", "description": "projection for one Arm-G run at the Stage-3 pins"},
+        "projection_basis": {"type": "string", "description": "how projected: candidate count assumption etc."},
+        "notes": {"type": "string"}
+      }
+    },
+    "stage2_noise": {
+      "type": "object",
+      "required": ["anchors", "repeats", "R_s", "delta_noise", "formula", "raw_path"],
+      "properties": {
+        "anchors": {"type": "array", "items": {"type": "string"}, "description": "3 anchor config identities/hashes"},
+        "repeats": {"type": "integer", "description": "should be 7"},
+        "R_s": {"type": "object", "description": "per-size reference GFLOPS, keyed by size string", "additionalProperties": {"type": "number"}},
+        "delta_noise": {"type": "number"},
+        "formula": {"type": "string", "description": "exact formula used, e.g. exp(P95(|log Q - median_r log Q|))-1"},
+        "raw_path": {"type": "string", "description": "relative path to stage2_noise/raw_repeats.jsonl"}
+      }
+    },
+    "stage3_baseline": {
+      "type": "object",
+      "required": ["per_seed"],
+      "properties": {
+        "per_seed": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["seed", "generations_run", "u_floor_target", "u_floor_reached", "cumulative_complete_evals", "champions", "trajectory_path", "artifacts_path"],
+            "properties": {
+              "seed": {"type": "integer"},
+              "generations_run": {"type": "integer"},
+              "u_floor_target": {"type": "integer", "description": "e.g. 960"},
+              "u_floor_reached": {"type": "boolean"},
+              "cumulative_complete_evals": {"type": "integer"},
+              "champions": {
+                "type": "array",
+                "description": "champion(s); if a single aggregate-Q champion, one entry; per-size details inside",
+                "items": {
+                  "type": "object",
+                  "required": ["kernel_name", "champion_kernel_params", "per_size_gflops_remeasured", "aggregate_Q"],
+                  "properties": {
+                    "kernel_name": {"type": "string"},
+                    "champion_kernel_params": {"type": "object"},
+                    "config_hash": {"type": "string"},
+                    "per_size_gflops_remeasured": {
+                      "type": "object",
+                      "description": "keyed by size string; each has mean/stdev/raw[7] from the independent 7x remeasurement",
+                      "additionalProperties": {
+                        "type": "object",
+                        "required": ["mean", "stdev", "raw"],
+                        "properties": {
+                          "mean": {"type": "number"},
+                          "stdev": {"type": "number"},
+                          "raw": {"type": "array", "items": {"type": "number"}, "minItems": 7, "maxItems": 7}
+                        }
+                      }
+                    },
+                    "aggregate_Q": {"type": "number", "description": "max_s[GFLOPS_s/R_s] using stage2 R_s"}
+                  }
+                }
+              },
+              "trajectory_path": {"type": "string", "description": "relative path to seed_<s>/trajectory.jsonl"},
+              "artifacts_path": {"type": "string", "description": "relative path to seed_<s>/ (CSVs + LibraryLogic + run.log)"}
+            }
+          }
+        }
+      }
+    },
+    "failures": {
+      "type": "array",
+      "description": "every failure/anomaly verbatim; empty array if none",
+      "items": {
+        "type": "object",
+        "required": ["stage", "command", "exit_code", "error_text"],
+        "properties": {
+          "stage": {"type": "string"},
+          "command": {"type": "string"},
+          "exit_code": {"type": "integer"},
+          "error_text": {"type": "string"}
+        }
+      }
+    },
+    "artifact_paths": {"type": "object", "description": "map of logical name -> relative path for all raw artifacts"},
+    "manifest_sha256_inputs": {"type": "string", "description": "sha256 over the concatenated raw inputs this manifest summarizes; also see hashes.sha256"}
+  },
+  "additionalProperties": false
+}
