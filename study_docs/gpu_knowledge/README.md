@@ -21,6 +21,7 @@ AMD-specific 的組語細節。適合 1.5 年前寫過 CUDA、現在補硬體架
 | 2 | [kernel-launch.md](kernel-launch.md) | CPU 把 kernel launch 到 GPU 的詳細步驟（CUDA 主軸 + HIP 對應） |
 | 3 | [memory-hierarchy-and-chiplet.md](memory-hierarchy-and-chiplet.md) | 記憶體階層（register / LDS / L1 / L2 / MALL / HBM）、cache vs scratchpad、Infinity Cache 命名與 256MB 大小、XCD / chiplet 與 CDNA 世代 |
 | 4 | [cuda-hip-terminology.md](cuda-hip-terminology.md) | CUDA ↔ HIP / ROCm 名詞完整對照（軟體 + 硬體 + 生態系） |
+| 速查 | [gpu-glossary.md](gpu-glossary.md) | **GPU 硬體/軟體架構名詞速查字典**：A-Z 縮寫索引 + 8 大類定義表 + NVIDIA 對照 + 易混名詞群。縮寫搞混時來查 |
 | 5 | [hip-book-guide.md](hip-book-guide.md) | 《Accelerated Computing with HIP》章節導讀 |
 | 進階 | [cdna5-gfx1250.md](cdna5-gfx1250.md) | CDNA5 / gfx1250（MI450）深入：AGPR、WGP、MFMA→WMMA、dual-issue、同步原語、UDNA（**未來 migration 參考**） |
 
@@ -30,6 +31,8 @@ AMD-specific 的組語細節。適合 1.5 年前寫過 CUDA、現在補硬體架
 ## 交叉連結
 
 - 頂層學習地圖（兩軌總綱）：[../README.md](../README.md)
+- 這些 GPU 概念怎麼被效能模型使用（Origami / Formocast 對每個概念的粗估/細估、含本層沒深談的 bank conflict / FIFO / coalescing）：[../origami/performance-modeling-concepts.md](../origami/performance-modeling-concepts.md)
+- GPU 硬體/軟體架構名詞速查字典（縮寫太多搞混時）：[gpu-glossary.md](gpu-glossary.md)
 - 記憶體階層 + 晶粒組織（MALL / Infinity Cache / XCD）：[memory-hierarchy-and-chiplet.md](memory-hierarchy-and-chiplet.md)
 - API 速查 / hipify：[../cuda-to-hip.md](../cuda-to-hip.md)
 - 跨文件名詞彙總：[../glossary.md](../glossary.md)

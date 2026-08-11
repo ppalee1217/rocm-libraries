@@ -12,6 +12,8 @@
 
 HIP 刻意設計成與 CUDA 幾乎一對一，所以多數 CUDA 概念可直接映射到 HIP / AMD 術語。
 
+> 本檔是 **CUDA↔HIP 的 API / 名詞對照表**。若要查 GPU 硬體/軟體架構名詞的**定義**（含 AMD-only：MALL / AGPR / XCD / WGP / wait counter…）與一張 A-Z 縮寫速查，見 [gpu-glossary.md](gpu-glossary.md)。
+
 ## 為何重要
 
 學習者有 CUDA/Triton 背景但大半忘了；這張大表的用途是把已知的 CUDA 概念在幾分鐘內映射到

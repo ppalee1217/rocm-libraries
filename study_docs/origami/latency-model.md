@@ -3,6 +3,8 @@
 路徑說明：本檔在 `study_docs/origami/`。原始碼連結用 `../../shared/...`。行號會漂移，以符號名稱為準。建議先讀 [README.md](README.md)。
 
 > 這是整組文件的**核心**。前面說 Origami「用公式算延遲」，這篇就把那條公式一層一層拆開講清楚——但**不需要**你會寫效能模型，看不懂就先抓「一句話直覺」。
+>
+> 對 GPU 架構不熟、覺得 cache line / coalescing / latency hiding / occupancy 這些詞卡卡的，建議先讀 [performance-modeling-concepts.md](performance-modeling-concepts.md)（GPU 效能建模概念前置教材），再回來讀本文會好懂很多。
 
 ## 一句話總結
 
@@ -243,4 +245,4 @@ double L_mem = std::max({L_mem_l2   * heuristic.weight_mem_l2,
 
 ## 一句話總結
 
-> **Origami 的延遲＝「一輪取 max(算力, 記憶體) × 輪數 + 開頭 + 結尾 + reduction」，其中記憶體那項靠 cache 階層命中率建模；對所有候選算一遍、由小到大排序、平手用 arithmetic intensity / 維度 / MT 大小分勝負。** 它建模的是硬體行為而非背答案，所以又快又能泛化到沒測過的尺寸——代價是絕對數字不必準、只求排名對。更細的欄位 / API 見 [api-and-usage.md](api-and-usage.md)，怎麼被 hipBLASLt 呼叫見 [hipblaslt-integration.md](hipblaslt-integration.md)。
+> **Origami 的延遲＝「一輪取 max(算力, 記憶體) × 輪數 + 開頭 + 結尾 + reduction」，其中記憶體那項靠 cache 階層命中率建模；對所有候選算一遍、由小到大排序、平手用 arithmetic intensity / 維度 / MT 大小分勝負。** 它建模的是硬體行為而非背答案，所以又快又能泛化到沒測過的尺寸——代價是絕對數字不必準、只求排名對。更細的欄位 / API 見 [api-and-usage.md](api-and-usage.md)，怎麼被 hipBLASLt 呼叫見 [hipblaslt-integration.md](hipblaslt-integration.md)，本文所述函式在原始碼的位置與呼叫圖見 [source-map.md](source-map.md)。

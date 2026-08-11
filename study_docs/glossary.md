@@ -10,7 +10,7 @@
 ## 硬體 / ISA（待逐條補定義）
 
 仍待補；先以 [gpu_knowledge/](gpu_knowledge/) 與 [amd-isa-kernel.md](amd-isa-kernel.md) 為準
-（內部文件無 ISA 實質內容，這兩段不從內部借力）。
+（內部文件無 ISA 實質內容，這兩段不從內部借力）。**GPU 硬體/軟體架構名詞的完整速查（含 CU/WGP/SIMD/VGPR/AGPR/LDS/MALL/XCD/wait counter… + NVIDIA 對照）見 [gpu_knowledge/gpu-glossary.md](gpu_knowledge/gpu-glossary.md)。**
 
 - 硬體：wave / lane、VGPR / SGPR / AGPR、CU、XCD、LDS、HBM、L2、occupancy
 - ISA：exec mask、`s_waitcnt`（vmcnt / lgkmcnt）、MFMA、buffer SRD / `num_records`、bank conflict

@@ -218,4 +218,4 @@ export ORIGAMI_LOG_FILE=/tmp/origami.csv      # .csv → 每次 GEMM 評估一�
 
 ## 一句話總結
 
-> **餵 `rank_configs`「problem + hardware + 候選 configs」拿回排序好的結果；`config_t.index` 讓你把結果對回自己的 solution；`estimation`（預設，快）忽略 `tensile_params_t`，`simulation` 才走 Formocast 讀它。** 需要看模型內部就開 `ANALYTICAL_GEMM_DEBUG=1` + `ORIGAMI_LOG_FILE=*.csv`。它怎麼被 hipBLASLt 呼叫見 [hipblaslt-integration.md](hipblaslt-integration.md)。
+> **餵 `rank_configs`「problem + hardware + 候選 configs」拿回排序好的結果；`config_t.index` 讓你把結果對回自己的 solution；`estimation`（預設，快）忽略 `tensile_params_t`，`simulation` 才走 Formocast 讀它。** 需要看模型內部就開 `ANALYTICAL_GEMM_DEBUG=1` + `ORIGAMI_LOG_FILE=*.csv`。它怎麼被 hipBLASLt 呼叫見 [hipblaslt-integration.md](hipblaslt-integration.md)；這些型別 / 函式在原始碼的位置與呼叫圖見 [source-map.md](source-map.md)。

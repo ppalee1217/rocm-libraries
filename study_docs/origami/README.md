@@ -86,6 +86,8 @@ flowchart TD
 4. [hipblaslt-integration.md](hipblaslt-integration.md) — Origami 實際上怎麼被 hipBLASLt / TensileLite 呼叫：`ProblemPredictionLibrary` → `rank_configs` 的路徑、`TENSILE_SOLUTION_SELECTION_METHOD` 開關、StreamK 的 WGM / staggerU / grid 選擇、`UtilsOrigami.hpp` 型別橋接。
 5. [ecosystem-and-formocast.md](ecosystem-and-formocast.md) — 拉遠看：selection layer vs tuning layer 的分界、Origami vs Formocast 的對照（含量化 KPI / MI350 實測）、Formocast 模型分解與整合方向、三種角色的實際影響、可延伸閱讀的內部文件清單，以及一個關鍵 FAQ：**Origami 憑什麼 claim >90%？runtime 會不會回測？隨機選會不會更好？**
 6. [debugging-and-calibration.md](debugging-and-calibration.md) — 實戰：選型出問題怎麼分層定位（selection / model / pool）、Origami 的 `demystify` Debugging Dashboard、Formocast 的 rocprof counter 驗證，以及新架構 bring-up 校正 `architecture_constants` 的 micro-benchmark SOP。
+7. [source-map.md](source-map.md) — **原始碼地圖**：origami core（~8421 行）的檔案 → 函式 → 呼叫圖 → 資料結構對照索引，含 attention / streamk / heuristics 等現有文件較少著墨的子系統、函式快查表、Python bindings 對照、擴充點。想讀懂 / 修改原始碼時看這份。
+8. [performance-modeling-concepts.md](performance-modeling-concepts.md) — **GPU 效能建模概念前置教材**：對 GPU 架構不熟、讀 latency-model / formocast model「有看沒有懂」時先看這份。以 kernel 執行階段為主線，逐段講背後的 GPU 概念（cache line、coalescing、bank conflict、FIFO、latency hiding…）+ Origami 粗估 / Formocast 細估，並與 [../gpu_knowledge/](../gpu_knowledge/README.md) 交叉比對。
 
 
 
@@ -118,9 +120,12 @@ flowchart TD
 
 ## 交叉連結
 
+- **GPU 效能建模概念前置教材（不熟 GPU 架構先看）→ [performance-modeling-concepts.md](performance-modeling-concepts.md)**
+- **原始碼地圖（檔案 → 函式 → 呼叫圖 → 資料結構）→ [source-map.md](source-map.md)**
 - 執行時 hipBLASLt 怎麼呼叫 origami（`Prediction` 節點 → `rank_configs`）→ [../hipblaslt/component-interactions/runtime-and-selection.md](../hipblaslt/component-interactions/runtime-and-selection.md)
 - 五組件整體交互全景（hipBLASLt / TensileLite / StinkyTofu / origami / GEKO）→ [../hipblaslt/component-interactions/README.md](../hipblaslt/component-interactions/README.md)
 - selection 層 vs tuning 層的分界（GEKO / Ductile 是 tuning，origami / Formocast 是 selection）→ [../geko-ductile/README.md](../geko-ductile/README.md)
+- **Formocast 完整白話介紹（設計 / 模型 / API / 整合 / 限制與研究盲區 / 除錯校正）→ [formocast/README.md](formocast/README.md)**
 - Origami vs Formocast 逐項對照（原始 Confluence 對照表）→ [../internal_docs/origami-vs-formocast.md](../internal_docs/origami-vs-formocast.md)
 - Formocast 設計 RFC → [../internal_docs/formocast-design-rfc.md](../internal_docs/formocast-design-rfc.md)
 - 姊妹主題：kernel 組語產生後的最佳化器 StinkyTofu → [../stinkytofu/README.md](../stinkytofu/README.md)
