@@ -1090,6 +1090,8 @@ probability；只有S13的D6 gate再把完整Stage-1 mechanism claim連到actual
 
 這仍不是 system speedup或 convergence confirmation。
 
+> **2026-08-09 適用性註記（`PER-SHAPE-SOO-OUTCOME-20260809`,不改本 §8.2 之許可界線、不動 §8.6）：**S14 以 **per-shape** 方式實例化本 §8.2 —— 每個 confirmatory shape（medium、large）各自檢定「早期(gen-10)quality-vs-evaluations 改善 + 最終品質非退步(per-shape noise 界線)」;固定 horizon 為 `n_gen=30` 上限+保留原生早停並擷取 gen-10 檢查點。§8.2 措辭僅在 **medium 與 large 皆通過** 各自 per-shape gate 時可用,且限「single cluster、5 對全新 seed、modest power」;tiny 為探索性,不納入 §8.2。不宣稱 final-champion superiority(需另修 charter,未做)。此註記不擴張 §8.2、不觸及 §8.6 禁詞。
+
 ### 8.3 Stage 3 — Bounded replication
 
 只有兩個預註冊 held-out clusters都通過，才能寫：
@@ -1124,9 +1126,20 @@ probability；只有S13的D6 gate再把完整Stage-1 mechanism claim連到actual
 - 改善 GA convergence；
 - production／deployment ready；
 - 對 MI300X workloads 一般化；
-- 勝過 native `PredictionThreshold`；
+- 勝過 native `PredictionThreshold`；**（就 S14 範圍已由 §8.6a 2026-08-10(b) owner extension 解除為 two-sided、等資料再說;此 roadmap-wide 禁令對其餘 stage 仍適用）**
 - 跨架構有效；
 - owner／核心團隊應採用。
+
+### 8.6a 2026-08-10 owner amendment — `CLAIM-SCOPE-S14-20260810`（S14 final-outcome claim 放行）
+
+> **由 repo owner 授權。** 本實驗的目的正是檢定「guided Gen0 initialization 是否影響**最終** tuned 結果」。原 §8.2「final quality 僅能宣稱非退步」與 §8.6「改善 GA convergence」對 **S14** 過度限制、會在看到資料前就封死實驗目的,故就 **S14** 範圍調整如下(其餘 §8.6 禁詞與 §8.2 之 early-search 條款不變):
+
+- S14 以 **two-sided、bounded** 方式報告 guided initialization 對 (i) early-search quality-vs-complete-evaluations 與 (ii) **最終 tuned 品質(final champion real-GFLOPS)** 的效應 —— **含改善、無變化、或退步** —— 以 per-shape 效應量 + 信賴/不確定區間 + 跨 seed directional consistency 呈現。
+- **若資料支持**,S14 **得宣稱**「在受測 shape(medium/large)、單一 development cluster、5 對 paired seed 下,guided initialization 使**最終 tuned 品質提升**(directional/bounded evidence)」。此為允許的 positive claim。
+- **beat-native 放行(2026-08-10(b) owner extension,同 `CLAIM-SCOPE-S14-20260810`)**:原 §8.6「勝過 native `PredictionThreshold`」的**絕對禁令就 S14 解除**,改為 **two-sided、等資料再說**。理由:即便是簡化版(P0-capped=512、per-shape)實驗,也**可能彰顯其相對於 native 的價值**;不得在看到資料前就否定這個可能。**得在資料支持下宣稱** S14 的 guided(或 baseline)配置相對於 native Ductile 參考點的價值(directional/bounded)。**但**這是「等資料」而非「保證」:S14 目前臂為 G(uniform p0)/F(guided p1),兩者皆 P0-capped=512,**尚未內含 native 參考臂**(native = `PredictionThreshold` 選擇 + 原生 ~11,405 Gen0);若要就 native 下 claim,須**實際量測/納入 native 參考**,且**如實揭露任何 budget/selection confounding**(例如 512 vs 11,405 Gen0、選擇機制差異)——這是量測誠實要求,不是預先否定。未量測 native 前,不憑空宣稱勝過或不及 native。
+- **強制誠實界線**(不得違反):必須標註 **power(5 seeds = bounded/modest,非統計顯著性證明)** 與 **scope(僅限受測 shape、單一 cluster,不一般化)**;**不得在 sealed 分析出爐前預設任何結論**(禁止寫「對最終結果沒差」「預期 null」「贏不過 native」等 pre-conclusion,亦不得預設一定會贏);不得誇大或偽造;每個數字標 evidence type、seed 為實驗單位、全報 seed/失敗/排除。
+- **仍然禁止**(§8.6 未放行部分):對 MI300X workloads 一般化、production/deployment ready、跨架構、**end-to-end tuning wall-clock speedup**(本實驗不量測 tuning 時間)、owner/team 應採用。(這些是資料本身無法支撐的外推,與「等資料再說」的 beat-native 性質不同。)
+- 若最終為無可偵測差異或退步,如實報「在此 bounded 設定下未偵測到最終差異/觀察到退步」,**不**外推為「guidance 普遍無效」。
 
 ### 8.7 Study modes 對 claim 的限制
 

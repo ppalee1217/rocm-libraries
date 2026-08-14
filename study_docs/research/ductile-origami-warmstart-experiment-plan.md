@@ -190,6 +190,8 @@ flowchart TD
 ```
 
 > **RESCOPE-STAGE1-OUTCOME-20260807（active projection）：**S11 之後的唯一 active Stage-1 future edge 現為 `S11:S1_GUIDANCE_LOCKED -> S14`（full-GA baseline-vs-guided real-GPU outcome）。S12（pre-GA 256-identity D5 audit）FROZEN/DEFERRED,其 `D5_PASS` 不再是任何下游 checkpoint 前的 hard gate;真實效能改在 Ductile post-GA 實際 selection 上量測。S13、S20、S30、S31、S40、S41 design 保留 immutable、execution SUSPENDED（上圖對應 edges 全部虛線標 suspended）。以上 freeze 可逆,撤銷僅需 user decision;詳見下方同名 amendment 與各 design 的 frozen banner。頂線 Stage-1 claim 縮為 single-cluster directional advantage,不宣稱 persistence/replication/speedup。
+>
+> **2026-08-09 `PER-SHAPE-SOO-OUTCOME-20260809`（user-approved,SUPERSEDES S14 內部設計）：**S14 的執行設計由「單一 joint 多目標 GA + 聚合 `Q=max_s` 單一 champion」改為 **per-shape single-objective**（每個 shape 各一條 GA、per-shape guidance、per-shape 評估;medium+large confirmatory、tiny 探索;`n_gen=30`+原生早停+gen-10 檢查點;5 對全新 seed 24001–24005;≤6 GPUs 非-0;雙向效應估計、per-shape directional-consistency gate;charter §8.2/§8.5,不宣稱 final superiority）。criterion `S14_GUIDED_OUTCOME_POSITIVE` → `S14_PER_SHAPE_OUTCOME`。S11→S14 edge 與 S12+ freeze 不變。**詳細權威為 S14 design §10**（joint-MOO/aggregate-Q 舊記錄保留於 §1–§9）。
 
 S00的post-audited positive closeout已驗證`S00_EVIDENCE_READY -> S10`。S10已完成actual-guidance、live-unreserved H4與其frozen canonical mapping boundary，並以完整可重現的`FT-BLOCKED-MAPPING` negative branch形成`S1_ENTRY_BLOCKED`；沒有outgoing edge。Direct evidence、successor lineage、mapping stop與claim boundary見[S10 formal report](ductile-origami-warmstart/reports/staged/s10-stage1-entry-gate-report.md)；早期[blocker memo](ductile-origami-warmstart/reports/gen0-factorization-blocker-memo.md)只保留為historical recovery evidence。
 
@@ -222,7 +224,8 @@ Checkpoint designs只能引用下列parent IDs，不得自行改門檻：
 - `D5_BORDERLINE_INCONCLUSIVE`
 - `D5_FAIL`
 - `D6_MECHANISM_POSITIVE`
-- `S14_GUIDED_OUTCOME_POSITIVE`
+- `S14_PER_SHAPE_OUTCOME`   （active；`PER-SHAPE-SOO-OUTCOME-20260809`）
+- `S14_GUIDED_OUTCOME_POSITIVE`   （SUPERSEDED by `S14_PER_SHAPE_OUTCOME`）
 - `S2_DIRECTIONAL_PERSISTENCE_POSITIVE`
 - `S3_REGISTRY_PROCEDURE_LOCKED`
 - `S3_BOUNDED_REPLICATION_POSITIVE`
@@ -245,7 +248,8 @@ Checkpoint designs只能引用下列parent IDs，不得自行改門檻：
   immutable prelock superseded。退役前的B06若曾執行，也只能依B06 frozen outcome
   table形成，guess/drift/partial/unknown不得使用此criterion；現在B06未執行且已退役。
 - `S1_GUIDANCE_LOCKED`：§4–§5 model-only frame、gene decisions、weights、shuffle與hash在real labels前完成鎖定。
-- `S14_GUIDED_OUTCOME_POSITIVE`：`RESCOPE-STAGE1-OUTCOME-20260807` 新增（P0 64→512、保留原生早停,均 2026-08-07 user-authorized）。Ductile GA（P0-capped=512、**保留原生早停**、`n_gen=30` 上限）中,GUIDED 對 BASELINE 在 **champion real-GFLOPS（primary）+ median 非劣** 方向性勝出（各至少 4/5 seeds、無 significance）;search-trajectory AUC（積分到兩臂共同預算）為次要診斷;兩臂 hashes 一致;reproducibility pins 已 seal、preflight 通過。取消硬 `U_floor`（僅某臂連 Gen0／champion 產不出才 `FT-EVALUATION-SUPPORT`）。
+- `S14_GUIDED_OUTCOME_POSITIVE`：`RESCOPE-STAGE1-OUTCOME-20260807` 新增（P0 64→512、保留原生早停,均 2026-08-07 user-authorized）。Ductile GA（P0-capped=512、**保留原生早停**、`n_gen=30` 上限）中,GUIDED 對 BASELINE 在 **champion real-GFLOPS（primary）+ median 非劣** 方向性勝出（各至少 4/5 seeds、無 significance）;search-trajectory AUC（積分到兩臂共同預算）為次要診斷;兩臂 hashes 一致;reproducibility pins 已 seal、preflight 通過。取消硬 `U_floor`（僅某臂連 Gen0／champion 產不出才 `FT-EVALUATION-SUPPORT`）。**[SUPERSEDED 2026-08-09 by `S14_PER_SHAPE_OUTCOME`;joint-MOO/aggregate-Q 設計已退役,見下。]**
+- `S14_PER_SHAPE_OUTCOME`：`PER-SHAPE-SOO-OUTCOME-20260809` 新增（two-round design-discussion,user-approved 2026-08-09;取代 `S14_GUIDED_OUTCOME_POSITIVE`）。**詳細權威為 S14 design §10。** 每個 shape 各一條 single-objective Ductile GA（單一 size 於 `ProblemSizes`;P0-capped=512、`n_gen=30` 上限 + **保留原生早停** + 擷取 gen-10 檢查點），**medium+large 為 confirmatory、tiny 探索性**;guidance 為 per-shape（丟跨-size `max` reducer,由既有 per-size scores out-of-band 重算）;每 shape 各自比 BASELINE(G)/GUIDED(F),**雙向效應估計**（不預設 null）+ per-shape directional-consistency gate（{Gen0、gen-10、AUC、final ratio≥e^{−η_s}} 各 ≥4/5 對；per-shape η_s 由 pilot 殘差逐 shape 導,**不**用 tiny-汙染 aggregate）;**combined §8.2 需 medium∧large 都過**。claim 依 charter **§8.6a `CLAIM-SCOPE-S14-20260810`（owner-approved 2026-08-10）**:**two-sided、bounded** 報告 guided 對 early-search 與 **最終 tuned 品質** 的效應（含**改善**、無變化、退步）,資料支持時**得宣稱受測 shape 最終品質提升**;強制標 modest power + 限受測 shape、不一般化、不預設結論、不誇大偽造;§8.6 其餘禁詞（generalization/deployment/cross-arch/wall-clock speedup/adopt）不變（**beat-native 已由 §8.6a 2026-08-10(b) owner extension 就 S14 解除為 two-sided、等資料再說,需實際量測 native 且揭露 confounding**）;guidance 採 **entropy-cap（`ENTROPY-CAP-20260810`）**;5 對全新 seed 24001–24005、≤6 GPUs（非-0）。**`CONDITIONAL-ARM-S-20260810`（user-approved 2026-08-10）**:新增 pre-registered conditional Arm S（same-entropy shuffle 控制）—— shuffle bundle 現在導出+封 Lock C(維持 label firewall),但 wave-3 GPU 只在「F 於 ≥1 confirmatory shape 過 directional gate 且 deadline budget 足夠」時才跑;physics-direction 僅在 F 同時勝 G 與 S 時就受測 shape 可宣稱,否則 defer 到 S20。詳見 S14 design §10.2。**`NATIVE-P0-ROBUSTNESS-20260811`（user-directed 2026-08-11,pre-registered）**:新增 native-Gen0（~11,405）**large-shape** 穩健性/稀釋 addendum —— 同 5 seed、同 Lock B guidance、除 P0 外 pins 與 512 版全同,只在 large 上比 G/F;目的 = (Q1) 512 的 large 結論在原生 Gen0 規模是否穩健、(Q2) 量化 guidance 效應在大 Gen0 下的稀釋。排在 capped(G/F/+S)+ remeasure 全完成、5 卡釋出後跑（~3–4 天,3-seed fallback）。two-sided、scope 限「large、native-Gen0 robustness」,不新增 §8.6 禁詞。詳見 S14 design §12。
 - `S3_REGISTRY_PROCEDURE_LOCKED`：§16的兩primary slots、reserve、denominator、frozen procedure與完整budget均在任何Stage 3 score前鎖定。
 - `S4_TRIGGER_ELIGIBLE`：§18.1 predictor-specific failure成立，且§18.2禁止patterns均不存在。
 - `S4_DATA_GATE_PASS`：§18.3四-cluster data floor與prospective fourth-cluster規則通過。

@@ -1,0 +1,12 @@
+# S11 大型產出 manifest：體積遠超 GitHub 檔案上限（單檔 100 MB），不進版控。
+#
+# 這些是 S11 執行階段「可由 protocol 重新產生」的資料產物，不是設計來源；
+# 合計約 413 MB，若進入 git 歷史會讓每次 clone 都被迫下載，且事後移除需重寫歷史。
+# 對應的設計、決策與結論已記錄在 reports/ 與 qa/ 底下的文件中。
+#
+# 注意：s10* 系列 manifest 體積小且早已被追蹤，不受本規則影響
+#（.gitignore 只作用於未被追蹤的檔案）。
+s11-qualifications.json
+s11-conditional-prefixes.json
+s11-native-scores.json
+s11-global-prefix.json

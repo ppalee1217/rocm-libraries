@@ -8,6 +8,8 @@
 
 ---
 
+
+
 ## 前言：這份文件在回答什麼
 
 整條研究線最後想做的事，是把 Formocast 對 kernel config 的效能預測，變成 Ductile GA 抽第 0 代（**Gen0**，初始族群）時的偏好。要做到這件事，得先看懂 Ductile 到底怎麼把 Gen0 生出來——否則把 guidance 注在錯的地方，整個實驗都會錯位。
@@ -22,6 +24,8 @@
 **邊界宣告：**本檔只講「Gen0 怎麼被抽出來」與「合法空間的概念」。至於「怎麼把 Formocast 分數拆成 per-gene 機率」（factorization）、trusted set、shrinkage、`p1 = 0.20·p0 + 0.80·q` 這類 guidance 機制，屬於 [QA-03](qa-03-s11-factorization-and-metric-design.md)，本檔只在需要時指過去，不重述。基礎名詞（whole config、gene、group、weight、Gen0…）見 [QA-01](qa-01-terminology-design.md)。
 
 ---
+
+
 
 ## 5. Ductile 實際建立 Gen0 的流程
 
@@ -72,7 +76,7 @@ p = p / sum(p)
 
 GA 先收到 requested `pop_size`（本實驗名義上是 **64**），但這個數字**不一定等於實際抽出來的族群大小**。Ductile constructor 會依 search-space 的 cardinality（尤其是最大的 categorical key，例如有近萬個候選的 `group_0`）決定 resolved population `P0`：如果最大 key 的候選數比 requested population 還大，Ductile 可能在早期世代把 population 撐大。
 
-這帶來一條紀律：**正式執行必須記錄實際的 `P0`，不能用 nominal 64 去假設成本或推導後續統計。**（見 [QA-01 §4.8](qa-01-terminology-design.md)。）
+這帶來一條紀律：**正式執行必須記錄實際的** `P0`**，不能用 nominal 64 去假設成本或推導後續統計。**（見 [QA-01 ****§4.8](qa-01-terminology-design.md)。）
 
 ### Step 5：Nominal draw
 
@@ -162,6 +166,8 @@ draw 5 → (a0, b1)  valid ✓  → set = { (a0,b0), (a1,b1), (a0,b1) }   ← �
 
 ---
 
+
+
 ## 6. Nominal space、valid support 與 operational Gen0
 
 §5 講的是「怎麼抽」。這一節把它背後的三個空間／分布講清楚，因為研究要量的「Formocast 訊號到底有沒有用」，就架在這幾個概念上。
@@ -217,7 +223,7 @@ pi_valid(x) = pi_nominal(x | valid_fn(x) = true)
 含 v_B 的組合  →  只有 10% 通過 valid_fn
 ```
 
-那麼在通過驗證、真正留下來的合法 config 裡，`v_A` 對 `v_B` 的出現比例大約是 `0.5×0.9 : 0.5×0.1 = 9 : 1`。也就是說，**nominal 上 50/50 的兩個值，在 `pi_valid` 裡卻變成約 90/10。** 這正是為什麼「YAML 給的機率」不能直接當成「族群裡的實際頻率」——validity 這層過濾會把分布整個扭一遍。
+那麼在通過驗證、真正留下來的合法 config 裡，`v_A` 對 `v_B` 的出現比例大約是 `0.5×0.9 : 0.5×0.1 = 9 : 1`。也就是說，**nominal 上 50/50 的兩個值，在** `pi_valid` **裡卻變成約 90/10。** 這正是為什麼「YAML 給的機率」不能直接當成「族群裡的實際頻率」——validity 這層過濾會把分布整個扭一遍。
 
 ### 6.5 `Pi_gen0,P0`
 
@@ -251,18 +257,20 @@ flowchart TD
     PV -->|"去重 + 湊滿 + max-iter + fallback + 聯合效應（Step 7–8）"| G0["operational Gen0（Pi_gen0,P0）<br/>≠ P0 個獨立 pi_valid draw"]
 ```
 
+
+
+
+
 ### 6.7 常見誤解
 
 這一節把幾個最容易踩的直覺陷阱點出來，逐一破除。
 
 - **誤解一：「YAML 列了某個 value，它就一定會出現在 Gen0。」**
-  不對。一個 value 若幾乎只能搭出無效組合，它在 `pi_valid` 裡就極罕見（§6.4），再加上族群名額有限，很可能在某次 Gen0 裡**一次都沒出現**。名義候選 ≠ 保證入選。
-
-- **誤解二：「Gen0 就是抽 `P0` 次、每次獨立。」**
-  不對。去重、湊滿、迭代上限、fallback、以及「不能重複」的聯合限制，都讓 Gen0 不是獨立同分布的抽樣結果（§6.5）。要看 sampler 的真實行為，必須用 `SearchSpace.sample(P0)` replay，不能拿 `pi_valid` 的獨立抽樣去近似。
-
-- **誤解三：「`valid_fn` 是品質／效能 gate，通過就代表這個 config 好。」**
-  不對。`valid_fn` 只判斷「工程上組不組得起來」。通過的 config 仍可能在後面 **codegen 失敗、編譯失敗、正確性不過、或效能很差**。合法只是入場券，不是成績單。效能訊號是 Formocast／實機 benchmark 的事，不是 validator 的事。
-
+不對。一個 value 若幾乎只能搭出無效組合，它在 `pi_valid` 裡就極罕見（§6.4），再加上族群名額有限，很可能在某次 Gen0 裡**一次都沒出現**。名義候選 ≠ 保證入選。
+- **誤解二：「Gen0 就是抽** `P0` **次、每次獨立。」**
+不對。去重、湊滿、迭代上限、fallback、以及「不能重複」的聯合限制，都讓 Gen0 不是獨立同分布的抽樣結果（§6.5）。要看 sampler 的真實行為，必須用 `SearchSpace.sample(P0)` replay，不能拿 `pi_valid` 的獨立抽樣去近似。
+- **誤解三：「**`valid_fn` **是品質／效能 gate，通過就代表這個 config 好。」**
+不對。`valid_fn` 只判斷「工程上組不組得起來」。通過的 config 仍可能在後面 **codegen 失敗、編譯失敗、正確性不過、或效能很差**。合法只是入場券，不是成績單。效能訊號是 Formocast／實機 benchmark 的事，不是 validator 的事。
 - **誤解四：「nominal 機率高的值，在族群裡出現次數也一定最多。」**
-  不一定。nominal 機率高只影響「被抽到的頻率」，但去重會把「重複抽到」的部分砍掉，validity 又會依相容性重新分配（§6.4）。最終族群裡誰多誰少，是 `pi_valid` 疊上去重與湊滿之後的結果，不能只看 `pi_nominal`。
+不一定。nominal 機率高只影響「被抽到的頻率」，但去重會把「重複抽到」的部分砍掉，validity 又會依相容性重新分配（§6.4）。最終族群裡誰多誰少，是 `pi_valid` 疊上去重與湊滿之後的結果，不能只看 `pi_nominal`。
+
