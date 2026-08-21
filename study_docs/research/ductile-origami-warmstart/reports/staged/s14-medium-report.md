@@ -1,11 +1,12 @@
 > **⚠️ 本檔是 per-shape 附冊，不是 S14 的 outcome 陳述。**
 >
-> 本檔是 `[full-ga-baseline-vs-guided-outcome-report.md](full-ga-baseline-vs-guided-outcome-report.md)`
-> ——S14 唯一 formal report——的 **medium（confirmatory）per-shape 附冊**，承載的是**詳細實驗記錄**：
+> 本檔是 **medium（confirmatory）per-shape 附冊**，承載的是**詳細實驗記錄**：
 > 逐 seed 數字、trajectory、remeasure、量測稽核、根因、偏差。
 >
 > **本檔不得被讀成「S14 過了沒有」。** S14 的 per-shape gate 是跨 shape 的**連言**，
-> **gate 判定只存在於 formal report**。本附冊只報告各子判準的**計數**，不作 gate 判定，
+> **gate 判定現由 [`s14-guided-results.md`](s14-guided-results.md) §5.4 承載**
+> （owner 2026-08-18 指定；原承載者 `full-ga-baseline-vs-guided-outcome-report.md`
+> **已由 owner 解除授權**）。本附冊只報告各子判準的**計數**，不作 gate 判定，
 > 也不對 combined 措辭發言。
 >
 > **Non-authority framing。** 若本檔與 [research charter](../../../surrogate-dse-plan.md)、
@@ -29,7 +30,8 @@
 
 ```
 report_kind: per_shape_annex
-parent_formal_report: reports/full-ga-baseline-vs-guided-outcome-report.md
+gate_verdict_holder: reports/staged/s14-guided-results.md  # owner 2026-08-18；原 parent_formal_report
+#   (full-ga-baseline-vs-guided-outcome-report.md) 已解除授權
 shape: medium (256, 256, 1, 1024)
 shape_role: confirmatory
 p0_levels: [capped 512, native 11405]      # native 屬 design §12 robustness addendum，在同一 gate 之內
@@ -38,6 +40,9 @@ arms: G = BASELINE (uniform p0) / F = GUIDED (Lock-B capped p1)
 run_root_host: /data1/perlee/rocm-libraries/agent_run/260809-s14-pershape-baseline
 run_root_container: /src/rocm-libraries/agent_run/260809-s14-pershape-baseline
 final_endpoint_status: NOT_EVALUATED / instrument-invalid   # PROPOSED, design 13.3, PENDING_HUMAN_DECISION
+# 2026-08-18：該端點的 gate 狀態不因 2026-08-17 的儀器修復而改變，仍為 PENDING_HUMAN_DECISION 之下
+#   被提議的 NOT_EVALUATED / instrument-invalid。修復後量到的 final ratio 讀數見 §18.3，
+#   其 measurement-of-record 身分本身也是 PENDING_HUMAN_DECISION（§17）。
 gate_verdict: 見 formal report（本附冊不陳述）
 ```
 
@@ -56,6 +61,7 @@ gate_verdict: 見 formal report（本附冊不陳述）
 | **A｜GA trajectory 端點** | Gen0 best、gen-10 best、AUC，以及 Gen0 中心／極值／有效率 | **MEASURED，且量測缺陷碰不到**（§5.1）——這些讀自 `trajectory.jsonl`，從不經過 7× remeasure 路徑 |
 | **B｜7× interleaved remeasure 端點** | final champion `F/G`、non-regression、improvement | **MEASURED 但儀器被證實不可重複**（§7、§8）；design §13.3 **提議**標為 `NOT_EVALUATED / instrument-invalid`（PENDING） |
 | **C｜量測稽核與根因** | 雙峰、dropout 率、warm-up 根因、arm-asymmetry、兩次 campaign 的分歧 | **MEASURED**（§6–§10）——本附冊承載最重的一塊 |
+| **D｜2026-08-17 的儀器修復（successor 量測）** | 修復前後對照、修復後的 final ratio 讀數與其噪音基準 | **MEASURED**（§18）——**不是本附冊任何預註冊端點，不代入 gate 算術**。它是 B 層那把尺被修好之後重讀的結果，estimand 已改（暖機 321→1400、`RBS` 4096→401、跨窗彙整），**因此是 successor 而非 B 層的替代品**。**是否為 measurement of record 為 `PENDING_HUMAN_DECISION`**（§17） |
 
 **A 與 B 的關係決定了 B 的損害有多大。** 三項不受汙染的子判準（Gen0／gen-10／AUC）在 capped
 P0 = 512 下**各為 3/5**（§5.1），而預註冊要求是 **≥4/5**。這一點必須先講清楚，因為它決定了
@@ -263,6 +269,14 @@ native G `[29, 29, 25, 30, 25]`、native F `[30, 24, 27, 27, 27]`。
   （design §10.2 的 `B* = min(evals_G, evals_F)`），完全依 `analyze_large.py` / `analyze_medium.py` 的程序。
 - **預註冊的 directional-consistency gate**：{Gen0 增量、gen-10 增量、AUC 差} 各需 **≥4/5** 為正，
   且最終 ratio ≥ `e^{−η_s}` 於 ≥4/5 對（median 亦過）。**本附冊只報計數。**
+  > **⚠ 2026-08-18 補記 —— 上一行是預註冊原文（四項連言），現行判定不是。**
+  > `ETA-MARGIN-REMOVED-20260814`（owner 2026-08-14）把 `η_s` 與第四項
+  > `final ratio ≥ e^{−η_s}` **一併移出 gate 成分**，且未登記替代門檻，
+  > **現行 gate 為前三項**。⚠ 該 token **尚未落到預註冊設計檔本身**
+  > （`s14-...-design.md:226` 在該檔命中 0 次；index §2 ledger 註明「owner to amend separately」）。
+  > **`final ratio` 並未被移除為必報量** —— 其判讀方法見 `measurement_design.md` §G.3.1
+  > （對 null 尺，不設倍數門檻），讀數見 §18.3 與 `s14-guided-results.md`。
+  > **gate 判定現由 `staged/s14-guided-results.md` §5.4 承載**（原承載者已由 owner 解除授權）。
 
 ---
 
@@ -298,8 +312,15 @@ Gen0 診斷量（同一份 gen-1 紀錄）：
 
 `[BASELINE GPU]` / `[GUIDED GPU]`。兩個 campaign 的存在與治理狀態見 §6。
 
-**Campaign 1**（2026-08-11T08:33:36Z–08:36:19Z，GPU 5）。design §13.3 **提議**此為 measurement of record
-（**PENDING**，未核准）。
+**Campaign 1**（2026-08-11T08:33:36Z–08:36:19Z，GPU 5）。
+
+> **⚠ 更新 2026-08-15（owner 決定）。** 本節原記「design §13.3 **提議**此為 measurement of record
+> （**PENDING**，未核准）」。**該 PENDING 已結案，但結案方式不是拔擢 campaign 1。**
+> owner 的裁決是：**canonical capped medium 五個 seed 一起 revert 回 campaign 1**
+> （campaign 2 於 revert 前先保存到 `preserved_campaign2_20260815T000000Z/`），
+> 而 **campaign 1 與 campaign 2 都不是 measurement of record —— 一個新的 campaign 取代兩者**。
+> **本附冊的處置完全不變：兩個都報告，不平均、不擇一，兩者皆不產生 tier。**
+> 詳見 §6.5。
 
 | seed | G 中位數 | F 中位數 | **F/G** | % | `ln(F/G)` | non-reg | improv |
 |---|---:|---:|---:|---:|---:|---|---|
@@ -316,7 +337,8 @@ Gen0 診斷量（同一份 gen-1 紀錄）：
 → `median_gflops.{G,F}`、`F_over_G_median_ratio`、`F_over_G_median_log_ratio`、
 `F_median_ge_G_median_times_exp_neg_eta_s`、`F_over_G_gt_one_plus_delta_s`。*
 
-**Campaign 2**（2026-08-12T14:00:41Z–14:04:19Z，GPU 5）。在解盲後**就地覆寫**了 canonical path。
+**Campaign 2**（2026-08-12T14:00:41Z–14:04:19Z，GPU 5）。在解盲後**就地覆寫**了 canonical path，
+**其後於 2026-08-15 被移離 canonical**（capped 側）——見 §6.1。
 
 | seed | G 中位數 | F 中位數 | **F/G** | % | `ln(F/G)` | non-reg | improv |
 |---|---:|---:|---:|---:|---:|---|---|
@@ -328,7 +350,13 @@ Gen0 診斷量（同一份 gen-1 紀錄）：
 | **中位數** | — | — | **1.0274** | **+2.7 %** | **+0.0270** | **3/5** | **3/5** |
 
 為正 **3/5**；`mean ln = +0.0237 ⇒ 幾何平均 1.0240`；`mean |ln| = 0.0309`；母體標準差 `0.0304`。
-*來源：`stage3_baseline/seed_*/medium/champion_interleaved.json`（canonical path，現由 C2 佔據）。*
+*來源：`medium_recheck_control/capped/seed_*/preserved_campaign2_20260815T000000Z/champion_interleaved.campaign2_20260815T000000Z.json`
+（**引用已於 2026-08-15 repoint**；原引 `stage3_baseline/seed_*/medium/champion_interleaved.json`
+「canonical path，現由 C2 佔據」，該敘述自 2026-08-15 起不成立，見 §6.1。
+**上表五列數值逐筆重算自新路徑，完全相同**；seed 24004 一列例外，見下）。
+**seed 24004 沒有 campaign-2 artifact**——它於 2026-08-13 被 campaign 3 就地覆寫且無備份，
+故該列取自未受污染的 `medium_recheck_summary.json → results.capped.24004`
+（`F_over_G_median_ratio = 1.0732688059250783`）。*
 
 ### 3.3 逐次 raw repeat——capped
 
@@ -530,6 +558,13 @@ capped 的 3/5、3/5、3/5 與 design §13.2 的框架事實表逐格相符（�
 | final **非退步** `F ≥ G·e^{−η}` | **3/5** | **3/5** | **3/5** | **3/5** | ≥4/5 |
 | final **改善** `F > G·(1+δ)` | **2/5** | **3/5** | **3/5** | **2/5** | ≥4/5 |
 
+> **⚠ 這張表的四欄全部量在有缺陷的儀器上（2026-08-18 補記）。**
+> 2026-08-17 的儀器修復之後，同一批 champion 在 `nw = 1400 / RBS = 401` 上重新量過：
+> **capped 為 3/5**（`C03` 與 `C03CONF` 兩批，各 12 window）、**native 為 3/5**（`STAGE2_NATIVE`，12 window）。
+> **這兩個數字刻意不併入上表** —— estimand 已改（暖機、`RBS`、跨窗彙整），依 §0 的層級劃分它們屬 **D 層**，
+> 是 successor 而不是 B 層的替代品，**不代入 gate 算術**。逐 seed 讀數與它們的噪音基準見 **§18.3**。
+> **native 的計數修前修後都是 3/5** —— 修復改變的是汙染率與離散度，不是計數（§18.1）。
+
 **為什麼同一個非退步判準在 large 上是 5/5、在這裡只有 3/5 —— 差別不在資料，在門檻。** 非退步的
 下限是 `F ≥ G·e^{−η_s}`，而 `η_medium = 0.42 %` 比 `η_large = 12.28 %` **緊約 29 倍**。也就是說
 medium 是用一條窄了一個數量級的容忍帶在被判定，而它自己的量測離散度又是三個 shape 裡最大的
@@ -557,10 +592,25 @@ medium 是用一條窄了一個數量級的容忍帶在被判定，而它自己�
 
 | campaign | P0 level | 逐 seed 量測視窗（UTC） | canonical path 狀態 |
 |---|---|---|---|
-| **C1** | capped | 2026-08-11T08:33:36Z – 08:36:19Z | **已被覆寫**；保存於 `medium_recheck_control/capped/seed_*/preserved_campaign1_20260812T135613Z/` |
-| **C1** | native | 2026-08-12T12:00:26Z – 13:19:17Z¹ | **已被覆寫**；保存於 `medium_recheck_control/native/seed_*/preserved_campaign1_20260812T135613Z/` |
-| **C2** | capped | 2026-08-12T14:00:41Z – 14:04:19Z | 佔據 `stage3_baseline/seed_*/medium/` |
-| **C2** | native | 2026-08-12T14:04:44Z – 14:08:18Z | 佔據 `stage5_native_baseline/seed_*/medium/` |
+| **C1** | capped | 2026-08-11T08:33:36Z – 08:36:19Z | **2026-08-12 曾被覆寫，2026-08-15 已 revert 回 canonical**；同時保存於 `medium_recheck_control/capped/seed_*/preserved_campaign1_20260812T135613Z/` |
+| **C1** | native | 2026-08-12T12:00:26Z – 13:19:17Z¹ | **已被覆寫**（未 revert）；保存於 `medium_recheck_control/native/seed_*/preserved_campaign1_20260812T135613Z/` |
+| **C2** | capped | 2026-08-12T14:00:41Z – 14:04:19Z | **2026-08-15 已移離 canonical**；保存於 `medium_recheck_control/capped/seed_*/preserved_campaign2_20260815T000000Z/`（**seed 24004 除外——無 artifact**） |
+| **C2** | native | 2026-08-12T14:04:44Z – 14:08:18Z | **仍佔據** `stage5_native_baseline/seed_*/medium/`（**這一列自始至今為真，未變**） |
+
+> **⚠ 更新 2026-08-15（owner 決定）。** 上表 C1-capped 與 C2-capped 兩列已改寫；
+> 原文分別記為「**已被覆寫**」與「**佔據** `stage3_baseline/seed_*/medium/`」，
+> **兩者自 2026-08-15 起皆不成立**。**C2-native 那一列不受影響，仍然為真。**
+>
+> **現在的 canonical 狀態是混合的（measured）：**
+>
+> | canonical 路徑 | 現在放的是 |
+> |---|---|
+> | `stage3_baseline/seed_*/medium/`（**capped**） | **campaign 1**，五個 seed 全部（mtime 2026-08-11T08:34–08:37Z） |
+> | `stage5_native_baseline/seed_*/medium/`（**native**） | **campaign 2**，五個 seed 全部（mtime 2026-08-12T14:04–14:08Z） |
+>
+> **這個混合狀態是已知、已接受、刻意的**——owner 明示不予調和，理由是**新的 campaign 取代兩者**。
+> **不要把它當成待修的不一致。** 兩個 campaign 的 artifact 都仍保存在 canonical 之外，
+> **沒有任何資料被刪除或搬走**。
 
 ¹ seed 24001–24004 於 12:00–12:03Z；seed 24005 於 13:18–13:19Z（該 seed 的 native 搜尋較晚結束，見 §15.2）。
 
@@ -598,12 +648,25 @@ capped C1 vs capped C2 **r = +0.756**；native C1 vs native C2 **r = −0.356**�
   `…superseded_20260812T131830Z.json`；`stage5_native_baseline/seed_24001/medium/` 有
   `…superseded_20260812T120004Z.json`。**這些標記對應的是 native remeasure 自身的重試，
   不是 14:04Z 的 campaign-2 覆寫**——後者在兩個 canonical path 上**都**沒有留下標記。
-- 因此「讀 canonical path」的腳本會**默默回報對受測臂更有利的那個 campaign**，
+- 因此「讀 canonical path」的腳本會**默默回報 canonical 上當時擺著的那個 campaign**，
   而輸出中沒有任何東西說明它讀了哪一個。
+  **在 2026-08-12 至 2026-08-15 之間，那就是對受測臂更有利的 C2。**
+
+> **⚠ 更新 2026-08-15：這個危害的方向反轉了，但危害本身沒有消失。**
+> canonical capped 現在放的是 **campaign 1**，所以「讀 canonical」的腳本現在
+> **默默回報 C1**——**若它把讀到的東西標成 C2，那就是一個無聲的錯標**。
+> **這件事已經實際發生過：** `scripts/s14_medium_ratio_analyze.py` 的 `canonical_c2()`
+> 讀的正是 canonical，且其 `started_utc >= "2026-08-13"` 的守衛
+> **對 campaign 1 永遠不會觸發**（campaign 1 全部 started 於 2026-08-11），
+> 所以它**把 campaign 1 的數字當成 campaign 2 回報，沒有任何錯誤訊息**。
+> **已於 2026-08-15 修好**：改讀 `preserved_campaign2_20260815T000000Z/`，
+> 缺 artifact 時 **fail closed**（非零 exit），並改由腳本自身位置推導 run root。
+> **教訓不變：不要用 canonical path 當 campaign 的身分。**
 
 ### 6.4 `analyze_medium.py` 現在要求顯式 `--campaign`
 
-`[CODE AUDIT]` `analyze_medium.py:5–25, 42–46, 100–105`：
+`[CODE AUDIT]` `analyze_medium.py:2–33, 41–57, 59–62, 120–124`（**行號已於 2026-08-15 隨檔案更新**；
+原引 `5–25, 42–46, 100–105`）：
 
 ```
 ap.add_argument("--campaign", choices=("1", "2"), required=True, …)
@@ -613,18 +676,48 @@ except FileNotFoundError:
              "refusing to silently fall back to the other campaign")
 ```
 
-腳本 docstring 明寫其存在理由：*"a script that simply reads the canonical path silently reports the
-campaign that is MORE FAVOURABLE to the treated arm … That is the exact failure mode the
-pre-registration exists to prevent, so the choice is now an explicit, recorded argument rather than a
-default."* 它**既不預設、也不平均**，並在自己的表頭印出所選 campaign 與解析後的路徑。
+腳本 docstring 明寫其存在理由：*"a script that simply reads the canonical path silently reports
+whichever campaign happens to occupy it — between 2026-08-12 and 2026-08-15 that was the campaign
+MORE FAVOURABLE to the treated arm — with nothing in its output saying which campaign it read. That
+is the exact failure mode the pre-registration exists to prevent, so the choice is now an explicit,
+recorded argument rather than a default."* 它**既不預設、也不平均**，並在自己的表頭印出所選 campaign
+與解析後的路徑。
+
+> **⚠ 引文更新 2026-08-15。** 本節先前逐字引用的是**舊版 docstring**，其中兩處事實已不成立：
+> 它寫 campaign 2「**occupies the canonical path**」，並記 measurement of record 為
+> **`PENDING_HUMAN_DECISION`**。**兩者自 2026-08-15 起皆為假。**
+> docstring 已就地更正，上方引文取自更正後的版本。
+>
+> **同時更正的還有兩條路徑常數：** `--campaign 1` 與 `--campaign 2`
+> **現在都從明示的 off-canonical 路徑讀取**，這支腳本**不再讀 canonical**——
+> 因為 canonical capped 現在放的是 campaign 1，繼續讀它會讓 `--campaign 2`
+> 默默回傳 campaign-1 的數字。
+> **`--campaign 2` 在 seed 24004 會 fail closed 並以非零 exit 中止，那是正確行為。**
 
 ### 6.5 治理狀態
 
-- design §13.3 **提議** campaign 1 為 measurement of record。**該提議屬 `PENDING_HUMAN_DECISION`
-  （§13 整節、`MEASUREMENT-DEFECT-PACKET-20260813`，未核准）。**
-- 因此本附冊：**兩個都報告；不平均；不擇一；兩者皆不產生 tier。**
-- design §9.3（index 鏡射）第 3 項待裁決事項：*Ratify campaign 1 as the measurement of record,
+- ~~design §13.3 **提議** campaign 1 為 measurement of record。該提議屬 `PENDING_HUMAN_DECISION`。~~
+  **—— 已於 2026-08-15 由 owner 結案，但結案方式不是拔擢 campaign 1，見下。**
+
+> ## **治理狀態更新（owner 決定，2026-08-15）**
+>
+> - **canonical capped medium 五個 seed 一起 revert 回 campaign 1**；
+>   campaign 2 於 revert 前先保存到 `preserved_campaign2_20260815T000000Z/`
+>   （**seed 24004 除外——無 artifact，不可回復**）。
+> - **canonical native medium 仍為 campaign 2。這個混合狀態刻意不予調和**（§6.1）。
+> - **campaign 1 與 campaign 2 都不是 measurement of record。**
+>   owner 的立場是**一個新的 campaign 取代兩者**，那才是有意義的量測；
+>   該 campaign 目前為 **pilot only**，完整 campaign 延後且以 pilot 結果為條件
+>   （`PENDING_HUMAN_DECISION`）。
+> - **沒有任何資料被刪除或搬走。**
+>
+> **本附冊的處置因此完全不變：兩個都報告；不平均；不擇一；兩者皆不產生 tier。**
+> **這一點不因 canonical 上擺的是哪一個而改變**——canonical 的位置從來就不是本附冊的判準。
+
+- design §9.3（index 鏡射）第 3 項待裁決事項原文為：*Ratify campaign 1 as the measurement of record,
   and file the operational-correction record for the untracked in-place overwrite*。
+  **前半（ratify）已被上述裁決取代（兩者皆非 measurement of record）；
+  後半（operational-correction record）狀態未變。**
 - **C1 為何比 C2 髒 1.7×：未解釋**（design §13.9 殘餘不確定性）。本附冊亦無法解釋。`NOT_EVALUATED`。
 
 ---
@@ -745,6 +838,19 @@ capped C1 seed 24001 arm F 的七次為 `13,456 · 2,234 · 13,535 · 13,404 · 
 
 **根因是機制性的，已定位，且不是 medium 這個 problem size 的性質。**
 
+> **⚠ 2026-08-18 補記：根因已由一次實際修復示範過，且機制被進一步分離。**
+> §8.1–§8.2 用 sweep 論證「warm-up 是以次數而非時間指定」。2026-08-17 的修復把暖機從 321
+> 提到 **1400**（`RBS` 同時降到 401 以保住 production 的 `rotatingNum = 320`），
+> dropout 從 **39.05 %** 降到 **7.50 %**，per-seed sd 從 0.25–0.43 降到 0.0016–0.0194
+> （逐 seed 18.7–99.9 倍）——**根因不只被定位，還被治好了。**
+> **而且兩個變因已經分離開：** 只加 `RBS` cap、暖機不動（基準格 B，`321 / 401`）時
+> dropout 是 **40.60 %**，**比未修改的 39.05 % 還高 1.55 pp，沒有觀察到任何降低**；
+> 反過來把 `RBS` 釘死在 production 的 4096、只提暖機，dropout 從 321 的 **42 %**
+> 降到 1400 的 **4.0 %**（n = 50）。
+> ⇒ **降噪來自暖機次數，不是 rotating footprint。** 完整證據見 **§18.2**。
+> ⚠ 支撐這個機制結論的是**量級差距**（1.55 pp 對 31.55 pp），**不是等價性檢定**；
+> 資料未排除 cap 帶來約 3 pp 的降低。
+
 ### 8.1 warm-up 是以 **enqueue 次數**、而非**時間**指定
 
 `[CODE AUDIT]` `ClientParameters.ini`——**三個 shape 完全相同**：
@@ -825,8 +931,18 @@ promotion ramp 的簽名，不是任何隨已完成工作量縮放的東西。
 > *`[CODE AUDIT]` `medium_mechanism_probe/stdout.log:25–217`，共 50 次 `rc=-6`。*
 > **因此這個修法在 production 設定（RBS = 4096）下未經驗證。**
 > design §13.3／§13.7 提議的可行性 probe——**5,136 warm-ups @ 釘住的 RBS = 4096**（≈58 ms，越過拐點）
-> ——**從未被嘗試過**；兩個 crash 的變體用的都是 32,100。
-> 該 probe 的結果為 **`NOT_EVALUATED`**。
+> ——**⚠ 更正（2026-08-18）：原文寫「從未被嘗試過」與「結果為 `NOT_EVALUATED`」，兩句都是假的，
+> 而且寫下時就已經錯了。** 該 probe **已於 2026-08-13 執行**
+> （`medium_clockladder/capped/seed_{24001,24004,24005}/s4_warmup5136/probe_20260813T131304Z.log`），
+> **三個 seed 全部 `rc = 1`**。**但死因不同，不可寫成同一個機制：** seed **24001 與 24005**
+> 走到了那次配置並顯示 `Rotating buffer set to: 4294967296. Rotating num: 3272` 與
+> `1312256 * 3272 = -1265664`——**int32 環繞由引擎自己印出的負數確證**；
+> seed **24004 在到達該配置之前先中止**（同檔 `:623`，library 連結錯誤），**與溢位無關**。
+> ⇒ 正確狀態是 **`EVALUATED / closed by infeasibility`**，與 index §9.5 及 ledger
+> `CAPABILITY-ENDPOINT-PACKET-20260813` 的既有記錄一致。
+> **本段的結論（此修法在 production 的 RBS = 4096 下未經驗證）仍然成立，錯的只有它給的理由。**
+> 另見 §18：2026-08-17 驗證的是 **`RBS = 401`**，不是 4096。
+> 兩個 crash 的變體用的都是 32,100。
 > *（觀察，非結果：crash 的例外字串是 `Insufficient rotating buffer size.`，而 root-cause memo §4 的算式
 > 為「321 個 rotating buffer × ~1.31 MB = ~420 MB」。若逐 enqueue 線性外推，5,136 在 4096 MB 下同樣會
 > 超出——**但這是推論、未量測**，不得取代該 probe。）*
@@ -1284,7 +1400,13 @@ per-seed 範圍從 0.9873–1.0495 收窄至 1.0172–1.0529。**每一個 nativ
 
 ### 13.4 預測 (iii)——「擴大幅度在 **large** 上應大於 **medium**」
 
-## **`NOT_EVALUATED`。**
+## **`REFUTED`**（2026-08-18 更正）。
+
+> **原標為 `NOT_EVALUATED`，理由是「native large 不在本附冊範圍內」——那在撰寫時為真，現已為假。**
+> `s14-large-report.md` §10.7a 已於 2026-08-17 由實測 artifact 判讀：
+> large **+0.0304**（劣勢**縮小**）對 medium **−0.0080**（略為擴大），
+> **兩者方向相反，梯度與預測的正負號相反 ⇒ 推翻。**
+> 本附冊仍不代替 large 附冊作此判定；此處僅同步其結論。
 
 **(i) 預測原文與註冊日期。** 同上。
 **(ii) 分析。** 跨 shape 梯度只存在 medium 這一半。在本附冊撰寫時，native **large** 不在本附冊範圍內
@@ -1447,8 +1569,13 @@ design §13.9 明列「須寫入報告，不求解決」。以下逐項照搬，
 5. **campaign 1 為何比 campaign 2 髒 1.7×：未解釋。**
 6. **跨 campaign 的可重現性對比僅建立在 n = 2 個 campaign 之上。**
 7. **warm-up sweep 在拐點之上非單調**（20,544 → 4 %）——所提出的機制不解釋這一點。
-8. **在釘住的 RBS = 4096 下，修復未經驗證**；`5,136 warm-ups @ RBS 4096` 的可行性 probe
-   **從未被嘗試**。`NOT_EVALUATED`。
+8. **在釘住的 RBS = 4096 下，修復未經驗證**——**這個結論仍然成立**（2026-08-17 驗證的是
+   `RBS = 401`，不是 4096；見 §18.2）。**但原本給的理由是假的（2026-08-18 更正）：**
+   `5,136 warm-ups @ RBS 4096` 的可行性 probe **不是「從未被嘗試」，而是 2026-08-13 嘗試過、
+   三個 seed 全部 `rc = 1`**（其中 24001 與 24005 因 int32 溢位，24004 因 library 連結錯誤）。
+   ⇒ 正確狀態是 **`EVALUATED / closed by infeasibility`，不是 `NOT_EVALUATED`**（見 §9 的更正）。
+   **不可行的門檻是 `nw ≥ 1638 @ RBS 4096`，不是「RBS 4096 不可行」**——`1400 @ 4096` 與
+   `1637 @ 4096` 都量過，n = 50，dropout 各 **4.0 %**。
 9. **雙峰的競爭性物理解釋尚未被完全區分開。** warm-up/DPM 說得到 sweep 的強支持，但下列仍未被
    逐一排除為*殘餘*成分：MI300 上 XCD/CU 分區配置逐次 launch 變動；MALL/L2 駐留（RBS 已被排除為
    *病因*，但其約 12–14 % 的確定性代價是實在的）；`GlobalSplitU`-workspace 或 atomics 競爭。
@@ -1463,12 +1590,226 @@ design §13.9 明列「須寫入報告，不求解決」。以下逐項照搬，
 
 | | |
 |---|---|
-| **可說** | 三項不受汙染的子判準在 capped 下各為 **3/5**、在 native 下為 **2/5 / 1/5 / 3/5**，預註冊要求 ≥4/5；native 執行本身乾淨（10/10 fail-closed 全過）；treatment 在兩個 P0 水準上逐位元同一；Q3 (i) 在 medium 上 `REFUTED`、(ii) `SUPPORTED`、(iii) `NOT_EVALUATED`；Gen0 中心效應在 22× Gen0 下未被稀釋（3/5 → 5/5）；量測缺陷的症狀、根因、範圍與所有已排除／未排除的假說 |
-| **不可說** | **S14 的 gate 判定**（只在 formal report）；medium 的 final-champion 或 non-regression **通過或未通過**（該端點被提議為 `NOT_EVALUATED / instrument-invalid`，PENDING）；由該作廢端點導出的任何 tier；「guidance 幫助了／傷害了 medium」；「模型沒用」；任何 aggregate rescue；任何一般化／部署／加速措辭；以 `original_final_gflops` 作為 endpoint |
-| **待 owner 裁決後才能定案** | campaign of record（design §13.3 提議 C1）；估計量是否維持 median-of-7（§13.3 提議維持）；margin 是否維持 pinned `η_s`（§13.4 提議維持，但須雙 margin 揭露）；per-shape claim 階梯（§13.5）；medium 端點是否記為 `NOT_EVALUATED / instrument-invalid` 而非 fail（§9.3 第 9 項）。**以上全部 `PENDING_HUMAN_DECISION`，本附冊照此標記，不代為核准。** |
+| **可說** | 三項不受汙染的子判準在 capped 下各為 **3/5**、在 native 下為 **2/5 / 1/5 / 3/5**，預註冊要求 ≥4/5；native 執行本身乾淨（10/10 fail-closed 全過）；treatment 在兩個 P0 水準上逐位元同一；Q3 (i) 在 medium 上 `REFUTED`、(ii) `SUPPORTED`、(iii) **`REFUTED`**（2026-08-18 更正；見 `s14-large-report.md` §10.7a）；Gen0 中心效應在 22× Gen0 下未被稀釋（3/5 → 5/5）；量測缺陷的症狀、根因、範圍與所有已排除／未排除的假說；**2026-08-17 儀器修復的前後對照與修復後量到的 final ratio 讀數（§18）** |
+| **不可說** | **S14 的 gate 判定**（現由 `staged/s14-guided-results.md` §5.4 承載；原承載者 `full-ga-baseline-vs-guided-outcome-report.md` **已由 owner 於 2026-08-18 解除授權**）；medium 的 final-champion 或 non-regression **通過或未通過**（該端點被提議為 `NOT_EVALUATED / instrument-invalid`，PENDING）；由該作廢端點導出的任何 tier；**「guidance 幫助了／傷害了 medium」作為 gate 層級的裁決**（⚠ **2026-08-18 依 owner 裁決限縮**：原文是無條件禁止該句。gate 層級的判定確實仍不可說——它由 Gen0 / gen-10 / AUC 三項 margin-free 子判準決定，各為 **3/5**，且**不經 7× 量測路徑，本次修復碰不到它們**。但 `ETA-MARGIN-REMOVED-20260814` 的 ledger 明文要求 **final ratio 仍須以方向與效應量報告**，§18 就是照實呈現那個量的讀數，**不構成 gate 判定**）；「模型沒用」；任何 aggregate rescue；任何一般化／部署／加速措辭；以 `original_final_gflops` 作為 endpoint |
+| **待 owner 裁決後才能定案** | ~~campaign of record（design §13.3 提議 C1）~~ **——已於 2026-08-15 結案：C1 與 C2 皆非 measurement of record，由一個新 campaign 取代兩者（§6.5）**；估計量是否維持 median-of-7（§13.3 提議維持）；margin 是否維持 pinned `η_s`（§13.4 提議維持，但須雙 margin 揭露）；per-shape claim 階梯（§13.5）；medium 端點是否記為 `NOT_EVALUATED / instrument-invalid` 而非 fail（§9.3 第 9 項）；**`PENDING_HUMAN_DECISION`（新，2026-08-18）：medium 的 final ratio 是否以 pilot401 的 `C03` / `C03CONF` 為 measurement of record**——`PILOT401_MANIFEST.json` 自我標記為 `PILOT -- not an endpoint, not a campaign`，而 §6.5 所稱「取代兩者的新 campaign」（design §A.5 的第五個 campaign）**從未執行**；owner 於 2026-08-18 授權**呈現**該讀數，**未指定其為 record**；**`PENDING_HUMAN_DECISION`（新）：§G.4.0a 第二分支觸發後的處置**——兩批 `k = 8` 的 `P3_pass` 都是 `false`（10.36 % / 8.04 %）。**除已結案者外全部仍為 `PENDING_HUMAN_DECISION`，本附冊照此標記，不代為核准。** |
 
 **Conditional Arm S。** design §10.2 的觸發規則要求 F 在 ≥1 confirmatory shape 通過 per-shape
 directional gate。**本附冊不判定該觸發是否成立**——那是跨 shape 的判定，屬 formal report。
+
+---
+
+## 18. 儀器修復（2026-08-17）——前後對照與修復後的讀數
+
+> **這一節記的是 measurement 實驗本身：舊儀器有多不可讀、修了什麼、修完之後量到什麼。**
+> **它不是 S14 的 gate 判定**（§17）。跨 shape 的 guided 結果整理在
+> `staged/s14-guided-results.md`，本節只負責 medium 的儀器面。
+> 設計權威是 `/data1/perlee/measurement_design.md`（判讀規則見其 §G.3.1，
+> `NULL-AS-NOISE-BASELINE-20260818`；pilot 結果見其 §E.5）。
+
+### 18.1 前後對照——「之前」用 campaign 1（owner 裁決，2026-08-18）
+
+| | capped | native |
+|---|---:|---:|
+| **campaign 1** dropout | **45.71 %**（32 / 70） | **47.14 %**（33 / 70） |
+| **campaign 1** final champion `F/G > 1` | **2/5** | **3/5** |
+| 修復後 dropout | **7.50 %** / **6.43 %**（兩批） | **6.55 %** |
+| 修復後 final champion `F/G > 1` | **3/5** | **3/5** |
+
+**三件必須連著讀的事：**
+
+1. **native 的計數修前修後都是 3/5。** 改良的證據是**汙染率**（47.14 % → 6.55 %，約 7.2 倍）
+   與**離散度**，**不是計數翻轉**。capped 那邊 2/5 → 3/5 只差一個 seed，也不足以單獨支撐宣稱。
+2. **離散度的倍數只適用於 capped。** `LADDER_LOG.md:25` 記錄基準格 A → C03 的逐 seed 改善為
+   **50.5× / 51.1× / 99.9× / 18.7× / 72.5×**（seed 24001→24005）。
+   **這是 capped 的數字，native 沒有對應的參照格，不可挪用。**
+3. **「之前」有兩個值，差 1.9 倍，而原因未解。**
+   campaign 1 capped 是 45.71 %，campaign 2 capped 是 **24.29 %**（17 / 70）。
+   §16 item 5 的「campaign 1 為何比 campaign 2 髒」至今 `NOT_EVALUATED`。
+   **兩個都要擺，只擺一個會把這個未決事項壓掉。**
+
+> **⚠ 基準格 A 不是舊 campaign。** 它是 2026-08-17 08:02–08:12 在**舊設定**（`321 / 4096`）下
+> 跑的**參考格**（`LADDER_LOG.md:5`：「Cell A is the reference baseline (unmodified instrument);
+> it is never a candidate」）。它在本節唯一的用途，是**補上 campaign 1 給不出的 sd** ——
+> C1 與 C2 都是**單一 window、7 次 repeat**，跨窗 `sd(ln(F/G))` 在它們身上沒有定義。
+> **使用它需要一句授權**：A 的 **39.05 % / 2-of-5 / 中位 0.9917** 對 C1 的
+> **45.71 % / 2-of-5 / 中位 0.9971** ——同量級、同方向、同計數，
+> ⇒ **它是舊儀器的忠實重現**，可以用來補那個 sd。
+
+### 18.2 修了什麼——降噪來自暖機次數，不是 rotating footprint
+
+**梯子**（`nw` 由低往高，`RBS` 全部 401；第一個同時通過 P3 與 P4′ 的格子就停）：
+
+| 格 | `nw` | `RBS` | dropout | P3 | P4′ |
+|---|---:|---:|---:|---|---|
+| A（參考） | 321 | 4096 | 39.05 % | FAIL | FAIL（0/5） |
+| B | 321 | **401** | **40.60 %** | FAIL | FAIL（0/5） |
+| C01 | 640 | 401 | 31.19 % | FAIL | FAIL（0/5） |
+| C02 | 1000 | 401 | 18.81 % | FAIL | FAIL（1/5） |
+| **C03** | **1400** | **401** | **7.50 %** | **PASS** | **PASS（4/5）** |
+
+**兩條互相正交的單變因對照，指向同一個結論：**
+
+- **只動 RBS（暖機釘死在 321）：** A → B 是 39.05 % → **40.60 %**，**+1.55 pp，沒有降低**。
+- **只動暖機（RBS 釘死在 production 的 4096）：** 獨立的 sweep 探針給出
+  321 → **36 %**、640 → **36 %**、1000 → **32 %**、1400 → **8 %**（n = 25）；
+  confirm 批次 n = 50 時 `1400 @ 4096` 是 **4.0 %**、`321 @ 4096` 是 **42.0 %**。
+
+⇒ **降噪來自暖機次數，不是 rotating footprint。**
+
+> **⚠ 兩項使用限制。**
+> (i) 基準格 B 的證據是**量級差距**（1.55 pp 對 31.55 pp），**不是等價性檢定**；
+> 資料未排除 cap 帶來約 3 pp 的降低。
+> (ii) 那條 sweep 是**單臂、帶 `overrides` 的探針**（`s14_medium_warmup_rbs4096_probe.py`），
+> 不是 7× interleaved harness，**只用一個 champion**（seed 24001 arm-G 的 parked 樹）。
+> **它的絕對水準不可轉移**——8 % 不可以拿去跟 C03 的 7.50 % 並排，也不能說「同一儀器」。
+> **只取它的斜率與符號。**
+
+### 18.3 修復後的讀數與它的噪音基準
+
+判讀規則見 design §G.3.1：**以 null ratio 當噪音基準，多尺度並列，不合成單一裁決，不設倍數門檻。**
+
+**medium capped，`F/G` 為 gflops 比（> 1 = guided 較快），`C03` 與 `C03CONF` 兩批各 12 window 的平均：**
+
+| seed | `ln(F/G)` | ÷ G/G′ sd | ÷ F/F′ sd | ÷ 跨 session 0.0097 | ÷ 自身 sd |
+|---:|---:|---:|---:|---:|---:|
+| 24001 | −0.00045 | 0.1 | 0.1 | 0.0 | 0.1 |
+| 24002 | **+0.06024** | 25.3 | 35.0 | 6.2 | 14.8 |
+| 24003 | +0.01336 | 5.9 | 5.3 | **1.4** | 5.6 |
+| 24004 | **+0.06142** | 39.5 | **3.0** | 6.3 | 3.4 |
+| 24005 | −0.00257 | 0.5 | 0.9 | 0.3 | 0.7 |
+
+**怎麼讀：**
+**24002 在所有尺度下都明顯為正。24003 與 24004 都是正的，但幅度隨尺度而變**
+（24003 在跨 session 尺度下只剩 1.4；24004 在 F/F′ 尺度下只剩 3.0）。
+**24001 與 24005 在所有尺度下都貼零。沒有任何 seed 在任何尺度下顯示 guided 有害。**
+**用哪一把尺會改變答案，這件事本身是結果的一部分，因此不合成單一裁決。**
+
+**四把尺各自的性質與限制：**
+
+| 尺 | 量到什麼 | 限制 |
+|---|---|---|
+| **G/G′ null** 的 sample sd | 兩臂都是 baseline 樹，真值恰為 1.0 ⇒ **可查偏差**。五個中心全在 **±0.0018** 內 ⇒ **該構型下儀器無偏** | **結構上永遠不載入 arm F 那顆 kernel**。seed 24004 的 G/G′ sd 是 **0.00155**，真實對比自己的 sd 是 **0.01807**——**差 11.6 倍**。⇒ **只用它會系統性高估顯著性** |
+| **F/F′ null** 的 sample sd | 兩臂都是 guided 樹 ⇒ **抓得到 arm F 那顆 kernel 的噪音**。24004 的 sd 是 **0.02071**，與真實對比同級 | 註冊角色是**離散度**儀器；拿它的中心當偏差證據是用在註冊角色之外。⚠ **`N7_GVSG` 與 `N7b_FFNULL` 不是同一 session**（13:44–13:55 對 15:29–15:39，中間夾了兩批 campaign），所以 F/F′ ÷ G/G′ = **13.3 倍**這個比值**內含「同一儀器狀態」的假設** |
+| **跨 session rms 0.0097** | 換一個 session 還會不會是同一個結論 | ⚠ **取自 design §G.2.4 的 native C1↔C2，也就是舊儀器**（同表記其離散度為 0.3136）。**對修好的儀器是外插——修好的儀器上一組跨 session 資料都沒有** |
+| **真實對比自身的跨窗 sd** | 這個效應在這台儀器上解析得多清楚 | 不含 session 間成分 |
+
+**兩批之間的一致性，以及它量到的是什麼：**
+`C03` 與 `C03CONF` 逐 seed 的最大差是 **0.00567**（seed 24004）。
+⚠ **這兩批不是獨立的**——`C03` 末窗 09:10:33、`C03CONF` 首窗 09:20:37，**相隔 10 分 04 秒，同一批卡、同一 session**。
+依 design §G.1 的 `NO-SEPARATION-20260817` 代價條款，**背靠背的 window 只涵蓋 fast 層，
+slow 層仍為 `NOT_EVALUATED`**。**所以 0.00567 是 fast 層的重現性，不是效應量的不確定性上界。**
+把時間拉到當日 09:10–15:07 的四批（含兩批 `k = 8`），seed 24004 的 `mean_ln` 全距是 **0.01919**，
+是 0.00567 的 **3.4 倍**。
+
+### 18.4 順序效應——揭露，不校正
+
+**量測順序是寫死的：** medium 的每一個 window 都是 `('G','F')`（`N7_GVSG` / `N7b_FFNULL` / `C03` /
+`STAGE2_NATIVE` 各 420/420），**large 則全部是 `('F','G')`——兩個 shape 方向相反**。
+design §G.3 早就寫過：`first_arm` 設在 repeat 迴圈之外，**配對只會把一個順序效應凍結起來，
+而不是把它平均掉**。
+
+在 null 裡兩臂裝的是同一顆 kernel（`config_hash` 逐位相同），**唯一的差別就是位置**：
+
+| seed | G/G′ 中心 | F/F′ 中心 |
+|---:|---:|---:|
+| 24001 | −0.00171 | −0.00216 |
+| 24002 | +0.00175 | −0.00090 |
+| 24003 | −0.00051 | −0.00115 |
+| **24004** | +0.00048 | **−0.02181** |
+| 24005 | +0.00051 | −0.00158 |
+
+**F/F′ 五個中心全負，G/G′ 混合近零。**
+
+**不校正，三個理由：**
+1. **不是純位置效應。** 兩個 null 的位置構造完全相同，G/G′ 卻沒有這個偏移
+   ⇒ 是**位置 × kernel 的交互作用**，不可加、不可轉移。
+2. **沒有任何一個 null 複製了真實對比的 slot／kernel 配置**（真實是 slot 1 = baseline、
+   slot 2 = guided），所以兩個中心都不是真實對比偏差的無偏估計。
+3. **medium 與 large 順序相反**，同一套校正跨 shape 會反號。
+
+**但方向必須寫明（⚠ 僅限 medium capped）：** guided kernel 永遠在第二位、第二位對它偏低
+⇒ **未校正的 `F/G` 是向下偏的，對 guided 不利，現行數字是保守的。**
+天真校正後 24002 → +0.0611、24003 → +0.0145、24004 → **+0.0832**，全部更正。
+
+> **⚠ 這個結論只涵蓋 medium capped，在 medium native 上反號（2026-08-18 補記）。**
+> `N8b_NATIVE_FFNULL` 的五個中心是 **+0.03736 / +0.02205 / −0.00456 / +0.01889 / +0.02512**
+> ——**四正一負**，與 capped 的五負相反，而兩者的量測順序完全相同（`('G','F')`）。
+> ⇒ **「第二位對 guided kernel 偏低 ⇒ 現行數字保守」不可套用到 medium native。**
+> 該塊的 F/F′ 偏移另有兩種未分離的來源：native guided kernel 本身不穩，
+> 或該次執行受干擾（其 dropout 18.69 % 對兩者相容）。**本節不裁決。**
+**強度照實寫：** 除 24004（`|mean/(sd/√12)|` = 3.65）外，其餘四個量級 ≤ 0.22 %，
+只有五個合起來的符號檢定顯著（p ≈ 0.031）。**機制 `NOT_EVALUATED`** ——
+要分離位置效應與 kernel 特性，需要一次 `--start-arm F` 的真實對比，本研究沒有跑。
+
+### 18.5 P3 的十個批次——不報 CI
+
+dropout 定義：**單一 repeat 低於同臂、同 window、7 次 repeat 之最大值的 95 %**。
+
+| 批次 | 建構 | m | 母體 | hits | rate | `P3_pass` | 屬 §E.1 的 840 母體 |
+|---|---|---:|---:|---:|---:|---|---|
+| C03 | F/G 梯子（定案格） | 12 | 840 | 63 | **7.50 %** | true | ✔ |
+| C03CONF | F/G 確認批次 | 12 | 840 | 54 | **6.43 %** | true | ✔ |
+| CAMPAIGN k8 | F/G（受 I/O 汙染） | 8 | 560 | 58 | **10.36 %** | **false** | ✘ |
+| CAMPAIGN2 k8 | F/G（乾淨重跑） | 8 | 560 | 45 | **8.04 %** | **false** | ✘ |
+| STAGE2_NATIVE | F/G 階段 2 | 12 | 840 | 55 | **6.55 %** | true | ✔ |
+| N7_GVSG | **G/G′ null** | 12 | 840 | 55 | **6.55 %** | true | ✔（非 F/G） |
+| N7b_FFNULL | **F/F′ null** | 12 | 840 | 39 | **4.64 %** | true | ✔（非 F/G） |
+| SMOKE | 工具驗證 | 3 | 210 | 18 | **8.57 %** | **false** | ✘ |
+| **N8_NATIVE_GVSG** | **G/G′ null, native**（2026-08-18） | 12 | 840 | 131 | **15.60 %** | **false** | ✔（非 F/G） |
+| **N8b_NATIVE_FFNULL** | **F/F′ null, native**（2026-08-18） | 12 | 840 | 157 | **18.69 %** | **false** | ✔（非 F/G） |
+
+**`CAMPAIGN2` 的 `P3_pass` 是 `false` ⇒ design §G.4.0a 的第二分支已觸發**
+（事前註冊：「乾淨重跑仍未通過 ⇒ 汙染假說被推翻，**不得再以環境為由重跑第三次**」）。
+**disposition 未決**（§17）。
+**SMOKE 依 design §E.3.2 的母體通則排除於 P3 判定之外——排除依據是母體定義，與它的結果無關。**
+
+**不報信賴區間，三個理由：**
+1. **840 筆不是 840 次獨立 Bernoulli。** 它是 120 個 `(seed, window, arm)` 群集 × 7，
+   而**群集內的最大值依定義永遠不會是 dropout**，所以每群上限是 6 不是 7。
+   **這是主要理由。**
+2. **計數是方法相依的。**（⚠ 以下兩個區間是**用來示範方法相依性的反例，不是本報告陳述的結果**。
+   本報告不報任何 dropout 率的信賴區間。）同一批 `C03CONF` 在 Wilson 下是 [4.96 %, 8.29 %]，**含** 8 %；
+   在群集 bootstrap 下是 [4.88 %, 7.98 %]，**不含**。
+3. **8 % 這個門檻本身尚未裁決**（§17）。在一個未決門檻周圍架推論機制，
+   是把未決事項包裝成統計問題。
+
+> **⚠ 一項自我更正。** 本節早期草稿曾以「artifact 裡沒有任何 CI 工具」當作理由之一。
+> **那是假的**：`scripts/s14_medium_ratio_analyze.py:208` 就有 `def wilson(x, n, z=1.96)`，
+> `:115` 印的正是 dropout 率的 Wilson CI；`medium_warmup_repair_investigation.md`
+> 與 `large_analysis_20260817.md` 也已各自使用 Wilson／Clopper-Pearson 與 bootstrap SE。
+> **該理由已刪除**；上列三條與它無關，各自獨立成立。
+
+### 18.6 P1、P1b 與儀器完整性
+
+- **P1**：梯子六格 360 個 window 的 client log 共 **5,760 行 `Rotating num`，全部是 320**；
+  **全 campaign 12 個 cell 合計 635 個 window / 10,160 行，同樣全部 320**，
+  且與 production 逐位元相同（`ceil(420,478,976 / 1,312,256) = 321`、`rotatingNum = 320`）。
+  **兩個母體都成立，引用時必須指明是哪一個。**
+- **P1b**：`nw = 1400` 與 `nw = 5136` 兩點對照，皆 `rc = 0`，
+  `rotating_num = 320`、`rotating_memory_size = 421234176` 兩點逐字相同，
+  `peak_vram_mb` 皆 1682.1（取樣次數 66 vs 67）。
+  ⇒ **配置量跟著 capped 的 `rotatingNum` 走，不跟著暖機次數走。**
+  ⚠ `rotating_num` 與 `rotating_memory_size` 是逐位元相同；
+  **`peak_vram_mb` 是四捨五入的浮點且取樣次數不同，不可宣稱「逐位元相同」。**
+- **這是 `5136 @ RBS 401`，不是 `5136 @ RBS 4096`。** 後者見 §16 item 8 的更正。
+
+### 18.7 這一節可說與不可說
+
+**可說：** 舊儀器的 dropout 是 39–47 %、per-seed sd 是 0.25–0.43，**不具可讀性**；
+修復後 dropout 降到 **6.4–7.5 %**、sd 降到 0.0016–0.0194（capped 逐 seed 18.7–99.9 倍，A → C03；
+A → C03CONF 的中位 sd 改善為 94.9 倍）。
+⚠ **這個區間只涵蓋 2026-08-17 那批。** 2026-08-18 在同一台儀器上跑的 medium native 兩個 null 是
+**15.60 % 與 18.69 %**（皆不過 P3）、sd 上限 **0.095**；
+降噪來自暖機次數；G/G′ null 的中心從舊儀器的 +0.603 % 降到 **±0.0018 以內**；
+以及 §18.3 那張表所列的讀數與它們對每一把尺的比值。
+
+**不可說：** 任何 gate 判定（§17）；「這是 medium 的 measurement of record」
+（**`PENDING_HUMAN_DECISION`**，§17）；「guided 對 medium 有效／無效」作為**判定**
+——gate 現由三項 margin-free 子判準決定（各為 3/5），**本次修復在原理上碰不到它們**；
+⚠ 但 `final ratio` **仍是必報量**（ledger 明文「still reported」），其讀數就是 §18.3；
+gate 判定見 `s14-guided-results.md` §5.4；
+「量測缺陷已經解決」——**修好的儀器上一組跨 session 資料都沒有，slow 層仍為 `NOT_EVALUATED`**。
 
 ---
 
@@ -1563,7 +1904,7 @@ scripts/remeasure_interleaved_champion.py:442-465   逐元素 n_evals 交叉核�
 | treatment 跨 P0 同一性 | 同一批 config 檔（mtime 2026-08-09）；純新增 10 行；`group_0` 逐位元相同；weights = Lock B | **verified** |
 | **Gen0 / gen-10 / AUC**（不受汙染） | capped **3/5 / 3/5 / 3/5**；native **2/5 / 1/5 / 3/5**；要求 ≥4/5 | **MEASURED**（gate 判定見 formal report） |
 | **final champion 端點** | C1 2/5·3/5·2/5；C2 3/5·3/5·3/5（capped）／3/5·3/5·3/5（nat C1）／3/5·3/5·2/5（nat C2） | **提議 `NOT_EVALUATED / instrument-invalid`（PENDING）** |
-| **兩個 campaign 不一致** | capped median F/G 0.9971（2/5）vs 1.0274（3/5）；C2 於解盲後就地覆寫、無 `superseded_*`、對受測臂更有利 | **兩者皆報告；不平均、不擇一**；campaign of record `PENDING` |
+| **兩個 campaign 不一致** | capped median F/G 0.9971（2/5）vs 1.0274（3/5）；C2 於解盲後就地覆寫、無 `superseded_*`、對受測臂更有利 | **兩者皆報告；不平均、不擇一**；**campaign of record 已於 2026-08-15 結案——兩者皆非，由新 campaign 取代（§6.5）** |
 | **量測缺陷根因** | `num-warmups = 321` 三 shape 相同 ⇒ medium 只有 ~3.2 ms warm-up，對比 DPM ramp 所需的 ~50 ms | **ESTABLISHED（推論式，無直接鎖頻證據）** |
 | warm-up sweep | 48 %→32 %→12 %→8 %→**0 %**（51 ms）→0 %→**4 %**（205 ms） | **拐點清楚，但拐點之上非單調；全部在 RBS=0** |
 | 卡別 | tiny-on-hip-5 論證 **SUPERSEDED**；改由 within-card pilot contrast（同卡同 shape，0/21 vs 28–47 %）承載 | **hip 5 平反** |
@@ -1573,7 +1914,7 @@ scripts/remeasure_interleaved_champion.py:442-465   逐元素 n_evals 交叉核�
 | **Q2 稀釋** | final 端點 `NOT_EVALUATED`（design §13.6 明文）；Gen0 中心 **+2.0 % → +3.4 %、3/5 → 5/5** | 混合；中心結果穩固 |
 | **Q3 (i) 極值擴大** | `ln(extreme F/G)` 平均 **−2.2 % → +1.5 %**；4/5 seed 收窄 | ## **在 medium 上 `REFUTED`** |
 | **Q3 (ii) 中心維持／擴大** | 中位數 1.0251 → **1.0331**；**5/5** 為正 | **`SUPPORTED`** |
-| **Q3 (iii) large > medium 梯度** | medium 這一側無擴大 | **`NOT_EVALUATED`**（見 large 附冊） |
+| **Q3 (iii) large > medium 梯度** | medium 這一側無擴大 | **`REFUTED`**（2026-08-18 更正 —— 原寫 `NOT_EVALUATED`；`s14-large-report.md` §10.7a 已於 2026-08-17 判讀：large **+0.0304**、medium **−0.0080**，兩者方向相反，梯度與預測反號）|
 | 有效率產物 | G 98.93–99.08 %、F 98.74–99.12 %（native） | **`ELIMINATED`** |
 | 實現 vs 意圖的 Gen0 | 跨 seed 全距 0.003 → <0.001；中心值在 512 與 11,405 之間**未變**；兩者皆 0.568/0.575 vs 預測的 0.6306 | 整體層次已量測；per-value 表 `NOT_EVALUATED` |
 

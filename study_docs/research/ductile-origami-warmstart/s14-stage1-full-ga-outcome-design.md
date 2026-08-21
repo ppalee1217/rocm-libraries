@@ -485,6 +485,39 @@ margin 治理;**(D3)** 由此導出的逐 shape claim 階梯。
   (2026-08-13 已處理:`analyze_medium.py` 現在**強制**要求 `--campaign {1,2}`,不預設、不平均,
   並在輸出標頭印出實際讀取的路徑;缺少該參數即拒絕執行。)
 
+- **⚠️ 修訂 2026-08-15(owner 裁決)—— 上兩段的 campaign-of-record 與 canonical 事實已變更。**
+  **本節預先登錄的文字不改寫,以下為變更紀錄。**
+
+  **(1) Campaign of record:兩者皆非。** 上文「**campaign 1 為紀錄用量測**」這項認定已被
+  owner 於 2026-08-15 取代。裁決是**不拔擢任何一個 campaign** ——
+  **由一個在修復後儀器上執行的新 campaign 取代兩者**,那才是有意義的量測。
+  該新 campaign 目前為 **pilot only**,完整 campaign 延後且**以 pilot 結果為條件**
+  (`PENDING_HUMAN_DECISION`)。
+  **「兩者都報告、皆不產生 tier、不得平均、不得擇一」這條處置不變。**
+
+  **(2) 「今天執行它會報出 C2」自 2026-08-15 起為假。** 同日 owner 裁定
+  **canonical capped medium 五個 seed 一起 revert 回 campaign 1**
+  (campaign 2 於 revert 前先保存到
+  `medium_recheck_control/capped/seed_*/preserved_campaign2_20260815T000000Z/`;
+  **seed 24004 除外 —— 該 seed 的 campaign 2 於 2026-08-13 被就地覆寫且無備份,不可回復**)。
+  因此**現在讀 canonical 會報出 C1**,方向與原文相反。
+  **危害本身沒有消失,只是換了方向:** 一支讀 canonical 卻自稱在報 C2 的腳本,
+  現在會**無聲地把 campaign 1 標成 campaign 2**。
+  **這件事已實際發生於 `scripts/s14_medium_ratio_analyze.py`**
+  (其 `started_utc >= "2026-08-13"` 守衛對 campaign 1 永不觸發,因 campaign 1 全部 started 於
+  2026-08-11),**已於 2026-08-15 修復**:改讀保存路徑、缺 artifact 時以非零 exit **fail closed**、
+  並改由腳本自身位置推導 run root。`analyze_medium.py` 亦已改為
+  **兩個 campaign 都從明示的 off-canonical 路徑讀,完全不再讀 canonical**。
+
+  **(3) canonical 現況是刻意的混合狀態,不予調和。**
+  `stage3_baseline/seed_*/medium/`(**capped**)現為 **campaign 1**;
+  `stage5_native_baseline/seed_*/medium/`(**native**)仍為 **campaign 2**。
+  **owner 明示此狀態為已知、已接受、刻意 —— 不是疏漏,也不是待辦事項,不要調和它。**
+  **沒有任何資料被刪除或搬走**,兩個 campaign 的 artifact 都仍保存在 canonical 之外。
+
+  **(4) 對本設計其餘部分的影響:無。** 上述四點不改動 §10.2 / §10.4 的預註冊估計量與 gate,
+  也不改變 medium 端點 `NOT_EVALUATED / instrument-invalid` 的提案狀態。
+
 - **⚠️ 更正 2026-08-13 —— native 也被就地覆寫,原文的對照舉例是錯的。** 上一版以
   「對照 `stage5_native_baseline/seed_24005/medium/` 有兩個 `superseded_*`」暗示 native 側留了痕跡。
   **實際不是。** `[CODE AUDIT]` native medium 的 canonical artifact 於 **2026-08-12 14:05:07–14:08:18Z**

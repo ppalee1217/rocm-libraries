@@ -1,7 +1,9 @@
-> **⚠ 本檔是 per-shape 附冊,不是 S14 的結論。** 本檔是
-> [`full-ga-baseline-vs-guided-outcome-report.md`](full-ga-baseline-vs-guided-outcome-report.md)
-> ——S14 唯一 formal report——底下的 **large shape 附冊**,承載該 shape 的詳細實驗記錄。
-> S14 的 gate 是跨 shape 的**連言**,因此**只有** formal report 能陳述「S14 過了沒有」。
+> **⚠ 本檔是 per-shape 附冊,不是 S14 的結論。** 本檔是 **large shape 附冊**,
+> 承載該 shape 的詳細實驗記錄。
+> S14 的 gate 是跨 shape 的**連言**,因此只有跨 shape 的文件能陳述「S14 過了沒有」。
+> **⚠ 2026-08-18 權威變更:** 原文指向 `full-ga-baseline-vs-guided-outcome-report.md`
+> 為「S14 唯一 formal report」。**該檔已由 owner 解除授權。**
+> gate 判定現由 [`s14-guided-results.md`](s14-guided-results.md) **§5.4** 承載。
 > **本檔不得被讀成、也不得被引用為 S14 outcome 的陳述。** 本檔只逐項報告 large 的
 > 觀測值與預註冊分項計數;**不下 gate 判定**。
 >
@@ -13,18 +15,23 @@
 >
 > **⚠ 本檔尚未完成,而且會變。** capped(P0=512)半部**已完整**;
 > **native-Gen0(11,405)半部仍在執行中**——截至 **2026-08-13 02:39 UTC**,五個 native large
-> **baseline** seed 都還活著、尚未寫出任何 trajectory 列;**guided 臂尚未開始**;native large 的
-> 7× remeasure 由 cron 待命中。§10 因此是一份標明 `IN PROGRESS` 的**空表 scaffold**,
-> 所有欄位為 `NOT_EVALUATED`。**本檔不為 native 半部編造任何數字。**
+> **⚠ 上述執行實況是 2026-08-13 的觀測, 已過時, 保留為當時的紀錄。**
+> **2026-08-17 更新: native large 兩臂五個 seed 全部完成, 7× remeasure 五個端點亦已產出。**
+> **§10.7 的表 N1–N5 已由實測 artifact 填入, 表的形狀未因結果而更動;**
+> **§10.3 的三項預先註冊預測已判讀於 §10.7a —— (ii) 成立, (i) 與 (iii) 被推翻。**
+> **本檔仍不為任何欄位編造數字, 也不下 S14 gate 判定。**
 
 ---
 checkpoint_id: S14
 shape: large `(2304, 1024, 1, 214336)`
 role: confirmatory
 document_type: PER-SHAPE ANNEX（附屬於 formal report,不可獨立引用）
-report_status: PARTIAL — capped(P0=512) COMPLETE；native(P0=11,405) IN PROGRESS
+report_status: COMPLETE — capped(P0=512) 與 native(P0=11,405) 皆已完成
+#   (2026-08-18 更正: 原寫 native IN PROGRESS, 為 2026-08-13 快照。native 於 2026-08-17
+#   13:13-13:27 完成, 表 N1-N5 已由實測 artifact 填入。尚未經獨立 verifier 複核。)
 capped_campaign_state: COMPLETE（G/F 各 5 seed + 7× interleaved remeasure 5/5）
-native_campaign_state: RUNNING（baseline 5/5 Gen0 執行中；guided 0/5 未啟動；remeasure cron-armed）
+native_campaign_state: COMPLETE（2026-08-17；5 seed 的 7× 端點見 stage5_native_baseline/seed_*/large/champion_interleaved.json。
+#   guided 側無端點檔是結構性的——worker 把兩臂寫進同一個檔。原值「RUNNING…guided 0/5 未啟動」為 2026-08-13 快照,已於 2026-08-18 更正）
 observation_timestamp_utc: 2026-08-13T02:39Z
 scientific_outcome: NOT_STATED_HERE（屬 formal report）
 design_source: ../../s14-stage1-full-ga-outcome-design.md（§10 ACTIVE、§12 pre-registered、§13 PENDING_HUMAN_DECISION）
@@ -57,7 +64,7 @@ amendments: [RESCOPE-STAGE1-OUTCOME-20260807, PER-SHAPE-SOO-OUTCOME-20260809, EN
 | 層 | 內容 | 狀態 |
 | --- | --- | --- |
 | **A｜capped(P0=512)large** | §2–§9:組態、逐 seed 全表、六個分項、根因、量測稽核、參考包絡、殘餘不確定性 | **COMPLETE** —— 全部為已量測值 |
-| **B｜native(P0=11,405)large** | §10:`NATIVE-P0-ROBUSTNESS-20260811` addendum 的 large 半部 | **IN PROGRESS** —— 全部 `NOT_EVALUATED`,只記錄執行實況與**執行前寫定**的 Q1/Q2/Q3 |
+| **B｜native(P0=11,405)large** | §10:`NATIVE-P0-ROBUSTNESS-20260811` addendum 的 large 半部 | **COMPLETE(2026-08-17)** —— 表 N1–N5 已由實測填入;預測判讀見 §10.7a(兩項被推翻);**尚未經獨立 verifier 複核** |
 | **C｜屬 formal report、本檔不做的事** | S14 gate 判定、跨 shape 連言、claim ladder 最終措辭 | **不在本檔** |
 
 **一句話定位(不是結論,是記錄):** large 是**唯一有一個預註冊子判準通過的 shape**
@@ -78,7 +85,9 @@ amendments: [RESCOPE-STAGE1-OUTCOME-20260807, PER-SHAPE-SOO-OUTCOME-20260809, EN
    `GlobalReadVectorWidthA`、`GlobalReadVectorWidthB`),medium 2/27、tiny 0/27
    (`[MODEL-ONLY]` `derivation-manifest-capped.json` `per_shape_activation_log`;S11 報告 §13.1)。
    **這一點必須與結果一起讀:訊號供給最充足的 shape,淨效應仍 ≈ 0。**
-2. **量測最乾淨。** large 的 7× remeasure **0/70 dropout**、視窗內經驗離散度 0.0269
+2. **量測最乾淨。** large 的 7× remeasure **1/70 dropout = 1.43 %**(專案唯一實作的 **0.95** 判準;
+   在 index §7.1a 的 **0.80** 判準下為 0/70。唯一命中是 seed 24005 arm F,`min 522,984 < 0.95 × 550,706`,
+   是 0.9497 的邊界點)、視窗內經驗離散度 0.0269
    (§7)。medium 的主要指標則已被證實 instrument-invalid(design §13.3),
    **這個缺陷碰不到 large。**
 3. **實務代表性最高。** design §12.2(A)(2):大 GEMM 是 tuning 成本的重心。
@@ -86,7 +95,7 @@ amendments: [RESCOPE-STAGE1-OUTCOME-20260807, PER-SHAPE-SOO-OUTCOME-20260809, EN
 ### 1.2 本檔能陳述的
 
 - `[BASELINE GPU]`／`[GUIDED GPU]` capped-512 下,large 的逐 seed Gen0／gen-10／AUC／
-  7×-median final champion 觀測值,以及六個預註冊分項各自的 5-seed 計數(§4)。
+  7×-median final champion 觀測值,以及各預註冊分項的 5-seed 計數(§4;**現行 gate 為前三項**,見 §4.4 的更正框)。
 - `[CODE AUDIT]` 這些分項所依賴的 pins、hash、GPU UUID、偏差與其處置(§2、§3)。
 - `[CODE AUDIT]` large 量測品質的稽核,以及它為何**不受** medium warm-up 缺陷影響(§7)。
 - 5/5 non-regression 在**兩個 margin 下**的雙重判定,以及 `η_large` 本身的來源與其未驗證性(§5)。
@@ -99,7 +108,8 @@ amendments: [RESCOPE-STAGE1-OUTCOME-20260807, PER-SHAPE-SOO-OUTCOME-20260809, EN
 - **不**作優越性宣稱、不作一般化／部署／跨架構／end-to-end wall-clock 宣稱(charter §8.6)。
 - **不**歸因於 Formocast 的 physics 方向——conditional Arm S 的觸發條件與判定屬 formal report,
   未觸發時歸因僅限「capped factorized initialization bundle vs baseline」(design §10.5)。
-- **不**為 native 半部給出任何數字(§10)。
+- ~~**不**為 native 半部給出任何數字(§10)。~~ **⚠ 2026-08-18 作廢** —— native 已於 2026-08-17
+  完成,§10.7 的表 N1–N5 全部由實測 artifact 填入。本檔**確實**陳述 native 的數字。
 
 ---
 
@@ -193,8 +203,22 @@ amendments: [RESCOPE-STAGE1-OUTCOME-20260807, PER-SHAPE-SOO-OUTCOME-20260809, EN
    warm-up sweep **每一個零 dropout 的點都跑在 RBS = 0**,而兩個 RBS-4096 的長暖機變體
    **25/25 全數 crash**(50 次 `hipModuleLoad rc=-6`)。所以「large 乾淨」這件事**不能**被拿來
    論證「同一個修法在 medium 的釘死 RBS 4096 下也會成立」。
-   決定性的可行性探測是 **5,136 warm-ups @ RBS 4096**,**尚未執行**
-   (design §13.7 第 2 項;§13 整節為 `PENDING_HUMAN_DECISION`)。
+   決定性的可行性探測是 **5,136 warm-ups @ RBS 4096**。
+   **⚠ 更正(2026-08-18):原文寫「尚未執行」,那是假陳述 —— 它寫下時就已經是錯的。**
+   該探測**已於 2026-08-13 執行**(`agent_run/260809-s14-pershape-baseline/medium_clockladder/capped/`
+   `seed_{24001,24004,24005}/s4_warmup5136/probe_20260813T131304Z.log`),**三個 seed 全部 `rc = 1`**。
+   **但三者的死因不同,不可寫成同一個機制:** seed **24001 與 24005** 走到了那次配置並顯示
+   `Rotating buffer set to: 4294967296. Rotating num: 3272` 與
+   `1312256 * 3272 = -1265664` —— **int32 環繞由引擎自己印出的負數確證**;
+   seed **24004 在到達該配置之前先中止**(同檔 `:623`,
+   `Client must be linked with an embedded library or a library must be specified at runtime.`),
+   **其失敗與溢位無關**。
+   ⇒ **該條件已 `EVALUATED / closed by infeasibility`,不是 `NOT_EVALUATED`**
+   (與 index §9.5 及 ledger `CAPABILITY-ENDPOINT-PACKET-20260813` 的既有記錄一致);
+   不可行的門檻是 **`nw ≥ 1638 @ RBS 4096`**,**不是「RBS 4096 不可行」** ——
+   `1400 @ 4096` 與 `1637 @ 4096` 都量過,n = 50,dropout 各 4.0 %
+   (`medium_warmup_rbs4096_confirm_summary.json`)。
+   **本項結論(可移轉性未被驗證)不受影響,錯的只有它給的理由。**
 
 **⚠ 因此:凡是把 large 的乾淨量測拿來替 medium 的量測背書的論述,在本研究的證據下都不成立。**
 
@@ -344,7 +368,7 @@ gen-10 亦可由 `champion_interleaved.json.arms.{G,F}.resolution_provenance.gen
 | 24005 | G | 534,715 · 522,589 · 548,901 · 522,505 · 549,435 · 535,467 · 535,902 | 1.0515 | **535,467** | — |
 | 24005 | F | 535,810 · 550,197 · 550,706 · 550,091 · 523,638 · 523,174 · 522,984 | 1.0530 | **535,810** | — |
 
-**每一臂的 7 次 repeat 都落在 1.024×–1.053× 的全距內。0/70 dropout(§7)。**
+**每一臂的 7 次 repeat 都落在 1.024×–1.053× 的全距內。1/70 dropout = 1.43 %(0.95 判準);0/70(0.80 判準)。見 §7.2。**
 對照 medium 同一協定下的 2.36×–6.06×(index §7.1a)——**這是本研究中最可重複的量測。**
 
 F-vs-G 對比(分析量為 `ln(F/G)`,理由見 index §5b):
@@ -368,9 +392,21 @@ F-vs-G 對比(分析量為 `ln(F/G)`,理由見 index §5b):
 都落在該臂 `optimization_result.json` 的 `best_individual_hashes` 內(撰稿者逐檔重算)。
 這是 design §13.6 那個 40/40 統計中屬於 large 的一半。
 
-### 4.4 六個預註冊分項的 5-seed 計數
+### 4.4 預註冊分項的 5-seed 計數
 
-> **這是計數,不是判定。** gate 判定屬 formal report。
+> **這是計數,不是判定。** gate 判定屬 `staged/s14-guided-results.md` **§5.4**(owner 於 2026-08-18 指定;
+> 原本指向的 `full-ga-baseline-vs-guided-outcome-report.md` **已由 owner 解除授權**)。
+>
+> **⚠ gate 的成分數(2026-08-18 更正)。** 原標題寫「**六個**預註冊分項」。現行判定以
+> **{Gen0、gen-10、AUC} 三項 margin-free 子判準**為準 —— 第四個子判準
+> `final ratio ≥ e^{−η_s}` 已由 `ETA-MARGIN-REMOVED-20260814` **移出 gate 成分**,
+> 且**未登記任何替代門檻**。
+> **但預註冊設計檔 `s14-stage1-full-ga-outcome-design.md:226` 本身尚未被修訂**
+> (該 token 在該檔命中 0 次;index §2 的 ledger 註明「owner to amend separately」),
+> 所以那份文件讀起來仍是四項連言。
+> **`final ratio` 並未被移除為必報量** —— ledger 明文「still reported(direction + effect size)」,
+> 其判讀方法由 `NULL-AS-NOISE-BASELINE-20260818` 指定(對 null 尺,**不設倍數門檻**)。
+> 下表保留全部分項的計數;**只有前三項是現行 gate 成分**。
 
 | 分項 | 判準 | 為正的 seed | 需要 |
 | --- | --- | :---: | :---: |
@@ -405,7 +441,10 @@ F-vs-G 對比(分析量為 `ln(F/G)`,理由見 index §5b):
 ## 5. 那個 5/5 non-regression —— 唯一通過的分項,必須極為小心地處理
 
 > **⚠ 這是本研究中唯一在任何地方通過的預註冊分項,而且它尚未解決。**
-> **它只是四項連言中的一個分項,且四項並未全數達標。引用它時,絕不可略去它所條件依賴的 margin。**
+> **它只是預註冊四項連言中的一個分項,且四項並未全數達標。引用它時,絕不可略去它所條件依賴的 margin。**
+> **⚠ 2026-08-18 補記:** 該分項所依賴的 `η_s` margin 已於 2026-08-14 由
+> `ETA-MARGIN-REMOVED-20260814` 移出 gate 成分。**因此這個 5/5 現在連「gate 分項」都不是** ——
+> 它是一個已退役判準下的歷史計數。**更不可單獨引用。**
 > design §13.5 對 large 的規定(該節為 `PENDING_HUMAN_DECISION`,**尚未經 owner 核准**):
 > 5/5 non-regression **僅能作為一個分項報告、絕不可單獨引用**。
 
@@ -448,6 +487,23 @@ design §13.7 第 1 項把它列為「合併式跨視窗 / A-A 實驗」(一個 
 **尚未獲核准、尚未執行**;design §13.9 明列「**任何 shape 都不存在跨視窗／跨日的重複性資料;
 窗內 η 是一個緊度未知的下界**」。
 
+> **⚠ 部分更正(2026-08-18)。** 上引 design §13.9 的那句概括**已不再為真**:
+> `large_xwindow/results/m6/`(2026-08-17)是 **large native 的跨視窗**資料
+> ——6 個 window × 5 seed,per-seed `sd(ln(F/G))` = 0.0125 / 0.0154 / 0.0125 / 0.0204 / 0.0172;
+> `medium_pilot401/results/` 的九個 `m = 12` cell 是 **medium 的跨視窗**資料。
+> **但這一段的主張仍然成立**,因為它要的是**特定那一個實驗**:
+> design §13.7 第 1 項的 A/A 設計是 **12–15 個視窗、分佈於 12–24 小時、每窗三臂 G / F / G′**。
+> m6 是 **6 個視窗、同一天連續、兩臂**,既沒有跨日、也沒有第三條 null 臂。
+> **仍然不存在的是: 跨「日」的重複性(修好的儀器上一組跨 session 資料都沒有)、
+> ~~以及 large capped 的跨視窗資料(該塊只有一個 window)。~~ **⚠ 已於 2026-08-18 為假** ——
+> `large_xwindow/results/m6_capped/`(6 window × 5 seed,2026-08-18)就是 large capped 的跨視窗資料,
+> per-seed sd **0.01195 – 0.02742**。
+> **連帶後果,必須連著讀:** §5.1 的窗內經驗 `η = 0.0269` 被本檔形容為「緊度未知的下界」,
+> 而 `m6_capped` 的跨窗 sd **與它同級** —— §5.2 用來拒絕經驗 margin 的理由(「它很可能只是下界」)
+> 現在有直接反證。**本節不代為裁決,但該理由不能再原樣沿用。**
+> **仍然沒有的只剩跨「日」的重複性。**
+> 見 §10.7b。
+
 ### 5.3 `η_large` 撐在兩個 champion 重測重現不出來的 pilot anchor 上
 
 `[CODE AUDIT]` 撰稿者直接對 pilot 原始資料
@@ -486,12 +542,19 @@ design §13.7 第 1 項把它列為「合併式跨視窗 / A-A 實驗」(一個 
 **同一道預註冊 gate、在兩個 confirmatory shape 上,同時出現兩個方向的誤差,原因相同:
 `η_s` 從未對照它所 gate 的量測驗證過。**
 
-### 5.5 站得住的報告方式(**待 owner 決策,本檔不代為裁決**)
+### 5.5 站得住的報告方式
 
-design §13.4 的 **D2** 提案是:pinned `η_s` **維持治理地位**,但三個 shape 都必須
-**同時報告兩種 margin**。**該節整體為 `PENDING_HUMAN_DECISION`,尚未核准**
-(design §13 前言:「在核准之前,§10.2 / §10.4 的預註冊估計量與 gate 一律維持原狀」;
-index §9.3 第 5 項:「Confirm **pinned η_s governs** (D2), with dual-margin disclosure」仍在待裁決清單上)。
+> **⚠ 2026-08-18 更正 —— 本節原本寫「待 owner 決策」,那已經過期八天。**
+> 原文引 design §13.4 的 **D2** 提案(pinned `η_s` 維持治理地位 + 雙 margin 揭露)並稱它
+> 「整體為 `PENDING_HUMAN_DECISION`,尚未核准」、index §9.3 第 5 項「仍在待裁決清單上」。
+> **實際上該項已於 2026-08-14 由 owner 裁決,而且是相反的方向:**
+> `ETA-MARGIN-REMOVED-20260814` **移除**了 per-shape noise margin `η_s`,
+> 連同第四個 gate 子判準 `final ratio ≥ e^{−η_s}` 一併移出 gate 成分,**且未登記替代門檻**。
+> index §9.3 第 5 項已標 `DECIDED 2026-08-14 … decided the other way … item closed`。
+> **⇒ 「D2 是否成立」不再是待決事項;`η_s` 已無治理地位。**
+> 以下保留原本的雙 margin 論證,**因為那兩個數字本身仍然是既成紀錄**
+> (`measurement_design.md` §H.4 第 3 層:舊紀錄可以留著用 η,新的推理不可以),
+> **但它們不得再作為新分析或新判準的尺規。**
 
 依 index §7.2a 的建議措辭:
 
@@ -577,7 +640,15 @@ TV=0.335500、KL=0.277096)、`UnrollLoopSwapGlobalReadOrder` ρ=0.80(`S_g=0.1647
 
 ---
 
-## 7. large 的量測品質稽核 —— 為什麼它是乾淨的
+## 7. large 的量測品質稽核 —— 單窗端點乾淨,窗間離散度另計
+
+> **⚠ 標題於 2026-08-18 收窄。** 原標題是「**為什麼它是乾淨的**」,那個概括過寬:
+> 本節量到的是**單一 window 的端點**,而 2026-08-17 的跨窗探針 `large_xwindow/results/m6/`
+> 在同一批 native champion 上得到 **pooled dropout 8.10 %**(34 / 420,95 % 判準)。
+> **兩者不衝突,母體與判準都不同** —— 見 §7.2 的判準說明與 §10.7b。
+> **本節的結論(large 沒有 medium 那個缺陷)仍然成立**,但它成立的根據是
+> **large 端點的 dropout 是 1.4–2.9 %,而 medium 修復前是 39–46 %**,
+> 不是「large 與 medium 修好後同級」。
 
 ### 7.1 缺陷機制與 large 的曝險
 
@@ -588,7 +659,7 @@ TV=0.335500、KL=0.277096)、`UnrollLoopSwapGlobalReadOrder` ρ=0.80(`S_g=0.1647
 | shape | kernel duration | warm-up 牆鐘時間 | 結果 |
 | --- | ---: | ---: | --- |
 | medium | ~10 µs | **~3.2 ms** | 28 % dropouts(campaign 2 統計;紀錄用的 campaign 1 為 46.4 %) |
-| **large** | **~1,873 µs** | **~601 ms** | **0 / 70 dropouts** |
+| **large** | **~1,873 µs** | **~601 ms** | **1 / 70 dropouts**(0.95 判準;0.80 判準下 0/70) |
 | tiny | dispatch-bound | (對 clock 不敏感) | 1 / 70 |
 
 閒置的 MI300X 停在 132–180 MHz,需要**數十毫秒的持續工作**才會升到 2100 MHz。
@@ -608,22 +679,38 @@ warm-up sweep 給出的拐點在 **51 ms**(dropout 率 0 %)。
 
 index 引用的 **1,873 µs / ~601 ms** 落在此實測區間內,兩者一致。
 
-### 7.2 large 的 dropout 稽核:0/70
+### 7.2 large 的 dropout 稽核:0.95 判準下 1/70,0.80 判準下 0/70
 
 `[CODE AUDIT]` 撰稿者依 index §7.1a 的判準(低於該臂最大值 80 % 者計為 dropout),
 對三個 shape 的每一次 repeat 逐筆重算:
 
 | shape | 使用的卡 | dropouts | rate |
 | --- | --- | ---: | ---: |
-| medium | hip 5 only(`--gpu-uuid-override`,index §8.3) | 17 / 70(live campaign 2 檔案) | 24.3 % |
+| medium | hip 5 only(`--gpu-uuid-override`,index §8.3) | **32 / 70**(見下方更正) | **45.7 %** |
 | tiny | hip 2, 3, 4, 6, 7 | **1 / 70** | 1.4 % |
-| **large** | **hip 2, 3, 4, 6, 7** | **0 / 70** | **0 %** |
+| **large** | **hip 2, 3, 4, 6, 7** | **0 / 70**(0.80 判準)／**1 / 70**(0.95 判準) | **0 %**／**1.43 %** |
 
 *Source:* `stage3_baseline/seed_*/{large,tiny,medium}/champion_interleaved.json` → `remeasure.{G,F}`。
-**medium 一列的說明:** live 的 medium 檔案是 **campaign 2**(campaign 1 已於 2026-08-12
-14:01–14:04Z 被就地覆寫,保存於
-`medium_recheck_control/.../preserved_campaign1_20260812T135613Z/`),
-而 design §13.3 認定 **campaign 1 才是紀錄用量測**(其汙染率 46.4 %)。
+
+> **⚠ 更正(2026-08-18)—— medium 一列與它的說明都已與所引來源脫節。**
+> 原文寫 **17 / 70 = 24.3 %**,並說明「live 的 medium 檔案是 **campaign 2**
+> (campaign 1 已於 2026-08-12 14:01–14:04Z 被就地覆寫)」。
+> **2026-08-15 的 revert 把那五個檔案換回了 campaign 1**
+> (`measurement_design.md` §H.1:五個 `champion_interleaved.json` mtime `2026-08-11T08:34–08:37Z`)。
+> 所以 *Source* 指的那條路徑現在給出的是 **campaign 1**,就地重算為 **32 / 70 = 45.7 %**
+> (80 % 與 95 % 兩種判準下同值)。**數字與說明都已依實際檔案更正。**
+> campaign 2 的 17 / 70 = 24.3 % 仍然有效,但它的來源是
+> `medium_recheck_summary.json` 與 `medium_recheck_control/.../preserved_campaign2_*/`,
+> **不是這一列引的路徑**。design §13.3 認定 **campaign 1 才是紀錄用量測**,與更正後的數字一致。
+
+> **⚠ 判準必須並列標明(2026-08-18)。**
+> 上表用的是 index §7.1a 的 **80 %** 判準。
+> **本專案在量測程式裡唯一實作的定義是 95 %**(`medium_pilot401/run_cell.py:13`、
+> `large_xwindow/run_windows.py:82` `DROPOUT_FRAC = 0.95`,兩者逐字相同)。
+> 以 95 % 重算:**large `1 / 70` = 1.4 %**、**tiny 與 medium 不變**。
+> `stage5_native_baseline/seed_*/large/` 以 95 % 重算為 **2 / 70 = 2.9 %**。
+> **兩個判準都要標明是哪一個** —— §10.7b 引用的 m6 用的是 95 %,母體 420,
+> **與本表不可直接相比**。**不得由此寫出「large 差 5 倍」這類跨判準、跨母體的比較。**
 **本表的 medium 一列僅供對照,medium 的正式數字屬 medium 附冊。**
 
 ### 7.3 large 的 interleaved 視窗:**~106 s**
@@ -788,7 +875,8 @@ tiny 的 5 個 seed 於不同時點補齊),記為 `NOT_EVALUATED`;**以 design �
 5. **時脈機制由 warm-up sweep、DPM 算術與 tiny 的實測時脈不敏感性推論而得;
    不存在任何直接的鎖頻證據**(design §13.7 的 owner action,約 10 分鐘、零研究 GPU 時數,
    **未執行**)。
-6. **§6 的中心-極值機制尚未被正式確認**;其操縱變因檢驗(§10 的 Q3)**尚無結果**。
+6. **§6 的中心-極值機制尚未被正式確認**;其操縱變因檢驗(§10 的 Q3)**已於 2026-08-17 有結果**
+   (2026-08-18 更正 —— 原寫「尚無結果」):見 §10.7a,預測 (i) 與 (iii) **被推翻**、(ii) **成立**。
 7. **`scripts/remeasure_interleaved_champion.py` 的今日 sha256 與 index §8.4 記載的修正後 hash
    不符**(§3.2),差異內容 `NOT_EVALUATED`。
 8. **Modest power**:5 對 paired seed、單一 development cluster、限受測 shape,
@@ -798,14 +886,18 @@ tiny 的 5 個 seed 於不同時點補齊),記為 `NOT_EVALUATED`;**以 design �
 
 ---
 
-## 10. Native-Gen0(11,405)large —— **`IN PROGRESS` SCAFFOLD**
+## 10. Native-Gen0(11,405)large —— **已完成(2026-08-17)**
 
-> **⚠ 本節不含任何結果。** 所有欄位為 **`NOT_EVALUATED`**。本節的存在目的是:
-> (a) 記錄**執行前**就已寫定的問題與方向性預測,使它們可被否證;
-> (b) 記錄撰稿時刻的執行實況;
-> (c) 為將要填入的表**預先固定形狀**,避免事後選擇性呈現。
-> **本節不得被讀成任何關於 native large 的陳述,包括「無效果」。**
-> `NOT_EVALUATED ≠ 無效果`。
+> **狀態變更(2026-08-17):** native large 的兩臂五個 seed 已全部完成,7× interleaved remeasure
+> 亦已產出五個端點。**§10.7 的表 N1–N5 已由實測 artifact 填入**;
+> §10.1–§10.6 的**執行前**內容一字未改, 使預測仍可被否證。
+>
+> **本節仍不含任何 S14 gate 判定。** gate 判定屬 `staged/s14-guided-results.md` **§5.4**
+> (owner 於 2026-08-18 指定;原本指向的 `full-ga-baseline-vs-guided-outcome-report.md`
+> 已由 owner 解除授權)。
+>
+> **§10.3 的三項預先註冊預測已可判讀, 結果記於 §10.7a:**
+> **(ii) 成立;(i) 與 (iii) 被推翻。** 依 §10.3 的字面要求, 此處照實記錄, 不改寫預測。
 
 ### 10.1 這是什麼、屬於哪一個 gate
 
@@ -880,7 +972,21 @@ design §12.2(B)2 指出「Q2 需要一個效應量本身量得出來的 shape�
 `weights_sha256 = 56c34446385e93138944082b1801649271fd6a49df948aa41017cb05d012f34f`。
 **⇒ Gen0 確實膨脹到 11,405,fail-closed 的膨脹檢查通過。**
 
-### 10.6 **執行實況(觀測時間:2026-08-13 02:39 UTC)**
+### 10.6 **執行實況(觀測時間:2026-08-13 02:39 UTC)—— ⚠ 已被 §10.7 取代**
+
+> **⚠ 更正(2026-08-18)。本小節是 2026-08-13 的快照,它記錄的每一項「未啟動 / 空目錄 / `done: 0`」
+> 都已於 2026-08-17 失效。§10.8 自己也要求「native 完成後必須更新 §10.6」——
+> 這是那次更新。**
+>
+> **現況:** native large 已於 2026-08-17 執行完畢,五個 seed 的 7× 端點都在
+> `stage5_native_baseline/seed_*/large/champion_interleaved.json`(mtime 2026-08-17 13:13–13:27),
+> §10.7 的表 N1–N5 即由這批 artifact 填入。
+> **`stage5_native_guided/seed_*/large/` 仍然沒有 `champion_interleaved.json`,但那不是缺口** ——
+> worker 把**兩臂寫進同一個檔**(`arms: [F, G]`、`median_gflops {F, G}`),
+> 所以端點檔只出現在 baseline 側。下表「arm F `FRESH`(未啟動)」與
+> 「guided large 五個目錄完全是空的」兩句,**在 2026-08-13 為真,現在都已為假**。
+>
+> **以下原文保留為當時的觀測紀錄,不改寫。**
 
 `[CODE AUDIT]` `native_status.json`(`ts_utc: 2026-08-13T02:37:02Z`)、
 `native_remeasure_status_large.json`(`ts_utc: 2026-08-13T02:38:09Z`)、
@@ -940,16 +1046,33 @@ log 中零筆 `Max iterations reached`;`trajectory.jsonl` 的 generation 1 記�
 (§12.6 指出 native large 最易被 reboot 打斷),已於**任何 large run 啟動前**由 kill/resume
 驗證測試發現並修正(resume 路徑改為要求來自 banked trajectory 的正面證據,fail-closed)。
 
-### 10.7 待填的表(**形狀已固定,內容全為 `NOT_EVALUATED`**)
+### 10.7 表(**形狀為執行前固定, 內容於 2026-08-17 由實測 artifact 填入**)
 
-> 下列每一格在 native large 完成並經獨立 verifier 由 locked artifact 重算前,一律
-> **`NOT_EVALUATED`**。**不得**以 capped 值、推估值或任何合成值填入。
+> **來源:** `stage5_native_{baseline,guided}/seed_*/large/` 之下的
+> `trajectory.jsonl`、`optimization_result.json`、`champion_interleaved{,_raw,_status}.json`。
+> **表的形狀未因結果而更動。** 尚未由獨立 verifier 重算, 因此本節數字標為
+> **[measured, 未經獨立 verifier 複核]**。
 
 #### 表 N1 —— Native large run 層級量
 
 | seed | arm | 實際 Gen0 母體 | `generations_run` | 早停 | `cumulative_complete_evals` | `best_fitness` |
 | --- | :---: | ---: | ---: | :---: | ---: | ---: |
-| 24001–24005 | G / F | `NOT_EVALUATED`(fail-closed 期望 11,405) | `NOT_EVALUATED` | `NOT_EVALUATED` | `NOT_EVALUATED` | `NOT_EVALUATED` |
+| 24001 | G | 11,405 | 20 | **YES** | 29,380 | 587,343 |
+| 24001 | F | 11,405 | 30 | no | 31,747 | 590,435 |
+| 24002 | G | 11,405 | 30 | no | 31,991 | 565,845 |
+| 24002 | F | 11,405 | 30 | no | 31,639 | 579,219 |
+| 24003 | G | 11,405 | 30 | no | 31,821 | 584,791 |
+| 24003 | F | 11,405 | 26 | **YES** | 30,953 | 573,870 |
+| 24004 | G | 11,405 | 30 | no | 31,864 | 563,518 |
+| 24004 | F | 11,405 | 29 | **YES** | 31,757 | 551,470 |
+| 24005 | G | 11,405 | 23 | **YES** | 30,225 | 569,997 |
+| 24005 | F | 11,405 | 30 | no | 32,013 | 580,795 |
+
+**Gen0 母體十個 run 全部是 11,405, 與 fail-closed 期望值相符。**
+**早停 4/10**(判準 `period = 5`, `tol = 8e-4`, `ga.py:184-197`), 其餘 6 個跑到 `n_gen = 30` 上限。
+**代數 20–30, 但 `complete_evals` 落在 29,380–32,013(帶寬為平均值的 8.4 %)** ——
+原因是母體幾何衰減, 前 20 代即消耗約 92 % 預算, 後期每代僅約 250–280 次。
+**因此代數不可當搜尋量的代理;AUC 一律對評估數積分**(見 `report-source-index.md` 三個計數器的定義)。
 
 *Source(將來):* `stage5_native_{baseline,guided}/seed_*/large/{trajectory.jsonl, optimization_result.json, driver_status.json}`
 
@@ -957,45 +1080,162 @@ log 中零筆 `Max iterations reached`;`trajectory.jsonl` 的 generation 1 記�
 
 | seed | Gen0 best G | Gen0 best F | 方向 | gen-10 G | gen-10 F | 方向 | `B*` | AUC F/G | 方向 |
 | --- | ---: | ---: | :---: | ---: | ---: | :---: | ---: | ---: | :---: |
-| 24001–24005 | `NOT_EVALUATED` | `NOT_EVALUATED` | — | `NOT_EVALUATED` | `NOT_EVALUATED` | — | `NOT_EVALUATED` | `NOT_EVALUATED` | — |
-| **為正的 seed 數** | | | `NOT_EVALUATED` | | | `NOT_EVALUATED` | | | `NOT_EVALUATED` |
+| 24001 | 510,192 | 511,367 | + | 581,308 | 575,858 | − | 29,380 | 0.9994 | − |
+| 24002 | 496,728 | 516,074 | + | 547,815 | 557,692 | + | 31,639 | 1.0293 | + |
+| 24003 | 458,644 | 505,837 | + | 572,912 | 564,437 | − | 30,953 | 1.0388 | + |
+| 24004 | 484,090 | 483,087 | − | 542,258 | 522,916 | − | 31,757 | 0.9853 | − |
+| 24005 | 511,342 | 487,432 | − | 566,572 | 561,068 | − | 30,225 | 0.9733 | − |
+| **為正的 seed 數** | | | **3/5** | | | **1/5** | | | **2/5** |
 
 #### 表 N3 —— Native large 7× interleaved remeasure
 
 | seed | G median | F median | F/G | `ln(F/G)` | pinned floor 0.8844 | 經驗 floor(待重算) |
 | --- | ---: | ---: | ---: | ---: | :---: | :---: |
-| 24001–24005 | `NOT_EVALUATED` | `NOT_EVALUATED` | `NOT_EVALUATED` | `NOT_EVALUATED` | `NOT_EVALUATED` | `NOT_EVALUATED` |
+| 24001 | 578,956 | 582,849 | 1.00672 | +0.00670 | 通過 | `NOT_EVALUATED` |
+| 24002 | **498,236** | 579,018 | **1.16214** | **+0.15026** | 通過 | `NOT_EVALUATED` |
+| 24003 | 588,193 | 564,302 | 0.95938 | −0.04147 | 通過 | `NOT_EVALUATED` |
+| 24004 | 558,618 | 548,563 | 0.98200 | −0.01816 | 通過 | `NOT_EVALUATED` |
+| 24005 | 573,013 | 571,291 | 0.99699 | −0.00301 | 通過 | `NOT_EVALUATED` |
+
+**`ln(F/G)` 中位數 = −0.0030;pinned non-regression 5/5;improvement 1/5(僅 24002)。**
+
+> **⚠ seed 24002 的 +16 % 必須連著它的來歷一起讀, 否則會被誤解。**
+> 它**不是**量測不穩: 兩臂在窗內都很緊(`max/min` = 1.024 / 1.031, 零 dropout)。
+> 它是 **G 臂的 champion 撐不住**: GA 記的 `best_fitness = 565,845`, 7× 重測 clean median 只有
+> **498,236(−11.95 %, 十個 run 中最大的 winner's curse)**。
+> 該 champion(`9908df17…`)**只在第 30 代出現一次、被量過一次, 以 0.22 % 擠掉守了三代的 incumbent
+> `11dbb233…`(GA 564,595)**;重測時它在 8 次獨立 invocation 中穩定落在 2,022–2,076 µs。
+> **亦即該臂實質停在其 gen-1 水準(496,728)。**
+> **這正是 design §12.3 要求 native champion 必須跑同一套 7× 重測的理由 —— 它真的抓到了一次。**
 
 *註:* design §12.3 明訂 native champion **必須**跑與 capped 版**同一套** 7× 交錯重測協定
 (同卡、同視窗、G/F 交錯、取中位數),起始臂沿用 `START_ARM = {large: F}`。
 理由(§12.3 原文):native 約 30,600 evals 對 capped 約 7,689(4×),
 **winner's curse 的向上偏差在 native 更大**,不跑同一套重測就無法分離
-「真實效應量差異」與「量測協定差異」。**⚠ 上表的 deviation 已預先記錄:
-native large remeasure 排定於閒置的 GPU 5,非各 seed 的 Lock-A 搜尋卡**
-(`native_remeasure_status_large.json`)——這與 capped large 的「同卡重測」**不同**,
-屆時必須與 §7.2 的 dropout 稽核一併重做,不得沿用 capped large 的乾淨結論。
+「真實效應量差異」與「量測協定差異」。**⚠ 上述那條預先記錄的 deviation 最終沒有發生, 這一點要更正:**
+原本排定於閒置的 GPU 5 序列執行(因為當時 native large 的 GA 佔滿五張搜尋卡)。
+**實際執行時 GA 已結束、卡片釋出, 於是五個 seed 各自跑在自己那張搜尋卡上、平行執行**
+(`gpu_uuid_override: null`、`run_card_differs_from_search_card: false`, 五份 status 皆然)。
+**所以 native large 與 capped large 在「同卡重測」這一點上是一致的, 沒有卡片層級的差異需要折算。**
+
+**dropout 稽核(依 §7.2 的同一判準: 一次 repeat `< 0.95 ×` 該 arm 同窗 7 次的最大值)已重做:**
+**native large 為 2/70 = 2.86 %**(24004 F 第 5 次 = 0.949、24005 F 第 6 次 = 0.925);
+併入 capped large 後為 **3/140 = 2.14 %**。**不是零, 但與 medium 舊儀器的 42.5 % 不同量級。**
 
 #### 表 N4 —— Q3:極值機制的 22× 操縱
 
-| 量 | capped(P0=512,**已量測**) | native(P0=11,405) | 預測方向 |
-| --- | ---: | ---: | --- |
-| Gen0 **中心** F/G 中位數 | **1.0197**(4/5 為正) | `NOT_EVALUATED` | 維持或擴大(預測 ii) |
-| Gen0 **極值** F/G 中位數 | **0.9719**(1/5 為正) | `NOT_EVALUATED` | 劣勢**擴大**(預測 i) |
-| Gen0 有效候選數 | G 480–489 / F 480–491(/512) | `NOT_EVALUATED` | —— |
-| large vs medium 的擴大幅度比較 | —— | `NOT_EVALUATED` | large > medium(預測 iii) |
+| 量 | capped(P0=512) | native(P0=11,405) | 預測方向 | 判讀 |
+| --- | ---: | ---: | --- | --- |
+| Gen0 **中心** F/G 中位數 | **1.0197**(4/5 為正) | **1.0208**(**5/5** 為正) | 維持或擴大(預測 ii) | **預測成立** |
+| Gen0 **極值** F/G 中位數 | **0.9719**(1/5 為正) | **1.0023**(**3/5** 為正) | 劣勢**擴大**(預測 i) | **預測被推翻 —— 劣勢不但沒擴大, 反而消失** |
+| Gen0 有效候選數 | G 480–489 / F 480–491(/512) | G 10,743–10,793 / F 10,760–10,811(/11,405) | —— | 兩臂對稱, 無偏 |
+| large vs medium 的擴大幅度比較 | —— | large **+0.0304**(0.9719→1.0023)vs medium **−0.0080**(1.0007→0.9927) | large > medium(預測 iii) | **預測被推翻 —— 方向相反** |
 
 #### 表 N5 —— 跨 P0 對照(Q1 / Q2 的最終讀數)
 
 | 量 | capped 512 | native 11,405 | 判讀 |
 | --- | --- | --- | --- |
-| final `ln(F/G)` 中位數 | **+0.0006** | `NOT_EVALUATED` | Q1 方向一致性 / Q2 稀釋 |
-| Gen0 / gen-10 / AUC 的為正 seed 數 | **1/5 / 2/5 / 3/5** | `NOT_EVALUATED` | Q1 |
-| non-regression(pinned / 經驗) | **5/5 / 3/5** | `NOT_EVALUATED` | 兩個 margin 都要報 |
-| improvement | **0/5** | `NOT_EVALUATED` | —— |
+| final `ln(F/G)` 中位數 | **+0.0006** | **−0.0030** | 兩者都貼近 0;**跨 P0 的方向未翻轉成一個可讀的效應** |
+| Gen0 / gen-10 / AUC 的為正 seed 數 | **1/5 / 2/5 / 3/5** | **3/5 / 1/5 / 2/5** | 全部落在 1/5–3/5, **無一達到預註冊的 ≥ 4/5** |
+| non-regression(pinned / 經驗) | **5/5 / 3/5** | **5/5 / `NOT_EVALUATED`** | 經驗 floor 需獨立重算 |
+| improvement | **0/5** | **1/5**(僅 seed 24002) | 該筆的來歷見表 N3 的警語 |
+
+**逐 seed 的 `ln(F/G)` 在兩個 P0 尺度之間有 3/5 換號**(24001 −0.0749→+0.0067、24003 +0.0604→−0.0415、
+24005 +0.0006→−0.0030), 而**十個 champion 全部不同**, 所以這**不是**同一個東西被量兩次。
+**native 的 champion 品質 9/10 優於 capped(中位數 +6.4 %)**, 與預算差約 4× 相符。
 
 **⚠ cross-P0 比較的界線(design §12.5):** native 版**兩臂共用 P0 = 11,405**,故 F-vs-G 對比在
 native 內部乾淨不偏;但 **512 vs native 的效應量比較是稀釋讀數,絕對 champion 品質跨 P0
 不可直接比**(預算不同)。
+
+### 10.7a **三項預先註冊預測的判讀** —— 兩項被推翻
+
+> **§10.3 的字面要求:「若結果與預測相反, 必須照實記錄為機制假說被推翻, 不得事後改寫預測。」**
+> **以下即照此執行。三項預測寫於 2026-08-12, 早於任何 native large 資料存在。**
+
+| # | 預測 | 實測 | 判讀 |
+| --- | --- | --- | --- |
+| **(i)** | guided 的 **Gen0 極值劣勢會擴大** | large: **0.9719(1/5)→ 1.0023(3/5)** | **推翻。** 劣勢不但沒擴大, 在 22× 放大之下**反而消失** |
+| **(ii)** | guided 的 **Gen0 中心優勢維持或擴大** | large: 1.0197(4/5)→ **1.0208(5/5)**;medium: 1.0251(3/5)→ **1.0331(5/5)** | **成立。** 兩個 shape 都維持, 且為正的 seed 數都升到 5/5 |
+| **(iii)** | **跨 shape 梯度**: large 的極值劣勢擴大幅度 **應大於** medium | large **+0.0304**(劣勢縮小)vs medium **−0.0080**(略為擴大) | **推翻。** 兩者方向相反, 梯度與預測的正負號相反 |
+
+**這對 §6 的機制敘事意味著什麼 —— 只講資料支持的部分:**
+
+§6 的假說是「guidance 把機率質量集中 → 壓縮上尾 → 期望最大值下降」。
+**Gen0 池從 512 放大到 11,405 是這個機制最直接的操縱變因(22×), 而它給出的結果與預測相反。**
+
+- **中心那一半站得住**(預測 ii 在兩個 shape、兩個 P0 尺度上都成立, 5/5)。
+- **上尾那一半沒有站住。** 在 large 上, 池放大之後 guided 的極值反而追上並略微超前。
+- **可能的讀法有兩種, 本檔不代為裁決:**
+  (a) 上尾壓縮效應存在但**隨池大小衰減** —— 池夠大時 guided 也抽得到尾部;
+  (b) capped-512 那個 0.9719(1/5)本身**樣本數太小**, 五個 seed 的一個中位數不足以支撐一個機制宣稱。
+  **要分辨這兩者需要中間尺度的 P0, 本研究沒有跑, 記為 `NOT_EVALUATED`。**
+
+**⚠ 不得由此推出「guidance 對 large 有效」或「無效」。** 這裡判的是**機制預測**, 不是 gate。
+gate 判定屬 `staged/s14-guided-results.md` **§5.4**(owner 2026-08-18 指定;原指向的
+`full-ga-baseline-vs-guided-outcome-report.md` 已解除授權)。
+
+### 10.7b **兩支 2026-08-17 的診斷探針 —— 都不是端點**(2026-08-18 新增)
+
+兩者都標 `is_endpoint: false`,**都不改動表 N1–N5 的任何一格**,在此並列揭露。
+
+#### 10.7b.1 `large_xwindow/results/m6/` —— native large 的跨視窗重現性
+
+同一批 native champion,**6 個獨立 window × 5 seed**,`--start-arm F`。
+
+| seed | 表 N3 的單窗端點 `ln(F/G)` | m6 六窗平均 | m6 per-seed sd |
+| --- | ---: | ---: | ---: |
+| 24001 | +0.00670 | +0.00962 | 0.02152 |
+| 24002 | **+0.15026** | **+0.14475** | 0.01537 |
+| 24003 | −0.04147 | −0.02563 | 0.01252 |
+| 24004 | −0.01816 | −0.02470 | 0.02036 |
+| 24005 | −0.00301 | **+0.01568** | 0.01721 |
+
+pooled dropout **34 / 420 = 8.10 %**(95 % 判準)。
+
+**能說什麼:** large native 的端點是**單一 window** 量的,而窗間離散度是 0.0125–0.0215。
+**seed 24005 換一個窗就翻號**(−0.0030 → +0.0157),因為它的效應量本來就小於窗間離散度。
+⇒ **表 N3 的逐 seed 符號,對於效應量小於約 0.02 的 seed 並不穩定。**
+
+**不能說什麼:**
+- **不得併入表 N3、不得平均、不得取代端點** —— `LARGE_XWINDOW_MANIFEST.json` 的 `claim_boundary`
+  逐字:「They do not replace the endpoint of record, **are not averaged into it**,
+  and do not move any shape's S14 status.」
+- **不得用 m6 的 sd 去宣告表 N3 的某個 seed「是在讀雜訊」。**
+  m6 自己的 pooled dropout 是 **8.10 %**,而 native large 端點的 dropout 是 **2 / 70 = 2.9 %**
+  (同一個 95 % 定義)—— **m6 比它要審判的對象髒約 2.8 倍**,拿它當分母偏保守,
+  會把真效應誤判成雜訊。**兩者差 2.8 倍的成因 `NOT_EVALUATED`。**
+- **不得套用 medium 的 `sd ≤ 0.01` 判準** —— `m6/summary.json` 的 `note` 明文禁止
+  (「medium's sd &lt;= 0.01 belongs to medium's instrument-repair acceptance and is NOT applied」)。
+
+#### 10.7b.2 `large_champrace_24002/results/race_m3/` —— 一個未解釋的 12 % 兩群分裂
+
+seed 24002 **baseline 臂內部**的 champion vs 被取代的 incumbent 對跑,**與 guided 無關**。
+`direction_convention` 逐字:「ratio &gt; 1 means the INCUMBENT (arm F) is faster than the CHAMPION (arm G)」
+—— **與本檔其他各處的 F/G 語意相反**;實測 `geometric_mean_ratio = 0.98933`,即 **champion 快 1.08 %**。
+
+**未解釋的觀測:** 同一顆 kernel(`config_hash = 9908df17…`)在兩支 8/17 探針上分成兩群 ——
+
+| 來源 | arm G 的 median GFLOP/s |
+| --- | --- |
+| canonical 端點(表 N3 的來源) | **498,236** |
+| `m6` 六個獨立 window | 499,076 / 492,228 / 498,780 / 488,781 / 497,714 / 485,541 |
+| `race_m3` 三個 window | **558,420 / 559,859 / 569,037** |
+
+**兩群相差約 12 %,機制 `NOT_EVALUATED`。**
+
+**必須連著寫的三句:**
+1. **canonical 端點已被 m6 六窗重現**(498,236 落在 485,541–499,076 之內),
+   ⇒ **表 N3 用的值沒有問題,離群的是 `race_m3` 這支探針,而它不餵任何端點。**
+2. **不得宣稱哪一組是「正確的」**,也**不得**由此宣稱 GA 記錄值系統性上偏。
+3. **不得把 GA 記錄的 565,845 併進 `race_m3` 那一群當作第三個成員** ——
+   它是搜尋期的單次評估、不同 harness,數值相近不等於同一機制。
+
+> **⚠ 撰稿者的一次撤回(2026-08-18)。** 本報告的早期草稿曾寫「對跑值貼近 GA 值,
+> canonical 端點才是離群的那一個」。**那與資料相反,已撤回** —— m6 的六個 window
+> 重現的是 canonical。此處記錄這次撤回,是因為同一個問題已經錯過兩次
+> (先前還有一次是「GA 記錄值的上偏是搜尋期量測的系統性現象」,亦已撤回)。
+> **在那 12 % 被解釋之前,任何機制敘述都沒有依據。**
 
 ### 10.8 若 native large 未能完成 —— 預註冊的降階規則(design §12.7)
 
@@ -1041,6 +1281,10 @@ native 內部乾淨不偏;但 **512 vs native 的效應量比較是稀釋讀數,
 ### 11.4 一項治理提醒
 
 design **§13 為 `PENDING_HUMAN_DECISION`**,尚未經 owner 核准。
+> **⚠ 2026-08-18 例外:** 其中 **D2(pinned `η_s`)已於 2026-08-14 裁決並關閉**
+> (`ETA-MARGIN-REMOVED-20260814`,方向與 D2 提案相反 —— margin 被移除而非維持)。
+> 因此「在核准之前 §10.2 / §10.4 的 gate 維持原狀」這句話**對第四個子判準已不適用**;
+> 現行 gate 為三項 margin-free 子判準,詳見 §4.4 的更正框。
 凡本檔引用自 §13 的內容(D1 估計量、D2 雙 margin 揭露、D3 逐 shape claim 階梯、
 §13.6 的紀錄更正、§13.7 的量測排序、§13.9 的殘餘不確定性)一律標示為
 **「提案／待裁決」,不得讀成「已經決定」**。在核准之前,design §10.2 / §10.4 的預註冊估計量與
@@ -1091,12 +1335,15 @@ gate **維持原狀**。index §9 是該節的鏡像,同樣非權威。
 
 | 路徑 | 內容 |
 | --- | --- |
-| `native_status.json` | `shapes.large`:5 seed × 2 arm 狀態、`preflight_global`、`completion = {done: 0, total: 10}` |
+| `native_status.json` | `shapes.large`:5 seed × 2 arm 狀態、`preflight_global`、`completion = {done: 0, total: 10}`。**⚠ `done: 0` 是 2026-08-13 的快照,已於 2026-08-17 完成(2026-08-18 註)** |
 | `native_remeasure_status_large.json` | 5 seed 皆 `wait_arms_incomplete`;GPU 5 deviation 已預先記錄 |
 | `s14_native_driver.log` | cron 巡檢紀錄(每 ~15 分鐘) |
 | `stage5_native_baseline/seed_*/large/ga_init_evidence.json` | `pop_size_at_construction = 11405`、`decay_type_at_construction = "large_space"`、`native_p0_variant: true` |
-| `stage5_native_baseline/seed_*/large/*-optimization.log` | 9 行;末行 `GA:INFO Starting optimization...` |
-| `stage5_native_guided/seed_*/large/` | **空目錄**(guided 未啟動) |
+| `stage5_native_baseline/seed_*/large/*-optimization.log` | 9 行;末行 `GA:INFO Starting optimization...`。**⚠ 2026-08-13 快照;執行已於 2026-08-17 完成(2026-08-18 註)** |
+| `stage5_native_baseline/seed_*/large/champion_interleaved.json` | **5 個檔**(mtime 2026-08-17 13:13–13:27),表 N1–N5 的來源 |
+| `large_xwindow/results/m6/` | 跨窗重現性探針,同一批 native champion,6 window × 5 seed。`is_endpoint: false`(§10.7b) |
+| `large_champrace_24002/results/race_m3/` | seed 24002 baseline 臂內部的 champion vs incumbent 對跑。`is_endpoint: false`(§10.7b) |
+| `stage5_native_guided/seed_*/large/` | **無 `champion_interleaved.json`,但這是結構性的,不是缺口**(2026-08-18 更正):worker 把兩臂寫進 baseline 側的同一個檔(`arms: [F, G]`、`median_gflops {F, G}`)。原文寫「空目錄(guided 未啟動)」已為假 |
 | `scripts/run_pershape_seed_native.py` | `runner_sha256 = ae2584a6e461cd460ac29f234661f67dea604ca9a84d230d3ed7d4e41b743d89` |
 
 ### A.5 Code 引用
@@ -1119,9 +1366,9 @@ gate **維持原狀**。index §9 是該節的鏡像,同樣非權威。
 
 | 項目 | 為何 `NOT_EVALUATED` |
 | --- | --- |
-| Native-Gen0(11,405)large 的**全部**結果(表 N1–N5) | 五個 baseline seed 執行中(§10.6);guided 未啟動;remeasure cron 待命 |
-| Q1 / Q2 / Q3 對 large 的答案 | 同上。**Q2 另已預先揭露在 large 上很可能無區辨力**(§10.4) |
-| 跨視窗／跨日的重複性資料(任一 shape) | A/A 跨視窗實驗未核准、未執行(design §13.7 第 1 項) |
+| ~~Native-Gen0(11,405)large 的**全部**結果(表 N1–N5)~~ | **已於 2026-08-17 執行完畢,表 N1–N5 已由實測 artifact 填入(§10.7)。此列於 2026-08-18 作廢** |
+| ~~Q1 / Q2 / Q3 對 large 的答案~~ | **已於 2026-08-17 有結果(2026-08-18 更正)** —— 見 §10.7 表 N1–N5 與 §10.7a 的三項預測判讀。**Q2 仍如 §10.4 預先揭露的,在 large 上區辨力有限** |
+| ~~跨視窗／跨日的重複性資料(任一 shape)~~ | **已部分為假(2026-08-18)。** `large_xwindow/results/m6/` 提供 **large native 的跨窗**資料(6 window × 5 seed,per-seed sd 0.0125–0.0215);`medium_pilot401/results/` 的九個 m = 12 cell 提供 **medium 的跨窗**資料。**仍然沒有的是: 跨「日」的重複性。**(2026-08-18 再更正:原文還寫「以及 large capped 的跨窗」,`m6_capped` 已於 08-18 產出,6 window × 5 seed,sd 0.01195–0.02742) |
 | `η_large` 的 pinned vs 經驗之裁決 | 需要上一項;design §13 為 `PENDING_HUMAN_DECISION` |
 | 直接的鎖頻證據 | 需 owner 執行 `rocm-smi --setperflevel high`(約 10 分鐘、零研究 GPU 時數);容器內 `/sys` 唯讀,先前嘗試靜默變成 no-op,實為第二個 control |
 | 搜尋期汙染是否 arm-symmetric(含 large) | 逐代 benchmark CSV 未保留,**事後不可查證** |

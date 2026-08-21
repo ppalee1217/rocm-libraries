@@ -4,7 +4,8 @@
 >
 > **目前執行狀態(2026-08-13):** capped(P0=512)三個 shape 全部完成;native(P0=11,405)medium 完成、**large 執行中**(五個 baseline seed 仍在 Gen0 抽樣)。因此本檔與 large 附冊的 native 段落還會變動。
 >
-> **⚠️ 九項 `PENDING_HUMAN_DECISION`** 見 §3.4 與 design §13。裁決前不得改動任何分析、標籤或 claim。
+> **⚠️ 原列九項 `PENDING_HUMAN_DECISION`** 見 §3.4 與 design §13。裁決前不得改動任何分析、標籤或 claim。
+> **(2026-08-15:其中第 3 項 campaign-of-record 已結案,計數已過時 —— 見 §3.4。)**
 ---
 checkpoint_id: S14
 title: Stage 1 full-GA baseline-vs-guided real-GPU outcome（per-shape single-objective）
@@ -150,8 +151,15 @@ medium 的 9.9 µs kernel 只換到約 3.2 ms 暖機,MI300X 從 132–180 MHz id
 
 且 medium 有**兩次互相矛盾的 campaign**:campaign 1 median F/G 0.9971、2/5 為正;campaign 2
 為 1.0274、3/5。campaign 2 於 2026-08-12 14:01–14:04Z **在解盲後就地覆寫**了 campaign 1,未留
-`superseded_*` 標記,且**對受測臂較有利**。design §13.3 提議以 campaign 1 為紀錄用量測,但該提議
-**尚未裁決**,因此兩者並列報告,**不平均、不擇一**。
+`superseded_*` 標記,且**對受測臂較有利**。**兩者並列報告,不平均、不擇一。**
+
+> **更新 2026-08-15(owner 決定)。** 本段原記「design §13.3 提議以 campaign 1 為紀錄用量測,
+> 但該提議**尚未裁決**」。**該提議已結案,但結案方式不是採用 campaign 1:
+> campaign 1 與 campaign 2 皆非紀錄用量測,由一個新的 campaign 取代兩者**
+> (目前為 **pilot only**,完整 campaign 延後且以 pilot 結果為條件,`PENDING_HUMAN_DECISION`)。
+> 同日 **canonical capped medium 五個 seed 一起 revert 回 campaign 1**,
+> 而 **canonical native medium 仍為 campaign 2** —— **該混合狀態刻意不予調和**。
+> **本報告的處置不變:兩者並列,不平均、不擇一。**
 
 因此 medium 的 final champion 與 non-regression 端點採第三種狀態 **`NOT_EVALUATED /
 instrument-invalid`** —— 既非 pass 亦非 fail。這**不影響** §3.1 的 Gen0/gen-10/AUC。
@@ -160,8 +168,13 @@ instrument-invalid`** —— 既非 pass 亦非 fail。這**不影響** §3.1 �
 ### 3.4 待 owner 裁決(`PENDING_HUMAN_DECISION`)
 
 design [§13](../../s14-stage1-full-ga-outcome-design.md) 是一份 design-discussion 產出的
-decision packet(兩位獨立 reviewer,兩輪交互詰問,雙方 `AGREE` 無保留異議),其中九項需要 owner
-裁決才能寫進本報告的 outcome。摘要鏡射於
+decision packet(兩位獨立 reviewer,兩輪交互詰問,雙方 `AGREE` 無保留異議),其中原列**九項**需要 owner
+裁決才能寫進本報告的 outcome。
+**⚠ 這個計數自 2026-08-15 起已過時** —— 其中 index §9.3 第 3 項
+「ratify campaign 1 為 measurement of record」**已結案**
+(結論為:C1 與 C2 皆非 measurement of record,由新 campaign 取代兩者)。
+**本檔尚未逐項重數,請以 index §9.3 的逐項狀態為準,不要引用「九項」這個數字。**
+摘要鏡射於
 [`report-source-index.md` §9](../report-source-index.md)。在裁決之前:
 
 - §10.2 / §10.4 的預註冊估計量與 gate **維持原狀**,不得依 §13 改動任何分析、標籤或 claim。
@@ -207,7 +220,8 @@ large native 收斂前,本節與 large 附冊的 native 半段維持 `NOT_EVALUA
   三份都是本檔的附冊,承載詳細實驗記錄;**gate 判定與 S14 outcome 只在本檔**。命名與目錄規則見
   [`README.md`](../README.md)。
 - **待裁決:** design [§13](../../s14-stage1-full-ga-outcome-design.md)
-  `MEASUREMENT-DEFECT-PACKET-20260813`(`PENDING_HUMAN_DECISION`,九項);摘要鏡射於
+  `MEASUREMENT-DEFECT-PACKET-20260813`(`PENDING_HUMAN_DECISION`,原列九項,
+  **2026-08-15 起計數已過時,見 §3.4**);摘要鏡射於
   [`report-source-index.md` §9](../report-source-index.md) 與其 zh-Hant 鏡射。
 - **工作筆記:** `working-notes/` 內兩份已被本報告體系取代的 subagent 分析,**不得引用**,
   待 owner 於正式報告定稿後確認移除。
